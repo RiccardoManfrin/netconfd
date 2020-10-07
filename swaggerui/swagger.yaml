@@ -1,0 +1,65 @@
+swagger: '2.0'
+info:
+  description: Cold storage (config) cluster sync service
+  version: 1.0.0
+  title: "entangleD API"
+  contact:
+    email: support@athonet.com
+basePath: /api/1
+
+schemes:
+  - http
+
+tags:
+  - name: Node
+    description: Calls related to Node/Cluster management
+  - name: Service
+    description: Calls related to Processes/Services management
+    
+paths:
+  '/forcepush':
+    post:
+      operationId: ForcePush
+      description: |
+        Forces the alignment of remote files to local ones.
+        Local and remote refer to where the API is invoked
+      responses:
+        200:
+          description: Successful alignment
+  '/state':
+    get:
+      operationId: GetState
+      description: |
+        Retrieves the state of monitored files in both nodes and provides any misalignment
+        information
+      responses:
+        200:
+          description: Successful state retrival
+          schema:
+            $ref: '#/definitions/ClusterFilesState'
+
+
+definitions:
+  ClusterFilesState:
+    type: object
+    properties:
+      files:
+        type: array
+        description: List of files and related local/remote MD5 of their base64 encoding
+        items:
+          type: object
+          properties:
+            name: 
+              type: string
+              description: The name of the monitored file
+            local_md5:
+              type: string
+              description: |
+                The MD5 of the bas64 encoding of the local copy of the file
+            remote_md5:
+              type: string
+              description: |
+                The MD5 of the bas64 encoding of the remote copy of the file
+            aligned:
+              type: boolean
+              description: Tells if the file is aligned among the two nodes
