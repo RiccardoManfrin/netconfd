@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"math"
 	"net/http"
 	"os"
 	"strconv"
@@ -11,6 +12,8 @@ import (
 	"time"
 
 	"github.com/rakyll/statik/fs"
+	"github.com/santhosh-tekuri/jsonschema"
+	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
 	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/statik"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
@@ -25,6 +28,7 @@ type Manager struct {
 	SyncServeMux   *http.ServeMux
 	client         http.Client
 	m2MEndpointURL string
+	schema         *jsonschema.Schema
 }
 
 //PushContent describes the push content
@@ -55,18 +59,42 @@ func fail(err int, log string) {
 	os.Exit(err)
 }
 
+func httpError(w http.ResponseWriter, e error, code int) {
+	logger.Log.Warning(e.Error())
+	w.Header().Add("Content-Type", "application/json")
+	w.WriteHeader(code)
+	io.WriteString(w, comm.ToJSONString(e))
+}
+
+func httpOk(w http.ResponseWriter) {
+	w.WriteHeader(200)
+
+}
+
 func (m *Manager) overrideWithEnv() error {
 
-	clusterLocal, clusterLocalFound := os.LookupEnv("CLUSTER_LOCAL")
-	clusterRemote, clusterRemoteFound := os.LookupEnv("CLUSTER_REMOTE")
+	logger.Log.Info("Looking up NETCONFD_HOST from env")
+	netconfdHost, netconfdHostFound := os.LookupEnv("NETCONFD_HOST")
+	logger.Log.Info("Looking up NETCONFD_PORT from env")
+	netconfdPort, netconfdPortFound := os.LookupEnv("NETCONFD_PORT")
 
-	if clusterLocalFound {
-		logger.Log.Info("Overriding sync local host with " + clusterLocal + " CLUSTER_LOCAL env var")
-		m.Conf.Sync.Local.Host = clusterLocal
+	if netconfdHostFound {
+		logger.Log.Info("Overriding .global.mgmt.host with " + netconfdHost + " NETCONFD_HOST env var")
+		m.Conf.Global.Mgmt.Host = netconfdHost
 	}
-	if clusterRemoteFound {
-		logger.Log.Info("Overriding sync remote host with " + clusterRemote + " CLUSTER_REMOTE env var")
-		m.Conf.Sync.Remote.Host = clusterRemote
+	if netconfdPortFound {
+
+		overridePort, err := strconv.Atoi(netconfdPort)
+		if err != nil {
+			logger.Log.Info("Env NETCONFD_PORT " + netconfdPort + " is not a number")
+			return err
+		}
+		if overridePort > int(math.Exp2(16))-1 {
+			logger.Log.Info("Env NETCONFD_PORT " + netconfdPort + " is too high")
+			return err
+		}
+		logger.Log.Info("Overriding .global.mgmt.port with " + netconfdPort + " NETCONFD_PORT env var")
+		m.Conf.Global.Mgmt.Port = uint16(overridePort)
 	}
 
 	return nil
@@ -107,6 +135,11 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	m.ServeMux.Handle("/", m)
 	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(statikFS)))
 
+	m.schema, err = jsonschema.Compile("schemas/config.json")
+	if err != nil {
+		logger.Fatal(err)
+	}
+
 	return nil
 }
 
@@ -134,6 +167,16 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	switch path {
 	case "/state":
 		if r.Method == "GET" {
+			w.Header().Add("Content-Type", "application/json")
+			io.WriteString(w, "ok")
+		}
+	case "/config":
+		if r.Method == "PUT" {
+			err = m.schema.Validate(strings.NewReader(string(body)))
+			if err != nil {
+				httpError(w, err, http.StatusBadRequest)
+				return
+			}
 			w.Header().Add("Content-Type", "application/json")
 			io.WriteString(w, "ok")
 		}
