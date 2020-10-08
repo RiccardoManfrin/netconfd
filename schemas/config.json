@@ -1,3 +1,4 @@
+//https://extendsclass.com/json-schema-validator.html
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
@@ -9,10 +10,29 @@
           "type": "object",
           "properties": {
             "name": {
-              "type": "string"
+              "type": "string",
+              "default": "",
+              "examples": [
+                "eth0"
+              ]
             },
             "type": {
-              "type": "string"
+              "type": "string",
+              "default": "",
+              "examples": [
+                "phy",
+                "vlan",
+                "bond",
+                "bridge"
+              ]
+            },
+            "addr" : {
+              "type" : "array",
+              "items": [
+                {
+                  "$ref": "#/definitions/ip"
+                }
+              ]
             }
           },
           "required": [
@@ -25,5 +45,27 @@
   },
   "required": [
     "links"
-  ]
+  ],
+  "definitions": {
+    "ipv4": {
+      "type" : "string",
+      "format" : "ipv4"
+    },
+    "ipv6": {
+      "type" : "string",
+      "format" : "ipv6"
+    },
+    "ip":{
+      "oneOf": [
+        {"$ref": "#/definitions/ipv4"},
+        {"$ref": "#/definitions/ipv6"}
+      ],
+      "default": null,
+      "examples": [
+      	"10.1.2.3"
+      ]
+    }
+    
+  }
+
 }
