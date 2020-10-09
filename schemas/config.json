@@ -21,7 +21,6 @@
           "properties": {
             "name": {
               "type": "string",
-              "enum": ["phy", "bond", "bridge", "vlan"],
               "default": "",
               "examples": [
                 "eth0"
@@ -29,6 +28,7 @@
             },
             "type": {
               "type": "string",
+              "enum": ["phy", "bond", "bridge", "vlan"],
               "default": "",
               "examples": [
                 "phy",
