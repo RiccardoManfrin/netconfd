@@ -14,7 +14,8 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/santhosh-tekuri/jsonschema"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
-	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/statik"
+	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
+	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )
