@@ -88,7 +88,7 @@ class Api():
 			"links":[
 				{
 					"name":"eth0",
-					"type":"phyf",
+					"type":"phy",
 					"addr":[
 						"10.1.2.3",
 						"fe80::1"
