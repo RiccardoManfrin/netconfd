@@ -1,8 +1,18 @@
-//https://extendsclass.com/json-schema-validator.html
 {
   "$schema": "http://json-schema.org/draft-04/schema#",
   "type": "object",
   "properties": {
+    "global": {
+      "type": "object",
+      "properties": {
+        "non-local-bind": {
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "non-local-bind"
+      ]
+    },
     "links": {
       "type": "array",
       "items": [
@@ -11,6 +21,7 @@
           "properties": {
             "name": {
               "type": "string",
+              "enum": ["phy", "bond", "bridge", "vlan"],
               "default": "",
               "examples": [
                 "eth0"
@@ -32,6 +43,17 @@
                 {
                   "$ref": "#/definitions/ip"
                 }
+              ]
+            },
+            "attributes": {
+              "type": "object",
+              "properties": {
+                "dhcp": {
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "dhcp"
               ]
             }
           },
