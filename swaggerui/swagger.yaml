@@ -6,6 +6,9 @@ info:
   contact:
     email: support@athonet.com
 
+servers:
+  - url: /api/1
+
 tags:
   - name: System
     description: Calls related to Node/Cluster management
