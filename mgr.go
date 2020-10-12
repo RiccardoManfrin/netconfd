@@ -14,7 +14,10 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/santhosh-tekuri/jsonschema"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
+
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
 	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
@@ -123,7 +126,18 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	logger.Log.Notice("Starting mgmt service on " + m.Conf.Global.Mgmt.Host + ":" + strconv.FormatInt(int64(m.Conf.Global.Mgmt.Port), 10))
 	logger.Log.Notice("Log level set to " + m.Conf.Global.LogLev)
 
-	statikFS, _ := fs.New()
+	schemas.Init()
+	schemasFS, _ := fs.New()
+	swaggerui.Init()
+	swaggeruiFS, _ := fs.New()
+
+	f, _ := schemasFS.Open("/config.json")
+	data, _ := ioutil.ReadAll(f)
+	logger.Log.Error(string(data))
+	m.schema, err = jsonschema.CompileString("/config.json", data)
+	if err != nil {
+		logger.Fatal(err)
+	}
 
 	m.ServeMux = http.NewServeMux()
 	m.HTTPServer = &http.Server{
@@ -134,12 +148,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 		MaxHeaderBytes: 1 << 20,
 	}
 	m.ServeMux.Handle("/", m)
-	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(statikFS)))
-
-	m.schema, err = jsonschema.Compile("schemas/config.json")
-	if err != nil {
-		logger.Fatal(err)
-	}
+	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
 	return nil
 }

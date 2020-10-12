@@ -18,10 +18,10 @@ test:
 	go test ./crm -v
 
 swaggerui/statik.go: swaggerui/swagger.yaml $(STATIKTOOL)
-	@ $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js -p=swaggerui
+	@ $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js -p=swaggerui -tags=swaggerui
 	
 schemas/statik.go: $(STATIKTOOL)
-	@ $(STATIKTOOL) -src=schemas -include=*.json -p=schemas
+	@ $(STATIKTOOL) -src=schemas -include=*.json -p=schemas -tags=schemas
 
 $(STATIKTOOL):
 	@ cd vendor/github.com/rakyll/statik && go build
