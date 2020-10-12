@@ -107,7 +107,13 @@
                   "type": "string"
                 },
                 "type": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "phy",
+                    "bond",
+                    "bridge",
+                    "vlan"
+                  ]
                 },
                 "ips": {
                   "type": "array",
