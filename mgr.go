@@ -130,7 +130,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	f, _ := schemasFS.Open("/config.json")
 	data, _ := ioutil.ReadAll(f)
 	logger.Log.Error(string(data))
-	m.schema, err = jsonschema.CompileString("/config.json", data)
+	m.schema, err = jsonschema.CompileString("/config.json", string(data))
 	if err != nil {
 		logger.Fatal(err)
 	}
