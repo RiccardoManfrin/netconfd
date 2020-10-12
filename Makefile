@@ -18,7 +18,7 @@ test:
 	$(AT) go test ./crm -v
 
 swaggerui/statik.go: swaggerui/swagger.yaml $(STATIKTOOL)
-	$(AT) $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js -p=swaggerui
+	$(AT) $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js,*.json -p=swaggerui
 	
 schemas/statik.go: $(STATIKTOOL)
 	$(AT) $(STATIKTOOL) -src=schemas -include=*.json -p=schemas

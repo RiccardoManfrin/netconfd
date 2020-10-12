@@ -135,8 +135,11 @@ func (m *Manager) LoadConfig(conffile *string) error {
 
 	openapiJson, _ := swaggeruiFS.Open("/openapi.json")
 	data, _ = ioutil.ReadAll(openapiJson)
-	swagger, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
+	openapi, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
 
+	if openapi != nil {
+		logger.Log.Info("Loaded openapi spec")
+	}
 	m.ServeMux = http.NewServeMux()
 	m.HTTPServer = &http.Server{
 		Addr:           m.Conf.Global.Mgmt.Host + ":" + strconv.FormatUint(uint64(m.Conf.Global.Mgmt.Port), 10),
