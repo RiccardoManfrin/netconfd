@@ -17,10 +17,8 @@ import (
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/rakyll/statik/fs"
-	"github.com/santhosh-tekuri/jsonschema"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 )
 
@@ -33,7 +31,6 @@ type Manager struct {
 	SyncServeMux   *http.ServeMux
 	client         http.Client
 	m2MEndpointURL string
-	schema         *jsonschema.Schema
 	openapi        *openapi3.Swagger
 	router         *openapi3filter.Router
 }
@@ -129,19 +126,11 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	logger.Log.Notice("Starting mgmt service on " + m.Conf.Global.Mgmt.Host + ":" + strconv.FormatInt(int64(m.Conf.Global.Mgmt.Port), 10))
 	logger.Log.Notice("Log level set to " + m.Conf.Global.LogLev)
 
-	schemasFS, _ := fs.NewFromZipData(schemas.Init())
 	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
 
-	f, _ := schemasFS.Open("/config.json")
-	data, _ := ioutil.ReadAll(f)
-	m.schema, err = jsonschema.CompileString("/config.json", string(data))
-	if err != nil {
-		logger.Fatal(err)
-	}
+	openapiJSON, _ := swaggeruiFS.Open("/openapi.json")
 
-	openapiJson, _ := swaggeruiFS.Open("/openapi.json")
-
-	data, _ = ioutil.ReadAll(openapiJson)
+	data, _ := ioutil.ReadAll(openapiJSON)
 	m.openapi, err = openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
 	m.router = openapi3filter.NewRouter().WithSwagger(m.openapi)
 
