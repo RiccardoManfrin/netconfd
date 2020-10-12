@@ -11,6 +11,7 @@ import (
 	"strings"
 	"time"
 
+	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/rakyll/statik/fs"
 	"github.com/santhosh-tekuri/jsonschema"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
@@ -131,6 +132,10 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	if err != nil {
 		logger.Fatal(err)
 	}
+
+	openapiJson, _ := swaggeruiFS.Open("/openapi.json")
+	data, _ = ioutil.ReadAll(openapiJson)
+	swagger, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
 
 	m.ServeMux = http.NewServeMux()
 	m.HTTPServer = &http.Server{
