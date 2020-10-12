@@ -15,21 +15,21 @@ netconfd.debug: $(GOFILES) swaggerui/statik.go schemas/statik.go deps
 	$(AT) CGO_ENABLED=0 GOOS=linux go build -gcflags="all=-N -l" -a -ldflags '-extldflags "-static"' -o $@
 
 test:
-	go test ./crm -v
+	$(AT) go test ./crm -v
 
 swaggerui/statik.go: swaggerui/swagger.yaml $(STATIKTOOL)
-	@ $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js -p=swaggerui -tags=swaggerui
+	$(AT) $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js -p=swaggerui -tags=swaggerui
 	
 schemas/statik.go: $(STATIKTOOL)
-	@ $(STATIKTOOL) -src=schemas -include=*.json -p=schemas -tags=schemas
+	$(AT) $(STATIKTOOL) -src=schemas -include=*.json -p=schemas -tags=schemas
 
 $(STATIKTOOL):
-	@ cd vendor/github.com/rakyll/statik && go build
+	$(AT) cd vendor/github.com/rakyll/statik && go build
 
-deps: swaggerui/statik.go
+deps: swaggerui/statik.go swaggerui/statik.go schemas/statik.go
 	$(AT) go get -d -v
 
 clean:
-	@ rm -rf netconfd netconfd.debug statik/ swaggerui/statik.go schemas/statik.go
+	$(AT) rm -rf netconfd netconfd.debug statik/ swaggerui/statik.go schemas/statik.go
 
 .PHONY: clean debugbuild test deps

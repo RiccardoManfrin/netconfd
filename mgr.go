@@ -14,13 +14,9 @@ import (
 	"github.com/rakyll/statik/fs"
 	"github.com/santhosh-tekuri/jsonschema"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
-
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
-	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
-	_ "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
-
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/schemas"
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 )
 
 //Manager of the machine takes HTTP requests, perform actions and give results back [blocking]
