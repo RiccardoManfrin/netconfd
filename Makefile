@@ -30,6 +30,6 @@ deps: swaggerui/statik.go swaggerui/statik.go schemas/statik.go
 	$(AT) go get -d -v
 
 clean:
-	$(AT) rm -rf netconfd netconfd.debug statik/ swaggerui/statik.go schemas/statik.go
+	$(AT) rm -rf netconfd netconfd.debug statik/ swaggerui/statik.go schemas/statik.go $(STATIKTOOL)
 
 .PHONY: clean debugbuild test deps

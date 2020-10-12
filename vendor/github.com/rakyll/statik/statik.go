@@ -248,7 +248,7 @@ func init() {
 }
 
 func Init() string {
-	data := "`, tags, comment, namePackage)
+	data := "`)
 	FprintZipData(&qb, buffer.Bytes())
 	fmt.Fprint(&qb, `"
 	return data

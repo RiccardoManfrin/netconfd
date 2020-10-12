@@ -122,14 +122,11 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	logger.Log.Notice("Starting mgmt service on " + m.Conf.Global.Mgmt.Host + ":" + strconv.FormatInt(int64(m.Conf.Global.Mgmt.Port), 10))
 	logger.Log.Notice("Log level set to " + m.Conf.Global.LogLev)
 
-	schemas.Init()
-	schemasFS, _ := fs.New()
-	swaggerui.Init()
-	swaggeruiFS, _ := fs.New()
+	schemasFS, _ := fs.NewFromZipData(schemas.Init())
+	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
 
 	f, _ := schemasFS.Open("/config.json")
 	data, _ := ioutil.ReadAll(f)
-	logger.Log.Error(string(data))
 	m.schema, err = jsonschema.CompileString("/config.json", string(data))
 	if err != nil {
 		logger.Fatal(err)
