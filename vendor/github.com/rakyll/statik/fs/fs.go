@@ -51,6 +51,50 @@ func Register(data string) {
 	zipData = data
 }
 
+// NewFromZipData creates a new file system from external data
+func NewFromZipData(externalZipData string) (http.FileSystem, error) {
+	if externalZipData == "" {
+		return nil, errors.New("statik/fs: no zip data registered")
+	}
+	zipReader, err := zip.NewReader(strings.NewReader(externalZipData), int64(len(externalZipData)))
+	if err != nil {
+		return nil, err
+	}
+	files := make(map[string]file, len(zipReader.File))
+	dirs := make(map[string][]string)
+	fs := &statikFS{files: files, dirs: dirs}
+	for _, zipFile := range zipReader.File {
+		fi := zipFile.FileInfo()
+		f := file{FileInfo: fi, fs: fs}
+		f.data, err = unzip(zipFile)
+		if err != nil {
+			return nil, fmt.Errorf("statik/fs: error unzipping file %q: %s", zipFile.Name, err)
+		}
+		files["/"+zipFile.Name] = f
+	}
+	for fn := range files {
+		// go up directories recursively in order to care deep directory
+		for dn := path.Dir(fn); dn != fn; {
+			if _, ok := files[dn]; !ok {
+				files[dn] = file{FileInfo: dirInfo{dn}, fs: fs}
+			} else {
+				break
+			}
+			fn, dn = dn, path.Dir(dn)
+		}
+	}
+	for fn := range files {
+		dn := path.Dir(fn)
+		if fn != dn {
+			fs.dirs[dn] = append(fs.dirs[dn], path.Base(fn))
+		}
+	}
+	for _, s := range fs.dirs {
+		sort.Strings(s)
+	}
+	return fs, nil
+}
+
 // New creates a new file system with the registered zip contents data.
 // It unzips all files and stores them in an in-memory map.
 func New() (http.FileSystem, error) {

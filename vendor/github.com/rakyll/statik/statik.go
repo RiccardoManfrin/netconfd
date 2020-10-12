@@ -240,12 +240,20 @@ import (
 	"github.com/rakyll/statik/fs"
 )
 
-func Init() {
+func init() {
 	data := "`, tags, comment, namePackage)
 	FprintZipData(&qb, buffer.Bytes())
 	fmt.Fprint(&qb, `"
 	fs.Register(data)
 }
+
+func Init() string {
+	data := "`, tags, comment, namePackage)
+	FprintZipData(&qb, buffer.Bytes())
+	fmt.Fprint(&qb, `"
+	return data
+}
+
 `)
 
 	if err = ioutil.WriteFile(f.Name(), qb.Bytes(), 0644); err != nil {
