@@ -1,9 +1,12 @@
 package main
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"io"
 	"io/ioutil"
+	"log"
 	"math"
 	"net/http"
 	"os"
@@ -12,6 +15,7 @@ import (
 	"time"
 
 	"github.com/getkin/kin-openapi/openapi3"
+	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/rakyll/statik/fs"
 	"github.com/santhosh-tekuri/jsonschema"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
@@ -30,6 +34,8 @@ type Manager struct {
 	client         http.Client
 	m2MEndpointURL string
 	schema         *jsonschema.Schema
+	openapi        *openapi3.Swagger
+	router         *openapi3filter.Router
 }
 
 //PushContent describes the push content
@@ -134,12 +140,11 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	}
 
 	openapiJson, _ := swaggeruiFS.Open("/openapi.json")
-	data, _ = ioutil.ReadAll(openapiJson)
-	openapi, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
 
-	if openapi != nil {
-		logger.Log.Info("Loaded openapi spec")
-	}
+	data, _ = ioutil.ReadAll(openapiJson)
+	m.openapi, err = openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
+	m.router = openapi3filter.NewRouter().WithSwagger(m.openapi)
+
 	m.ServeMux = http.NewServeMux()
 	m.HTTPServer = &http.Server{
 		Addr:           m.Conf.Global.Mgmt.Host + ":" + strconv.FormatUint(uint64(m.Conf.Global.Mgmt.Port), 10),
@@ -155,50 +160,90 @@ func (m *Manager) LoadConfig(conffile *string) error {
 }
 
 func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	todo := false
-	body, err := ioutil.ReadAll(r.Body)
-	if err != nil {
-		logger.Log.Warning("Failed to process request body")
-		return
-	}
-	if r.Method != "GET" {
-		logger.Log.Notice("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
-	} else {
-		logger.Log.Info("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
-	}
 
-	if !strings.HasPrefix(r.URL.Path, "/api/1/") {
-		logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
-		http.NotFound(w, r)
-		return
+	ctx := context.Background()
+
+	// Find route
+	route, pathParams, _ := m.router.FindRoute(r.Method, r.URL)
+
+	// Validate request
+	requestValidationInput := &openapi3filter.RequestValidationInput{
+		Request:    r,
+		PathParams: pathParams,
+		Route:      route,
+	}
+	if err := openapi3filter.ValidateRequest(ctx, requestValidationInput); err != nil {
+		panic(err)
 	}
 
-	path := strings.TrimPrefix(r.URL.Path, "/api/1")
+	var (
+		respStatus      = 200
+		respContentType = "application/json"
+		respBody        = bytes.NewBufferString(`{}`)
+	)
 
-	switch path {
-	case "/state":
-		if r.Method == "GET" {
-			w.Header().Add("Content-Type", "application/json")
-			io.WriteString(w, "ok")
+	log.Println("Response:", respStatus)
+	responseValidationInput := &openapi3filter.ResponseValidationInput{
+		RequestValidationInput: requestValidationInput,
+		Status:                 respStatus,
+		Header: http.Header{
+			"Content-Type": []string{respContentType},
+		},
+	}
+	if respBody != nil {
+		data, _ := json.Marshal(respBody)
+		responseValidationInput.SetBodyBytes(data)
+	}
+
+	// Validate response.
+	if err := openapi3filter.ValidateResponse(ctx, responseValidationInput); err != nil {
+		panic(err)
+	}
+	/*
+		todo := false
+		body, err := ioutil.ReadAll(r.Body)
+		if err != nil {
+			logger.Log.Warning("Failed to process request body")
+			return
 		}
-	case "/config":
-		if r.Method == "PUT" {
-			err = m.schema.Validate(strings.NewReader(string(body)))
-			if err != nil {
-				httpError(w, err, http.StatusBadRequest)
-				return
+		if r.Method != "GET" {
+			logger.Log.Notice("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
+		} else {
+			logger.Log.Info("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
+		}
+
+		if !strings.HasPrefix(r.URL.Path, "/api/1/") {
+			logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
+			http.NotFound(w, r)
+			return
+		}
+
+		path := strings.TrimPrefix(r.URL.Path, "/api/1")
+
+		switch path {
+		case "/state":
+			if r.Method == "GET" {
+				w.Header().Add("Content-Type", "application/json")
+				io.WriteString(w, "ok")
 			}
-			w.Header().Add("Content-Type", "application/json")
-			io.WriteString(w, "ok")
+		case "/config":
+			if r.Method == "PUT" {
+				err = m.schema.Validate(strings.NewReader(string(body)))
+				if err != nil {
+					httpError(w, err, http.StatusBadRequest)
+					return
+				}
+				w.Header().Add("Content-Type", "application/json")
+				io.WriteString(w, "ok")
+			}
+		default:
+			logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
+			http.NotFound(w, r)
+			return
 		}
-	default:
-		logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
-		http.NotFound(w, r)
-		return
-	}
-	if todo {
-		logger.Log.Warning("Implement API:" + r.Method + "-" + r.URL.Path)
-	}
+		if todo {
+			logger.Log.Warning("Implement API:" + r.Method + "-" + r.URL.Path)
+		}*/
 
 }
 
