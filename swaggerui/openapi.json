@@ -1,0 +1,125 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "description": "Network Configurator service",
+    "version": "0.1.0",
+    "title": "netConfD API",
+    "contact": {
+      "email": "support@athonet.com"
+    }
+  },
+  "servers": [
+    {
+      "url": "/api/1"
+    }
+  ],
+  "tags": [
+    {
+      "name": "System",
+      "description": "Calls related to Node/Cluster management"
+    },
+    {
+      "name": "Link",
+      "description": "Calls related to Processes/Services management"
+    },
+    {
+      "name": "Route",
+      "description": "Calls related to Processes/Services management"
+    }
+  ],
+  "paths": {
+    "/config": {
+      "put": {
+        "tags": [
+          "System"
+        ],
+        "operationId": "ConfigPut",
+        "summary": "Configures and enforces a new live network configuration\n",
+        "description": "Configures and enforces a new live network configuration\n",
+        "requestBody": {
+          "description": "Full Config",
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/configFull"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful alignment"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "System"
+        ],
+        "operationId": "ConfigGet",
+        "summary": "Configures and enforces a new live network configuration\n",
+        "description": "Configures and enforces a new live network configuration\n",
+        "responses": {
+          "200": {
+            "description": "Successful alignment"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ipv4": {
+        "type": "string",
+        "format": "ipv4"
+      },
+      "ipv6": {
+        "type": "string",
+        "format": "ipv6"
+      },
+      "ip": {
+        "oneOf": [
+          {
+            "$ref": "#/components/schemas/ipv4"
+          },
+          {
+            "$ref": "#/components/schemas/ipv6"
+          }
+        ]
+      },
+      "configFull": {
+        "type": "object",
+        "required": [
+          "global",
+          "links"
+        ],
+        "properties": {
+          "global": {
+            "type": "object"
+          },
+          "links": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "name": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "addr": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ip"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
