@@ -89,7 +89,7 @@ class Api():
 				{
 					"name":"eth0",
 					"type":"phy",
-					"addr":[
+					"ips":[
 						"10.1.2.3",
 						"fe80::1"
 					],

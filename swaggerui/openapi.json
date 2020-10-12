@@ -109,7 +109,7 @@
                 "type": {
                   "type": "string"
                 },
-                "addr": {
+                "ips": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/ip"

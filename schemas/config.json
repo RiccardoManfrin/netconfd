@@ -37,7 +37,7 @@
                 "bridge"
               ]
             },
-            "addr" : {
+            "ips" : {
               "type" : "array",
               "items": [
                 {
