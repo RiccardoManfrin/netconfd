@@ -1,3 +1,4 @@
 /netconfd
 /vendor/github.com/rakyll/statik/statik
 /swaggerui/statik.go
+/server
