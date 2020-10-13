@@ -14,6 +14,8 @@ import (
 	"strings"
 	"time"
 
+	openapi "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/server/go"
+
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/rakyll/statik/fs"
@@ -37,7 +39,7 @@ type Manager struct {
 	m2MEndpointURL string
 	openapi        *openapi3.Swagger
 	router         *openapi3filter.Router
-	routeHandlers  map[string]RouteHandler
+	routeHandlers  *mux.Router
 }
 
 //PushContent describes the push content
@@ -150,8 +152,11 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	m.ServeMux.Handle("/", m)
 	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
-	m.routeHandlers = make(map[string]RouteHandler)
-	m.routeHandlers["ConfigPut"] = nc.ConfigPut
+	systemApiService := openapi.NewSystemApiService()
+	systemApiController := openapi.NewSystemApiController(systemApiService)
+
+	m.routeHandlers := openapi.NewRouter(systemApiController)
+
 	return nil
 }
 
@@ -209,43 +214,6 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err := openapi3filter.ValidateResponse(ctx, responseValidationInput); err != nil {
 		panic(err)
 	}
-	/*
-		todo := false
-
-
-		if !strings.HasPrefix(r.URL.Path, "/api/1/") {
-			logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
-			http.NotFound(w, r)
-			return
-		}
-
-		path := strings.TrimPrefix(r.URL.Path, "/api/1")
-
-		switch path {
-		case "/state":
-			if r.Method == "GET" {
-				w.Header().Add("Content-Type", "application/json")
-				io.WriteString(w, "ok")
-			}
-		case "/config":
-			if r.Method == "PUT" {
-				err = m.schema.Validate(strings.NewReader(string(body)))
-				if err != nil {
-					httpError(w, err, http.StatusBadRequest)
-					return
-				}
-				w.Header().Add("Content-Type", "application/json")
-				io.WriteString(w, "ok")
-			}
-		default:
-			logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
-			http.NotFound(w, r)
-			return
-		}
-		if todo {
-			logger.Log.Warning("Implement API:" + r.Method + "-" + r.URL.Path)
-		}*/
-
 }
 
 //NewManager creates new manager
