@@ -19,8 +19,12 @@ import (
 	"github.com/rakyll/statik/fs"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 )
+
+//RouteHandler is the handler for a certain route OperationID
+type RouteHandler func(body interface{}) (interface{}, error)
 
 //Manager of the machine takes HTTP requests, perform actions and give results back [blocking]
 type Manager struct {
@@ -33,6 +37,7 @@ type Manager struct {
 	m2MEndpointURL string
 	openapi        *openapi3.Swagger
 	router         *openapi3filter.Router
+	routeHandlers  map[string]RouteHandler
 }
 
 //PushContent describes the push content
@@ -145,10 +150,24 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	m.ServeMux.Handle("/", m)
 	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
+	m.routeHandlers = make(map[string]RouteHandler)
+	m.routeHandlers["ConfigPut"] = nc.ConfigPut
 	return nil
 }
 
 func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+
+	body, err := ioutil.ReadAll(r.Body)
+	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+	if err != nil {
+		logger.Log.Warning("Failed to process request body")
+		return
+	}
+	if r.Method != "GET" {
+		logger.Log.Notice("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
+	} else {
+		logger.Log.Info("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
+	}
 
 	ctx := context.Background()
 
@@ -171,6 +190,8 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		respBody        = bytes.NewBufferString(`{}`)
 	)
 
+	m.routeHandlers[route.Operation.OperationID](body)
+
 	log.Println("Response:", respStatus)
 	responseValidationInput := &openapi3filter.ResponseValidationInput{
 		RequestValidationInput: requestValidationInput,
@@ -190,16 +211,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	/*
 		todo := false
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			logger.Log.Warning("Failed to process request body")
-			return
-		}
-		if r.Method != "GET" {
-			logger.Log.Notice("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
-		} else {
-			logger.Log.Info("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
-		}
+
 
 		if !strings.HasPrefix(r.URL.Path, "/api/1/") {
 			logger.Log.Warning("Unsupported API:" + r.Method + "-" + r.URL.Path)
