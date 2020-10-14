@@ -189,6 +189,8 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	m.router.ServeHTTP(w, r)
+	
 	var (
 		respStatus      = 200
 		respContentType = "application/json"
