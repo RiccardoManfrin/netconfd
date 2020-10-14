@@ -87,7 +87,7 @@ class Api():
 			},
 			"links":[
 				{
-					"ifname":"eth4",
+					"ifname":"dumby",
 					"ifindex":4,
 					"link_type": "ether",
 					"addr_info":[
@@ -97,6 +97,9 @@ class Api():
 							"broadcast": "10.1.2.255"
 						}
 					],
+					"linkinfo": {
+						"info_kind": "dummy"
+					},
 					"attributes": {
 						"dhcp" : True
 					}
