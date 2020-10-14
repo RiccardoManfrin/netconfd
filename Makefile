@@ -27,7 +27,7 @@ swaggerui/statik.go: swaggerui/swagger.yaml $(STATIKTOOL)
 $(STATIKTOOL):
 	$(AT) cd vendor/github.com/rakyll/statik && go build
 
-deps: swaggerui/statik.go
+deps: swaggerui/statik.go $(OPENAPI)
 	$(AT) go get -d -v
 
 clean:
