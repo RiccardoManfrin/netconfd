@@ -16,11 +16,16 @@ const (
 	{{/allowableValues}}
 ){{/isEnum}}{{^isEnum}}{{#description}}
 // {{classname}} - {{{description}}}{{/description}}
+{{^oneOf}}
 type {{classname}} struct {
 {{#vars}}{{#description}}
 	// {{{description}}}{{/description}}
 	{{name}} {{#isNullable}}*{{/isNullable}}{{{dataType}}} `json:"{{baseName}}{{^required}},omitempty{{/required}}"{{#vendorExtensions.x-go-custom-tag}} {{{.}}}{{/vendorExtensions.x-go-custom-tag}}`
 {{/vars}}
-
-}{{/isEnum}}{{/model}}{{/models}}
+}
+{{/oneOf}}
+{{#oneOf}}
+type {{classname}} interface{}
+{{/oneOf}}
+{{/isEnum}}{{/model}}{{/models}}
 
