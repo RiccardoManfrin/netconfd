@@ -87,11 +87,15 @@ class Api():
 			},
 			"links":[
 				{
-					"name":"eth0",
-					"type":"phy",
-					"ips":[
-						"10.1.2.3",
-						"fe80::1"
+					"ifname":"eth4",
+					"ifindex":4,
+					"link_type": "ether",
+					"addr_info":[
+						{
+							"local": "10.1.2.3",
+							"prefixlen" : 24,
+							"broadcast": "10.1.2.255"
+						}
 					],
 					"attributes": {
 						"dhcp" : True
