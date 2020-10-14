@@ -1,8 +1,19 @@
 #!/bin/bash
-rm server -rf
-mkdir server
+#DOWNLOAD TEMPLATES:
 #templates/go-server taken from 
 #https://github.com/OpenAPITools/openapi-generator/tree/master/modules/openapi-generator/src/main/resources
+#GENERAGE TEMPLATES
+#docker run  \
+#    -v "${PWD}:/local" \
+#    -u $(id -u):$(id -g) \
+#    --rm \
+#    openapitools/openapi-generator-cli author template \
+#    -g go-server \
+#    -o /local/templates/go-server/
+
+rm server -rf
+mkdir server
+
 
 docker run \
     -e GO_POST_PROCESS_FILE="/usr/local/bin/gofmt -w" \
