@@ -161,18 +161,6 @@ func (m *Manager) LoadConfig(conffile *string) error {
 
 func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
-	body, err := ioutil.ReadAll(r.Body)
-	r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-	if err != nil {
-		logger.Log.Warning("Failed to process request body")
-		return
-	}
-	if r.Method != "GET" {
-		logger.Log.Notice("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
-	} else {
-		logger.Log.Info("API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
-	}
-
 	ctx := context.Background()
 
 	// Find route
