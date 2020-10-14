@@ -18,10 +18,10 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
+	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 )
 
@@ -155,7 +155,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	systemApiService := openapi.NewSystemApiService()
 	systemApiController := openapi.NewSystemApiController(systemApiService)
 
-	m.routeHandlers := openapi.NewRouter(systemApiController)
+	m.routeHandlers = openapi.NewRouter(systemApiController)
 
 	return nil
 }
@@ -189,15 +189,13 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
-	m.router.ServeHTTP(w, r)
-	
+	m.routeHandlers.ServeHTTP(w, r)
+
 	var (
 		respStatus      = 200
 		respContentType = "application/json"
 		respBody        = bytes.NewBufferString(`{}`)
 	)
-
-	m.routeHandlers[route.Operation.OperationID](body)
 
 	log.Println("Response:", respStatus)
 	responseValidationInput := &openapi3filter.ResponseValidationInput{
