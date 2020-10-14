@@ -82,6 +82,19 @@ components:
         #    type: string
         mtu:
           type: integer
+        #promiscuity:
+        #  type: integer
+        linkinfo:
+          type: object
+          properties:
+            info_kind:
+              type: string
+              enum:
+                - dummy
+                - bridge
+                - bond
+                #- ppp
+                - vlan
         #qdisc:
         #  type: string
         #operstate:
@@ -90,8 +103,12 @@ components:
         #  type: string
         #txqlen:
         #  type: integer
-        link_type:
-          type: string
+        #link_type:
+        #  type: string
+        #  enum:
+        #    - ether
+        #    - loopback
+        #    - ppp
         address:
           type: string
         #broadcast:
