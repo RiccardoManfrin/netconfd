@@ -75,7 +75,7 @@ func ValidateResponse(c context.Context, input *ResponseValidationInput) error {
 	}
 
 	content := response.Content
-	if len(content) == 0 || options.ExcludeResponseBody {
+	if content == nil || len(content) == 0 || options.ExcludeResponseBody {
 		// An operation does not contains a validation schema for responses with this status code.
 		return nil
 	}
