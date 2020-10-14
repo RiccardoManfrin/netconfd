@@ -2,9 +2,12 @@
 package {{packageName}}
 
 import (
-	"log"
 	"net/http"
 	"time"
+	"io/ioutil"
+	"bytes"
+
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )
 
 func Logger(inner http.Handler, name string) http.Handler {
@@ -13,12 +16,17 @@ func Logger(inner http.Handler, name string) http.Handler {
 
 		inner.ServeHTTP(w, r)
 
-		log.Printf(
-			"%s %s %s %s",
-			r.Method,
-			r.RequestURI,
-			name,
-			time.Since(start),
-		)
+
+		body, err := ioutil.ReadAll(r.Body)
+		r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+		if err != nil {
+			logger.Log.Warning("Failed to process request body")
+			return
+		}
+		if r.Method != "GET" {
+			logger.Log.Notice("T:" + time.Since(start).String() + " - API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
+		} else {
+			logger.Log.Info("T:" + time.Since(start).String() + " - API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
+		}
 	})
 }
