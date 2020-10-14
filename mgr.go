@@ -173,7 +173,8 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Route:      route,
 	}
 	if err := openapi3filter.ValidateRequest(ctx, requestValidationInput); err != nil {
-		panic(err)
+		httpError(w, err, http.StatusBadRequest)
+		return
 	}
 
 	var respToValidate bytes.Buffer
