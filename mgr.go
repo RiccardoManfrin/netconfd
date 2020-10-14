@@ -134,7 +134,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 
 	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
 
-	openapiJSON, _ := swaggeruiFS.Open("/openapi.json")
+	openapiJSON, _ := swaggeruiFS.Open("/swagger.yaml")
 
 	data, _ := ioutil.ReadAll(openapiJSON)
 	m.openapi, err = openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
