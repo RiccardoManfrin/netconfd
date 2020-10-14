@@ -30,7 +30,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/configFull'
+              $ref: '#/components/schemas/config'
       responses:
         '200':
           description: Successful alignment
@@ -57,7 +57,7 @@ components:
       oneOf:
         - $ref: '#/components/schemas/ipv4'
         - $ref: '#/components/schemas/ipv6'
-    configFull:
+    config:
       type: object
       required:
         - global
