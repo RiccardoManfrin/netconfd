@@ -5,10 +5,8 @@ info:
   title: netConfD API
   contact:
     email: support@athonet.com
-
 servers:
   - url: /api/1
-
 tags:
   - name: System
     description: Calls related to Node/Cluster management
@@ -70,46 +68,81 @@ components:
         links:
           type: array
           items:
+            $ref: '#/components/schemas/link'
+    link:
+      type: object
+      properties:
+        ifindex:
+          type: integer
+        ifname:
+          type: string
+        #flags:
+        #  type: array
+        #  items:
+        #    type: string
+        mtu:
+          type: integer
+        #qdisc:
+        #  type: string
+        #operstate:
+        #  type: string
+        #group:
+        #  type: string
+        #txqlen:
+        #  type: integer
+        link_type:
+          type: string
+        address:
+          type: string
+        #broadcast:
+        #  type: string
+        addr_info:
+          type: array
+          items:
             type: object
             properties:
-              name:
+              #family:
+              #  type: string
+              local:
+                $ref: '#/components/schemas/ip'
+              prefixlen:
+                type: integer
+              broadcast:
                 type: string
-              type:
-                type: string
-                enum:
-                  - phy
-                  - bond
-                  - bridge
-                  - vlan
-              ips:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ip'
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
+              #scope:
+              #  type: string
+              #dynamic:
+              #  type: boolean
+              #noprefixroute:
+              #  type: boolean
+              #label:
+              #  type: string
+              #valid_life_time:
+              #  type: integer
+              #preferred_life_time:
+              #  type: integer
+            required:
+              - family
+              - local
+              - prefixlen
+              - broadcast
+              #- scope
+              #- dynamic
+              #- noprefixroute
+              #- label
+              #- valid_life_time
+              #- preferred_life_time
+      required:
+        - ifindex
+        - ifname
+        #- flags
+        - mtu
+        #- qdisc
+        #- operstate
+        #- group
+        #- txqlen
+        - link_type
+        #- address
+        #- broadcast
+        - addr_info
+  
