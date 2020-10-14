@@ -136,7 +136,7 @@ components:
         - ifindex
         - ifname
         #- flags
-        - mtu
+        #- mtu
         #- qdisc
         #- operstate
         #- group
@@ -144,5 +144,5 @@ components:
         - link_type
         #- address
         #- broadcast
-        - addr_info
+        #- addr_info
   
