@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"io"
 	"io/ioutil"
-	"log"
 	"math"
 	"net/http"
 	"os"
@@ -189,26 +188,19 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		panic(err)
 	}
 
+	var respToValidate bytes.Buffer
+	io.MultiWriter(w, &respToValidate)
+
 	m.routeHandlers.ServeHTTP(w, r)
 
-	var (
-		respStatus      = 200
-		respContentType = "application/json"
-		respBody        = bytes.NewBufferString(`{}`)
-	)
-
-	log.Println("Response:", respStatus)
 	responseValidationInput := &openapi3filter.ResponseValidationInput{
 		RequestValidationInput: requestValidationInput,
-		Status:                 respStatus,
-		Header: http.Header{
-			"Content-Type": []string{respContentType},
-		},
+		Status:                 200,
+		Header:                 w.Header(),
 	}
-	if respBody != nil {
-		data, _ := json.Marshal(respBody)
-		responseValidationInput.SetBodyBytes(data)
-	}
+
+	data, _ := json.Marshal(respToValidate)
+	responseValidationInput.SetBodyBytes(data)
 
 	// Validate response.
 	if err := openapi3filter.ValidateResponse(ctx, responseValidationInput); err != nil {
