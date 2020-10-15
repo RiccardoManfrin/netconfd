@@ -139,12 +139,12 @@ components:
         #  type: string
         #txqlen:
         #  type: integer
-        #link_type:
-        #  type: string
-        #  enum:
-        #    - ether
-        #    - loopback
-        #    - ppp
+        link_type:
+          type: string
+          enum:
+            - ether
+            - loopback
+            - ppp
         address:
           type: string
         #broadcast:
@@ -174,11 +174,11 @@ components:
               #  type: integer
               #preferred_life_time:
               #  type: integer
-            required:
+            #required:
               #- family
-              - local
-              - prefixlen
-              - broadcast
+              #- local
+              #- prefixlen
+              #- broadcast
               #- scope
               #- dynamic
               #- noprefixroute
@@ -186,7 +186,7 @@ components:
               #- valid_life_time
               #- preferred_life_time
       required:
-        - ifindex
+        #- ifindex
         - ifname
         #- flags
         #- mtu

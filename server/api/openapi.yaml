@@ -117,6 +117,12 @@ components:
           type: integer
         linkinfo:
           $ref: '#/components/schemas/link_linkinfo'
+        link_type:
+          enum:
+          - ether
+          - loopback
+          - ppp
+          type: string
         address:
           type: string
         addr_info:
@@ -124,7 +130,6 @@ components:
             $ref: '#/components/schemas/link_addr_info'
           type: array
       required:
-      - ifindex
       - ifname
       - link_type
       type: object
@@ -146,8 +151,4 @@ components:
           type: integer
         broadcast:
           type: string
-      required:
-      - broadcast
-      - local
-      - prefixlen
       type: object

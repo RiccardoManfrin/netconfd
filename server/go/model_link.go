@@ -12,13 +12,15 @@ package openapi
 
 type Link struct {
 
-	Ifindex int32 `json:"ifindex"`
+	Ifindex int32 `json:"ifindex,omitempty"`
 
 	Ifname string `json:"ifname"`
 
 	Mtu int32 `json:"mtu,omitempty"`
 
 	Linkinfo LinkLinkinfo `json:"linkinfo,omitempty"`
+
+	LinkType string `json:"link_type"`
 
 	Address string `json:"address,omitempty"`
 

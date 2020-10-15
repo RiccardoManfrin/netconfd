@@ -12,11 +12,11 @@ package openapi
 
 type LinkAddrInfo struct {
 
-	Local Ip `json:"local"`
+	Local Ip `json:"local,omitempty"`
 
-	Prefixlen int32 `json:"prefixlen"`
+	Prefixlen int32 `json:"prefixlen,omitempty"`
 
-	Broadcast string `json:"broadcast"`
+	Broadcast string `json:"broadcast,omitempty"`
 }
 
 
