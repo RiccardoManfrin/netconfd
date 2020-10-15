@@ -9,16 +9,16 @@ servers:
   - url: /api/1
 tags:
   - name: System
-    description: Calls related to Node/Cluster management
-  - name: Link
-    description: Calls related to Processes/Services management
+    description: System level APIs (e.g. logging, etc..)
+  - name: Network
+    description: Network config APIs
   - name: Route
     description: Calls related to Processes/Services management
 paths:
   /config:
-    put:
+    post:
       tags:
-        - System
+        - Network
       operationId: ConfigPut
       summary: |
         Configures and enforces a new live network configuration
@@ -36,12 +36,48 @@ paths:
           description: Successful alignment
     get:
       tags:
-        - System
+        - Network
       operationId: ConfigGet
       summary: |
         Configures and enforces a new live network configuration
       description: |
         Configures and enforces a new live network configuration
+      responses:
+        '200':
+          description: Successful alignment
+  /config/link:
+    post:
+      tags:
+        - Network
+      operationId: ConfigLinkPut
+      summary: |
+        Configures and brings up a link layer interface
+      description: |
+        Configures and brings up a link layer interface
+      requestBody:
+        description: Full Config
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/link'
+      responses:
+        '200':
+          description: Successful alignment
+  /config/link/{ifname}:
+    delete:
+      tags:
+        - Network
+      summary: |
+        Brings down and delete a link layer interface
+      description: |
+        Brings down and delete a link layer interface
+      parameters:
+      - in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Successful alignment
