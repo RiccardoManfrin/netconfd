@@ -151,10 +151,10 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	m.ServeMux.Handle("/", m)
 	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
-	systemApiService := openapi.NewSystemApiService()
-	systemApiController := openapi.NewSystemApiController(systemApiService)
+	networkApiService := openapi.NewNetworkApiService()
+	networkApiController := openapi.NewNetworkApiController(networkApiService)
 
-	m.routeHandlers = openapi.NewRouter(systemApiController)
+	m.routeHandlers = openapi.NewRouter(networkApiController)
 
 	return nil
 }
