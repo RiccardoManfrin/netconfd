@@ -1,0 +1,153 @@
+openapi: 3.0.0
+info:
+  contact:
+    email: support@athonet.com
+  description: Network Configurator service
+  title: netConfD API
+  version: 0.1.0
+servers:
+- url: /api/1
+tags:
+- description: System level APIs (e.g. logging, etc..)
+  name: System
+- description: Network config APIs
+  name: Network
+- description: Calls related to Processes/Services management
+  name: Route
+paths:
+  /config:
+    get:
+      description: |
+        Configures and enforces a new live network configuration
+      operationId: ConfigGet
+      responses:
+        "200":
+          description: Successful alignment
+      summary: |
+        Configures and enforces a new live network configuration
+      tags:
+      - Network
+    post:
+      description: |
+        Configures and enforces a new live network configuration
+      operationId: ConfigPut
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/config'
+        description: Full Config
+        required: true
+      responses:
+        "200":
+          description: Successful alignment
+      summary: |
+        Configures and enforces a new live network configuration
+      tags:
+      - Network
+  /config/link:
+    post:
+      description: |
+        Configures and brings up a link layer interface
+      operationId: ConfigLinkPut
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/link'
+        description: Full Config
+        required: true
+      responses:
+        "200":
+          description: Successful alignment
+      summary: |
+        Configures and brings up a link layer interface
+      tags:
+      - Network
+  /config/link/{ifname}:
+    delete:
+      description: |
+        Brings down and delete a link layer interface
+      parameters:
+      - explode: false
+        in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful alignment
+      summary: |
+        Brings down and delete a link layer interface
+      tags:
+      - Network
+components:
+  schemas:
+    ipv4:
+      format: ipv4
+      type: string
+    ipv6:
+      format: ipv6
+      type: string
+    ip:
+      oneOf:
+      - $ref: '#/components/schemas/ipv4'
+      - $ref: '#/components/schemas/ipv6'
+    config:
+      properties:
+        global:
+          type: object
+        links:
+          items:
+            $ref: '#/components/schemas/link'
+          type: array
+      required:
+      - global
+      - links
+      type: object
+    link:
+      properties:
+        ifindex:
+          type: integer
+        ifname:
+          type: string
+        mtu:
+          type: integer
+        linkinfo:
+          $ref: '#/components/schemas/link_linkinfo'
+        address:
+          type: string
+        addr_info:
+          items:
+            $ref: '#/components/schemas/link_addr_info'
+          type: array
+      required:
+      - ifindex
+      - ifname
+      - link_type
+      type: object
+    link_linkinfo:
+      properties:
+        info_kind:
+          enum:
+          - dummy
+          - bridge
+          - bond
+          - vlan
+          type: string
+      type: object
+    link_addr_info:
+      properties:
+        local:
+          $ref: '#/components/schemas/ip'
+        prefixlen:
+          type: integer
+        broadcast:
+          type: string
+      required:
+      - broadcast
+      - local
+      - prefixlen
+      type: object
