@@ -19,7 +19,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
-	comm "gitlab.lan.athonet.com/primo/susancalvin/common"
+	comm "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/common"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
 )
