@@ -9,7 +9,6 @@ COPY ./Athonet_Services_CA.crt /usr/local/share/ca-certificates/Athonet_Services
 RUN update-ca-certificates
 ENV GOPATH /go/
 ENV SRCPATH $GOPATH/src/gitlab.lan.athonet.com/$CI_PROJECT_PATH
-ENV STATIKPATH $SRCPATH/vendor/github.com/rakyll/statik
 ADD src.tar.gz $SRCPATH
 RUN --mount=type=ssh \
 	cd $SRCPATH && \
@@ -24,7 +23,5 @@ RUN mkdir /app/
 COPY --from=builder $SRCPATH/$CI_PROJECT_NAME /app/$CI_PROJECT_NAME
 RUN mkdir /conf/
 COPY --from=builder $SRCPATH/$CI_PROJECT_NAME.json /conf/
-EXPOSE 10000/tcp
-EXPOSE 10002/tcp
 WORKDIR /app/
 ENTRYPOINT ["./$CI_PROJECT_NAME", "--config", "/conf/$CI_PROJECT_NAME.json"]
