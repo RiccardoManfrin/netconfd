@@ -36,7 +36,7 @@ func LinkCreate(ifname string, kind string) error {
 
 //LinkDelete deletes a link layer interface
 func LinkDelete(ifname string) error {
-	tenus.DeleteLink(ifname)
+	return tenus.DeleteLink(ifname)
 }
 
 //LinkDummyCreate Creates a new dummy link
