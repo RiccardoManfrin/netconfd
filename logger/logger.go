@@ -63,7 +63,7 @@ func LoggerInit(file string) {
 			logging.SetBackend(lfb)
 		}
 	} else {
-		var b, err = logging.NewSyslogBackend("susancalvin")
+		var b, err = logging.NewSyslogBackend("netconfd")
 		if err != nil {
 			res = "Failed to open channel towards syslog, defaulting to stdout"
 			var b = logging.NewLogBackend(os.Stdout, "", 0)
