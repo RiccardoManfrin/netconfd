@@ -101,6 +101,18 @@ components:
       properties:
         global:
           type: object
+        namespaces:
+          type: array
+          items:
+            $ref: '#/components/schemas/namespace'
+    namespace:
+      type: object
+      properties:
+        name:
+          description: |
+            Namespace name; null or missing param identifies default (PID 1) namespace
+          type: string
+          nullable: true
         links:
           type: array
           items:
