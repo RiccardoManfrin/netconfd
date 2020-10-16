@@ -10,8 +10,10 @@
 
 package openapi
 
+// LinkLinkinfo - Additional link info attributes 
 type LinkLinkinfo struct {
 
+	// Type of link layer interface. Supported Types:   * `dummy` - Dummy link type interface for binding intenal services   * `bridge` - Link layer virtual switch type interface   * `bond` - Bond type interface letting two interfaces be seen as one   * `vlan` - Virtual LAN interface 
 	InfoKind string `json:"info_kind,omitempty"`
 }
 

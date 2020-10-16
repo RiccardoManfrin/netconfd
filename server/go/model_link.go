@@ -12,10 +12,13 @@ package openapi
 
 type Link struct {
 
+	// Inteface index ID 
 	Ifindex int32 `json:"ifindex,omitempty"`
 
+	// Interface name 
 	Ifname string `json:"ifname"`
 
+	// Maximum Transfer Unit value 
 	Mtu int32 `json:"mtu,omitempty"`
 
 	Linkinfo LinkLinkinfo `json:"linkinfo,omitempty"`

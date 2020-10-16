@@ -99,21 +99,40 @@ components:
       properties:
         global:
           type: object
-        links:
+        namespaces:
           items:
-            $ref: '#/components/schemas/link'
+            $ref: '#/components/schemas/namespace'
           type: array
       required:
       - global
       - links
       type: object
+    namespace:
+      properties:
+        name:
+          description: |
+            Namespace name; null or missing param identifies default (PID 1) namespace
+          nullable: true
+          type: string
+        links:
+          description: Series of links layer interfaces to configure within the namespace
+          items:
+            $ref: '#/components/schemas/link'
+          type: array
+      type: object
     link:
       properties:
         ifindex:
+          description: |
+            Inteface index ID
           type: integer
         ifname:
+          description: |
+            Interface name
           type: string
         mtu:
+          description: |
+            Maximum Transfer Unit value
           type: integer
         linkinfo:
           $ref: '#/components/schemas/link_linkinfo'
@@ -134,8 +153,16 @@ components:
       - link_type
       type: object
     link_linkinfo:
+      description: |
+        Additional link info attributes
       properties:
         info_kind:
+          description: |
+            Type of link layer interface. Supported Types:
+              * `dummy` - Dummy link type interface for binding intenal services
+              * `bridge` - Link layer virtual switch type interface
+              * `bond` - Bond type interface letting two interfaces be seen as one
+              * `vlan` - Virtual LAN interface
           enum:
           - dummy
           - bridge

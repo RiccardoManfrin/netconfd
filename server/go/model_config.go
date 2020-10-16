@@ -14,7 +14,7 @@ type Config struct {
 
 	Global map[string]interface{} `json:"global"`
 
-	Links []Link `json:"links"`
+	Namespaces []Namespace `json:"namespaces,omitempty"`
 }
 
 
