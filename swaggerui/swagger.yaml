@@ -130,6 +130,7 @@ components:
       enum: 
         - "default"
     ifname:
+      example: "dummy0"
       description: |
         Interface name
       type: string
