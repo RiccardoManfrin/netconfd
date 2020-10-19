@@ -19,7 +19,7 @@ paths:
     post:
       tags:
         - Network
-      operationId: ConfigPut
+      operationId: ConfigSet
       summary: |
         Configures and enforces a new live network configuration
       description: |
@@ -45,15 +45,16 @@ paths:
       responses:
         '200':
           description: Successful alignment
-  /config/link:
+  /config/links:
     post:
       tags:
         - Network
-      operationId: ConfigLinkPut
+      operationId: ConfigLinkSet
       summary: |
         Configures and brings up a link layer interface
       description: |
-        Configures and brings up a link layer interface
+        Configures and brings up a link layer interface.
+        If the link exists return an error
       requestBody:
         description: Full Config
         required: true
@@ -64,10 +65,19 @@ paths:
       responses:
         '200':
           description: Successful alignment
-  /config/link/{ifname}:
-    delete:
+        '409':
+          description: 
+            Resource already exists, or request is incompatible with
+            current network state
+        "400":
+          description:
+            Resource config is semantically or syntactically incorrect
+          
+  /config/links/{ifname}:
+    get:
       tags:
         - Network
+      operationId: ConfigLinkGet
       summary: |
         Brings down and delete a link layer interface
       description: |
@@ -81,6 +91,27 @@ paths:
       responses:
         '200':
           description: Successful alignment
+        "404":
+          description: Not found
+    delete:
+      tags:
+        - Network
+      operationId: ConfigLinkDel
+      summary: |
+        Brings down and delete a link layer interface
+      description: |
+        Brings down and delete a link layer interface
+      parameters:
+      - in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful alignment
+        "404":
+          description: Not found
 components:
   schemas:
     ipv4:
@@ -122,18 +153,25 @@ components:
       properties:
         global:
           type: object
-        namespaces:
-          type: array
-          items:
-            $ref: '#/components/schemas/namespace'
-    namespace:
+    #    namespaces:
+    #      type: array
+    #      items:
+    #        $ref: '#/components/schemas/namespace'
+        host_network:
+          $ref: '#/components/schemas/network'
+    #namespace:
+    #  type: object
+    #  properties:
+    #    name:
+    #      description: |
+    #        Namespace name; null or missing param identifies default (PID 1) namespace
+    #      type: string
+    #      nullable: true
+    #    network:
+    #      $ref: '#/components/schemas/network'
+    network:
       type: object
       properties:
-        name:
-          description: |
-            Namespace name; null or missing param identifies default (PID 1) namespace
-          type: string
-          nullable: true
         links:
           type: array
           description: 

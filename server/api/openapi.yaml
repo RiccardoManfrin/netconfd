@@ -30,7 +30,7 @@ paths:
     post:
       description: |
         Configures and enforces a new live network configuration
-      operationId: ConfigPut
+      operationId: ConfigSet
       requestBody:
         content:
           application/json:
@@ -45,11 +45,12 @@ paths:
         Configures and enforces a new live network configuration
       tags:
       - Network
-  /config/link:
+  /config/links:
     post:
       description: |
-        Configures and brings up a link layer interface
-      operationId: ConfigLinkPut
+        Configures and brings up a link layer interface.
+        If the link exists return an error
+      operationId: ConfigLinkSet
       requestBody:
         content:
           application/json:
@@ -60,14 +61,20 @@ paths:
       responses:
         "200":
           description: Successful alignment
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
       summary: |
         Configures and brings up a link layer interface
       tags:
       - Network
-  /config/link/{ifname}:
+  /config/links/{ifname}:
     delete:
       description: |
         Brings down and delete a link layer interface
+      operationId: ConfigLinkDel
       parameters:
       - explode: false
         in: path
@@ -79,6 +86,29 @@ paths:
       responses:
         "200":
           description: Successful alignment
+        "404":
+          description: Not found
+      summary: |
+        Brings down and delete a link layer interface
+      tags:
+      - Network
+    get:
+      description: |
+        Brings down and delete a link layer interface
+      operationId: ConfigLinkGet
+      parameters:
+      - explode: false
+        in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful alignment
+        "404":
+          description: Not found
       summary: |
         Brings down and delete a link layer interface
       tags:
@@ -120,21 +150,14 @@ components:
       properties:
         global:
           type: object
-        namespaces:
-          items:
-            $ref: '#/components/schemas/namespace'
-          type: array
+        host_network:
+          $ref: '#/components/schemas/network'
       required:
       - global
       - links
       type: object
-    namespace:
+    network:
       properties:
-        name:
-          description: |
-            Namespace name; null or missing param identifies default (PID 1) namespace
-          nullable: true
-          type: string
         links:
           description: Series of links layer interfaces to configure within the namespace
           items:

@@ -38,22 +38,28 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigGet,
 		},
 		{
-			"ConfigLinkIfnameDelete",
+			"ConfigLinkDel",
 			strings.ToUpper("Delete"),
-			"/api/1/config/link/{ifname}",
-			c.ConfigLinkIfnameDelete,
+			"/api/1/config/links/{ifname}",
+			c.ConfigLinkDel,
 		},
 		{
-			"ConfigLinkPut",
+			"ConfigLinkGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/links/{ifname}",
+			c.ConfigLinkGet,
+		},
+		{
+			"ConfigLinkSet",
 			strings.ToUpper("Post"),
-			"/api/1/config/link",
-			c.ConfigLinkPut,
+			"/api/1/config/links",
+			c.ConfigLinkSet,
 		},
 		{
-			"ConfigPut",
+			"ConfigSet",
 			strings.ToUpper("Post"),
 			"/api/1/config",
-			c.ConfigPut,
+			c.ConfigSet,
 		},
 	}
 }
@@ -71,11 +77,11 @@ func (c *NetworkApiController) ConfigGet(w http.ResponseWriter, r *http.Request)
 	
 }
 
-// ConfigLinkIfnameDelete - Brings down and delete a link layer interface 
-func (c *NetworkApiController) ConfigLinkIfnameDelete(w http.ResponseWriter, r *http.Request) { 
+// ConfigLinkDel - Brings down and delete a link layer interface 
+func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
 	ifname := params["ifname"]
-	result, err := c.service.ConfigLinkIfnameDelete(r.Context(), ifname)
+	result, err := c.service.ConfigLinkDel(r.Context(), ifname)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -86,15 +92,30 @@ func (c *NetworkApiController) ConfigLinkIfnameDelete(w http.ResponseWriter, r *
 	
 }
 
-// ConfigLinkPut - Configures and brings up a link layer interface 
-func (c *NetworkApiController) ConfigLinkPut(w http.ResponseWriter, r *http.Request) { 
+// ConfigLinkGet - Brings down and delete a link layer interface 
+func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ifname := params["ifname"]
+	result, err := c.service.ConfigLinkGet(r.Context(), ifname)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigLinkSet - Configures and brings up a link layer interface 
+func (c *NetworkApiController) ConfigLinkSet(w http.ResponseWriter, r *http.Request) { 
 	link := &Link{}
 	if err := json.NewDecoder(r.Body).Decode(&link); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigLinkPut(r.Context(), *link)
+	result, err := c.service.ConfigLinkSet(r.Context(), *link)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -105,15 +126,15 @@ func (c *NetworkApiController) ConfigLinkPut(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigPut - Configures and enforces a new live network configuration 
-func (c *NetworkApiController) ConfigPut(w http.ResponseWriter, r *http.Request) { 
+// ConfigSet - Configures and enforces a new live network configuration 
+func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request) { 
 	config := &Config{}
 	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigPut(r.Context(), *config)
+	result, err := c.service.ConfigSet(r.Context(), *config)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

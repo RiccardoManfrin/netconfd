@@ -38,36 +38,59 @@ func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error)
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigGet method not implemented")
 }
 
-// ConfigLinkIfnameDelete - Brings down and delete a link layer interface 
-func (s *NetworkApiService) ConfigLinkIfnameDelete(ctx context.Context, ifname string) (ImplResponse, error) {
-	// TODO - update ConfigLinkIfnameDelete with the required logic for this service method.
+// ConfigLinkDel - Brings down and delete a link layer interface 
+func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (ImplResponse, error) {
+	// TODO - update ConfigLinkDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkIfnameDelete method not implemented")
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkDel method not implemented")
 }
 
-// ConfigLinkPut - Configures and brings up a link layer interface 
-func (s *NetworkApiService) ConfigLinkPut(ctx context.Context, link Link) (ImplResponse, error) {
-	// TODO - update ConfigLinkPut with the required logic for this service method.
+// ConfigLinkGet - Brings down and delete a link layer interface 
+func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (ImplResponse, error) {
+	// TODO - update ConfigLinkGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkPut method not implemented")
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkGet method not implemented")
 }
 
-// ConfigPut - Configures and enforces a new live network configuration 
-func (s *NetworkApiService) ConfigPut(ctx context.Context, config Config) (ImplResponse, error) {
-	// TODO - update ConfigPut with the required logic for this service method.
+// ConfigLinkSet - Configures and brings up a link layer interface 
+func (s *NetworkApiService) ConfigLinkSet(ctx context.Context, link Link) (ImplResponse, error) {
+	// TODO - update ConfigLinkSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigPut method not implemented")
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkSet method not implemented")
+}
+
+// ConfigSet - Configures and enforces a new live network configuration 
+func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
+	// TODO - update ConfigSet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigSet method not implemented")
 }
 

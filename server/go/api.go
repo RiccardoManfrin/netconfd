@@ -22,9 +22,10 @@ import (
 // pass the data to a NetworkApiServicer to perform the required actions, then write the service results to the http response.
 type NetworkApiRouter interface { 
 	ConfigGet(http.ResponseWriter, *http.Request)
-	ConfigLinkIfnameDelete(http.ResponseWriter, *http.Request)
-	ConfigLinkPut(http.ResponseWriter, *http.Request)
-	ConfigPut(http.ResponseWriter, *http.Request)
+	ConfigLinkDel(http.ResponseWriter, *http.Request)
+	ConfigLinkGet(http.ResponseWriter, *http.Request)
+	ConfigLinkSet(http.ResponseWriter, *http.Request)
+	ConfigSet(http.ResponseWriter, *http.Request)
 }
 
 
@@ -34,7 +35,8 @@ type NetworkApiRouter interface {
 // and updated with the logic required for the API.
 type NetworkApiServicer interface { 
 	ConfigGet(context.Context) (ImplResponse, error)
-	ConfigLinkIfnameDelete(context.Context, string) (ImplResponse, error)
-	ConfigLinkPut(context.Context, Link) (ImplResponse, error)
-	ConfigPut(context.Context, Config) (ImplResponse, error)
+	ConfigLinkDel(context.Context, string) (ImplResponse, error)
+	ConfigLinkGet(context.Context, string) (ImplResponse, error)
+	ConfigLinkSet(context.Context, Link) (ImplResponse, error)
+	ConfigSet(context.Context, Config) (ImplResponse, error)
 }

@@ -18,7 +18,7 @@ import (
 // Config struct for Config
 type Config struct {
 	Global map[string]interface{} `json:"global"`
-	Namespaces *[]Namespace `json:"namespaces,omitempty"`
+	HostNetwork *Network `json:"host_network,omitempty"`
 }
 
 // NewConfig instantiates a new Config object
@@ -63,36 +63,36 @@ func (o *Config) SetGlobal(v map[string]interface{}) {
 	o.Global = v
 }
 
-// GetNamespaces returns the Namespaces field value if set, zero value otherwise.
-func (o *Config) GetNamespaces() []Namespace {
-	if o == nil || o.Namespaces == nil {
-		var ret []Namespace
+// GetHostNetwork returns the HostNetwork field value if set, zero value otherwise.
+func (o *Config) GetHostNetwork() Network {
+	if o == nil || o.HostNetwork == nil {
+		var ret Network
 		return ret
 	}
-	return *o.Namespaces
+	return *o.HostNetwork
 }
 
-// GetNamespacesOk returns a tuple with the Namespaces field value if set, nil otherwise
+// GetHostNetworkOk returns a tuple with the HostNetwork field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Config) GetNamespacesOk() (*[]Namespace, bool) {
-	if o == nil || o.Namespaces == nil {
+func (o *Config) GetHostNetworkOk() (*Network, bool) {
+	if o == nil || o.HostNetwork == nil {
 		return nil, false
 	}
-	return o.Namespaces, true
+	return o.HostNetwork, true
 }
 
-// HasNamespaces returns a boolean if a field has been set.
-func (o *Config) HasNamespaces() bool {
-	if o != nil && o.Namespaces != nil {
+// HasHostNetwork returns a boolean if a field has been set.
+func (o *Config) HasHostNetwork() bool {
+	if o != nil && o.HostNetwork != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetNamespaces gets a reference to the given []Namespace and assigns it to the Namespaces field.
-func (o *Config) SetNamespaces(v []Namespace) {
-	o.Namespaces = &v
+// SetHostNetwork gets a reference to the given Network and assigns it to the HostNetwork field.
+func (o *Config) SetHostNetwork(v Network) {
+	o.HostNetwork = &v
 }
 
 func (o Config) MarshalJSON() ([]byte, error) {
@@ -100,8 +100,8 @@ func (o Config) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["global"] = o.Global
 	}
-	if o.Namespaces != nil {
-		toSerialize["namespaces"] = o.Namespaces
+	if o.HostNetwork != nil {
+		toSerialize["host_network"] = o.HostNetwork
 	}
 	return json.Marshal(toSerialize)
 }
