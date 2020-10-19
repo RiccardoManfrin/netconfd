@@ -24,8 +24,8 @@ type {{classname}} struct {
 {{/vars}}
 }
 {{/oneOf}}
-{{#oneOf}}
+{{^oneOf.empty}}
 type {{classname}} interface{}
-{{/oneOf}}
+{{/oneOf.empty}}
 {{/isEnum}}{{/model}}{{/models}}
 
