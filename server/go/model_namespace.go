@@ -17,6 +17,9 @@ type Namespace struct {
 
 	// Series of links layer interfaces to configure within the namespace
 	Links []Link `json:"links,omitempty"`
+
+	// Namespace routes
+	Routes []Route `json:"routes,omitempty"`
 }
 
 

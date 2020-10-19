@@ -93,6 +93,21 @@ components:
       oneOf:
         - $ref: '#/components/schemas/ipv4'
         - $ref: '#/components/schemas/ipv6'
+    default:
+      type: string
+      description: "This is equivalent to 0.0.0.0/0 or ::/0"
+      enum: 
+        - "default"
+    ifname:
+      description: |
+        Interface name
+      type: string
+    scope:
+      type: string
+      description: scope of the object (link or global)
+      enum:
+        - "link"
+        - "global"
     config:
       type: object
       required:
@@ -119,6 +134,39 @@ components:
             Series of links layer interfaces to configure within the namespace
           items:
             $ref: '#/components/schemas/link'
+        routes:
+          type: array
+          description:
+            Namespace routes
+          items:
+            $ref: '#/components/schemas/route'
+    route_flags:
+      type: string
+    route:
+      type: object
+      properties:
+        dst:
+          oneOf:
+            - $ref: '#/components/schemas/ip'
+            - $ref: '#/components/schemas/default'
+        gateway:
+          $ref: '#/components/schemas/ip'
+        dev:
+          $ref: '#/components/schemas/ifname'
+        protocol:
+          type: string
+        metric:
+          type: integer
+        scope: 
+          $ref: '#/components/schemas/scope'
+        prefsrc:
+          $ref: '#/components/schemas/ip'
+        flags:
+          type: array
+          description:
+            Route flags
+          items:
+            $ref: '#/components/schemas/route_flags'
     link:
       type: object
       properties:
@@ -127,9 +175,7 @@ components:
             Inteface index ID
           type: integer
         ifname:
-          description: |
-            Interface name
-          type: string
+          $ref: '#/components/schemas/ifname'
         #flags:
         #  type: array
         #  items:
@@ -153,13 +199,21 @@ components:
                   * `dummy` - Dummy link type interface for binding intenal services
                   * `bridge` - Link layer virtual switch type interface
                   * `bond` - Bond type interface letting two interfaces be seen as one
-                  * `vlan` - Virtual LAN interface
+                  * `vlan` - Virtual LAN (TAG ID based) interface
+                  * `veth` - Virtual ethernet (with virtual MAC and IP address)
+                  * `macvlan` - Direct virtual eth interface connected to the physical interface, 
+                    with owned mac address
+                  * `ipvlan` - Direct virtual eth interface connected to the physical interface.
+                    Physical interface MAC address is reused. L2 type directly connects the lan to 
+                    the host phyisical device. L3 type adds a routing layer in between.
               enum:
                 - dummy
                 - bridge
                 - bond
-                #- ppp
                 - vlan
+                - veth
+                - macvlan
+                - ipvlan
         #qdisc:
         #  type: string
         #operstate:
@@ -192,7 +246,7 @@ components:
               broadcast:
                 type: string
               #scope:
-              #  type: string
+              #  $ref: '#/components/schemas/scope'
               #dynamic:
               #  type: boolean
               #noprefixroute:

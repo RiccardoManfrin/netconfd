@@ -95,6 +95,21 @@ components:
       oneOf:
       - $ref: '#/components/schemas/ipv4'
       - $ref: '#/components/schemas/ipv6'
+    default:
+      description: This is equivalent to 0.0.0.0/0 or ::/0
+      enum:
+      - default
+      type: string
+    ifname:
+      description: |
+        Interface name
+      type: string
+    scope:
+      description: scope of the object (link or global)
+      enum:
+      - link
+      - global
+      type: string
     config:
       properties:
         global:
@@ -118,6 +133,39 @@ components:
           description: Series of links layer interfaces to configure within the namespace
           items:
             $ref: '#/components/schemas/link'
+          type: array
+        routes:
+          description: Namespace routes
+          items:
+            $ref: '#/components/schemas/route'
+          type: array
+      type: object
+    route_flags:
+      type: string
+    route:
+      properties:
+        dst:
+          oneOf:
+          - $ref: '#/components/schemas/ip'
+          - $ref: '#/components/schemas/default'
+        gateway:
+          $ref: '#/components/schemas/ip'
+        dev:
+          description: |
+            Interface name
+          type: string
+        protocol:
+          type: string
+        metric:
+          type: integer
+        scope:
+          $ref: '#/components/schemas/scope'
+        prefsrc:
+          $ref: '#/components/schemas/ip'
+        flags:
+          description: Route flags
+          items:
+            $ref: '#/components/schemas/route_flags'
           type: array
       type: object
     link:
@@ -157,17 +205,25 @@ components:
         Additional link info attributes
       properties:
         info_kind:
-          description: |
-            Type of link layer interface. Supported Types:
-              * `dummy` - Dummy link type interface for binding intenal services
-              * `bridge` - Link layer virtual switch type interface
-              * `bond` - Bond type interface letting two interfaces be seen as one
-              * `vlan` - Virtual LAN interface
+          description: "Type of link layer interface. Supported Types:\n  * `dummy`\
+            \ - Dummy link type interface for binding intenal services\n  * `bridge`\
+            \ - Link layer virtual switch type interface\n  * `bond` - Bond type interface\
+            \ letting two interfaces be seen as one\n  * `vlan` - Virtual LAN (TAG\
+            \ ID based) interface\n  * `veth` - Virtual ethernet (with virtual MAC\
+            \ and IP address)\n  * `macvlan` - Direct virtual eth interface connected\
+            \ to the physical interface, \n    with owned mac address\n  * `ipvlan`\
+            \ - Direct virtual eth interface connected to the physical interface.\n\
+            \    Physical interface MAC address is reused. L2 type directly connects\
+            \ the lan to \n    the host phyisical device. L3 type adds a routing layer\
+            \ in between.\n"
           enum:
           - dummy
           - bridge
           - bond
           - vlan
+          - veth
+          - macvlan
+          - ipvlan
           type: string
       type: object
     link_addr_info:
