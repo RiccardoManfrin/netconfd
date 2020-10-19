@@ -19,8 +19,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// A Route defines the parameters for an api endpoint
-type Route struct {
+// A HTTPRoute defines the parameters for an api endpoint
+type HTTPRoute struct {
 	Name        string
 	Method      string
 	Pattern     string
@@ -28,7 +28,7 @@ type Route struct {
 }
 
 // Routes are a collection of defined api endpoints
-type Routes []Route
+type Routes []HTTPRoute
 
 // Router defines the required methods for retrieving api routes
 type Router interface { 
