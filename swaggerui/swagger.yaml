@@ -108,6 +108,12 @@ components:
       enum:
         - "link"
         - "global"
+    route_flags:
+      type: string
+    route_dst:
+      oneOf:
+        - $ref: '#/components/schemas/ip'
+        - $ref: '#/components/schemas/default'
     config:
       type: object
       required:
@@ -140,15 +146,11 @@ components:
             Namespace routes
           items:
             $ref: '#/components/schemas/route'
-    route_flags:
-      type: string
     route:
       type: object
       properties:
         dst:
-          oneOf:
-            - $ref: '#/components/schemas/ip'
-            - $ref: '#/components/schemas/default'
+          $ref: '#/components/schemas/route_dst'
         gateway:
           $ref: '#/components/schemas/ip'
         dev:
