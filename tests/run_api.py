@@ -56,6 +56,15 @@ class Client:
 		self.log(url, "put", res)
 		return res
 
+	def post(self, url, data):
+		res = requests.post(
+			self.fullurl(url),
+			data=json.dumps(data),
+			headers = self.headers,
+			cert=(self.cert, self.key), 
+			verify=False)
+		self.log(url, "put", res)
+		return res
 
 	def get(self, url):
 		res = requests.get(
@@ -80,11 +89,31 @@ class Api():
 	def __init__(self, client):
 		self.client = client
 
+	def set_link(self):
+		data = {
+		"ifindex": 0,
+		"ifname": "string",
+		"mtu": 0,
+		"linkinfo": {
+			"info_kind": "dummy"
+		},
+		"link_type": "ether",
+		"address": "string",
+		"addr_info": [
+			{
+			"prefixlen": 0,
+			"broadcast": "string"
+			}
+		]
+		}
+		self.client.post("/api/1/config/links", data=data)
+
 	def set_sample_config(self):
 		data = {
 			"global":{
 				"non-local-bind" : True
 			},
+
 			"links":[
 				{
 					"ifname":"dumby",
@@ -106,7 +135,7 @@ class Api():
 				}
 			]
 		}
-		self.client.put("/api/1/config", data=data)
+		self.client.post("/api/1/config", data=data)
 
 def main(argv):
 	parser = argparse.ArgumentParser(description='API Automaton', epilog='Try harder...')
@@ -134,7 +163,7 @@ def main(argv):
 	client = Client(args.target, args.cert, args.keyfile, args.user, args.passwd, logger)
 	api = Api(client)
 
-	api.set_sample_config()
+	api.set_link()
 	exit(0)
 
 if __name__ == "__main__":
