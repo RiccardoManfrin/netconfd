@@ -113,7 +113,7 @@ func AddToBridge(netIfc, netBridge *net.Interface) error {
 	return netlink.NetworkSetMaster(netIfc, netBridge)
 }
 
-// AddToBridge adds network interfaces to network bridge.
+// RemoveFromBridge removes network interfaces to network bridge.
 // It is equivalent of running: ip link set dev ${netIfc name} nomaster
 // It returns error when it fails to remove the network interface from the bridge.
 func RemoveFromBridge(netIfc *net.Interface) error {
