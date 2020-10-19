@@ -110,6 +110,12 @@ components:
       - link
       - global
       type: string
+    route_flags:
+      type: string
+    route_dst:
+      oneOf:
+      - $ref: '#/components/schemas/ip'
+      - $ref: '#/components/schemas/default'
     config:
       properties:
         global:
@@ -140,14 +146,10 @@ components:
             $ref: '#/components/schemas/route'
           type: array
       type: object
-    route_flags:
-      type: string
     route:
       properties:
         dst:
-          oneOf:
-          - $ref: '#/components/schemas/ip'
-          - $ref: '#/components/schemas/default'
+          $ref: '#/components/schemas/route_dst'
         gateway:
           $ref: '#/components/schemas/ip'
         dev:

@@ -12,7 +12,7 @@ package openapi
 
 type Route struct {
 
-	Dst OneOfipdefault `json:"dst,omitempty"`
+	Dst RouteDst `json:"dst,omitempty"`
 
 	Gateway Ip `json:"gateway,omitempty"`
 
