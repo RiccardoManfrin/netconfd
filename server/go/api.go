@@ -25,6 +25,9 @@ type NetworkApiRouter interface {
 	ConfigLinkDel(http.ResponseWriter, *http.Request)
 	ConfigLinkGet(http.ResponseWriter, *http.Request)
 	ConfigLinkSet(http.ResponseWriter, *http.Request)
+	ConfigRouteDel(http.ResponseWriter, *http.Request)
+	ConfigRouteGet(http.ResponseWriter, *http.Request)
+	ConfigRouteSet(http.ResponseWriter, *http.Request)
 	ConfigSet(http.ResponseWriter, *http.Request)
 }
 
@@ -38,5 +41,8 @@ type NetworkApiServicer interface {
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
 	ConfigLinkGet(context.Context, string) (ImplResponse, error)
 	ConfigLinkSet(context.Context, Link) (ImplResponse, error)
+	ConfigRouteDel(context.Context, string) (ImplResponse, error)
+	ConfigRouteGet(context.Context, string) (ImplResponse, error)
+	ConfigRouteSet(context.Context, Route) (ImplResponse, error)
 	ConfigSet(context.Context, Config) (ImplResponse, error)
 }

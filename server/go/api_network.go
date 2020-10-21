@@ -56,6 +56,24 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigLinkSet,
 		},
 		{
+			"ConfigRouteDel",
+			strings.ToUpper("Delete"),
+			"/api/1/config/routes/{routeid}",
+			c.ConfigRouteDel,
+		},
+		{
+			"ConfigRouteGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/routes/{routeid}",
+			c.ConfigRouteGet,
+		},
+		{
+			"ConfigRouteSet",
+			strings.ToUpper("Post"),
+			"/api/1/config/routes",
+			c.ConfigRouteSet,
+		},
+		{
 			"ConfigSet",
 			strings.ToUpper("Post"),
 			"/api/1/config",
@@ -92,7 +110,7 @@ func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigLinkGet - Brings down and delete a link layer interface 
+// ConfigLinkGet - Retrieve link layer interface information 
 func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
 	ifname := params["ifname"]
@@ -116,6 +134,55 @@ func (c *NetworkApiController) ConfigLinkSet(w http.ResponseWriter, r *http.Requ
 	}
 	
 	result, err := c.service.ConfigLinkSet(r.Context(), *link)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRouteDel - Brings down and delete an L3 IP route 
+func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	routeid := params["routeid"]
+	result, err := c.service.ConfigRouteDel(r.Context(), routeid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRouteGet - Get a L3 route details 
+func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	routeid := params["routeid"]
+	result, err := c.service.ConfigRouteGet(r.Context(), routeid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRouteSet - Configures a route 
+func (c *NetworkApiController) ConfigRouteSet(w http.ResponseWriter, r *http.Request) { 
+	route := &Route{}
+	if err := json.NewDecoder(r.Body).Decode(&route); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigRouteSet(r.Context(), *route)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

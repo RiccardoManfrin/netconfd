@@ -56,11 +56,11 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/link'
-        description: Full Config
+        description: Link Config
         required: true
       responses:
         "200":
-          description: Successful alignment
+          description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
             network state
@@ -85,7 +85,7 @@ paths:
         style: simple
       responses:
         "200":
-          description: Successful alignment
+          description: Successful delete
         "404":
           description: Not found
       summary: |
@@ -94,7 +94,7 @@ paths:
       - Network
     get:
       description: |
-        Brings down and delete a link layer interface
+        Retrieve link layer interface information
       operationId: ConfigLinkGet
       parameters:
       - explode: false
@@ -106,11 +106,78 @@ paths:
         style: simple
       responses:
         "200":
-          description: Successful alignment
+          description: Successful get
         "404":
           description: Not found
       summary: |
-        Brings down and delete a link layer interface
+        Retrieve link layer interface information
+      tags:
+      - Network
+  /config/routes:
+    post:
+      description: |
+        Configures a L3 route on the main routing table
+      operationId: ConfigRouteSet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/route'
+        description: Route Config
+        required: true
+      responses:
+        "200":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Configures a route
+      tags:
+      - Network
+  /config/routes/{routeid}:
+    delete:
+      description: |
+        Brings down and delete an L3 IP route
+      operationId: ConfigRouteDel
+      parameters:
+      - explode: false
+        in: path
+        name: routeid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Brings down and delete an L3 IP route
+      tags:
+      - Network
+    get:
+      description: |
+        Get a L3 route details
+      operationId: ConfigRouteGet
+      parameters:
+      - explode: false
+        in: path
+        name: routeid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get a L3 route details
       tags:
       - Network
 components:
@@ -122,6 +189,7 @@ components:
       format: ipv6
       type: string
     ip:
+      example: 10.1.2.3
       oneOf:
       - $ref: '#/components/schemas/ipv4'
       - $ref: '#/components/schemas/ipv6'
@@ -133,6 +201,7 @@ components:
     ifname:
       description: |
         Interface name
+      example: dummy0
       type: string
     scope:
       description: scope of the object (link or global)
@@ -178,6 +247,7 @@ components:
         dev:
           description: |
             Interface name
+          example: dummy0
           type: string
         protocol:
           type: string
@@ -202,6 +272,7 @@ components:
         ifname:
           description: |
             Interface name
+          example: dummy0
           type: string
         mtu:
           description: |
