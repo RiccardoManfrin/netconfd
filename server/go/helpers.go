@@ -10,8 +10,15 @@
 
 package openapi
 
+import (
+	"net/http"
+)
+
 //Response return a ImplResponse struct filled
 func Response(code int, body interface{}) ImplResponse {
 	return ImplResponse{Code: code, Body: body}
 }
 
+func PostErrorResponse(err error) (ImplResponse, error) {
+	return Response(http.StatusNotImplemented, err), err
+}
