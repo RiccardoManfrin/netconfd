@@ -39,7 +39,18 @@ func (s *{{classname}}Service) {{nickname}}(ctx context.Context{{#allParams}}, {
 	var err error
 	err = nil
 	if err != nil {
+		{{#vendorExtensions.x-method-post}}
 		return PostErrorResponse(err)
+		{{/vendorExtensions.x-method-post}}
+		{{#vendorExtensions.x-method-get}}
+		return GetErrorResponse(err)
+		{{/vendorExtensions.x-method-get}}
+		{{#vendorExtensions.x-method-put}}
+		return PutErrorResponse(err)
+		{{/vendorExtensions.x-method-put}}
+		{{#vendorExtensions.x-method-delete}}
+		return DeleteErrorResponse(err)
+		{{/vendorExtensions.x-method-delete}}
 	}
 	return Response(http.StatusNotImplemented, nil), errors.New("{{nickname}} method not implemented")
 }{{/operation}}{{/operations}}

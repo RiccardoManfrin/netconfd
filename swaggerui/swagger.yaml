@@ -17,6 +17,10 @@ tags:
 paths:
   /config:
     put:
+      x-method-put: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigSet
@@ -35,6 +39,11 @@ paths:
         '200':
           description: Successful alignment
     get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
       tags:
         - Network
       operationId: ConfigGet
@@ -47,6 +56,10 @@ paths:
           description: Successful alignment
   /config/links:
     post:
+      x-method-post: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigLinkCreate
@@ -75,6 +88,11 @@ paths:
           
   /config/links/{ifname}:
     get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
       tags:
         - Network
       operationId: ConfigLinkGet
@@ -94,6 +112,10 @@ paths:
         "404":
           description: Not found
     delete:
+      x-method-delete: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigLinkDel
@@ -114,6 +136,10 @@ paths:
           description: Not found
   /config/routes:
     post:
+      x-method-post: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigRouteCreate
@@ -141,6 +167,11 @@ paths:
           
   /config/routes/{routeid}:
     get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
       tags:
         - Network
       operationId: ConfigRouteGet
@@ -160,6 +191,10 @@ paths:
         "404":
           description: Not found
     delete:
+      x-method-delete: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigRouteDel
@@ -180,6 +215,10 @@ paths:
           description: Not found
   /config/rules:
     post:
+      x-method-post: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigRuleCreate
@@ -207,6 +246,11 @@ paths:
           
   /config/rules/{ruleid}:
     get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
       tags:
         - Network
       operationId: ConfigRuleGet
@@ -226,6 +270,10 @@ paths:
         "404":
           description: Not found
     delete:
+      x-method-delete: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigRuleDel
@@ -246,6 +294,10 @@ paths:
           description: Not found
   /config/netns:
     post:
+      x-method-post: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigNetNSCreate
@@ -273,6 +325,11 @@ paths:
           
   /config/netns/{netnsid}:
     get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
       tags:
         - Network
       operationId: ConfigNetNSGet
@@ -292,6 +349,10 @@ paths:
         "404":
           description: Not found
     delete:
+      x-method-delete: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigNetNSDel
@@ -312,6 +373,10 @@ paths:
           description: Not found
   /config/vrfs:
     post:
+      x-method-post: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigVRFCreate
@@ -339,6 +404,11 @@ paths:
           
   /config/vrfs/{vrfid}:
     get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
       tags:
         - Network
       operationId: ConfigVRFGet
@@ -358,6 +428,10 @@ paths:
         "404":
           description: Not found
     delete:
+      x-method-delete: true
+      x-authorization:
+        - config
+        - admin
       tags:
         - Network
       operationId: ConfigVRFDel
@@ -376,6 +450,87 @@ paths:
           description: Successful delete
         "404":
           description: Not found
+
+  /config/nftables:
+    post:
+      x-method-post: true
+      x-authorization:
+        - config
+        - admin
+      tags:
+        - Network
+      operationId: ConfigNFTableCreate
+      summary: |
+        Configures an new NFTable
+      description: |
+        Configures an new NFTable
+      requestBody:
+        description: NFTable Config
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/nftable'
+      responses:
+        '201':
+          description: Successful creation
+        '409':
+          description: 
+            Resource already exists, or request is incompatible with
+            current network state
+        "400":
+          description:
+            Resource config is semantically or syntactically incorrect
+          
+  /config/ntables/{nftableid}:
+    get:
+      x-method-get: true
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigNFTableGet
+      summary: |
+        Get a NFTable
+      description: |
+        Get a NFTable
+      parameters:
+      - in: path
+        name: nftableid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful get
+        "404":
+          description: Not found
+    delete:
+      x-method-delete: true
+      x-authorization:
+        - config
+        - admin
+      tags:
+        - Network
+      operationId: ConfigNFTableDel
+      summary: |
+        Removes a NFTable
+      description: |
+        Removes a NFTable
+      parameters:
+      - in: path
+        name: nftableid
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful delete
+        "404":
+          description: Not found
+
 components:
   schemas:
     ipv4:
@@ -459,6 +614,9 @@ components:
       properties:
         name:
           type: string
+    nftable:
+      type: object
+      description: Net Filter Table
     vrf:
       type: object
       description: Virtual Routing and Forwarding object

@@ -27,6 +27,11 @@ paths:
         Configures and enforces a new live network configuration
       tags:
       - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
     put:
       description: |
         Configures and enforces a new live network configuration
@@ -45,6 +50,10 @@ paths:
         Configures and enforces a new live network configuration
       tags:
       - Network
+      x-method-put: true
+      x-authorization:
+      - config
+      - admin
   /config/links:
     post:
       description: |
@@ -70,6 +79,10 @@ paths:
         Configures and brings up a link layer interface
       tags:
       - Network
+      x-method-post: true
+      x-authorization:
+      - config
+      - admin
   /config/links/{ifname}:
     delete:
       description: |
@@ -92,6 +105,10 @@ paths:
         Brings down and delete a link layer interface
       tags:
       - Network
+      x-method-delete: true
+      x-authorization:
+      - config
+      - admin
     get:
       description: |
         Retrieve link layer interface information
@@ -113,6 +130,11 @@ paths:
         Retrieve link layer interface information
       tags:
       - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
   /config/routes:
     post:
       description: |
@@ -137,6 +159,10 @@ paths:
         Configures a route
       tags:
       - Network
+      x-method-post: true
+      x-authorization:
+      - config
+      - admin
   /config/routes/{routeid}:
     delete:
       description: |
@@ -159,6 +185,10 @@ paths:
         Brings down and delete an L3 IP route
       tags:
       - Network
+      x-method-delete: true
+      x-authorization:
+      - config
+      - admin
     get:
       description: |
         Get a L3 route details
@@ -180,6 +210,11 @@ paths:
         Get a L3 route details
       tags:
       - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
   /config/rules:
     post:
       description: |
@@ -204,6 +239,10 @@ paths:
         Configures an IP rule
       tags:
       - Network
+      x-method-post: true
+      x-authorization:
+      - config
+      - admin
   /config/rules/{ruleid}:
     delete:
       description: |
@@ -226,6 +265,10 @@ paths:
         Removes an IP Rule
       tags:
       - Network
+      x-method-delete: true
+      x-authorization:
+      - config
+      - admin
     get:
       description: |
         Get an IP rule details
@@ -247,6 +290,11 @@ paths:
         Get an IP rule details
       tags:
       - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
   /config/netns:
     post:
       description: |
@@ -271,6 +319,10 @@ paths:
         Configures an new Network Namespace
       tags:
       - Network
+      x-method-post: true
+      x-authorization:
+      - config
+      - admin
   /config/netns/{netnsid}:
     delete:
       description: |
@@ -293,6 +345,10 @@ paths:
         Removes an IP Rule
       tags:
       - Network
+      x-method-delete: true
+      x-authorization:
+      - config
+      - admin
     get:
       description: |
         Get a network namespace
@@ -314,6 +370,11 @@ paths:
         Get a network namespace
       tags:
       - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
   /config/vrfs:
     post:
       description: |
@@ -338,6 +399,10 @@ paths:
         Configures an new VRF
       tags:
       - Network
+      x-method-post: true
+      x-authorization:
+      - config
+      - admin
   /config/vrfs/{vrfid}:
     delete:
       description: |
@@ -360,6 +425,10 @@ paths:
         Removes a VRF
       tags:
       - Network
+      x-method-delete: true
+      x-authorization:
+      - config
+      - admin
     get:
       description: |
         Get a VRF
@@ -381,6 +450,91 @@ paths:
         Get a VRF
       tags:
       - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
+  /config/nftables:
+    post:
+      description: |
+        Configures an new NFTable
+      operationId: ConfigNFTableCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/nftable'
+        description: NFTable Config
+        required: true
+      responses:
+        "201":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Configures an new NFTable
+      tags:
+      - Network
+      x-method-post: true
+      x-authorization:
+      - config
+      - admin
+  /config/ntables/{nftableid}:
+    delete:
+      description: |
+        Removes a NFTable
+      operationId: ConfigNFTableDel
+      parameters:
+      - explode: false
+        in: path
+        name: nftableid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Removes a NFTable
+      tags:
+      - Network
+      x-method-delete: true
+      x-authorization:
+      - config
+      - admin
+    get:
+      description: |
+        Get a NFTable
+      operationId: ConfigNFTableGet
+      parameters:
+      - explode: false
+        in: path
+        name: nftableid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get a NFTable
+      tags:
+      - Network
+      x-method-get: true
+      x-authorization:
+      - config
+      - admin
+      - monitor
 components:
   schemas:
     ipv4:
@@ -447,6 +601,9 @@ components:
       properties:
         name:
           type: string
+      type: object
+    nftable:
+      description: Net Filter Table
       type: object
     vrf:
       description: Virtual Routing and Forwarding object

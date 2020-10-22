@@ -56,6 +56,24 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigLinkGet,
 		},
 		{
+			"ConfigNFTableCreate",
+			strings.ToUpper("Post"),
+			"/api/1/config/nftables",
+			c.ConfigNFTableCreate,
+		},
+		{
+			"ConfigNFTableDel",
+			strings.ToUpper("Delete"),
+			"/api/1/config/ntables/{nftableid}",
+			c.ConfigNFTableDel,
+		},
+		{
+			"ConfigNFTableGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/ntables/{nftableid}",
+			c.ConfigNFTableGet,
+		},
+		{
 			"ConfigNetNSCreate",
 			strings.ToUpper("Post"),
 			"/api/1/config/netns",
@@ -188,6 +206,55 @@ func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Requ
 	params := mux.Vars(r)
 	ifname := params["ifname"]
 	result, err := c.service.ConfigLinkGet(r.Context(), ifname)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigNFTableCreate - Configures an new NFTable 
+func (c *NetworkApiController) ConfigNFTableCreate(w http.ResponseWriter, r *http.Request) { 
+	body := &map[string]interface{}{}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigNFTableCreate(r.Context(), *body)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigNFTableDel - Removes a NFTable 
+func (c *NetworkApiController) ConfigNFTableDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	nftableid := params["nftableid"]
+	result, err := c.service.ConfigNFTableDel(r.Context(), nftableid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigNFTableGet - Get a NFTable 
+func (c *NetworkApiController) ConfigNFTableGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	nftableid := params["nftableid"]
+	result, err := c.service.ConfigNFTableGet(r.Context(), nftableid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

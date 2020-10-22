@@ -13,3 +13,15 @@ func Response(code int, body interface{}) ImplResponse {
 func PostErrorResponse(err error) (ImplResponse, error) {
 	return Response(http.StatusNotImplemented, err), err
 }
+
+func GetErrorResponse(err error) (ImplResponse, error) {
+	return Response(http.StatusNotImplemented, err), err
+}
+
+func PutErrorResponse(err error) (ImplResponse, error) {
+	return Response(http.StatusNotImplemented, err), err
+}
+
+func DeleteErrorResponse(err error) (ImplResponse, error) {
+	return Response(http.StatusNotImplemented, err), err
+}
