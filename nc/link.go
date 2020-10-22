@@ -1,7 +1,7 @@
 package nc
 
 import (
-	"github.com/milosgajdos/tenus"
+	"github.com/vishvananda/netlink"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )
 
@@ -15,6 +15,12 @@ import (
 //	vti | nlmon | team_slave | bond_slave | ipvlan | geneve |
 //	bridge_slave | vrf | macsec }
 func LinkCreate(ifname string, kind string) error {
+
+	l, _ := netlink.LinkByName(ifname)
+	if l != nil {
+		return NewLinkExistsConflictError(ifname)
+	}
+
 	switch kind {
 	case "dummy":
 		{
@@ -36,41 +42,24 @@ func LinkCreate(ifname string, kind string) error {
 
 //LinkDelete deletes a link layer interface
 func LinkDelete(ifname string) error {
-	return tenus.DeleteLink(ifname)
+
+	return nil
 }
 
 //LinkDummyCreate Creates a new dummy link
 func LinkDummyCreate(ifname string) error {
-	dl, err := tenus.NewLink(ifname)
-	if err != nil {
-		logger.Log.Fatal(err)
-	}
-	if err = dl.SetLinkUp(); err != nil {
-		logger.Log.Fatal(err)
-	}
+
 	return nil
 }
 
 //LinkBondCreate Creates a new bond link
 func LinkBondCreate(ifname string) error {
-	dl, err := tenus.NewBondWithName(ifname)
-	if err != nil {
-		logger.Log.Fatal(err)
-	}
-	if err = dl.SetLinkUp(); err != nil {
-		logger.Log.Fatal(err)
-	}
+
 	return nil
 }
 
 //LinkBridgeCreate Creates a new dummy link
 func LinkBridgeCreate(ifname string) error {
-	dl, err := tenus.NewBridgeWithName(ifname)
-	if err != nil {
-		logger.Log.Fatal(err)
-	}
-	if err = dl.SetLinkUp(); err != nil {
-		logger.Log.Fatal(err)
-	}
+
 	return nil
 }
