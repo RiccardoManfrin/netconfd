@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// Route struct for Route
+// Route IP L3 Ruote entry
 type Route struct {
 	Dst *RouteDst `json:"dst,omitempty"`
 	Gateway *Ip `json:"gateway,omitempty"`

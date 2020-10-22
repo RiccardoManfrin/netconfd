@@ -56,6 +56,24 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigLinkSet,
 		},
 		{
+			"ConfigNetNSDel",
+			strings.ToUpper("Delete"),
+			"/api/1/config/netns/{netnsid}",
+			c.ConfigNetNSDel,
+		},
+		{
+			"ConfigNetNSGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/netns/{netnsid}",
+			c.ConfigNetNSGet,
+		},
+		{
+			"ConfigNetNSSet",
+			strings.ToUpper("Post"),
+			"/api/1/config/netns",
+			c.ConfigNetNSSet,
+		},
+		{
 			"ConfigRouteDel",
 			strings.ToUpper("Delete"),
 			"/api/1/config/routes/{routeid}",
@@ -74,10 +92,46 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigRouteSet,
 		},
 		{
-			"ConfigSet",
+			"ConfigRuleDel",
+			strings.ToUpper("Delete"),
+			"/api/1/config/rules/{ruleid}",
+			c.ConfigRuleDel,
+		},
+		{
+			"ConfigRuleGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/rules/{ruleid}",
+			c.ConfigRuleGet,
+		},
+		{
+			"ConfigRuleSet",
 			strings.ToUpper("Post"),
+			"/api/1/config/rules",
+			c.ConfigRuleSet,
+		},
+		{
+			"ConfigSet",
+			strings.ToUpper("Put"),
 			"/api/1/config",
 			c.ConfigSet,
+		},
+		{
+			"ConfigVRFDel",
+			strings.ToUpper("Delete"),
+			"/api/1/config/vrfs/{vrfid}",
+			c.ConfigVRFDel,
+		},
+		{
+			"ConfigVRFGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/vrfs/{vrfid}",
+			c.ConfigVRFGet,
+		},
+		{
+			"ConfigVRFSet",
+			strings.ToUpper("Post"),
+			"/api/1/config/vrfs",
+			c.ConfigVRFSet,
 		},
 	}
 }
@@ -144,6 +198,55 @@ func (c *NetworkApiController) ConfigLinkSet(w http.ResponseWriter, r *http.Requ
 	
 }
 
+// ConfigNetNSDel - Removes an IP Rule 
+func (c *NetworkApiController) ConfigNetNSDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	netnsid := params["netnsid"]
+	result, err := c.service.ConfigNetNSDel(r.Context(), netnsid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigNetNSGet - Get a network namespace 
+func (c *NetworkApiController) ConfigNetNSGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	netnsid := params["netnsid"]
+	result, err := c.service.ConfigNetNSGet(r.Context(), netnsid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigNetNSSet - Configures an new Network Namespace 
+func (c *NetworkApiController) ConfigNetNSSet(w http.ResponseWriter, r *http.Request) { 
+	netns := &Netns{}
+	if err := json.NewDecoder(r.Body).Decode(&netns); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigNetNSSet(r.Context(), *netns)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
 // ConfigRouteDel - Brings down and delete an L3 IP route 
 func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
@@ -193,6 +296,55 @@ func (c *NetworkApiController) ConfigRouteSet(w http.ResponseWriter, r *http.Req
 	
 }
 
+// ConfigRuleDel - Removes an IP Rule 
+func (c *NetworkApiController) ConfigRuleDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ruleid := params["ruleid"]
+	result, err := c.service.ConfigRuleDel(r.Context(), ruleid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRuleGet - Get an IP rule details 
+func (c *NetworkApiController) ConfigRuleGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ruleid := params["ruleid"]
+	result, err := c.service.ConfigRuleGet(r.Context(), ruleid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRuleSet - Configures an IP rule 
+func (c *NetworkApiController) ConfigRuleSet(w http.ResponseWriter, r *http.Request) { 
+	body := &map[string]interface{}{}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigRuleSet(r.Context(), *body)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
 // ConfigSet - Configures and enforces a new live network configuration 
 func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request) { 
 	config := &Config{}
@@ -202,6 +354,55 @@ func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request)
 	}
 	
 	result, err := c.service.ConfigSet(r.Context(), *config)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigVRFDel - Removes a VRF 
+func (c *NetworkApiController) ConfigVRFDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	vrfid := params["vrfid"]
+	result, err := c.service.ConfigVRFDel(r.Context(), vrfid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigVRFGet - Get a VRF 
+func (c *NetworkApiController) ConfigVRFGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	vrfid := params["vrfid"]
+	result, err := c.service.ConfigVRFGet(r.Context(), vrfid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigVRFSet - Configures an new VRF 
+func (c *NetworkApiController) ConfigVRFSet(w http.ResponseWriter, r *http.Request) { 
+	body := &map[string]interface{}{}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigVRFSet(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

@@ -71,8 +71,8 @@ func (s *NetworkApiService) ConfigLinkSet(ctx context.Context, link Link) (ImplR
 	// TODO - update ConfigLinkSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
 
 	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
 	//return Response(409, nil),nil
@@ -81,6 +81,51 @@ func (s *NetworkApiService) ConfigLinkSet(ctx context.Context, link Link) (ImplR
 	//return Response(400, nil),nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkSet method not implemented")
+}
+
+// ConfigNetNSDel - Removes an IP Rule 
+func (s *NetworkApiService) ConfigNetNSDel(ctx context.Context, netnsid string) (ImplResponse, error) {
+	// TODO - update ConfigNetNSDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSDel method not implemented")
+}
+
+// ConfigNetNSGet - Get a network namespace 
+func (s *NetworkApiService) ConfigNetNSGet(ctx context.Context, netnsid string) (ImplResponse, error) {
+	// TODO - update ConfigNetNSGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSGet method not implemented")
+}
+
+// ConfigNetNSSet - Configures an new Network Namespace 
+func (s *NetworkApiService) ConfigNetNSSet(ctx context.Context, netns Netns) (ImplResponse, error) {
+	// TODO - update ConfigNetNSSet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSSet method not implemented")
 }
 
 // ConfigRouteDel - Brings down and delete an L3 IP route 
@@ -116,8 +161,8 @@ func (s *NetworkApiService) ConfigRouteSet(ctx context.Context, route Route) (Im
 	// TODO - update ConfigRouteSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
 
 	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
 	//return Response(409, nil),nil
@@ -126,6 +171,51 @@ func (s *NetworkApiService) ConfigRouteSet(ctx context.Context, route Route) (Im
 	//return Response(400, nil),nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteSet method not implemented")
+}
+
+// ConfigRuleDel - Removes an IP Rule 
+func (s *NetworkApiService) ConfigRuleDel(ctx context.Context, ruleid string) (ImplResponse, error) {
+	// TODO - update ConfigRuleDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleDel method not implemented")
+}
+
+// ConfigRuleGet - Get an IP rule details 
+func (s *NetworkApiService) ConfigRuleGet(ctx context.Context, ruleid string) (ImplResponse, error) {
+	// TODO - update ConfigRuleGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleGet method not implemented")
+}
+
+// ConfigRuleSet - Configures an IP rule 
+func (s *NetworkApiService) ConfigRuleSet(ctx context.Context, body map[string]interface{}) (ImplResponse, error) {
+	// TODO - update ConfigRuleSet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleSet method not implemented")
 }
 
 // ConfigSet - Configures and enforces a new live network configuration 
@@ -137,5 +227,50 @@ func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplR
 	//return Response(200, nil),nil
 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigSet method not implemented")
+}
+
+// ConfigVRFDel - Removes a VRF 
+func (s *NetworkApiService) ConfigVRFDel(ctx context.Context, vrfid string) (ImplResponse, error) {
+	// TODO - update ConfigVRFDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFDel method not implemented")
+}
+
+// ConfigVRFGet - Get a VRF 
+func (s *NetworkApiService) ConfigVRFGet(ctx context.Context, vrfid string) (ImplResponse, error) {
+	// TODO - update ConfigVRFGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFGet method not implemented")
+}
+
+// ConfigVRFSet - Configures an new VRF 
+func (s *NetworkApiService) ConfigVRFSet(ctx context.Context, body map[string]interface{}) (ImplResponse, error) {
+	// TODO - update ConfigVRFSet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFSet method not implemented")
 }
 

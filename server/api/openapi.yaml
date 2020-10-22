@@ -27,7 +27,7 @@ paths:
         Configures and enforces a new live network configuration
       tags:
       - Network
-    post:
+    put:
       description: |
         Configures and enforces a new live network configuration
       operationId: ConfigSet
@@ -59,7 +59,7 @@ paths:
         description: Link Config
         required: true
       responses:
-        "200":
+        "201":
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -126,7 +126,7 @@ paths:
         description: Route Config
         required: true
       responses:
-        "200":
+        "201":
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -178,6 +178,207 @@ paths:
           description: Not found
       summary: |
         Get a L3 route details
+      tags:
+      - Network
+  /config/rules:
+    post:
+      description: |
+        Configures a L3 IP rule on the main routing table
+      operationId: ConfigRuleSet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rule'
+        description: Rule Config
+        required: true
+      responses:
+        "201":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Configures an IP rule
+      tags:
+      - Network
+  /config/rules/{ruleid}:
+    delete:
+      description: |
+        Removes an IP Rule
+      operationId: ConfigRuleDel
+      parameters:
+      - explode: false
+        in: path
+        name: ruleid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Removes an IP Rule
+      tags:
+      - Network
+    get:
+      description: |
+        Get an IP rule details
+      operationId: ConfigRuleGet
+      parameters:
+      - explode: false
+        in: path
+        name: ruleid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get an IP rule details
+      tags:
+      - Network
+  /config/netns:
+    post:
+      description: |
+        Configures an new Network Namespace
+      operationId: ConfigNetNSSet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/netns'
+        description: Network Namespace Config
+        required: true
+      responses:
+        "201":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Configures an new Network Namespace
+      tags:
+      - Network
+  /config/netns/{netnsid}:
+    delete:
+      description: |
+        Removes an IP Rule
+      operationId: ConfigNetNSDel
+      parameters:
+      - explode: false
+        in: path
+        name: netnsid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Removes an IP Rule
+      tags:
+      - Network
+    get:
+      description: |
+        Get a network namespace
+      operationId: ConfigNetNSGet
+      parameters:
+      - explode: false
+        in: path
+        name: netnsid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get a network namespace
+      tags:
+      - Network
+  /config/vrfs:
+    post:
+      description: |
+        Configures an new VRF
+      operationId: ConfigVRFSet
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/vrf'
+        description: VRF Config
+        required: true
+      responses:
+        "201":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Configures an new VRF
+      tags:
+      - Network
+  /config/vrfs/{vrfid}:
+    delete:
+      description: |
+        Removes a VRF
+      operationId: ConfigVRFDel
+      parameters:
+      - explode: false
+        in: path
+        name: vrfid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Removes a VRF
+      tags:
+      - Network
+    get:
+      description: |
+        Get a VRF
+      operationId: ConfigVRFGet
+      parameters:
+      - explode: false
+        in: path
+        name: vrfid
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get a VRF
       tags:
       - Network
 components:
@@ -238,7 +439,20 @@ components:
             $ref: '#/components/schemas/route'
           type: array
       type: object
+    rule:
+      description: IP Rule type
+      type: object
+    netns:
+      description: Network Namespace
+      properties:
+        name:
+          type: string
+      type: object
+    vrf:
+      description: Virtual Routing and Forwarding object
+      type: object
     route:
+      description: IP L3 Ruote entry
       properties:
         dst:
           $ref: '#/components/schemas/route_dst'
