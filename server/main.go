@@ -19,8 +19,11 @@ import (
 
 func main() {
 	log.Printf("Server started")
-	NetworkAPIService := openapi.NewNetworkApiService()
-	NetworkAPIController := openapi.NewNetworkApiController(NetworkAPIService)
+
+	NetworkApiService := openapi.NewNetworkApiService()
+	NetworkApiController := openapi.NewNetworkApiController(NetworkApiService)
+
 	router := openapi.NewRouter(NetworkApiController)
+
 	log.Fatal(http.ListenAndServe(":8080", router))
 }

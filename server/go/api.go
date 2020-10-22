@@ -22,22 +22,22 @@ import (
 // pass the data to a NetworkApiServicer to perform the required actions, then write the service results to the http response.
 type NetworkApiRouter interface { 
 	ConfigGet(http.ResponseWriter, *http.Request)
+	ConfigLinkCreate(http.ResponseWriter, *http.Request)
 	ConfigLinkDel(http.ResponseWriter, *http.Request)
 	ConfigLinkGet(http.ResponseWriter, *http.Request)
-	ConfigLinkSet(http.ResponseWriter, *http.Request)
+	ConfigNetNSCreate(http.ResponseWriter, *http.Request)
 	ConfigNetNSDel(http.ResponseWriter, *http.Request)
 	ConfigNetNSGet(http.ResponseWriter, *http.Request)
-	ConfigNetNSSet(http.ResponseWriter, *http.Request)
+	ConfigRouteCreate(http.ResponseWriter, *http.Request)
 	ConfigRouteDel(http.ResponseWriter, *http.Request)
 	ConfigRouteGet(http.ResponseWriter, *http.Request)
-	ConfigRouteSet(http.ResponseWriter, *http.Request)
+	ConfigRuleCreate(http.ResponseWriter, *http.Request)
 	ConfigRuleDel(http.ResponseWriter, *http.Request)
 	ConfigRuleGet(http.ResponseWriter, *http.Request)
-	ConfigRuleSet(http.ResponseWriter, *http.Request)
 	ConfigSet(http.ResponseWriter, *http.Request)
+	ConfigVRFCreate(http.ResponseWriter, *http.Request)
 	ConfigVRFDel(http.ResponseWriter, *http.Request)
 	ConfigVRFGet(http.ResponseWriter, *http.Request)
-	ConfigVRFSet(http.ResponseWriter, *http.Request)
 }
 
 
@@ -47,20 +47,20 @@ type NetworkApiRouter interface {
 // and updated with the logic required for the API.
 type NetworkApiServicer interface { 
 	ConfigGet(context.Context) (ImplResponse, error)
+	ConfigLinkCreate(context.Context, Link) (ImplResponse, error)
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
 	ConfigLinkGet(context.Context, string) (ImplResponse, error)
-	ConfigLinkSet(context.Context, Link) (ImplResponse, error)
+	ConfigNetNSCreate(context.Context, Netns) (ImplResponse, error)
 	ConfigNetNSDel(context.Context, string) (ImplResponse, error)
 	ConfigNetNSGet(context.Context, string) (ImplResponse, error)
-	ConfigNetNSSet(context.Context, Netns) (ImplResponse, error)
+	ConfigRouteCreate(context.Context, Route) (ImplResponse, error)
 	ConfigRouteDel(context.Context, string) (ImplResponse, error)
 	ConfigRouteGet(context.Context, string) (ImplResponse, error)
-	ConfigRouteSet(context.Context, Route) (ImplResponse, error)
+	ConfigRuleCreate(context.Context, map[string]interface{}) (ImplResponse, error)
 	ConfigRuleDel(context.Context, string) (ImplResponse, error)
 	ConfigRuleGet(context.Context, string) (ImplResponse, error)
-	ConfigRuleSet(context.Context, map[string]interface{}) (ImplResponse, error)
 	ConfigSet(context.Context, Config) (ImplResponse, error)
+	ConfigVRFCreate(context.Context, map[string]interface{}) (ImplResponse, error)
 	ConfigVRFDel(context.Context, string) (ImplResponse, error)
 	ConfigVRFGet(context.Context, string) (ImplResponse, error)
-	ConfigVRFSet(context.Context, map[string]interface{}) (ImplResponse, error)
 }

@@ -38,6 +38,12 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigGet,
 		},
 		{
+			"ConfigLinkCreate",
+			strings.ToUpper("Post"),
+			"/api/1/config/links",
+			c.ConfigLinkCreate,
+		},
+		{
 			"ConfigLinkDel",
 			strings.ToUpper("Delete"),
 			"/api/1/config/links/{ifname}",
@@ -50,10 +56,10 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigLinkGet,
 		},
 		{
-			"ConfigLinkSet",
+			"ConfigNetNSCreate",
 			strings.ToUpper("Post"),
-			"/api/1/config/links",
-			c.ConfigLinkSet,
+			"/api/1/config/netns",
+			c.ConfigNetNSCreate,
 		},
 		{
 			"ConfigNetNSDel",
@@ -68,10 +74,10 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigNetNSGet,
 		},
 		{
-			"ConfigNetNSSet",
+			"ConfigRouteCreate",
 			strings.ToUpper("Post"),
-			"/api/1/config/netns",
-			c.ConfigNetNSSet,
+			"/api/1/config/routes",
+			c.ConfigRouteCreate,
 		},
 		{
 			"ConfigRouteDel",
@@ -86,10 +92,10 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigRouteGet,
 		},
 		{
-			"ConfigRouteSet",
+			"ConfigRuleCreate",
 			strings.ToUpper("Post"),
-			"/api/1/config/routes",
-			c.ConfigRouteSet,
+			"/api/1/config/rules",
+			c.ConfigRuleCreate,
 		},
 		{
 			"ConfigRuleDel",
@@ -104,16 +110,16 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigRuleGet,
 		},
 		{
-			"ConfigRuleSet",
-			strings.ToUpper("Post"),
-			"/api/1/config/rules",
-			c.ConfigRuleSet,
-		},
-		{
 			"ConfigSet",
 			strings.ToUpper("Put"),
 			"/api/1/config",
 			c.ConfigSet,
+		},
+		{
+			"ConfigVRFCreate",
+			strings.ToUpper("Post"),
+			"/api/1/config/vrfs",
+			c.ConfigVRFCreate,
 		},
 		{
 			"ConfigVRFDel",
@@ -127,18 +133,31 @@ func (c *NetworkApiController) Routes() Routes {
 			"/api/1/config/vrfs/{vrfid}",
 			c.ConfigVRFGet,
 		},
-		{
-			"ConfigVRFSet",
-			strings.ToUpper("Post"),
-			"/api/1/config/vrfs",
-			c.ConfigVRFSet,
-		},
 	}
 }
 
 // ConfigGet - Configures and enforces a new live network configuration 
 func (c *NetworkApiController) ConfigGet(w http.ResponseWriter, r *http.Request) { 
 	result, err := c.service.ConfigGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigLinkCreate - Configures and brings up a link layer interface 
+func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.Request) { 
+	link := &Link{}
+	if err := json.NewDecoder(r.Body).Decode(&link); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigLinkCreate(r.Context(), *link)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -179,15 +198,15 @@ func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigLinkSet - Configures and brings up a link layer interface 
-func (c *NetworkApiController) ConfigLinkSet(w http.ResponseWriter, r *http.Request) { 
-	link := &Link{}
-	if err := json.NewDecoder(r.Body).Decode(&link); err != nil {
+// ConfigNetNSCreate - Configures an new Network Namespace 
+func (c *NetworkApiController) ConfigNetNSCreate(w http.ResponseWriter, r *http.Request) { 
+	netns := &Netns{}
+	if err := json.NewDecoder(r.Body).Decode(&netns); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigLinkSet(r.Context(), *link)
+	result, err := c.service.ConfigNetNSCreate(r.Context(), *netns)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -228,15 +247,15 @@ func (c *NetworkApiController) ConfigNetNSGet(w http.ResponseWriter, r *http.Req
 	
 }
 
-// ConfigNetNSSet - Configures an new Network Namespace 
-func (c *NetworkApiController) ConfigNetNSSet(w http.ResponseWriter, r *http.Request) { 
-	netns := &Netns{}
-	if err := json.NewDecoder(r.Body).Decode(&netns); err != nil {
+// ConfigRouteCreate - Configures a route 
+func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.Request) { 
+	route := &Route{}
+	if err := json.NewDecoder(r.Body).Decode(&route); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigNetNSSet(r.Context(), *netns)
+	result, err := c.service.ConfigRouteCreate(r.Context(), *route)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -277,15 +296,15 @@ func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Req
 	
 }
 
-// ConfigRouteSet - Configures a route 
-func (c *NetworkApiController) ConfigRouteSet(w http.ResponseWriter, r *http.Request) { 
-	route := &Route{}
-	if err := json.NewDecoder(r.Body).Decode(&route); err != nil {
+// ConfigRuleCreate - Configures an IP rule 
+func (c *NetworkApiController) ConfigRuleCreate(w http.ResponseWriter, r *http.Request) { 
+	body := &map[string]interface{}{}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigRouteSet(r.Context(), *route)
+	result, err := c.service.ConfigRuleCreate(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -326,15 +345,15 @@ func (c *NetworkApiController) ConfigRuleGet(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigRuleSet - Configures an IP rule 
-func (c *NetworkApiController) ConfigRuleSet(w http.ResponseWriter, r *http.Request) { 
-	body := &map[string]interface{}{}
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
+// ConfigSet - Configures and enforces a new live network configuration 
+func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request) { 
+	config := &Config{}
+	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigRuleSet(r.Context(), *body)
+	result, err := c.service.ConfigSet(r.Context(), *config)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -345,15 +364,15 @@ func (c *NetworkApiController) ConfigRuleSet(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigSet - Configures and enforces a new live network configuration 
-func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request) { 
-	config := &Config{}
-	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
+// ConfigVRFCreate - Configures an new VRF 
+func (c *NetworkApiController) ConfigVRFCreate(w http.ResponseWriter, r *http.Request) { 
+	body := &map[string]interface{}{}
+	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
 		w.WriteHeader(500)
 		return
 	}
 	
-	result, err := c.service.ConfigSet(r.Context(), *config)
+	result, err := c.service.ConfigVRFCreate(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -384,25 +403,6 @@ func (c *NetworkApiController) ConfigVRFGet(w http.ResponseWriter, r *http.Reque
 	params := mux.Vars(r)
 	vrfid := params["vrfid"]
 	result, err := c.service.ConfigVRFGet(r.Context(), vrfid)
-	//If an error occured, encode the error with the status code
-	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
-		return
-	}
-	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
-	
-}
-
-// ConfigVRFSet - Configures an new VRF 
-func (c *NetworkApiController) ConfigVRFSet(w http.ResponseWriter, r *http.Request) { 
-	body := &map[string]interface{}{}
-	if err := json.NewDecoder(r.Body).Decode(&body); err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	
-	result, err := c.service.ConfigVRFSet(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)

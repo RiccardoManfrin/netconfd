@@ -50,7 +50,7 @@ paths:
       description: |
         Configures and brings up a link layer interface.
         If the link exists return an error
-      operationId: ConfigLinkSet
+      operationId: ConfigLinkCreate
       requestBody:
         content:
           application/json:
@@ -117,7 +117,7 @@ paths:
     post:
       description: |
         Configures a L3 route on the main routing table
-      operationId: ConfigRouteSet
+      operationId: ConfigRouteCreate
       requestBody:
         content:
           application/json:
@@ -184,7 +184,7 @@ paths:
     post:
       description: |
         Configures a L3 IP rule on the main routing table
-      operationId: ConfigRuleSet
+      operationId: ConfigRuleCreate
       requestBody:
         content:
           application/json:
@@ -251,7 +251,7 @@ paths:
     post:
       description: |
         Configures an new Network Namespace
-      operationId: ConfigNetNSSet
+      operationId: ConfigNetNSCreate
       requestBody:
         content:
           application/json:
@@ -318,7 +318,7 @@ paths:
     post:
       description: |
         Configures an new VRF
-      operationId: ConfigVRFSet
+      operationId: ConfigVRFCreate
       requestBody:
         content:
           application/json:
