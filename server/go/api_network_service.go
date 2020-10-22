@@ -12,12 +12,14 @@ package openapi
 
 import (
 	"context"
-	"net/http"
 	"errors"
+	"net/http"
+
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 )
 
 // NetworkApiService is a service that implents the logic for the NetworkApiServicer
-// This service should implement the business logic for every endpoint for the NetworkApi API. 
+// This service should implement the business logic for every endpoint for the NetworkApi API.
 // Include any external packages or services that will be required by this service.
 type NetworkApiService struct {
 }
@@ -27,7 +29,7 @@ func NewNetworkApiService() NetworkApiServicer {
 	return &NetworkApiService{}
 }
 
-// ConfigGet - Configures and enforces a new live network configuration 
+// ConfigGet - Configures and enforces a new live network configuration
 func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error) {
 	// TODO - update ConfigGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -38,7 +40,7 @@ func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error)
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigGet method not implemented")
 }
 
-// ConfigLinkDel - Brings down and delete a link layer interface 
+// ConfigLinkDel - Brings down and delete a link layer interface
 func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (ImplResponse, error) {
 	// TODO - update ConfigLinkDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -52,7 +54,7 @@ func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (I
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkDel method not implemented")
 }
 
-// ConfigLinkGet - Retrieve link layer interface information 
+// ConfigLinkGet - Retrieve link layer interface information
 func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (ImplResponse, error) {
 	// TODO - update ConfigLinkGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -66,11 +68,24 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkGet method not implemented")
 }
 
-// ConfigLinkSet - Configures and brings up a link layer interface 
+// ConfigLinkSet - Configures and brings up a link layer interface
 func (s *NetworkApiService) ConfigLinkSet(ctx context.Context, link Link) (ImplResponse, error) {
 	// TODO - update ConfigLinkSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
+	err := nc.LinkCreate(link.Ifname, link.Linkinfo.GetInfoKind())
+	if err != nil {
+		switch err.(type) {
+		case *nc.ConflictError:
+			{
+				return Response(http.StatusConflict, err), err
+			}
+		default:
+			{
+				return Response(http.StatusInternalServerError, nil), nil
+			}
+		}
+	}
 	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
 	//return Response(201, nil),nil
 
@@ -83,7 +98,7 @@ func (s *NetworkApiService) ConfigLinkSet(ctx context.Context, link Link) (ImplR
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkSet method not implemented")
 }
 
-// ConfigNetNSDel - Removes an IP Rule 
+// ConfigNetNSDel - Removes an IP Rule
 func (s *NetworkApiService) ConfigNetNSDel(ctx context.Context, netnsid string) (ImplResponse, error) {
 	// TODO - update ConfigNetNSDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -97,7 +112,7 @@ func (s *NetworkApiService) ConfigNetNSDel(ctx context.Context, netnsid string) 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSDel method not implemented")
 }
 
-// ConfigNetNSGet - Get a network namespace 
+// ConfigNetNSGet - Get a network namespace
 func (s *NetworkApiService) ConfigNetNSGet(ctx context.Context, netnsid string) (ImplResponse, error) {
 	// TODO - update ConfigNetNSGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -111,7 +126,7 @@ func (s *NetworkApiService) ConfigNetNSGet(ctx context.Context, netnsid string) 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSGet method not implemented")
 }
 
-// ConfigNetNSSet - Configures an new Network Namespace 
+// ConfigNetNSSet - Configures an new Network Namespace
 func (s *NetworkApiService) ConfigNetNSSet(ctx context.Context, netns Netns) (ImplResponse, error) {
 	// TODO - update ConfigNetNSSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -128,7 +143,7 @@ func (s *NetworkApiService) ConfigNetNSSet(ctx context.Context, netns Netns) (Im
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSSet method not implemented")
 }
 
-// ConfigRouteDel - Brings down and delete an L3 IP route 
+// ConfigRouteDel - Brings down and delete an L3 IP route
 func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) (ImplResponse, error) {
 	// TODO - update ConfigRouteDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -142,7 +157,7 @@ func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteDel method not implemented")
 }
 
-// ConfigRouteGet - Get a L3 route details 
+// ConfigRouteGet - Get a L3 route details
 func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) (ImplResponse, error) {
 	// TODO - update ConfigRouteGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -156,7 +171,7 @@ func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteGet method not implemented")
 }
 
-// ConfigRouteSet - Configures a route 
+// ConfigRouteSet - Configures a route
 func (s *NetworkApiService) ConfigRouteSet(ctx context.Context, route Route) (ImplResponse, error) {
 	// TODO - update ConfigRouteSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -173,7 +188,7 @@ func (s *NetworkApiService) ConfigRouteSet(ctx context.Context, route Route) (Im
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteSet method not implemented")
 }
 
-// ConfigRuleDel - Removes an IP Rule 
+// ConfigRuleDel - Removes an IP Rule
 func (s *NetworkApiService) ConfigRuleDel(ctx context.Context, ruleid string) (ImplResponse, error) {
 	// TODO - update ConfigRuleDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -187,7 +202,7 @@ func (s *NetworkApiService) ConfigRuleDel(ctx context.Context, ruleid string) (I
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleDel method not implemented")
 }
 
-// ConfigRuleGet - Get an IP rule details 
+// ConfigRuleGet - Get an IP rule details
 func (s *NetworkApiService) ConfigRuleGet(ctx context.Context, ruleid string) (ImplResponse, error) {
 	// TODO - update ConfigRuleGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -201,7 +216,7 @@ func (s *NetworkApiService) ConfigRuleGet(ctx context.Context, ruleid string) (I
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleGet method not implemented")
 }
 
-// ConfigRuleSet - Configures an IP rule 
+// ConfigRuleSet - Configures an IP rule
 func (s *NetworkApiService) ConfigRuleSet(ctx context.Context, body map[string]interface{}) (ImplResponse, error) {
 	// TODO - update ConfigRuleSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -218,7 +233,7 @@ func (s *NetworkApiService) ConfigRuleSet(ctx context.Context, body map[string]i
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleSet method not implemented")
 }
 
-// ConfigSet - Configures and enforces a new live network configuration 
+// ConfigSet - Configures and enforces a new live network configuration
 func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
 	// TODO - update ConfigSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -229,7 +244,7 @@ func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplR
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigSet method not implemented")
 }
 
-// ConfigVRFDel - Removes a VRF 
+// ConfigVRFDel - Removes a VRF
 func (s *NetworkApiService) ConfigVRFDel(ctx context.Context, vrfid string) (ImplResponse, error) {
 	// TODO - update ConfigVRFDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -243,7 +258,7 @@ func (s *NetworkApiService) ConfigVRFDel(ctx context.Context, vrfid string) (Imp
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFDel method not implemented")
 }
 
-// ConfigVRFGet - Get a VRF 
+// ConfigVRFGet - Get a VRF
 func (s *NetworkApiService) ConfigVRFGet(ctx context.Context, vrfid string) (ImplResponse, error) {
 	// TODO - update ConfigVRFGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -257,7 +272,7 @@ func (s *NetworkApiService) ConfigVRFGet(ctx context.Context, vrfid string) (Imp
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFGet method not implemented")
 }
 
-// ConfigVRFSet - Configures an new VRF 
+// ConfigVRFSet - Configures an new VRF
 func (s *NetworkApiService) ConfigVRFSet(ctx context.Context, body map[string]interface{}) (ImplResponse, error) {
 	// TODO - update ConfigVRFSet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -273,4 +288,3 @@ func (s *NetworkApiService) ConfigVRFSet(ctx context.Context, body map[string]in
 
 	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFSet method not implemented")
 }
-
