@@ -49,7 +49,7 @@ paths:
     post:
       tags:
         - Network
-      operationId: ConfigLinkSet
+      operationId: ConfigLinkCreate
       summary: |
         Configures and brings up a link layer interface
       description: |
@@ -116,7 +116,7 @@ paths:
     post:
       tags:
         - Network
-      operationId: ConfigRouteSet
+      operationId: ConfigRouteCreate
       summary: |
         Configures a route
       description: |
@@ -182,7 +182,7 @@ paths:
     post:
       tags:
         - Network
-      operationId: ConfigRuleSet
+      operationId: ConfigRuleCreate
       summary: |
         Configures an IP rule
       description: |
@@ -248,7 +248,7 @@ paths:
     post:
       tags:
         - Network
-      operationId: ConfigNetNSSet
+      operationId: ConfigNetNSCreate
       summary: |
         Configures an new Network Namespace
       description: |
@@ -314,7 +314,7 @@ paths:
     post:
       tags:
         - Network
-      operationId: ConfigVRFSet
+      operationId: ConfigVRFCreate
       summary: |
         Configures an new VRF
       description: |
