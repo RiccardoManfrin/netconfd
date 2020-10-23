@@ -12,8 +12,6 @@ tags:
   name: System
 - description: Network config APIs
   name: Network
-- description: Calls related to Processes/Services management
-  name: Route
 paths:
   /config:
     get:
@@ -53,6 +51,27 @@ paths:
       - config
       - admin
   /config/links:
+    get:
+      description: |
+        Returns the array of the existing link layer interfaces by their ifname id
+      operationId: ConfigLinksGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ifname'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get all link layer interfaces
+      tags:
+      - Network
+      x-authorization:
+      - config
+      - admin
+      - monitor
     post:
       description: |
         Configures and brings up a link layer interface.
@@ -67,6 +86,12 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ifname'
+                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -115,7 +140,7 @@ paths:
         name: ifname
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ifname'
         style: simple
       responses:
         "200":
@@ -131,6 +156,27 @@ paths:
       - admin
       - monitor
   /config/routes:
+    get:
+      description: |
+        Returns the array of the existing routing tables routes ids
+      operationId: ConfigRoutesGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/routeid'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get all routing table routes
+      tags:
+      - Network
+      x-authorization:
+      - config
+      - admin
+      - monitor
     post:
       description: |
         Configures a L3 route on the main routing table
@@ -144,6 +190,12 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/routeid'
+                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -168,7 +220,7 @@ paths:
         name: routeid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ruleid'
         style: simple
       responses:
         "200":
@@ -192,7 +244,7 @@ paths:
         name: routeid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/routeid'
         style: simple
       responses:
         "200":
@@ -208,6 +260,27 @@ paths:
       - admin
       - monitor
   /config/rules:
+    get:
+      description: |
+        Get all ip rules list
+      operationId: ConfigRulesGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ruleid'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get all ip rules list
+      tags:
+      - Network
+      x-authorization:
+      - config
+      - admin
+      - monitor
     post:
       description: |
         Configures a L3 IP rule on the main routing table
@@ -221,6 +294,12 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ruleid'
+                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -245,7 +324,7 @@ paths:
         name: ruleid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ruleid'
         style: simple
       responses:
         "200":
@@ -269,7 +348,7 @@ paths:
         name: ruleid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ruleid'
         style: simple
       responses:
         "200":
@@ -285,6 +364,27 @@ paths:
       - admin
       - monitor
   /config/netns:
+    get:
+      description: |
+        Get the list all network namespaces
+      operationId: ConfigNetNSsGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/netnsid'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get the list all network namespaces
+      tags:
+      - Network
+      x-authorization:
+      - config
+      - admin
+      - monitor
     post:
       description: |
         Configures an new Network Namespace
@@ -298,6 +398,12 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/netnsid'
+                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -322,7 +428,7 @@ paths:
         name: netnsid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/netnsid'
         style: simple
       responses:
         "200":
@@ -346,7 +452,7 @@ paths:
         name: netnsid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/netnsid'
         style: simple
       responses:
         "200":
@@ -362,6 +468,27 @@ paths:
       - admin
       - monitor
   /config/vrfs:
+    get:
+      description: |
+        Get the list all VRFs
+      operationId: ConfigVRFsGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/vrfid'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get the list all VRFs
+      tags:
+      - Network
+      x-authorization:
+      - config
+      - admin
+      - monitor
     post:
       description: |
         Configures an new VRF
@@ -375,6 +502,12 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/vrfid'
+                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -399,7 +532,7 @@ paths:
         name: vrfid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/vrfid'
         style: simple
       responses:
         "200":
@@ -423,7 +556,7 @@ paths:
         name: vrfid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/vrfid'
         style: simple
       responses:
         "200":
@@ -439,6 +572,27 @@ paths:
       - admin
       - monitor
   /config/nftables:
+    get:
+      description: |
+        Get the list all NFTables
+      operationId: ConfigNFTablesGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/nftableid'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get the list all NFTables
+      tags:
+      - Network
+      x-authorization:
+      - config
+      - admin
+      - monitor
     post:
       description: |
         Configures an new NFTable
@@ -452,6 +606,12 @@ paths:
         required: true
       responses:
         "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/nftableid'
+                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -476,7 +636,7 @@ paths:
         name: nftableid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/nftableid'
         style: simple
       responses:
         "200":
@@ -500,7 +660,7 @@ paths:
         name: nftableid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/nftableid'
         style: simple
       responses:
         "200":
@@ -533,6 +693,26 @@ components:
       enum:
       - default
       type: string
+    routeid:
+      description: Incremental route identifier
+      example: 42
+      type: integer
+    ruleid:
+      description: Incremental rule identifier
+      example: 42
+      type: integer
+    netnsid:
+      description: Network namespace identifier
+      example: yanetnamespace
+      type: string
+    vrfid:
+      description: VRF identifier
+      example: 42
+      type: integer
+    nftableid:
+      description: Net Filter Table identifier
+      example: 42
+      type: integer
     ifname:
       description: |
         Interface name
@@ -581,6 +761,8 @@ components:
       description: Network Namespace
       properties:
         name:
+          description: Network namespace identifier
+          example: yanetnamespace
           type: string
       type: object
     nftable:
