@@ -17,7 +17,6 @@ tags:
 paths:
   /config:
     put:
-      x-method-put: true
       x-authorization:
         - config
         - admin
@@ -39,7 +38,6 @@ paths:
         '200':
           description: Successful alignment
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -56,7 +54,6 @@ paths:
           description: Successful alignment
   /config/links:
     post:
-      x-method-post: true
       x-authorization:
         - config
         - admin
@@ -88,7 +85,6 @@ paths:
           
   /config/links/{ifname}:
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -112,7 +108,6 @@ paths:
         "404":
           description: Not found
     delete:
-      x-method-delete: true
       x-authorization:
         - config
         - admin
@@ -136,7 +131,6 @@ paths:
           description: Not found
   /config/routes:
     post:
-      x-method-post: true
       x-authorization:
         - config
         - admin
@@ -167,7 +161,6 @@ paths:
           
   /config/routes/{routeid}:
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -191,7 +184,6 @@ paths:
         "404":
           description: Not found
     delete:
-      x-method-delete: true
       x-authorization:
         - config
         - admin
@@ -215,7 +207,6 @@ paths:
           description: Not found
   /config/rules:
     post:
-      x-method-post: true
       x-authorization:
         - config
         - admin
@@ -246,7 +237,6 @@ paths:
           
   /config/rules/{ruleid}:
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -270,7 +260,6 @@ paths:
         "404":
           description: Not found
     delete:
-      x-method-delete: true
       x-authorization:
         - config
         - admin
@@ -294,7 +283,6 @@ paths:
           description: Not found
   /config/netns:
     post:
-      x-method-post: true
       x-authorization:
         - config
         - admin
@@ -325,7 +313,6 @@ paths:
           
   /config/netns/{netnsid}:
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -349,7 +336,6 @@ paths:
         "404":
           description: Not found
     delete:
-      x-method-delete: true
       x-authorization:
         - config
         - admin
@@ -373,7 +359,6 @@ paths:
           description: Not found
   /config/vrfs:
     post:
-      x-method-post: true
       x-authorization:
         - config
         - admin
@@ -404,7 +389,6 @@ paths:
           
   /config/vrfs/{vrfid}:
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -428,7 +412,6 @@ paths:
         "404":
           description: Not found
     delete:
-      x-method-delete: true
       x-authorization:
         - config
         - admin
@@ -453,7 +436,6 @@ paths:
 
   /config/nftables:
     post:
-      x-method-post: true
       x-authorization:
         - config
         - admin
@@ -484,7 +466,6 @@ paths:
           
   /config/ntables/{nftableid}:
     get:
-      x-method-get: true
       x-authorization:
         - config
         - admin
@@ -508,7 +489,6 @@ paths:
         "404":
           description: Not found
     delete:
-      x-method-delete: true
       x-authorization:
         - config
         - admin
