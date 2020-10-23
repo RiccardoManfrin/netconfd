@@ -16,7 +16,7 @@ func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
 		switch err.(type) {
 		default:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
@@ -29,7 +29,7 @@ func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
 		switch err.(type) {
 		default:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
@@ -42,7 +42,7 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 		switch err.(type) {
 		default:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
@@ -54,7 +54,7 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 		switch err.(type) {
 		default:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
