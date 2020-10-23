@@ -534,6 +534,7 @@ components:
       description: |
         Interface name
       type: string
+      maxLength: 15
     scope:
       type: string
       description: scope of the object (link or global)

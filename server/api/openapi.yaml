@@ -537,6 +537,7 @@ components:
       description: |
         Interface name
       example: dummy0
+      maxLength: 15
       type: string
     scope:
       description: scope of the object (link or global)
@@ -599,6 +600,7 @@ components:
           description: |
             Interface name
           example: dummy0
+          maxLength: 15
           type: string
         protocol:
           type: string
@@ -624,6 +626,7 @@ components:
           description: |
             Interface name
           example: dummy0
+          maxLength: 15
           type: string
         mtu:
           description: |
