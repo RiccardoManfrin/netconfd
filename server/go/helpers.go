@@ -19,18 +19,49 @@ func Response(code int, body interface{}) ImplResponse {
 	return ImplResponse{Code: code, Body: body}
 }
 
-func PostErrorResponse(err error) (ImplResponse, error) {
-	return Response(http.StatusNotImplemented, err), err
+//PostErrorResponse maps Post requests errors into HTTP status codes
+func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
+	if err != nil {
+		switch err.(type) {
+			default:
+			{
+				return Response(http.StatusNotImplemented, err), err
+			}
+		}
+	}
+	return Response(http.StatusCreated, body), nil
 }
 
-func GetErrorResponse(err error) (ImplResponse, error) {
-	return Response(http.StatusNotImplemented, err), err
+//GetErrorResponse maps Get requests errors into HTTP status codes
+func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
+	if err != nil {
+		switch err.(type) {
+			default:
+			{
+				return Response(http.StatusNotImplemented, err), err
+			}
+		}
+	}
+	return Response(http.StatusOK, body), nil
 }
 
-func PutErrorResponse(err error) (ImplResponse, error) {
-	return Response(http.StatusNotImplemented, err), err
+//PutErrorResponse maps Put requests errors into HTTP status codes
+func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
+	if err != nil {
+		switch err.(type) {
+			default:
+			{
+				return Response(http.StatusNotImplemented, err), err
+			}
+		}
+	}
+	return Response(http.StatusOK, body), nil
 }
 
-func DeleteErrorResponse(err error) (ImplResponse, error) {
-	return Response(http.StatusNotImplemented, err), err
+//DeleteErrorResponse maps Delete requests errors into HTTP status codes
+func DeleteErrorResponse(err error, body interface{}) (ImplResponse, error) {
+	if err != nil {
+		return Response(http.StatusNotImplemented, err), err
+	}
+	return Response(http.StatusOK, body), nil
 }

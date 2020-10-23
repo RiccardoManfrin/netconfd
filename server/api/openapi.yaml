@@ -27,7 +27,6 @@ paths:
         Configures and enforces a new live network configuration
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin
@@ -50,7 +49,6 @@ paths:
         Configures and enforces a new live network configuration
       tags:
       - Network
-      x-method-put: true
       x-authorization:
       - config
       - admin
@@ -79,7 +77,6 @@ paths:
         Configures and brings up a link layer interface
       tags:
       - Network
-      x-method-post: true
       x-authorization:
       - config
       - admin
@@ -105,7 +102,6 @@ paths:
         Brings down and delete a link layer interface
       tags:
       - Network
-      x-method-delete: true
       x-authorization:
       - config
       - admin
@@ -130,7 +126,6 @@ paths:
         Retrieve link layer interface information
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin
@@ -159,7 +154,6 @@ paths:
         Configures a route
       tags:
       - Network
-      x-method-post: true
       x-authorization:
       - config
       - admin
@@ -185,7 +179,6 @@ paths:
         Brings down and delete an L3 IP route
       tags:
       - Network
-      x-method-delete: true
       x-authorization:
       - config
       - admin
@@ -210,7 +203,6 @@ paths:
         Get a L3 route details
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin
@@ -239,7 +231,6 @@ paths:
         Configures an IP rule
       tags:
       - Network
-      x-method-post: true
       x-authorization:
       - config
       - admin
@@ -265,7 +256,6 @@ paths:
         Removes an IP Rule
       tags:
       - Network
-      x-method-delete: true
       x-authorization:
       - config
       - admin
@@ -290,7 +280,6 @@ paths:
         Get an IP rule details
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin
@@ -319,7 +308,6 @@ paths:
         Configures an new Network Namespace
       tags:
       - Network
-      x-method-post: true
       x-authorization:
       - config
       - admin
@@ -345,7 +333,6 @@ paths:
         Removes an IP Rule
       tags:
       - Network
-      x-method-delete: true
       x-authorization:
       - config
       - admin
@@ -370,7 +357,6 @@ paths:
         Get a network namespace
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin
@@ -399,7 +385,6 @@ paths:
         Configures an new VRF
       tags:
       - Network
-      x-method-post: true
       x-authorization:
       - config
       - admin
@@ -425,7 +410,6 @@ paths:
         Removes a VRF
       tags:
       - Network
-      x-method-delete: true
       x-authorization:
       - config
       - admin
@@ -450,7 +434,6 @@ paths:
         Get a VRF
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin
@@ -479,7 +462,6 @@ paths:
         Configures an new NFTable
       tags:
       - Network
-      x-method-post: true
       x-authorization:
       - config
       - admin
@@ -505,7 +487,6 @@ paths:
         Removes a NFTable
       tags:
       - Network
-      x-method-delete: true
       x-authorization:
       - config
       - admin
@@ -530,7 +511,6 @@ paths:
         Get a NFTable
       tags:
       - Network
-      x-method-get: true
       x-authorization:
       - config
       - admin

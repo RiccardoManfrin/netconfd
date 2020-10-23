@@ -12,7 +12,6 @@ package openapi
 
 import (
 	"context"
-	"net/http"
 	"errors"
 )
 
@@ -35,12 +34,8 @@ func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error)
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigGet method not implemented")
+	err := errors.New("ConfigGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
 // ConfigLinkCreate - Configures and brings up a link layer interface 
@@ -57,12 +52,8 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PostErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkCreate method not implemented")
+	err := errors.New("ConfigLinkCreate method not implemented")
+	return PostErrorResponse(err, nil)
 }
 
 // ConfigLinkDel - Brings down and delete a link layer interface 
@@ -76,12 +67,8 @@ func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (I
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return DeleteErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkDel method not implemented")
+	err := errors.New("ConfigLinkDel method not implemented")
+	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigLinkGet - Retrieve link layer interface information 
@@ -95,12 +82,8 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigLinkGet method not implemented")
+	err := errors.New("ConfigLinkGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
 // ConfigNFTableCreate - Configures an new NFTable 
@@ -117,12 +100,8 @@ func (s *NetworkApiService) ConfigNFTableCreate(ctx context.Context, body map[st
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PostErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNFTableCreate method not implemented")
+	err := errors.New("ConfigNFTableCreate method not implemented")
+	return PostErrorResponse(err, nil)
 }
 
 // ConfigNFTableDel - Removes a NFTable 
@@ -136,12 +115,8 @@ func (s *NetworkApiService) ConfigNFTableDel(ctx context.Context, nftableid stri
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return DeleteErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNFTableDel method not implemented")
+	err := errors.New("ConfigNFTableDel method not implemented")
+	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigNFTableGet - Get a NFTable 
@@ -155,12 +130,8 @@ func (s *NetworkApiService) ConfigNFTableGet(ctx context.Context, nftableid stri
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNFTableGet method not implemented")
+	err := errors.New("ConfigNFTableGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
 // ConfigNetNSCreate - Configures an new Network Namespace 
@@ -177,12 +148,8 @@ func (s *NetworkApiService) ConfigNetNSCreate(ctx context.Context, netns Netns) 
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PostErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSCreate method not implemented")
+	err := errors.New("ConfigNetNSCreate method not implemented")
+	return PostErrorResponse(err, nil)
 }
 
 // ConfigNetNSDel - Removes an IP Rule 
@@ -196,12 +163,8 @@ func (s *NetworkApiService) ConfigNetNSDel(ctx context.Context, netnsid string) 
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return DeleteErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSDel method not implemented")
+	err := errors.New("ConfigNetNSDel method not implemented")
+	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigNetNSGet - Get a network namespace 
@@ -215,12 +178,8 @@ func (s *NetworkApiService) ConfigNetNSGet(ctx context.Context, netnsid string) 
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigNetNSGet method not implemented")
+	err := errors.New("ConfigNetNSGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
 // ConfigRouteCreate - Configures a route 
@@ -237,12 +196,8 @@ func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) 
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PostErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteCreate method not implemented")
+	err := errors.New("ConfigRouteCreate method not implemented")
+	return PostErrorResponse(err, nil)
 }
 
 // ConfigRouteDel - Brings down and delete an L3 IP route 
@@ -256,12 +211,8 @@ func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) 
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return DeleteErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteDel method not implemented")
+	err := errors.New("ConfigRouteDel method not implemented")
+	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigRouteGet - Get a L3 route details 
@@ -275,12 +226,8 @@ func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) 
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRouteGet method not implemented")
+	err := errors.New("ConfigRouteGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
 // ConfigRuleCreate - Configures an IP rule 
@@ -297,12 +244,8 @@ func (s *NetworkApiService) ConfigRuleCreate(ctx context.Context, body map[strin
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PostErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleCreate method not implemented")
+	err := errors.New("ConfigRuleCreate method not implemented")
+	return PostErrorResponse(err, nil)
 }
 
 // ConfigRuleDel - Removes an IP Rule 
@@ -316,12 +259,8 @@ func (s *NetworkApiService) ConfigRuleDel(ctx context.Context, ruleid string) (I
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return DeleteErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleDel method not implemented")
+	err := errors.New("ConfigRuleDel method not implemented")
+	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigRuleGet - Get an IP rule details 
@@ -335,12 +274,8 @@ func (s *NetworkApiService) ConfigRuleGet(ctx context.Context, ruleid string) (I
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigRuleGet method not implemented")
+	err := errors.New("ConfigRuleGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
 // ConfigSet - Configures and enforces a new live network configuration 
@@ -351,12 +286,8 @@ func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplR
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PutErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigSet method not implemented")
+	err := errors.New("ConfigSet method not implemented")
+	return PutErrorResponse(err, nil)
 }
 
 // ConfigVRFCreate - Configures an new VRF 
@@ -373,12 +304,8 @@ func (s *NetworkApiService) ConfigVRFCreate(ctx context.Context, body map[string
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return PostErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFCreate method not implemented")
+	err := errors.New("ConfigVRFCreate method not implemented")
+	return PostErrorResponse(err, nil)
 }
 
 // ConfigVRFDel - Removes a VRF 
@@ -392,12 +319,8 @@ func (s *NetworkApiService) ConfigVRFDel(ctx context.Context, vrfid string) (Imp
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return DeleteErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFDel method not implemented")
+	err := errors.New("ConfigVRFDel method not implemented")
+	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigVRFGet - Get a VRF 
@@ -411,11 +334,7 @@ func (s *NetworkApiService) ConfigVRFGet(ctx context.Context, vrfid string) (Imp
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	var err error
-	err = nil
-	if err != nil {
-		return GetErrorResponse(err)
-	}
-	return Response(http.StatusNotImplemented, nil), errors.New("ConfigVRFGet method not implemented")
+	err := errors.New("ConfigVRFGet method not implemented")
+	return GetErrorResponse(err, nil)
 }
 
