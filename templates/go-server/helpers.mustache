@@ -50,6 +50,7 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 }
 
 //DeleteErrorResponse maps Delete requests errors into HTTP status codes
+func DeleteErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
 		default:

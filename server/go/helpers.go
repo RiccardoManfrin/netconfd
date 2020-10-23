@@ -35,11 +35,10 @@ func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
 			}
 		default:
 			{
-				return Response(http.StatusInternalServerError, nil), nil
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
-
 	return Response(http.StatusCreated, body), nil
 }
 
@@ -49,7 +48,7 @@ func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
 		switch err.(type) {
 		default:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
@@ -62,7 +61,7 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 		switch err.(type) {
 		default:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusInternalServerError, err), err
 			}
 		}
 	}
@@ -72,7 +71,12 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 //DeleteErrorResponse maps Delete requests errors into HTTP status codes
 func DeleteErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
-		return Response(http.StatusNotImplemented, err), err
+		switch err.(type) {
+		default:
+			{
+				return Response(http.StatusInternalServerError, err), err
+			}
+		}
 	}
 	return Response(http.StatusOK, body), nil
 }
