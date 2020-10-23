@@ -17,6 +17,7 @@ import (
 
 // Netns Network Namespace
 type Netns struct {
+	// Network namespace identifier
 	Name *string `json:"name,omitempty"`
 }
 
