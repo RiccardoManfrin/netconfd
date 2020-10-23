@@ -56,6 +56,12 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigLinkGet,
 		},
 		{
+			"ConfigLinksGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/links",
+			c.ConfigLinksGet,
+		},
+		{
 			"ConfigNFTableCreate",
 			strings.ToUpper("Post"),
 			"/api/1/config/nftables",
@@ -72,6 +78,12 @@ func (c *NetworkApiController) Routes() Routes {
 			strings.ToUpper("Get"),
 			"/api/1/config/ntables/{nftableid}",
 			c.ConfigNFTableGet,
+		},
+		{
+			"ConfigNFTablesGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/nftables",
+			c.ConfigNFTablesGet,
 		},
 		{
 			"ConfigNetNSCreate",
@@ -92,6 +104,12 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigNetNSGet,
 		},
 		{
+			"ConfigNetNSsGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/netns",
+			c.ConfigNetNSsGet,
+		},
+		{
 			"ConfigRouteCreate",
 			strings.ToUpper("Post"),
 			"/api/1/config/routes",
@@ -110,6 +128,12 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigRouteGet,
 		},
 		{
+			"ConfigRoutesGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/routes",
+			c.ConfigRoutesGet,
+		},
+		{
 			"ConfigRuleCreate",
 			strings.ToUpper("Post"),
 			"/api/1/config/rules",
@@ -126,6 +150,12 @@ func (c *NetworkApiController) Routes() Routes {
 			strings.ToUpper("Get"),
 			"/api/1/config/rules/{ruleid}",
 			c.ConfigRuleGet,
+		},
+		{
+			"ConfigRulesGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/rules",
+			c.ConfigRulesGet,
 		},
 		{
 			"ConfigSet",
@@ -150,6 +180,12 @@ func (c *NetworkApiController) Routes() Routes {
 			strings.ToUpper("Get"),
 			"/api/1/config/vrfs/{vrfid}",
 			c.ConfigVRFGet,
+		},
+		{
+			"ConfigVRFsGet",
+			strings.ToUpper("Get"),
+			"/api/1/config/vrfs",
+			c.ConfigVRFsGet,
 		},
 	}
 }
@@ -216,6 +252,19 @@ func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Requ
 	
 }
 
+// ConfigLinksGet - Get all link layer interfaces 
+func (c *NetworkApiController) ConfigLinksGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigLinksGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
 // ConfigNFTableCreate - Configures an new NFTable 
 func (c *NetworkApiController) ConfigNFTableCreate(w http.ResponseWriter, r *http.Request) { 
 	body := &map[string]interface{}{}
@@ -238,7 +287,12 @@ func (c *NetworkApiController) ConfigNFTableCreate(w http.ResponseWriter, r *htt
 // ConfigNFTableDel - Removes a NFTable 
 func (c *NetworkApiController) ConfigNFTableDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	nftableid := params["nftableid"]
+	nftableid, err := parseInt32Parameter(params["nftableid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigNFTableDel(r.Context(), nftableid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -253,8 +307,26 @@ func (c *NetworkApiController) ConfigNFTableDel(w http.ResponseWriter, r *http.R
 // ConfigNFTableGet - Get a NFTable 
 func (c *NetworkApiController) ConfigNFTableGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	nftableid := params["nftableid"]
+	nftableid, err := parseInt32Parameter(params["nftableid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigNFTableGet(r.Context(), nftableid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigNFTablesGet - Get the list all NFTables 
+func (c *NetworkApiController) ConfigNFTablesGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigNFTablesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -314,6 +386,19 @@ func (c *NetworkApiController) ConfigNetNSGet(w http.ResponseWriter, r *http.Req
 	
 }
 
+// ConfigNetNSsGet - Get the list all network namespaces 
+func (c *NetworkApiController) ConfigNetNSsGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigNetNSsGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
 // ConfigRouteCreate - Configures a route 
 func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.Request) { 
 	route := &Route{}
@@ -336,7 +421,12 @@ func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.
 // ConfigRouteDel - Brings down and delete an L3 IP route 
 func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	routeid := params["routeid"]
+	routeid, err := parseInt32Parameter(params["routeid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigRouteDel(r.Context(), routeid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -351,8 +441,26 @@ func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Req
 // ConfigRouteGet - Get a L3 route details 
 func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	routeid := params["routeid"]
+	routeid, err := parseInt32Parameter(params["routeid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigRouteGet(r.Context(), routeid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRoutesGet - Get all routing table routes 
+func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigRoutesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -385,7 +493,12 @@ func (c *NetworkApiController) ConfigRuleCreate(w http.ResponseWriter, r *http.R
 // ConfigRuleDel - Removes an IP Rule 
 func (c *NetworkApiController) ConfigRuleDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	ruleid := params["ruleid"]
+	ruleid, err := parseInt32Parameter(params["ruleid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigRuleDel(r.Context(), ruleid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -400,8 +513,26 @@ func (c *NetworkApiController) ConfigRuleDel(w http.ResponseWriter, r *http.Requ
 // ConfigRuleGet - Get an IP rule details 
 func (c *NetworkApiController) ConfigRuleGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	ruleid := params["ruleid"]
+	ruleid, err := parseInt32Parameter(params["ruleid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigRuleGet(r.Context(), ruleid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRulesGet - Get all ip rules list 
+func (c *NetworkApiController) ConfigRulesGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigRulesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
@@ -453,7 +584,12 @@ func (c *NetworkApiController) ConfigVRFCreate(w http.ResponseWriter, r *http.Re
 // ConfigVRFDel - Removes a VRF 
 func (c *NetworkApiController) ConfigVRFDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	vrfid := params["vrfid"]
+	vrfid, err := parseInt32Parameter(params["vrfid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigVRFDel(r.Context(), vrfid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -468,8 +604,26 @@ func (c *NetworkApiController) ConfigVRFDel(w http.ResponseWriter, r *http.Reque
 // ConfigVRFGet - Get a VRF 
 func (c *NetworkApiController) ConfigVRFGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	vrfid := params["vrfid"]
+	vrfid, err := parseInt32Parameter(params["vrfid"])
+	if err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
 	result, err := c.service.ConfigVRFGet(r.Context(), vrfid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err.Error(), &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigVRFsGet - Get the list all VRFs 
+func (c *NetworkApiController) ConfigVRFsGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigVRFsGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err.Error(), &result.Code, w)
