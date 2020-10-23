@@ -12,8 +12,6 @@ tags:
     description: System level APIs (e.g. logging, etc..)
   - name: Network
     description: Network config APIs
-  - name: Route
-    description: Calls related to Processes/Services management
 paths:
   /config:
     put:
@@ -53,6 +51,27 @@ paths:
         '200':
           description: Successful alignment
   /config/links:
+    get:
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigLinksGet
+      summary: |
+        Get all link layer interfaces
+      description: |
+        Returns the array of the existing link layer interfaces by their ifname id
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ifname'
     post:
       x-authorization:
         - config
@@ -75,6 +94,12 @@ paths:
       responses:
         '201':
           description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ifname'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -101,7 +126,7 @@ paths:
         name: ifname
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ifname'
       responses:
         '200':
           description: Successful get
@@ -130,6 +155,27 @@ paths:
         "404":
           description: Not found
   /config/routes:
+    get:
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigRoutesGet
+      summary: |
+        Get all routing table routes
+      description: |
+        Returns the array of the existing routing tables routes ids
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/routeid'
     post:
       x-authorization:
         - config
@@ -151,6 +197,12 @@ paths:
       responses:
         '201':
           description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/routeid'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -177,7 +229,7 @@ paths:
         name: routeid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/routeid'
       responses:
         '200':
           description: Successful get
@@ -199,7 +251,7 @@ paths:
         name: routeid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ruleid'
       responses:
         '200':
           description: Successful delete
@@ -227,6 +279,12 @@ paths:
       responses:
         '201':
           description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ruleid'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -253,7 +311,7 @@ paths:
         name: ruleid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ruleid'
       responses:
         '200':
           description: Successful get
@@ -275,7 +333,7 @@ paths:
         name: ruleid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/ruleid'
       responses:
         '200':
           description: Successful delete
@@ -303,6 +361,12 @@ paths:
       responses:
         '201':
           description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/netnsid'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -329,7 +393,7 @@ paths:
         name: netnsid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/netnsid'
       responses:
         '200':
           description: Successful get
@@ -351,7 +415,7 @@ paths:
         name: netnsid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/netnsid'
       responses:
         '200':
           description: Successful delete
@@ -379,6 +443,12 @@ paths:
       responses:
         '201':
           description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/vrfid'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -405,7 +475,7 @@ paths:
         name: vrfid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/vrfid'
       responses:
         '200':
           description: Successful get
@@ -427,7 +497,7 @@ paths:
         name: vrfid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/vrfid'
       responses:
         '200':
           description: Successful delete
@@ -456,6 +526,12 @@ paths:
       responses:
         '201':
           description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/nftableid'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -482,7 +558,7 @@ paths:
         name: nftableid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/nftableid'
       responses:
         '200':
           description: Successful get
@@ -504,7 +580,7 @@ paths:
         name: nftableid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/nftableid'
       responses:
         '200':
           description: Successful delete
@@ -529,6 +605,26 @@ components:
       description: "This is equivalent to 0.0.0.0/0 or ::/0"
       enum: 
         - "default"
+    routeid:
+      type: integer
+      example: 42
+      description: Incremental route identifier
+    ruleid:
+      type: integer
+      example: 42
+      description: Incremental rule identifier
+    netnsid:
+      type: string
+      example: yanetnamespace
+      description: Network namespace identifier
+    vrfid:
+      type: integer
+      example: 42
+      description: VRF identifier
+    nftableid:
+      type: integer
+      example: 42
+      description: Net Filter Table identifier
     ifname:
       example: "dummy0"
       description: |
@@ -594,7 +690,7 @@ components:
       description: Network Namespace
       properties:
         name:
-          type: string
+          $ref: '#/components/schemas/netnsid'
     nftable:
       type: object
       description: Net Filter Table
