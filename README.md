@@ -1,6 +1,15 @@
 OpenAPI templates
 -----------------
 
+## How to
+
+Entrypoint to increment OpenAPI spec is 
+
+    swaggerui/swagger.yaml
+
+Extend it and run ./gen_templates.sh to regenerate templates.
+
+
 TODO
 ----
 
