@@ -21,6 +21,10 @@ func LinkCreate(ifname string, kind string) error {
 		return NewLinkExistsConflictError(ifname)
 	}
 
+	if len(ifname) > 10 {
+		return NewBadLinkNameError(ifname)
+	}
+
 	switch kind {
 	case "dummy":
 		{

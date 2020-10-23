@@ -12,6 +12,8 @@ package openapi
 
 import (
 	"net/http"
+
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 )
 
 //Response return a ImplResponse struct filled
@@ -23,12 +25,21 @@ func Response(code int, body interface{}) ImplResponse {
 func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
-			default:
+		case *nc.ConflictError:
 			{
-				return Response(http.StatusNotImplemented, err), err
+				return Response(http.StatusConflict, err), err
+			}
+		case *nc.SemanticError:
+			{
+				return Response(http.StatusBadRequest, err), err
+			}
+		default:
+			{
+				return Response(http.StatusInternalServerError, nil), nil
 			}
 		}
 	}
+
 	return Response(http.StatusCreated, body), nil
 }
 
@@ -36,7 +47,7 @@ func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
 func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
-			default:
+		default:
 			{
 				return Response(http.StatusNotImplemented, err), err
 			}
@@ -49,7 +60,7 @@ func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
 func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
-			default:
+		default:
 			{
 				return Response(http.StatusNotImplemented, err), err
 			}
