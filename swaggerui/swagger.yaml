@@ -258,6 +258,27 @@ paths:
         "404":
           description: Not found
   /config/rules:
+    get:
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigRulesGet
+      summary: |
+        Get all ip rules list
+      description: |
+        Get all ip rules list
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ruleid'
     post:
       x-authorization:
         - config
@@ -340,6 +361,27 @@ paths:
         "404":
           description: Not found
   /config/netns:
+    get:
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigNetNSsGet
+      summary: |
+        Get the list all network namespaces
+      description: |
+        Get the list all network namespaces
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/netnsid'
     post:
       x-authorization:
         - config
@@ -422,6 +464,27 @@ paths:
         "404":
           description: Not found
   /config/vrfs:
+    get:
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigVRFsGet
+      summary: |
+        Get the list all VRFs
+      description: |
+        Get the list all VRFs
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/vrfid'
     post:
       x-authorization:
         - config
@@ -505,6 +568,27 @@ paths:
           description: Not found
 
   /config/nftables:
+    get:
+      x-authorization:
+        - config
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigNFTablesGet
+      summary: |
+        Get the list all NFTables
+      description: |
+        Get the list all NFTables
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/nftableid'
     post:
       x-authorization:
         - config
