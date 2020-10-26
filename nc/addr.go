@@ -6,7 +6,11 @@ import (
 	"strconv"
 )
 
-//CIDRAddr is an address and a network mask
+// CIDRAddr is an address and a network mask
+// Additionally to a net.IPNet, it allows for specifying
+// further than the netmask bits. Those are intended to define
+// an addresses within the IP network being defined along with.
+// E.g. : 10.1.2.3/24 -> 10.1.2.3 in network 10.1.2.0/24
 type CIDRAddr struct {
 	ip  net.IP
 	net net.IPNet
@@ -17,6 +21,11 @@ func NewCIDRAddr(addr string) CIDRAddr {
 	a := CIDRAddr{}
 	a.Parse(addr)
 	return a
+}
+
+//ParseIPNet translates an IP network into a CIDRAddr
+func (a *CIDRAddr) ParseIPNet(ip net.IPNet) {
+	a.Parse(ip.String())
 }
 
 //Parse loads a CIDR address from a string. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
