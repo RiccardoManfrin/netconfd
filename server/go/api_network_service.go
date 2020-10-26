@@ -84,7 +84,7 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	nclink, err := nc.LinkGet(ifname)
+	nclink, err := nc.LinkGet(nc.LinkID(ifname))
 	if err != nil {
 		return GetErrorResponse(err, nil)
 	}
