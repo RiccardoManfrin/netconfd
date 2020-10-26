@@ -7,9 +7,9 @@ import (
 
 // LinkAddrInfo struct for LinkAddrInfo
 type LinkAddrInfo struct {
-	Local     CIDRAddr `json:"local,omitempty"`
-	Prefixlen int32    `json:"prefixlen,omitempty"`
-	Broadcast CIDRAddr `json:"broadcast,omitempty"`
+	Local CIDRAddr `json:"local,omitempty"`
+	//Prefixlen int32    `json:"prefixlen,omitempty"`
+	//Broadcast CIDRAddr `json:"broadcast,omitempty"`
 }
 
 //LinkLinkinfo definition
@@ -21,28 +21,67 @@ type LinkLinkinfo struct {
 //Link definition
 type Link struct {
 	// Inteface index ID
-	Ifindex *int32 `json:"ifindex,omitempty"`
+	Ifindex int32 `json:"ifindex,omitempty"`
 	// Interface name
 	Ifname string `json:"ifname"`
 	// Maximum Transfer Unit value
-	Mtu      *int32          `json:"mtu,omitempty"`
-	Linkinfo *LinkLinkinfo   `json:"linkinfo,omitempty"`
-	LinkType string          `json:"link_type"`
-	Address  *string         `json:"address,omitempty"`
-	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
+	Mtu      int32          `json:"mtu,omitempty"`
+	Linkinfo LinkLinkinfo   `json:"linkinfo,omitempty"`
+	LinkType string         `json:"link_type"`
+	Address  string         `json:"address,omitempty"`
+	AddrInfo []LinkAddrInfo `json:"addr_info,omitempty"`
 }
 
 //LinksGet Returns the list of existing link layer devices on the machine
-func LinksGet() ([]Link, error) {
+func LinksGet() ([]string, error) {
 	links, err := netlink.LinkList()
 	if err != nil {
 		return nil, err
 	}
-	nclinks := make([]Link, len(links))
+	nclinks := make([]string, len(links))
 	for i, l := range links {
-		nclinks[i].Ifname = l.Attrs().Name
+		nclinks[i] = l.Attrs().Name
 	}
 	return nclinks, nil
+}
+
+//LinkGet Returns the list of existing link layer devices on the machine
+func LinkGet(ifname string) (Link, error) {
+	nclink := Link{}
+	link, err := netlink.LinkByName(ifname)
+	if err == nil {
+		la := link.Attrs()
+		nclink.Ifname = la.Name
+		nclink.Mtu = int32(la.MTU)
+		nclink.Linkinfo.InfoKind = link.Type()
+		nclink.LinkType = la.EncapType
+		addrs, err := netlink.AddrList(link, netlink.FAMILY_ALL)
+		if err == nil {
+			nclink.AddrInfo = make([]LinkAddrInfo, len(addrs))
+			for i, a := range addrs {
+				nclink.AddrInfo[i].Local.Parse(a.IPNet.String())
+			}
+		}
+	}
+	return nclink, err
+}
+
+// Route IP L3 Ruote entry
+type Route struct {
+	Dst     *RouteDst `json:"dst,omitempty"`
+	Gateway *Ip       `json:"gateway,omitempty"`
+	// Interface name
+	Dev      *string `json:"dev,omitempty"`
+	Protocol *string `json:"protocol,omitempty"`
+	Metric   *int32  `json:"metric,omitempty"`
+	Scope    *Scope  `json:"scope,omitempty"`
+	Prefsrc  *Ip     `json:"prefsrc,omitempty"`
+	// Route flags
+	Flags *[]string `json:"flags,omitempty"`
+}
+
+func RoutesGet() ([]Routes, error) {
+
 }
 
 // LinkCreate creates a link layer interface

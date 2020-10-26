@@ -84,8 +84,33 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
 	//return Response(404, nil),nil
 
-	err := errors.New("ConfigLinkGet method not implemented")
-	return GetErrorResponse(err, nil)
+	nclink, err := nc.LinkGet(ifname)
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
+	link := Link{
+		Ifname:   nclink.Ifname,
+		LinkType: nclink.LinkType,
+		Mtu:      &nclink.Mtu,
+	}
+
+	if len(nclink.AddrInfo) > 0 {
+		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
+		for i, a := range nclink.AddrInfo {
+			ip := a.Local.String()
+			lai[i].Local = &Ip{string: &ip}
+		}
+		link.AddrInfo = &lai
+	}
+	lli := LinkLinkinfo{}
+
+	if len(nclink.Linkinfo.InfoKind) > 0 {
+		lli.InfoKind = &nclink.Linkinfo.InfoKind
+	}
+
+	link.Linkinfo = &lli
+
+	return GetErrorResponse(err, link)
 }
 
 // ConfigLinksGet - Get all link layer interfaces
@@ -95,15 +120,7 @@ func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, e
 
 	//TODO: Uncomment the next line to return response Response(200, []string{}) or use other options such as http.Ok ...
 	//return Response(200, []string{}), nil
-	var links []string = nil
-	nclinks, err := nc.LinksGet()
-	if err == nil {
-		links = make([]string, len(nclinks))
-		for i, l := range nclinks {
-			links[i] = l.Ifname
-		}
-	}
-
+	links, err := nc.LinksGet()
 	return GetErrorResponse(err, links)
 
 }
@@ -284,8 +301,8 @@ func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, 
 	//TODO: Uncomment the next line to return response Response(200, []int32{}) or use other options such as http.Ok ...
 	//return Response(200, []int32{}), nil
 
-	err := errors.New("ConfigRoutesGet method not implemented")
-	return GetErrorResponse(err, nil)
+	routes, err := nc.RoutesGet()
+	return GetErrorResponse(err, routes)
 }
 
 // ConfigRuleCreate - Configures an IP rule
