@@ -830,7 +830,7 @@ components:
           local: 10.1.2.3
         mtu: 6
         linkinfo:
-          info_kind: dummy
+          info_kind: device
       properties:
         __id:
           description: |
@@ -874,21 +874,22 @@ components:
       description: |
         Additional link info attributes
       example:
-        info_kind: dummy
+        info_kind: device
       properties:
         info_kind:
-          description: "Type of link layer interface. Supported Types:\n  * `dummy`\
-            \ - Dummy link type interface for binding intenal services\n  * `bridge`\
-            \ - Link layer virtual switch type interface\n  * `bond` - Bond type interface\
-            \ letting two interfaces be seen as one\n  * `vlan` - Virtual LAN (TAG\
-            \ ID based) interface\n  * `veth` - Virtual ethernet (with virtual MAC\
-            \ and IP address)\n  * `macvlan` - Direct virtual eth interface connected\
-            \ to the physical interface, \n    with owned mac address\n  * `ipvlan`\
-            \ - Direct virtual eth interface connected to the physical interface.\n\
-            \    Physical interface MAC address is reused. L2 type directly connects\
-            \ the lan to \n    the host phyisical device. L3 type adds a routing layer\
-            \ in between.\n"
+          description: "Type of link layer interface. Supported Types:\n  * `device`-\
+            \ Physical device\n  * `dummy` - Dummy link type interface for binding\
+            \ intenal services\n  * `bridge` - Link layer virtual switch type interface\n\
+            \  * `bond` - Bond type interface letting two interfaces be seen as one\n\
+            \  * `vlan` - Virtual LAN (TAG ID based) interface\n  * `veth` - Virtual\
+            \ ethernet (with virtual MAC and IP address)\n  * `macvlan` - Direct virtual\
+            \ eth interface connected to the physical interface, \n    with owned\
+            \ mac address\n  * `ipvlan` - Direct virtual eth interface connected to\
+            \ the physical interface.\n    Physical interface MAC address is reused.\
+            \ L2 type directly connects the lan to \n    the host phyisical device.\
+            \ L3 type adds a routing layer in between.\n"
           enum:
+          - device
           - dummy
           - bridge
           - bond
