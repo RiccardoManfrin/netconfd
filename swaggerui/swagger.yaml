@@ -709,6 +709,8 @@ components:
       type: integer
       example: 42
       description: Net Filter Table identifier
+    linkid:
+      $ref: '#/components/schemas/ifname'
     ifname:
       example: "dummy0"
       description: |
@@ -810,6 +812,8 @@ components:
     link:
       type: object
       properties:
+        __id:
+          $ref: '#/components/schemas/linkid'
         ifindex:
           description: |
             Inteface index ID
