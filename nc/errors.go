@@ -24,6 +24,18 @@ func NewBadAddressError(c CIDRAddr) error {
 }
 
 //NewLinkExistsConflictError returns a Conflict error on link layer interfaces
-func NewLinkExistsConflictError(ifname string) error {
-	return &ConflictError{reason: "Link " + ifname + " exists"}
+func NewLinkExistsConflictError(linkID LinkID) error {
+	return &ConflictError{reason: "Link " + string(linkID) + " exists"}
+}
+
+//NotFoundError is a logical error on the content of the operation requested to be performed
+type NotFoundError ConflictError
+
+func (e *NotFoundError) Error() string {
+	return fmt.Sprintf("Not Found: %s", e.reason)
+}
+
+//NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
+func NewRouteByIDNotFoundError(routeid RouteID) error {
+	return &ConflictError{reason: "Route ID" + string(routeid) + " did not match"}
 }
