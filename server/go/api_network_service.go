@@ -118,11 +118,11 @@ func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, e
 	// TODO - update ConfigLinksGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, []string{}) or use other options such as http.Ok ...
-	//return Response(200, []string{}), nil
+	//TODO: Uncomment the next line to return response Response(200, []Link{}) or use other options such as http.Ok ...
+	//return Response(200, []Link{}), nil
+
 	links, err := nc.LinksGet()
 	return GetErrorResponse(err, links)
-
 }
 
 // ConfigNFTableCreate - Configures an new NFTable
@@ -298,8 +298,8 @@ func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, 
 	// TODO - update ConfigRoutesGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, []int32{}) or use other options such as http.Ok ...
-	//return Response(200, []int32{}), nil
+	//TODO: Uncomment the next line to return response Response(200, []Route{}) or use other options such as http.Ok ...
+	//return Response(200, []Route{}), nil
 
 	routes, err := nc.RoutesGet()
 	return GetErrorResponse(err, routes)

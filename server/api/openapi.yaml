@@ -61,7 +61,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ifname'
+                  $ref: '#/components/schemas/link'
                 type: array
           description: Sucessful retrieval
       summary: |
@@ -166,7 +166,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/routeid'
+                  $ref: '#/components/schemas/route'
                 type: array
           description: Sucessful retrieval
       summary: |
@@ -713,6 +713,8 @@ components:
       description: Net Filter Table identifier
       example: 42
       type: integer
+    linkid:
+      $ref: '#/components/schemas/ifname'
     ifname:
       description: |
         Interface name
@@ -773,7 +775,21 @@ components:
       type: object
     route:
       description: IP L3 Ruote entry
+      example:
+        prefsrc: 10.1.2.3
+        protocol: protocol
+        dev: dummy0
+        metric: 0
+        __id: 42
+        flags:
+        - null
+        - null
+        gateway: 10.1.2.3
       properties:
+        __id:
+          description: Incremental route identifier
+          example: 42
+          type: integer
         dst:
           $ref: '#/components/schemas/route_dst'
         gateway:
@@ -799,7 +815,29 @@ components:
           type: array
       type: object
     link:
+      example:
+        link_type: ether
+        ifindex: 0
+        address: address
+        ifname: dummy0
+        __id: dummy0
+        addr_info:
+        - broadcast: broadcast
+          prefixlen: 1
+          local: 10.1.2.3
+        - broadcast: broadcast
+          prefixlen: 1
+          local: 10.1.2.3
+        mtu: 6
+        linkinfo:
+          info_kind: dummy
       properties:
+        __id:
+          description: |
+            Interface name
+          example: dummy0
+          maxLength: 15
+          type: string
         ifindex:
           description: |
             Inteface index ID
@@ -835,6 +873,8 @@ components:
     link_linkinfo:
       description: |
         Additional link info attributes
+      example:
+        info_kind: dummy
       properties:
         info_kind:
           description: "Type of link layer interface. Supported Types:\n  * `dummy`\
@@ -859,6 +899,10 @@ components:
           type: string
       type: object
     link_addr_info:
+      example:
+        broadcast: broadcast
+        prefixlen: 1
+        local: 10.1.2.3
       properties:
         local:
           $ref: '#/components/schemas/ip'

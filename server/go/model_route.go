@@ -17,6 +17,8 @@ import (
 
 // Route IP L3 Ruote entry
 type Route struct {
+	// Incremental route identifier
+	Id *int32 `json:"__id,omitempty"`
 	Dst *RouteDst `json:"dst,omitempty"`
 	Gateway *Ip `json:"gateway,omitempty"`
 	// Interface name 
@@ -44,6 +46,38 @@ func NewRoute() *Route {
 func NewRouteWithDefaults() *Route {
 	this := Route{}
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *Route) GetId() int32 {
+	if o == nil || o.Id == nil {
+		var ret int32
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Route) GetIdOk() (*int32, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Route) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given int32 and assigns it to the Id field.
+func (o *Route) SetId(v int32) {
+	o.Id = &v
 }
 
 // GetDst returns the Dst field value if set, zero value otherwise.
@@ -304,6 +338,9 @@ func (o *Route) SetFlags(v []string) {
 
 func (o Route) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Id != nil {
+		toSerialize["__id"] = o.Id
+	}
 	if o.Dst != nil {
 		toSerialize["dst"] = o.Dst
 	}

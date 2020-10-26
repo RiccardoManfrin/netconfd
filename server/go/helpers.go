@@ -12,8 +12,6 @@ package openapi
 
 import (
 	"net/http"
-
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 )
 
 //Response return a ImplResponse struct filled
@@ -25,14 +23,6 @@ func Response(code int, body interface{}) ImplResponse {
 func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
-		case *nc.ConflictError:
-			{
-				return Response(http.StatusConflict, err), err
-			}
-		case *nc.SemanticError:
-			{
-				return Response(http.StatusBadRequest, err), err
-			}
 		default:
 			{
 				return Response(http.StatusInternalServerError, err), err
