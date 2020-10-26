@@ -71,7 +71,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ifname'
+                  $ref: '#/components/schemas/link'
     post:
       x-authorization:
         - config
@@ -175,7 +175,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/routeid'
+                  $ref: '#/components/schemas/route'
     post:
       x-authorization:
         - config
@@ -785,6 +785,8 @@ components:
       type: object
       description: IP L3 Ruote entry
       properties:
+        __id:
+          $ref: '#/components/schemas/routeid'
         dst:
           $ref: '#/components/schemas/route_dst'
         gateway:
