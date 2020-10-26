@@ -5,6 +5,46 @@ import (
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )
 
+// LinkAddrInfo struct for LinkAddrInfo
+type LinkAddrInfo struct {
+	Local     CIDRAddr `json:"local,omitempty"`
+	Prefixlen int32    `json:"prefixlen,omitempty"`
+	Broadcast CIDRAddr `json:"broadcast,omitempty"`
+}
+
+//LinkLinkinfo definition
+type LinkLinkinfo struct {
+	// Type of link layer interface. Supported Types:   * `dummy` - Dummy link type interface for binding intenal services   * `bridge` - Link layer virtual switch type interface   * `bond` - Bond type interface letting two interfaces be seen as one   * `vlan` - Virtual LAN (TAG ID based) interface   * `veth` - Virtual ethernet (with virtual MAC and IP address)   * `macvlan` - Direct virtual eth interface connected to the physical interface,      with owned mac address   * `ipvlan` - Direct virtual eth interface connected to the physical interface.     Physical interface MAC address is reused. L2 type directly connects the lan to      the host phyisical device. L3 type adds a routing layer in between.
+	InfoKind string `json:"info_kind,omitempty"`
+}
+
+//Link definition
+type Link struct {
+	// Inteface index ID
+	Ifindex *int32 `json:"ifindex,omitempty"`
+	// Interface name
+	Ifname string `json:"ifname"`
+	// Maximum Transfer Unit value
+	Mtu      *int32          `json:"mtu,omitempty"`
+	Linkinfo *LinkLinkinfo   `json:"linkinfo,omitempty"`
+	LinkType string          `json:"link_type"`
+	Address  *string         `json:"address,omitempty"`
+	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
+}
+
+//LinksGet Returns the list of existing link layer devices on the machine
+func LinksGet() ([]Link, error) {
+	links, err := netlink.LinkList()
+	if err != nil {
+		return nil, err
+	}
+	nclinks := make([]Link, len(links))
+	for i, l := range links {
+		nclinks[i].Ifname = l.Attrs().Name
+	}
+	return nclinks, nil
+}
+
 // LinkCreate creates a link layer interface
 // Link types (or kind):
 // $> ip link help type
@@ -48,7 +88,6 @@ func LinkDelete(ifname string) error {
 
 //LinkDummyCreate Creates a new dummy link
 func LinkDummyCreate(ifname string) error {
-
 	return nil
 }
 
