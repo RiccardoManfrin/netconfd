@@ -18,8 +18,12 @@ type LinkLinkinfo struct {
 	InfoKind string `json:"info_kind,omitempty"`
 }
 
+//LinkID ifname copy identifier
+type LinkID string
+
 //Link definition
 type Link struct {
+	LinkID LinkID
 	// Inteface index ID
 	Ifindex int32 `json:"ifindex,omitempty"`
 	// Interface name
@@ -35,6 +39,7 @@ type Link struct {
 func linkParse(link netlink.Link) Link {
 	nclink := Link{}
 	la := link.Attrs()
+	nclink.LinkID = LinkID(la.Name)
 	nclink.Ifname = la.Name
 	nclink.Mtu = int32(la.MTU)
 	nclink.Linkinfo.InfoKind = link.Type()
@@ -63,31 +68,13 @@ func LinksGet() ([]Link, error) {
 }
 
 //LinkGet Returns the list of existing link layer devices on the machine
-func LinkGet(ifname string) (Link, error) {
+func LinkGet(LinkID LinkID) (Link, error) {
 	nclink := Link{}
-	link, err := netlink.LinkByName(ifname)
+	link, err := netlink.LinkByName(string(LinkID))
 	if err == nil {
 		nclink = linkParse(link)
 	}
 	return nclink, err
-}
-
-// Route IP L3 Ruote entry
-type Route struct {
-	Dst     *RouteDst `json:"dst,omitempty"`
-	Gateway *Ip       `json:"gateway,omitempty"`
-	// Interface name
-	Dev      *string `json:"dev,omitempty"`
-	Protocol *string `json:"protocol,omitempty"`
-	Metric   *int32  `json:"metric,omitempty"`
-	Scope    *Scope  `json:"scope,omitempty"`
-	Prefsrc  *Ip     `json:"prefsrc,omitempty"`
-	// Route flags
-	Flags *[]string `json:"flags,omitempty"`
-}
-
-func RoutesGet() ([]Routes, error) {
-
 }
 
 // LinkCreate creates a link layer interface
@@ -103,7 +90,7 @@ func LinkCreate(ifname string, kind string) error {
 
 	l, _ := netlink.LinkByName(ifname)
 	if l != nil {
-		return NewLinkExistsConflictError(ifname)
+		return NewLinkExistsConflictError(LinkID(ifname))
 	}
 
 	switch kind {
