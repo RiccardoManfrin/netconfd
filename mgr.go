@@ -177,10 +177,12 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	var respToValidate bytes.Buffer
-	io.MultiWriter(w, &respToValidate)
+	wrw := &wrapperResponseWriter{
+		ResponseWriter: w,
+		buf:            &bytes.Buffer{},
+	}
 
-	m.routeHandlers.ServeHTTP(w, r)
+	m.routeHandlers.ServeHTTP(wrw, r)
 
 	responseValidationInput := &openapi3filter.ResponseValidationInput{
 		RequestValidationInput: requestValidationInput,
@@ -188,8 +190,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Header:                 w.Header(),
 	}
 
-	data, _ := json.Marshal(respToValidate)
-	responseValidationInput.SetBodyBytes(data)
+	responseValidationInput.SetBodyBytes(wrw.buf.Bytes())
 
 	// Validate response.
 	if err := openapi3filter.ValidateResponse(ctx, responseValidationInput); err != nil {
@@ -210,4 +211,14 @@ func (m *Manager) Start() {
 	logger.Log.Notice("Starting manager...")
 
 	go m.HTTPServer.ListenAndServe()
+}
+
+type wrapperResponseWriter struct {
+	http.ResponseWriter
+	buf *bytes.Buffer
+}
+
+func (wrw *wrapperResponseWriter) Write(p []byte) (int, error) {
+	wrw.ResponseWriter.Write(p)
+	return wrw.buf.Write(p)
 }
