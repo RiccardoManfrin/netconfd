@@ -32,15 +32,32 @@ type Link struct {
 	AddrInfo []LinkAddrInfo `json:"addr_info,omitempty"`
 }
 
+func linkParse(link netlink.Link) Link {
+	nclink := Link{}
+	la := link.Attrs()
+	nclink.Ifname = la.Name
+	nclink.Mtu = int32(la.MTU)
+	nclink.Linkinfo.InfoKind = link.Type()
+	nclink.LinkType = la.EncapType
+	addrs, err := netlink.AddrList(link, netlink.FAMILY_ALL)
+	if err == nil {
+		nclink.AddrInfo = make([]LinkAddrInfo, len(addrs))
+		for i, a := range addrs {
+			nclink.AddrInfo[i].Local.Parse(a.IPNet.String())
+		}
+	}
+	return nclink
+}
+
 //LinksGet Returns the list of existing link layer devices on the machine
-func LinksGet() ([]string, error) {
+func LinksGet() ([]Link, error) {
 	links, err := netlink.LinkList()
 	if err != nil {
 		return nil, err
 	}
-	nclinks := make([]string, len(links))
+	nclinks := make([]Link, len(links))
 	for i, l := range links {
-		nclinks[i] = l.Attrs().Name
+		nclinks[i] = linkParse(l)
 	}
 	return nclinks, nil
 }
@@ -50,18 +67,7 @@ func LinkGet(ifname string) (Link, error) {
 	nclink := Link{}
 	link, err := netlink.LinkByName(ifname)
 	if err == nil {
-		la := link.Attrs()
-		nclink.Ifname = la.Name
-		nclink.Mtu = int32(la.MTU)
-		nclink.Linkinfo.InfoKind = link.Type()
-		nclink.LinkType = la.EncapType
-		addrs, err := netlink.AddrList(link, netlink.FAMILY_ALL)
-		if err == nil {
-			nclink.AddrInfo = make([]LinkAddrInfo, len(addrs))
-			for i, a := range addrs {
-				nclink.AddrInfo[i].Local.Parse(a.IPNet.String())
-			}
-		}
+		nclink = linkParse(link)
 	}
 	return nclink, err
 }
