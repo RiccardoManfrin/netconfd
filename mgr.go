@@ -202,6 +202,10 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func NewManager(conffile *string) *Manager {
 	m := &Manager{}
 	m.LoadConfig(conffile)
+
+	//Opt in IPv4 and IPv6 validation
+	openapi3.DefineIPv4Format()
+	openapi3.DefineIPv6Format()
 	return m
 }
 
