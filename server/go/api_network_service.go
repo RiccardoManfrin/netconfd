@@ -72,6 +72,29 @@ func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (I
 	err := errors.New("ConfigLinkDel method not implemented")
 	return DeleteErrorResponse(err, nil)
 }
+func ncLinkParse(nclink nc.Link) Link {
+	link := Link{
+		Id:       &nclink.Ifname,
+		Ifname:   nclink.Ifname,
+		Ifindex:  &nclink.Ifindex,
+		LinkType: nclink.LinkType,
+	}
+	if len(nclink.AddrInfo) > 0 {
+		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
+		for i, a := range nclink.AddrInfo {
+			ip := a.Local.String()
+			lai[i].Local = &Ip{string: &ip}
+		}
+		link.AddrInfo = &lai
+	}
+
+	lli := LinkLinkinfo{}
+	if len(nclink.Linkinfo.InfoKind) > 0 {
+		lli.InfoKind = &nclink.Linkinfo.InfoKind
+		link.Linkinfo = &lli
+	}
+	return link
+}
 
 // ConfigLinkGet - Retrieve link layer interface information
 func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (ImplResponse, error) {
@@ -88,29 +111,8 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 	if err != nil {
 		return GetErrorResponse(err, nil)
 	}
-	link := Link{
-		Ifname:   nclink.Ifname,
-		LinkType: nclink.LinkType,
-		Mtu:      &nclink.Mtu,
-	}
 
-	if len(nclink.AddrInfo) > 0 {
-		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
-		for i, a := range nclink.AddrInfo {
-			ip := a.Local.String()
-			lai[i].Local = &Ip{string: &ip}
-		}
-		link.AddrInfo = &lai
-	}
-	lli := LinkLinkinfo{}
-
-	if len(nclink.Linkinfo.InfoKind) > 0 {
-		lli.InfoKind = &nclink.Linkinfo.InfoKind
-	}
-
-	link.Linkinfo = &lli
-
-	return GetErrorResponse(err, link)
+	return GetErrorResponse(err, ncLinkParse(nclink))
 }
 
 // ConfigLinksGet - Get all link layer interfaces
@@ -120,8 +122,15 @@ func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, e
 
 	//TODO: Uncomment the next line to return response Response(200, []Link{}) or use other options such as http.Ok ...
 	//return Response(200, []Link{}), nil
+	var links []Link
+	nclinks, err := nc.LinksGet()
+	if err == nil {
+		links = make([]Link, len(nclinks))
+		for i, l := range nclinks {
+			links[i] = ncLinkParse(l)
+		}
+	}
 
-	links, err := nc.LinksGet()
 	return GetErrorResponse(err, links)
 }
 
