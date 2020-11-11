@@ -28,6 +28,18 @@ func NewLinkExistsConflictError(linkID LinkID) error {
 	return &ConflictError{reason: "Link " + string(linkID) + " exists"}
 }
 
+//UnknownTypeError is a logical error on the content of the operation requested to be performed
+type UnknownTypeError SemanticError
+
+func (e *UnknownTypeError) Error() string {
+	return fmt.Sprintf("Unknown type: %s", e.reason)
+}
+
+//NewUnknownLinkKindError returns a UnknownTypeError error on link layer type interfaces
+func NewUnknownLinkKindError(linkKind string) error {
+	return &SemanticError{reason: "LinkKind " + string(linkKind) + " not known"}
+}
+
 //NotFoundError is a logical error on the content of the operation requested to be performed
 type NotFoundError ConflictError
 

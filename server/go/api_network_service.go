@@ -54,7 +54,11 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	err := nc.LinkCreate(link.Ifname, link.Linkinfo.GetInfoKind())
+	nclink := nc.Link{
+		Ifname:   link.GetIfname(),
+		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
+	}
+	err := nc.LinkCreate(nclink)
 	return PostErrorResponse(err, nil)
 }
 

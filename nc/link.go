@@ -86,7 +86,10 @@ func LinkGet(LinkID LinkID) (Link, error) {
 //	gre | gretap | erspan | ip6gre | ip6gretap | ip6erspan |
 //	vti | nlmon | team_slave | bond_slave | ipvlan | geneve |
 //	bridge_slave | vrf | macsec }
-func LinkCreate(ifname string, kind string) error {
+func LinkCreate(link Link) error {
+	var err error = nil
+	ifname := link.Ifname
+	kind := link.Linkinfo.InfoKind
 
 	l, _ := netlink.LinkByName(ifname)
 	if l != nil {
@@ -96,31 +99,38 @@ func LinkCreate(ifname string, kind string) error {
 	switch kind {
 	case "dummy":
 		{
-			return LinkDummyCreate(ifname)
+			err = LinkDummyCreate(ifname)
 		}
 	case "bond":
 		{
-			return LinkBondCreate(ifname)
+			err = LinkBondCreate(ifname)
 		}
 	case "bridge":
 		{
-			return LinkBridgeCreate(ifname)
+			err = LinkBridgeCreate(ifname)
 		}
 	default:
-		logger.Log.Fatal("Unknown Link Type " + kind)
+		err = NewUnknownLinkKindError(kind)
 	}
-	return nil
+	if err != nil {
+		logger.Log.Warning(err)
+	}
+	return err
 }
 
 //LinkDelete deletes a link layer interface
 func LinkDelete(ifname string) error {
-
 	return nil
 }
 
 //LinkDummyCreate Creates a new dummy link
 func LinkDummyCreate(ifname string) error {
-	return nil
+	attrs := netlink.NewLinkAttrs()
+	attrs.Name = ifname
+	link := &netlink.Dummy{
+		LinkAttrs: attrs,
+	}
+	return netlink.LinkAdd(link)
 }
 
 //LinkBondCreate Creates a new bond link
