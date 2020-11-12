@@ -851,6 +851,7 @@ components:
                   * `ipvlan` - Direct virtual eth interface connected to the physical interface.
                     Physical interface MAC address is reused. L2 type directly connects the lan to 
                     the host phyisical device. L3 type adds a routing layer in between.
+                  * `ppp` - Point to Point Protocol link type
               enum:
                 - device
                 - dummy
@@ -860,6 +861,7 @@ components:
                 - veth
                 - macvlan
                 - ipvlan
+                - ppp
             info_data:
               type: object
               description: Additional information on the link

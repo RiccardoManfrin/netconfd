@@ -934,7 +934,8 @@ components:
             \ mac address\n  * `ipvlan` - Direct virtual eth interface connected to\
             \ the physical interface.\n    Physical interface MAC address is reused.\
             \ L2 type directly connects the lan to \n    the host phyisical device.\
-            \ L3 type adds a routing layer in between.\n"
+            \ L3 type adds a routing layer in between.\n  * `ppp` - Point to Point\
+            \ Protocol link type\n"
           enum:
           - device
           - dummy
@@ -944,6 +945,7 @@ components:
           - veth
           - macvlan
           - ipvlan
+          - ppp
           type: string
         info_data:
           $ref: '#/components/schemas/link_linkinfo_info_data'
