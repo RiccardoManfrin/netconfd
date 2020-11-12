@@ -823,14 +823,19 @@ components:
         __id: dummy0
         addr_info:
         - broadcast: broadcast
-          prefixlen: 1
+          prefixlen: 2
           local: 10.1.2.3
         - broadcast: broadcast
-          prefixlen: 1
+          prefixlen: 2
           local: 10.1.2.3
         mtu: 6
         linkinfo:
           info_kind: device
+          info_data:
+            mode: active-backup
+            updelay: 5
+            miimon: 1
+            downdelay: 5
       properties:
         __id:
           description: |
@@ -870,11 +875,53 @@ components:
       - ifname
       - link_type
       type: object
+    link_linkinfo_info_data:
+      description: Additional information on the link
+      example:
+        mode: active-backup
+        updelay: 5
+        miimon: 1
+        downdelay: 5
+      properties:
+        mode:
+          description: |
+            Bonding modes. Supported Modes:
+              * `balance-rr` - Round-robin: Transmit network packets in sequential order from the first available network interface (NIC) slave through the last. This mode provides load balancing and fault tolerance.
+              * `active-backup` - Active-backup: Only one NIC slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The single logical bonded interface's MAC address is externally visible on only one NIC (port) to avoid distortion in the network switch. This mode provides fault tolerance.
+              * `balance-xor` - XOR: Transmit network packets based on a hash of the packet's source and destination. The default algorithm only considers MAC addresses (layer2). Newer versions allow selection of additional policies based on IP addresses (layer2+3) and TCP/UDP port numbers (layer3+4). This selects the same NIC slave for each destination MAC address, IP address, or IP address and port combination, respectively. This mode provides load balancing and fault tolerance.
+              * `broadcast` - Broadcast: Transmit network packets on all slave network interfaces. This mode provides fault tolerance.
+              * `802.3ad` - IEEE 802.3ad Dynamic link aggregation: Creates aggregation groups that share the same speed and duplex settings. Utilizes all slave network interfaces in the active aggregator group according to the 802.3ad specification. This mode is similar to the XOR mode above and supports the same balancing policies. The link is set up dynamically between two LACP-supporting peers.
+              * `balance-tlb` - Adaptive transmit load balancing: Linux bonding driver mode that does not require any special network-switch support. The outgoing network packet traffic is distributed according to the current load (computed relative to the speed) on each network interface slave. Incoming traffic is received by one currently designated slave network interface. If this receiving slave fails, another slave takes over the MAC address of the failed receiving slave.
+              * `balance-alb` - Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special network switch support. The receive load balancing is achieved by ARP negotiation. The bonding driver intercepts the ARP Replies sent by the local system on their way out and overwrites the source hardware address with the unique hardware address of one of the NIC slaves in the single logical bonded interface such that different network-peers use different MAC addresses for their network packet traffic.
+          enum:
+          - active-backup
+          example: active-backup
+          type: string
+        miimon:
+          description: "Specifies the MII link monitoring frequency in milliseconds.\
+            \ \nThe default value is 0, and this will disable the MII monitor\n"
+          type: integer
+        updelay:
+          description: "Specifies the time, in milliseconds, to wait before enabling\
+            \ a slave after a \nlink recovery has been detected. The updelay value\
+            \ should be a multiple of the miimon value\n"
+          type: integer
+        downdelay:
+          description: "Specifies the time, in milliseconds, to wait before disabling\
+            \ a slave after a \nlink failure has been detected. The downdelay value\
+            \ should be a multiple of the miimon value.\n"
+          type: integer
+      type: object
     link_linkinfo:
       description: |
         Additional link info attributes
       example:
         info_kind: device
+        info_data:
+          mode: active-backup
+          updelay: 5
+          miimon: 1
+          downdelay: 5
       properties:
         info_kind:
           description: "Type of link layer interface. Supported Types:\n  * `device`-\
@@ -898,11 +945,13 @@ components:
           - macvlan
           - ipvlan
           type: string
+        info_data:
+          $ref: '#/components/schemas/link_linkinfo_info_data'
       type: object
     link_addr_info:
       example:
         broadcast: broadcast
-        prefixlen: 1
+        prefixlen: 2
         local: 10.1.2.3
       properties:
         local:

@@ -19,6 +19,7 @@ import (
 type LinkLinkinfo struct {
 	// Type of link layer interface. Supported Types:   * `device`- Physical device   * `dummy` - Dummy link type interface for binding intenal services   * `bridge` - Link layer virtual switch type interface   * `bond` - Bond type interface letting two interfaces be seen as one   * `vlan` - Virtual LAN (TAG ID based) interface   * `veth` - Virtual ethernet (with virtual MAC and IP address)   * `macvlan` - Direct virtual eth interface connected to the physical interface,      with owned mac address   * `ipvlan` - Direct virtual eth interface connected to the physical interface.     Physical interface MAC address is reused. L2 type directly connects the lan to      the host phyisical device. L3 type adds a routing layer in between. 
 	InfoKind *string `json:"info_kind,omitempty"`
+	InfoData *LinkLinkinfoInfoData `json:"info_data,omitempty"`
 }
 
 // NewLinkLinkinfo instantiates a new LinkLinkinfo object
@@ -70,10 +71,45 @@ func (o *LinkLinkinfo) SetInfoKind(v string) {
 	o.InfoKind = &v
 }
 
+// GetInfoData returns the InfoData field value if set, zero value otherwise.
+func (o *LinkLinkinfo) GetInfoData() LinkLinkinfoInfoData {
+	if o == nil || o.InfoData == nil {
+		var ret LinkLinkinfoInfoData
+		return ret
+	}
+	return *o.InfoData
+}
+
+// GetInfoDataOk returns a tuple with the InfoData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfo) GetInfoDataOk() (*LinkLinkinfoInfoData, bool) {
+	if o == nil || o.InfoData == nil {
+		return nil, false
+	}
+	return o.InfoData, true
+}
+
+// HasInfoData returns a boolean if a field has been set.
+func (o *LinkLinkinfo) HasInfoData() bool {
+	if o != nil && o.InfoData != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetInfoData gets a reference to the given LinkLinkinfoInfoData and assigns it to the InfoData field.
+func (o *LinkLinkinfo) SetInfoData(v LinkLinkinfoInfoData) {
+	o.InfoData = &v
+}
+
 func (o LinkLinkinfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.InfoKind != nil {
 		toSerialize["info_kind"] = o.InfoKind
+	}
+	if o.InfoData != nil {
+		toSerialize["info_data"] = o.InfoData
 	}
 	return json.Marshal(toSerialize)
 }
