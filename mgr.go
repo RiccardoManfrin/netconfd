@@ -140,6 +140,9 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	m.openapi, err = openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
 	m.router = openapi3filter.NewRouter().WithSwagger(m.openapi)
 
+	openapi3.DefineIPv4Format()
+	openapi3.DefineIPv6Format()
+
 	m.ServeMux = http.NewServeMux()
 	m.HTTPServer = &http.Server{
 		Addr:           m.Conf.Global.Mgmt.Host + ":" + strconv.FormatUint(uint64(m.Conf.Global.Mgmt.Port), 10),
