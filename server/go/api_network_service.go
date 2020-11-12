@@ -88,7 +88,7 @@ func ncLinkParse(nclink nc.Link) Link {
 	if len(nclink.AddrInfo) > 0 {
 		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
 		for i, a := range nclink.AddrInfo {
-			ip := a.Local.String()
+			ip := a.Local.Address()
 			lai[i].Local = &Ip{string: &ip}
 		}
 		link.AddrInfo = &lai

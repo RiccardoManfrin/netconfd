@@ -59,3 +59,13 @@ func (a *CIDRAddr) String() string {
 	}
 	return a.ip.String() + "/" + strconv.Itoa(ones)
 }
+
+//Netmask returns the netmask (e.g. 255.255.255.0) of a CIDR address/network
+func (a *CIDRAddr) Netmask() string {
+	return a.net.IP.String()
+}
+
+//Address returns the address (e.g. 255.255.255.0) of a CIDR address/network
+func (a *CIDRAddr) Address() string {
+	return a.ip.String()
+}
