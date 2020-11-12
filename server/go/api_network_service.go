@@ -57,6 +57,8 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	nclink := nc.Link{
 		Ifname:   link.GetIfname(),
 		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
+		Mtu:      link.GetMtu(),
+		LinkType: link.GetLinkType(),
 	}
 	err := nc.LinkCreate(nclink)
 	return PostErrorResponse(err, nil)
