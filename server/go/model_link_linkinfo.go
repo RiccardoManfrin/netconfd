@@ -17,6 +17,9 @@ import (
 
 // LinkLinkinfo Additional link info attributes 
 type LinkLinkinfo struct {
+	// FILL ME 
+	InfoSlaveKind *string `json:"info_slave_kind,omitempty"`
+	InfoSlaveData *LinkLinkinfoInfoSlaveData `json:"info_slave_data,omitempty"`
 	// Type of link layer interface. Supported Types:   * `device`- Physical device   * `dummy` - Dummy link type interface for binding intenal services   * `bridge` - Link layer virtual switch type interface   * `bond` - Bond type interface letting two interfaces be seen as one   * `vlan` - Virtual LAN (TAG ID based) interface   * `veth` - Virtual ethernet (with virtual MAC and IP address)   * `macvlan` - Direct virtual eth interface connected to the physical interface,      with owned mac address   * `ipvlan` - Direct virtual eth interface connected to the physical interface.     Physical interface MAC address is reused. L2 type directly connects the lan to      the host phyisical device. L3 type adds a routing layer in between.   * `ppp` - Point to Point Protocol link type 
 	InfoKind *string `json:"info_kind,omitempty"`
 	InfoData *LinkLinkinfoInfoData `json:"info_data,omitempty"`
@@ -37,6 +40,70 @@ func NewLinkLinkinfo() *LinkLinkinfo {
 func NewLinkLinkinfoWithDefaults() *LinkLinkinfo {
 	this := LinkLinkinfo{}
 	return &this
+}
+
+// GetInfoSlaveKind returns the InfoSlaveKind field value if set, zero value otherwise.
+func (o *LinkLinkinfo) GetInfoSlaveKind() string {
+	if o == nil || o.InfoSlaveKind == nil {
+		var ret string
+		return ret
+	}
+	return *o.InfoSlaveKind
+}
+
+// GetInfoSlaveKindOk returns a tuple with the InfoSlaveKind field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfo) GetInfoSlaveKindOk() (*string, bool) {
+	if o == nil || o.InfoSlaveKind == nil {
+		return nil, false
+	}
+	return o.InfoSlaveKind, true
+}
+
+// HasInfoSlaveKind returns a boolean if a field has been set.
+func (o *LinkLinkinfo) HasInfoSlaveKind() bool {
+	if o != nil && o.InfoSlaveKind != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetInfoSlaveKind gets a reference to the given string and assigns it to the InfoSlaveKind field.
+func (o *LinkLinkinfo) SetInfoSlaveKind(v string) {
+	o.InfoSlaveKind = &v
+}
+
+// GetInfoSlaveData returns the InfoSlaveData field value if set, zero value otherwise.
+func (o *LinkLinkinfo) GetInfoSlaveData() LinkLinkinfoInfoSlaveData {
+	if o == nil || o.InfoSlaveData == nil {
+		var ret LinkLinkinfoInfoSlaveData
+		return ret
+	}
+	return *o.InfoSlaveData
+}
+
+// GetInfoSlaveDataOk returns a tuple with the InfoSlaveData field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfo) GetInfoSlaveDataOk() (*LinkLinkinfoInfoSlaveData, bool) {
+	if o == nil || o.InfoSlaveData == nil {
+		return nil, false
+	}
+	return o.InfoSlaveData, true
+}
+
+// HasInfoSlaveData returns a boolean if a field has been set.
+func (o *LinkLinkinfo) HasInfoSlaveData() bool {
+	if o != nil && o.InfoSlaveData != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetInfoSlaveData gets a reference to the given LinkLinkinfoInfoSlaveData and assigns it to the InfoSlaveData field.
+func (o *LinkLinkinfo) SetInfoSlaveData(v LinkLinkinfoInfoSlaveData) {
+	o.InfoSlaveData = &v
 }
 
 // GetInfoKind returns the InfoKind field value if set, zero value otherwise.
@@ -105,6 +172,12 @@ func (o *LinkLinkinfo) SetInfoData(v LinkLinkinfoInfoData) {
 
 func (o LinkLinkinfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.InfoSlaveKind != nil {
+		toSerialize["info_slave_kind"] = o.InfoSlaveKind
+	}
+	if o.InfoSlaveData != nil {
+		toSerialize["info_slave_data"] = o.InfoSlaveData
+	}
 	if o.InfoKind != nil {
 		toSerialize["info_kind"] = o.InfoKind
 	}

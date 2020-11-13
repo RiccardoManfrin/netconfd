@@ -16,6 +16,7 @@ go/model_link.go
 go/model_link_addr_info.go
 go/model_link_linkinfo.go
 go/model_link_linkinfo_info_data.go
+go/model_link_linkinfo_info_slave_data.go
 go/model_netns.go
 go/model_network.go
 go/model_route.go

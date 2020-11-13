@@ -25,6 +25,8 @@ type Link struct {
 	Ifname string `json:"ifname"`
 	// Maximum Transfer Unit value 
 	Mtu *int32 `json:"mtu,omitempty"`
+	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to. 
+	Master *string `json:"master,omitempty"`
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
 	LinkType string `json:"link_type"`
 	Address *string `json:"address,omitempty"`
@@ -170,6 +172,38 @@ func (o *Link) SetMtu(v int32) {
 	o.Mtu = &v
 }
 
+// GetMaster returns the Master field value if set, zero value otherwise.
+func (o *Link) GetMaster() string {
+	if o == nil || o.Master == nil {
+		var ret string
+		return ret
+	}
+	return *o.Master
+}
+
+// GetMasterOk returns a tuple with the Master field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetMasterOk() (*string, bool) {
+	if o == nil || o.Master == nil {
+		return nil, false
+	}
+	return o.Master, true
+}
+
+// HasMaster returns a boolean if a field has been set.
+func (o *Link) HasMaster() bool {
+	if o != nil && o.Master != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMaster gets a reference to the given string and assigns it to the Master field.
+func (o *Link) SetMaster(v string) {
+	o.Master = &v
+}
+
 // GetLinkinfo returns the Linkinfo field value if set, zero value otherwise.
 func (o *Link) GetLinkinfo() LinkLinkinfo {
 	if o == nil || o.Linkinfo == nil {
@@ -303,6 +337,9 @@ func (o Link) MarshalJSON() ([]byte, error) {
 	}
 	if o.Mtu != nil {
 		toSerialize["mtu"] = o.Mtu
+	}
+	if o.Master != nil {
+		toSerialize["master"] = o.Master
 	}
 	if o.Linkinfo != nil {
 		toSerialize["linkinfo"] = o.Linkinfo
