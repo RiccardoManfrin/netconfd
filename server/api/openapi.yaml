@@ -770,6 +770,10 @@ components:
     nftable:
       description: Net Filter Table
       type: object
+    macaddr:
+      description: MAC L2 interface HW address
+      example: 08:00:27:76:4f:05
+      type: string
     vrf:
       description: Virtual Routing and Forwarding object
       type: object
@@ -827,10 +831,10 @@ components:
         - UP
         addr_info:
         - broadcast: broadcast
-          prefixlen: 9
+          prefixlen: 7
           local: 10.1.2.3
         - broadcast: broadcast
-          prefixlen: 9
+          prefixlen: 7
           local: 10.1.2.3
         mtu: 6
         master: bond0
@@ -840,14 +844,14 @@ components:
           info_slave_data:
             state: ACTIVE
             mii_status: UP
-            perm_hwaddr: 5
+            perm_hwaddr: 08:00:27:76:4f:05
             link_failure_count: 0
             queue_id: 0
           info_data:
             mode: active-backup
-            updelay: 2
+            updelay: 5
             miimon: 5
-            downdelay: 7
+            downdelay: 2
       properties:
         __id:
           description: |
@@ -920,7 +924,7 @@ components:
       example:
         state: ACTIVE
         mii_status: UP
-        perm_hwaddr: 5
+        perm_hwaddr: 08:00:27:76:4f:05
         link_failure_count: 0
         queue_id: 0
       properties:
@@ -947,9 +951,9 @@ components:
           example: 0
           type: integer
         perm_hwaddr:
-          description: |
-            Hardware address
-          type: integer
+          description: MAC L2 interface HW address
+          example: 08:00:27:76:4f:05
+          type: string
         queue_id:
           description: |
             Queue Identifier
@@ -960,9 +964,9 @@ components:
       description: Additional information on the link
       example:
         mode: active-backup
-        updelay: 2
+        updelay: 5
         miimon: 5
-        downdelay: 7
+        downdelay: 2
       properties:
         mode:
           description: |
@@ -1002,14 +1006,14 @@ components:
         info_slave_data:
           state: ACTIVE
           mii_status: UP
-          perm_hwaddr: 5
+          perm_hwaddr: 08:00:27:76:4f:05
           link_failure_count: 0
           queue_id: 0
         info_data:
           mode: active-backup
-          updelay: 2
+          updelay: 5
           miimon: 5
-          downdelay: 7
+          downdelay: 2
       properties:
         info_slave_kind:
           description: |
@@ -1051,7 +1055,7 @@ components:
     link_addr_info:
       example:
         broadcast: broadcast
-        prefixlen: 9
+        prefixlen: 7
         local: 10.1.2.3
       properties:
         local:

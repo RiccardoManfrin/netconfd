@@ -780,6 +780,10 @@ components:
     nftable:
       type: object
       description: Net Filter Table
+    macaddr:
+      type: string
+      description: MAC L2 interface HW address
+      example: "08:00:27:76:4f:05"
     vrf:
       type: object
       description: Virtual Routing and Forwarding object
@@ -897,9 +901,7 @@ components:
                     Number of link failures
                   example: 0
                 perm_hwaddr:
-                  type: integer
-                  description: |
-                    Hardware address
+                  $ref: '#/components/schemas/macaddr'
                 queue_id:
                   type: integer
                   description: |

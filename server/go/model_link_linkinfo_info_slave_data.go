@@ -23,8 +23,8 @@ type LinkLinkinfoInfoSlaveData struct {
 	MiiStatus *string `json:"mii_status,omitempty"`
 	// Number of link failures 
 	LinkFailureCount *int32 `json:"link_failure_count,omitempty"`
-	// Hardware address 
-	PermHwaddr *int32 `json:"perm_hwaddr,omitempty"`
+	// MAC L2 interface HW address
+	PermHwaddr *string `json:"perm_hwaddr,omitempty"`
 	// Queue Identifier 
 	QueueId *int32 `json:"queue_id,omitempty"`
 }
@@ -143,9 +143,9 @@ func (o *LinkLinkinfoInfoSlaveData) SetLinkFailureCount(v int32) {
 }
 
 // GetPermHwaddr returns the PermHwaddr field value if set, zero value otherwise.
-func (o *LinkLinkinfoInfoSlaveData) GetPermHwaddr() int32 {
+func (o *LinkLinkinfoInfoSlaveData) GetPermHwaddr() string {
 	if o == nil || o.PermHwaddr == nil {
-		var ret int32
+		var ret string
 		return ret
 	}
 	return *o.PermHwaddr
@@ -153,7 +153,7 @@ func (o *LinkLinkinfoInfoSlaveData) GetPermHwaddr() int32 {
 
 // GetPermHwaddrOk returns a tuple with the PermHwaddr field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LinkLinkinfoInfoSlaveData) GetPermHwaddrOk() (*int32, bool) {
+func (o *LinkLinkinfoInfoSlaveData) GetPermHwaddrOk() (*string, bool) {
 	if o == nil || o.PermHwaddr == nil {
 		return nil, false
 	}
@@ -169,8 +169,8 @@ func (o *LinkLinkinfoInfoSlaveData) HasPermHwaddr() bool {
 	return false
 }
 
-// SetPermHwaddr gets a reference to the given int32 and assigns it to the PermHwaddr field.
-func (o *LinkLinkinfoInfoSlaveData) SetPermHwaddr(v int32) {
+// SetPermHwaddr gets a reference to the given string and assigns it to the PermHwaddr field.
+func (o *LinkLinkinfoInfoSlaveData) SetPermHwaddr(v string) {
 	o.PermHwaddr = &v
 }
 
