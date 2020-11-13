@@ -14,6 +14,7 @@ import (
 	"context"
 	"errors"
 
+	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 )
 
@@ -95,10 +96,37 @@ func ncLinkParse(nclink nc.Link) Link {
 	}
 
 	lli := LinkLinkinfo{}
-	if len(nclink.Linkinfo.InfoKind) > 0 {
+	if nclink.Linkinfo.InfoKind != "" {
 		lli.InfoKind = &nclink.Linkinfo.InfoKind
 		link.Linkinfo = &lli
 	}
+	isd := LinkLinkinfoInfoSlaveData{}
+	lli.InfoSlaveData = &isd
+
+	switch nclink.Linkinfo.InfoKind {
+	case "bond":
+		{
+			id := LinkLinkinfoInfoData{}
+			id.Mode = &nclink.Linkinfo.InfoData.Mode
+			id.Miimon = &nclink.Linkinfo.InfoData.Miimon
+			id.Updelay = &nclink.Linkinfo.InfoData.Updelay
+			id.Downdelay = &nclink.Linkinfo.InfoData.Downdelay
+			lli.InfoData = &id
+		}
+	default:
+		{
+			logger.Log.Warning("Unknown Link Kind")
+		}
+	}
+	if nclink.Master != "" {
+		icisd := &nclink.Linkinfo.InfoSlaveData
+		link.SetMaster(nclink.Master)
+		isd.SetState(icisd.State)
+		isd.SetLinkFailureCount(int32(icisd.LinkFailureCount))
+		isd.SetMiiStatus(icisd.MiiStatus)
+		isd.SetPermHwaddr(icisd.PermHwaddr)
+	}
+
 	return link
 }
 
