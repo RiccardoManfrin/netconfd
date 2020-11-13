@@ -904,7 +904,7 @@ components:
                   $ref: '#/components/schemas/macaddr'
                 queue_id:
                   type: integer
-                  format: int16
+                  #format: int16
                   description: |
                     Queue Identifier
                   example: 0
