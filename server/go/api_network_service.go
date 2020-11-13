@@ -113,6 +113,10 @@ func ncLinkParse(nclink nc.Link) Link {
 			id.Downdelay = &nclink.Linkinfo.InfoData.Downdelay
 			lli.InfoData = &id
 		}
+	case "device":
+	case "bridge":
+	case "dummy":
+	case "ppp":
 	default:
 		{
 			logger.Log.Warning("Unknown Link Kind")

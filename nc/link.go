@@ -94,11 +94,14 @@ func linkParse(link netlink.Link) Link {
 			id.Miimon = int32(bond.Miimon)
 			id.Updelay = int32(bond.UpDelay)
 			id.Downdelay = int32(bond.DownDelay)
-			//logger.Log.Info("Bond")
 		}
+	case "device":
+	case "bridge":
+	case "dummy":
+	case "ppp":
 	default:
 		{
-			logger.Log.Warning("Unknown Link Kind")
+			logger.Log.Warning("Unknown Link Kind: " + nclink.Linkinfo.InfoKind)
 		}
 	}
 	if la.Slave != nil {
