@@ -89,10 +89,12 @@ func linkParse(link netlink.Link) Link {
 	case "bond":
 		{
 			id := &nclink.Linkinfo.InfoData
-			id.Mode = nclink.Linkinfo.InfoData.Mode
-			id.Miimon = nclink.Linkinfo.InfoData.Miimon
-			id.Updelay = nclink.Linkinfo.InfoData.Updelay
-			id.Downdelay = nclink.Linkinfo.InfoData.Downdelay
+			bond := link.(*netlink.Bond)
+			id.Mode = bond.Mode.String()
+			id.Miimon = int32(bond.Miimon)
+			id.Updelay = int32(bond.UpDelay)
+			id.Downdelay = int32(bond.DownDelay)
+			//logger.Log.Info("Bond")
 		}
 	default:
 		{
