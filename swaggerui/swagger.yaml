@@ -830,11 +830,53 @@ components:
           type: integer
         #promiscuity:
         #  type: integer
+        master:
+          allOf:
+            - $ref: '#/components/schemas/ifname'
+          description: |
+            In case the interface is part of a bond or bridge, specifies
+            the bond/bridge interface it belongs to.
+          example: bond0
         linkinfo:
           type: object
           description: |
             Additional link info attributes
           properties:
+            info_slave_kind:
+              type: string
+              description: |
+                FILL ME
+              example: "bond"
+            info_slave_data:
+              type: object
+              description: Info about slave state/config
+              properties:
+                state:
+                  type: string
+                  description: |
+                    FILL ME
+                  example: "ACTIVE"
+                mii_status:
+                  type: string
+                  description: |
+                    FILL ME
+                  example: "UP"
+                link_failure_count:
+                  type: integer
+                  description: |
+                    FILL ME
+                  example: 0
+                perm_hwaddr:
+                  type: integer
+                  description: |
+                    FILL ME
+                  example: "08:00:27:76:4f:05"
+                queue_id:
+                  type: integer
+                  description: |
+                    FILL ME
+                  example: 0
+            
             info_kind:
               type: string
               description: >
