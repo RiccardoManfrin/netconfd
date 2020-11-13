@@ -23,7 +23,7 @@ type LinkLinkinfoInfoSlaveData struct {
 	// Hardware address
 	PermHwaddr string `json:"perm_hwaddr,omitempty"`
 	// Queue Identifier
-	QueueId int32 `json:"queue_id,omitempty"`
+	QueueId int16 `json:"queue_id,omitempty"`
 }
 
 //LinkLinkinfo definition

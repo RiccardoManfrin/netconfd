@@ -958,6 +958,7 @@ components:
           description: |
             Queue Identifier
           example: 0
+          format: int16
           type: integer
       type: object
     link_linkinfo_info_data:
