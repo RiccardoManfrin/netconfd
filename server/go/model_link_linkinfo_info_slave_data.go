@@ -17,15 +17,15 @@ import (
 
 // LinkLinkinfoInfoSlaveData Info about slave state/config
 type LinkLinkinfoInfoSlaveData struct {
-	// FILL ME 
+	// State of the link:   * `ACTIVE` - Link is actively used   * `BACKUP` - Link is used for failover 
 	State *string `json:"state,omitempty"`
-	// FILL ME 
+	// MII Status:   * `UP`    * `DOWN` 
 	MiiStatus *string `json:"mii_status,omitempty"`
-	// FILL ME 
+	// Number of link failures 
 	LinkFailureCount *int32 `json:"link_failure_count,omitempty"`
-	// FILL ME 
+	// Hardware address 
 	PermHwaddr *int32 `json:"perm_hwaddr,omitempty"`
-	// FILL ME 
+	// Queue Identifier 
 	QueueId *int32 `json:"queue_id,omitempty"`
 }
 

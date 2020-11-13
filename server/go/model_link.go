@@ -23,8 +23,12 @@ type Link struct {
 	Ifindex *int32 `json:"ifindex,omitempty"`
 	// Interface name 
 	Ifname string `json:"ifname"`
+	// Flags of the interface Supported types:   * `BROADCAST` - Support for broadcast   * `MULTICAST` - Support for multicast   * `SLAVE` - Is slave   * `UP` - Is up   * `LOWER UP` - Is lower interface up 
+	Flags *[]string `json:"flags,omitempty"`
 	// Maximum Transfer Unit value 
 	Mtu *int32 `json:"mtu,omitempty"`
+	// Promiscuous mode flag
+	Promiscuity *int32 `json:"promiscuity,omitempty"`
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to. 
 	Master *string `json:"master,omitempty"`
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
@@ -140,6 +144,38 @@ func (o *Link) SetIfname(v string) {
 	o.Ifname = v
 }
 
+// GetFlags returns the Flags field value if set, zero value otherwise.
+func (o *Link) GetFlags() []string {
+	if o == nil || o.Flags == nil {
+		var ret []string
+		return ret
+	}
+	return *o.Flags
+}
+
+// GetFlagsOk returns a tuple with the Flags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetFlagsOk() (*[]string, bool) {
+	if o == nil || o.Flags == nil {
+		return nil, false
+	}
+	return o.Flags, true
+}
+
+// HasFlags returns a boolean if a field has been set.
+func (o *Link) HasFlags() bool {
+	if o != nil && o.Flags != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFlags gets a reference to the given []string and assigns it to the Flags field.
+func (o *Link) SetFlags(v []string) {
+	o.Flags = &v
+}
+
 // GetMtu returns the Mtu field value if set, zero value otherwise.
 func (o *Link) GetMtu() int32 {
 	if o == nil || o.Mtu == nil {
@@ -170,6 +206,38 @@ func (o *Link) HasMtu() bool {
 // SetMtu gets a reference to the given int32 and assigns it to the Mtu field.
 func (o *Link) SetMtu(v int32) {
 	o.Mtu = &v
+}
+
+// GetPromiscuity returns the Promiscuity field value if set, zero value otherwise.
+func (o *Link) GetPromiscuity() int32 {
+	if o == nil || o.Promiscuity == nil {
+		var ret int32
+		return ret
+	}
+	return *o.Promiscuity
+}
+
+// GetPromiscuityOk returns a tuple with the Promiscuity field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetPromiscuityOk() (*int32, bool) {
+	if o == nil || o.Promiscuity == nil {
+		return nil, false
+	}
+	return o.Promiscuity, true
+}
+
+// HasPromiscuity returns a boolean if a field has been set.
+func (o *Link) HasPromiscuity() bool {
+	if o != nil && o.Promiscuity != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetPromiscuity gets a reference to the given int32 and assigns it to the Promiscuity field.
+func (o *Link) SetPromiscuity(v int32) {
+	o.Promiscuity = &v
 }
 
 // GetMaster returns the Master field value if set, zero value otherwise.
@@ -335,8 +403,14 @@ func (o Link) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["ifname"] = o.Ifname
 	}
+	if o.Flags != nil {
+		toSerialize["flags"] = o.Flags
+	}
 	if o.Mtu != nil {
 		toSerialize["mtu"] = o.Mtu
+	}
+	if o.Promiscuity != nil {
+		toSerialize["promiscuity"] = o.Promiscuity
 	}
 	if o.Master != nil {
 		toSerialize["master"] = o.Master

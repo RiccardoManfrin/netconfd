@@ -820,13 +820,17 @@ components:
         ifindex: 0
         address: address
         ifname: dummy0
+        promiscuity: 1
         __id: dummy0
+        flags:
+        - UP
+        - UP
         addr_info:
         - broadcast: broadcast
-          prefixlen: 7
+          prefixlen: 9
           local: 10.1.2.3
         - broadcast: broadcast
-          prefixlen: 7
+          prefixlen: 9
           local: 10.1.2.3
         mtu: 6
         master: bond0
@@ -836,14 +840,14 @@ components:
           info_slave_data:
             state: ACTIVE
             mii_status: UP
-            perm_hwaddr: 1
+            perm_hwaddr: 5
             link_failure_count: 0
             queue_id: 0
           info_data:
             mode: active-backup
-            updelay: 5
+            updelay: 2
             miimon: 5
-            downdelay: 2
+            downdelay: 7
       properties:
         __id:
           description: |
@@ -861,9 +865,30 @@ components:
           example: dummy0
           maxLength: 15
           type: string
+        flags:
+          description: |
+            Flags of the interface Supported types:
+              * `BROADCAST` - Support for broadcast
+              * `MULTICAST` - Support for multicast
+              * `SLAVE` - Is slave
+              * `UP` - Is up
+              * `LOWER UP` - Is lower interface up
+          items:
+            enum:
+            - BROADCAST
+            - MULTICAST
+            - SLAVE
+            - UP
+            - LOWER_UP
+            example: UP
+            type: string
+          type: array
         mtu:
           description: |
             Maximum Transfer Unit value
+          type: integer
+        promiscuity:
+          description: Promiscuous mode flag
           type: integer
         master:
           allOf:
@@ -895,32 +920,39 @@ components:
       example:
         state: ACTIVE
         mii_status: UP
-        perm_hwaddr: 1
+        perm_hwaddr: 5
         link_failure_count: 0
         queue_id: 0
       properties:
         state:
           description: |
-            FILL ME
+            State of the link:
+              * `ACTIVE` - Link is actively used
+              * `BACKUP` - Link is used for failover
+          enum:
+          - ACTIVE
+          - BACKUP
           example: ACTIVE
           type: string
         mii_status:
-          description: |
-            FILL ME
+          description: "MII Status:\n  * `UP` \n  * `DOWN`\n"
+          enum:
+          - UP
+          - DOWN
           example: UP
           type: string
         link_failure_count:
           description: |
-            FILL ME
+            Number of link failures
           example: 0
           type: integer
         perm_hwaddr:
           description: |
-            FILL ME
+            Hardware address
           type: integer
         queue_id:
           description: |
-            FILL ME
+            Queue Identifier
           example: 0
           type: integer
       type: object
@@ -928,9 +960,9 @@ components:
       description: Additional information on the link
       example:
         mode: active-backup
-        updelay: 5
+        updelay: 2
         miimon: 5
-        downdelay: 2
+        downdelay: 7
       properties:
         mode:
           description: |
@@ -970,18 +1002,21 @@ components:
         info_slave_data:
           state: ACTIVE
           mii_status: UP
-          perm_hwaddr: 1
+          perm_hwaddr: 5
           link_failure_count: 0
           queue_id: 0
         info_data:
           mode: active-backup
-          updelay: 5
+          updelay: 2
           miimon: 5
-          downdelay: 2
+          downdelay: 7
       properties:
         info_slave_kind:
           description: |
-            FILL ME
+            Info on the type of slave
+            Supported types:
+              * `bond`
+              * `bridge`
           example: bond
           type: string
         info_slave_data:
@@ -1016,7 +1051,7 @@ components:
     link_addr_info:
       example:
         broadcast: broadcast
-        prefixlen: 7
+        prefixlen: 9
         local: 10.1.2.3
       properties:
         local:

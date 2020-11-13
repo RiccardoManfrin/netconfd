@@ -820,16 +820,33 @@ components:
           type: integer
         ifname:
           $ref: '#/components/schemas/ifname'
-        #flags:
-        #  type: array
-        #  items:
-        #    type: string
+        flags:
+          description: >
+            Flags of the interface
+            Supported types:
+              * `BROADCAST` - Support for broadcast
+              * `MULTICAST` - Support for multicast
+              * `SLAVE` - Is slave
+              * `UP` - Is up
+              * `LOWER UP` - Is lower interface up
+          type: array
+          items:
+            type: string
+            enum:
+              - BROADCAST
+              - MULTICAST
+              - SLAVE
+              - UP
+              - LOWER_UP
+            example: UP
+
         mtu:
           description: |
             Maximum Transfer Unit value
           type: integer
-        #promiscuity:
-        #  type: integer
+        promiscuity:
+          description: Promiscuous mode flag
+          type: integer
         master:
           allOf:
             - $ref: '#/components/schemas/ifname'
@@ -838,14 +855,17 @@ components:
             the bond/bridge interface it belongs to.
           example: bond0
         linkinfo:
-          type: object
           description: |
             Additional link info attributes
+          type: object
           properties:
             info_slave_kind:
               type: string
               description: |
-                FILL ME
+                Info on the type of slave
+                Supported types:
+                  * `bond`
+                  * `bridge`
               example: "bond"
             info_slave_data:
               type: object
@@ -853,28 +873,37 @@ components:
               properties:
                 state:
                   type: string
-                  description: |
-                    FILL ME
+                  description: >
+                    State of the link:
+                      * `ACTIVE` - Link is actively used
+                      * `BACKUP` - Link is used for failover
+                  enum:
+                    - ACTIVE
+                    - BACKUP
                   example: "ACTIVE"
                 mii_status:
                   type: string
-                  description: |
-                    FILL ME
+                  description: >
+                    MII Status:
+                      * `UP` 
+                      * `DOWN`
                   example: "UP"
+                  enum:
+                    - UP
+                    - DOWN
                 link_failure_count:
                   type: integer
                   description: |
-                    FILL ME
+                    Number of link failures
                   example: 0
                 perm_hwaddr:
                   type: integer
                   description: |
-                    FILL ME
-                  example: "08:00:27:76:4f:05"
+                    Hardware address
                 queue_id:
                   type: integer
                   description: |
-                    FILL ME
+                    Queue Identifier
                   example: 0
             
             info_kind:
