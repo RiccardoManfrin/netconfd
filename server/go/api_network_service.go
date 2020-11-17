@@ -48,6 +48,7 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
 		Mtu:      link.GetMtu(),
 		LinkType: link.GetLinkType(),
+		Master:   nc.LinkID(link.GetMaster()),
 	}
 	switch nclink.Linkinfo.InfoKind {
 	case "bond":
@@ -104,6 +105,10 @@ func ncLinkParse(nclink nc.Link) Link {
 	}
 	isd := LinkLinkinfoInfoSlaveData{}
 	lli.InfoSlaveData = &isd
+	if nclink.Master != "" {
+		master := string(nclink.Master)
+		link.Master = &master
+	}
 
 	switch nclink.Linkinfo.InfoKind {
 	case "bond":
@@ -426,15 +431,17 @@ func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplR
 				}
 				links[i] = nclink
 			}
-			nc.LinksConfigure(links)
+			err := nc.LinksConfigure(links)
+			if err != nil {
+				return PutErrorResponse(err, nil)
+			}
 		}
 		if config.HostNetwork.Routes != nil {
 			//TODO
 		}
 	}
 
-	err := errors.New("ConfigSet method not implemented")
-	return PutErrorResponse(err, nil)
+	return PutErrorResponse(nil, nil)
 }
 
 // ConfigVRFCreate - Configures an new VRF

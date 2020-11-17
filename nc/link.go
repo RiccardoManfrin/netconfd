@@ -143,6 +143,15 @@ func LinksGet() ([]Link, error) {
 	return nclinks, nil
 }
 
+func seekBondActiveSlave(links []Link, bondIfname LinkID) (Link, err) {
+	for _, link := range links {
+		if link.Master == bondIfname && link.Linkinfo.InfoSlaveData.State == netlink.BondStateActive.String() {
+			return link, nil
+		}
+	}
+	return nil, NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname)
+}
+
 //LinksConfigure configures the whole set of links to manage in the correct sequential order
 //for example some of the link properties require other links to be established already or
 //to have the link down/up etc..
@@ -162,6 +171,16 @@ func LinksConfigure(links []Link) error {
 
 		if link.Master != "" {
 			LinkSetMaster(link.Ifname, link.Master)
+			l, err := LinkGet(link.Master)
+			if err == nil && l.Linkinfo.InfoKind == "bond" {
+				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
+					activeSlave, err := seekBondActiveSlave(links, link.Master)
+					if err == nil {
+						LinkSetBondSlave(activeSlave.Ifname, link.Master)
+					}
+				}
+				LinkSetBondSlave(link.Ifname, link.Master)
+			}
 		}
 	}
 	//Set all links up
@@ -224,7 +243,7 @@ func LinkSetDown(ifname LinkID) error {
 	return netlink.LinkSetDown(link)
 }
 
-//LinkSetMaster enslaves an interface (by ifname) to a master one (by masterIfname)
+//LinkSetMaster specifies for a given interface (by ifname) the master to federate with (by masterIfname)
 func LinkSetMaster(ifname LinkID, masterIfname LinkID) error {
 	link, _ := netlink.LinkByName(string(ifname))
 	if link == nil {
@@ -235,6 +254,24 @@ func LinkSetMaster(ifname LinkID, masterIfname LinkID) error {
 		return NewLinkNotFoundError(masterIfname)
 	}
 	return netlink.LinkSetMaster(link, masterLink)
+}
+
+//LinkSetBondSlave enslaves an interface to a master one
+func LinkSetBondSlave(ifname LinkID, masterIfname LinkID) error {
+
+	link, _ := netlink.LinkByName(string(ifname))
+	if link == nil {
+		return NewLinkNotFoundError(ifname)
+	}
+	masterLink, _ := netlink.LinkByName(string(masterIfname))
+	if masterLink == nil {
+		return NewLinkNotFoundError(masterIfname)
+	}
+	if masterLink.Type() == "bond" {
+		logger.Log.Debug("Setting bond slave")
+		return netlink.LinkSetBondSlave(link, masterLink.(*netlink.Bond))
+	}
+	return NonBondMasterLinkTypeError(masterIfname)
 }
 
 //LinkDelete deletes a link layer interface

@@ -33,6 +33,11 @@ func NewLinkExistsConflictError(linkID LinkID) error {
 	return &ConflictError{reason: "Link " + string(linkID) + " exists"}
 }
 
+//NonBondMasterLinkTypeError returns an error for non bond master link type
+func NonBondMasterLinkTypeError(ifname LinkID) error {
+	return &ConflictError{reason: "Master link interface " + string(ifname) + " is not a bond"}
+}
+
 //NewLinkNotFoundError returns a Not found error on link layer interfaces
 func NewLinkNotFoundError(linkID LinkID) error {
 	return &NotFoundError{reason: "Link " + string(linkID) + " not found"}
@@ -60,4 +65,9 @@ func (e *NotFoundError) Error() string {
 //NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
 	return &NotFoundError{reason: "Route ID" + string(routeid) + " did not match"}
+}
+
+//NewActiveSlaveIfaceNotFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
+func NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname LinkID) error {
+	return &NotFoundError{reason: "Active Slave Iface not found for Active-Backup bond " + string(bondIfname)}
 }
