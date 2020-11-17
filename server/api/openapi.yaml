@@ -41,6 +41,8 @@ paths:
         description: Full Config
         required: true
       responses:
+        "400":
+          description: Bad Request (malformed/bad syntax/validation errors)
         "200":
           description: Successful alignment
       summary: |
@@ -737,9 +739,6 @@ components:
           type: object
         host_network:
           $ref: '#/components/schemas/network'
-      required:
-      - global
-      - links
       type: object
     network:
       properties:

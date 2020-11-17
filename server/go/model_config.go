@@ -17,7 +17,7 @@ import (
 
 // Config struct for Config
 type Config struct {
-	Global map[string]interface{} `json:"global"`
+	Global *map[string]interface{} `json:"global,omitempty"`
 	HostNetwork *Network `json:"host_network,omitempty"`
 }
 
@@ -25,9 +25,8 @@ type Config struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewConfig(global map[string]interface{}, ) *Config {
+func NewConfig() *Config {
 	this := Config{}
-	this.Global = global
 	return &this
 }
 
@@ -39,28 +38,36 @@ func NewConfigWithDefaults() *Config {
 	return &this
 }
 
-// GetGlobal returns the Global field value
+// GetGlobal returns the Global field value if set, zero value otherwise.
 func (o *Config) GetGlobal() map[string]interface{} {
-	if o == nil  {
+	if o == nil || o.Global == nil {
 		var ret map[string]interface{}
 		return ret
 	}
-
-	return o.Global
+	return *o.Global
 }
 
-// GetGlobalOk returns a tuple with the Global field value
+// GetGlobalOk returns a tuple with the Global field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *Config) GetGlobalOk() (*map[string]interface{}, bool) {
-	if o == nil  {
+	if o == nil || o.Global == nil {
 		return nil, false
 	}
-	return &o.Global, true
+	return o.Global, true
 }
 
-// SetGlobal sets field value
+// HasGlobal returns a boolean if a field has been set.
+func (o *Config) HasGlobal() bool {
+	if o != nil && o.Global != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetGlobal gets a reference to the given map[string]interface{} and assigns it to the Global field.
 func (o *Config) SetGlobal(v map[string]interface{}) {
-	o.Global = v
+	o.Global = &v
 }
 
 // GetHostNetwork returns the HostNetwork field value if set, zero value otherwise.
@@ -97,7 +104,7 @@ func (o *Config) SetHostNetwork(v Network) {
 
 func (o Config) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if true {
+	if o.Global != nil {
 		toSerialize["global"] = o.Global
 	}
 	if o.HostNetwork != nil {

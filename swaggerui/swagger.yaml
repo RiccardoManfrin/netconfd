@@ -33,6 +33,8 @@ paths:
             schema:
               $ref: '#/components/schemas/config'
       responses:
+        '400':
+          description: Bad Request (malformed/bad syntax/validation errors)
         '200':
           description: Successful alignment
     get:
@@ -729,9 +731,9 @@ components:
         - $ref: '#/components/schemas/default'
     config:
       type: object
-      required:
-        - global
-        - links
+      #required:
+      #  - global
+      #  - host_network
       properties:
         global:
           type: object
