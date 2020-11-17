@@ -167,33 +167,16 @@ func LinkGet(LinkID LinkID) (Link, error) {
 func LinkCreate(link Link) error {
 	var err error = nil
 	ifname := link.Ifname
-	kind := link.Linkinfo.InfoKind
-
 	l, _ := netlink.LinkByName(ifname)
 	if l != nil {
 		return NewLinkExistsConflictError(LinkID(ifname))
 	}
 
-	switch kind {
-	case "dummy":
-		{
-			err = LinkDummyCreate(ifname)
-		}
-	case "bond":
-		{
-			err = LinkBondCreate(ifname)
-		}
-	case "bridge":
-		{
-			err = LinkBridgeCreate(ifname)
-		}
-	default:
-		err = NewUnknownLinkKindError(kind)
-	}
+	nllink, err := linkFormat(link)
 	if err != nil {
-		logger.Log.Warning(err)
+		return err
 	}
-	return err
+	return netlink.LinkAdd(nllink)
 }
 
 //LinkDelete deletes a link layer interface
@@ -201,24 +184,65 @@ func LinkDelete(ifname string) error {
 	return nil
 }
 
-//LinkDummyCreate Creates a new dummy link
-func LinkDummyCreate(ifname string) error {
+func linkFormat(link Link) (netlink.Link, error) {
+	ifname := link.Ifname
+	kind := link.Linkinfo.InfoKind
 	attrs := netlink.NewLinkAttrs()
 	attrs.Name = ifname
-	link := &netlink.Dummy{
-		LinkAttrs: attrs,
+	var err error
+	var nllink netlink.Link = nil
+	switch kind {
+	case "dummy":
+		{
+			nllink = &netlink.Dummy{
+				LinkAttrs: attrs,
+			}
+		}
+	case "bond":
+		{
+			nllink = netlink.NewLinkBond(attrs)
+			/*switch link.Linkinfo.InfoData.Mode {
+
+			}*/
+		}
+	case "bridge":
+		{
+			nllink = &netlink.Bridge{
+				LinkAttrs: attrs,
+			}
+		}
+	case "vlan":
+		{
+			nllink = &netlink.Vlan{
+				LinkAttrs: attrs,
+			}
+		}
+	case "veth":
+		{
+			nllink = &netlink.Veth{
+				LinkAttrs: attrs,
+			}
+		}
+	case "ipvlan":
+		{
+			nllink = &netlink.IPVlan{
+				LinkAttrs: attrs,
+			}
+		}
+	case "macvlan":
+		{
+			nllink = &netlink.Macvlan{
+				LinkAttrs: attrs,
+			}
+		}
+	case "tuntap":
+		{
+			nllink = &netlink.Tuntap{
+				LinkAttrs: attrs,
+			}
+		}
+	default:
+		err = NewUnknownLinkKindError(kind)
 	}
-	return netlink.LinkAdd(link)
-}
-
-//LinkBondCreate Creates a new bond link
-func LinkBondCreate(ifname string) error {
-
-	return nil
-}
-
-//LinkBridgeCreate Creates a new dummy link
-func LinkBridgeCreate(ifname string) error {
-
-	return nil
+	return nllink, err
 }

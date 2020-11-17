@@ -18,7 +18,12 @@ func (e *SemanticError) Error() string {
 	return fmt.Sprintf("Semantic error: %s", e.reason)
 }
 
-//NewBadAddressError returns a Conflict error on link layer interfaces
+//NewGenericSemanticError returns a generic semantic error
+func NewGenericSemanticError() error {
+	return &SemanticError{reason: "Generic Semantic Error"}
+}
+
+//NewBadAddressError returns a bad address error on link layer interfaces
 func NewBadAddressError(c CIDRAddr) error {
 	return &SemanticError{reason: "Bad IP address " + c.String()}
 }
