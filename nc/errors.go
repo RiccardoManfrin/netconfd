@@ -33,6 +33,11 @@ func NewLinkExistsConflictError(linkID LinkID) error {
 	return &ConflictError{reason: "Link " + string(linkID) + " exists"}
 }
 
+//NewLinkNotFoundError returns a Not found error on link layer interfaces
+func NewLinkNotFoundError(linkID LinkID) error {
+	return &NotFoundError{reason: "Link " + string(linkID) + " not found"}
+}
+
 //UnknownTypeError is a logical error on the content of the operation requested to be performed
 type UnknownTypeError SemanticError
 
@@ -54,5 +59,5 @@ func (e *NotFoundError) Error() string {
 
 //NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
-	return &ConflictError{reason: "Route ID" + string(routeid) + " did not match"}
+	return &NotFoundError{reason: "Route ID" + string(routeid) + " did not match"}
 }

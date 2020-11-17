@@ -74,6 +74,10 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 func DeleteErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
+		case *nc.NotFoundError:
+			{
+				return Response(http.StatusNotFound, err), err
+			}
 		default:
 			{
 				return Response(http.StatusInternalServerError, err), err

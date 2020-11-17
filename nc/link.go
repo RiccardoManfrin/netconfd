@@ -180,8 +180,20 @@ func LinkCreate(link Link) error {
 }
 
 //LinkDelete deletes a link layer interface
-func LinkDelete(ifname string) error {
-	return nil
+func LinkDelete(link Link) error {
+	ifname := link.Ifname
+	l, _ := netlink.LinkByName(ifname)
+	if l == nil {
+		return NewLinkNotFoundError(LinkID(ifname))
+	}
+
+	attrs := netlink.NewLinkAttrs()
+	attrs.Name = ifname
+	// Fool it with a dummy.. it should use ifname and ignore the rest
+	nllink := &netlink.Dummy{
+		LinkAttrs: attrs,
+	}
+	return netlink.LinkDel(nllink)
 }
 
 func linkFormat(link Link) (netlink.Link, error) {
