@@ -145,6 +145,35 @@ func LinksGet() ([]Link, error) {
 	return nclinks, nil
 }
 
+//LinksConfigure configures the whole set of links to manage in the correct sequential order
+//for example some of the link properties require other links to be established already or
+//to have the link down/up etc..
+//This function tries to wipe out every type of conflicting in place configuration such as
+//existing links whose ifname LinkID collides with the ones being created.
+func LinksConfigure(links []Link) error {
+	//Recreate all links
+	for _, link := range links {
+		LinkSetDown(link.LinkID)
+		LinkDelete(LinkID(link.Ifname))
+		if err := LinkCreate(link); err != nil {
+			return err
+		}
+	}
+	//Set all links cross properties (e.g. being master of some link)
+	for _, link := range links {
+
+		if link.Master != "" {
+			LinkSetMaster(link.LinkID, LinkID(link.Master))
+		}
+	}
+	//Set all links up
+	for _, link := range links {
+		LinkSetUp(link.LinkID)
+	}
+
+	return nil
+}
+
 //LinkGet Returns the list of existing link layer devices on the machine
 func LinkGet(LinkID LinkID) (Link, error) {
 	nclink := Link{}
@@ -177,6 +206,24 @@ func LinkCreate(link Link) error {
 		return err
 	}
 	return netlink.LinkAdd(nllink)
+}
+
+//LinkSetUp set a link up
+func LinkSetUp(ifname LinkID) error {
+	link, _ := netlink.LinkByName(string(ifname))
+	if link == nil {
+		return NewLinkNotFoundError(LinkID(ifname))
+	}
+	return netlink.LinkSetUp(link)
+}
+
+//LinkSetDown set a link up
+func LinkSetDown(ifname LinkID) error {
+	link, _ := netlink.LinkByName(string(ifname))
+	if link == nil {
+		return NewLinkNotFoundError(LinkID(ifname))
+	}
+	return netlink.LinkSetDown(link)
 }
 
 //LinkSetMaster enslaves an interface (by ifname) to a master one (by masterIfname)

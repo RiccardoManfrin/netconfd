@@ -66,6 +66,13 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 		return PostErrorResponse(err, nil)
 	}
 	err = nc.LinkCreate(nclink)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	if nclink.Master != "" {
+		nc.LinkSetMaster(nclink.LinkID, nc.LinkID(nclink.Master))
+	}
+	nc.LinkSetUp(nclink.LinkID)
 	return PostErrorResponse(err, nil)
 }
 
@@ -410,7 +417,22 @@ func (s *NetworkApiService) ConfigRulesGet(ctx context.Context) (ImplResponse, e
 
 // ConfigSet - Configures and enforces a new live network configuration
 func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
-	config.HostNetwork.Links
+	if config.HostNetwork != nil {
+		if config.HostNetwork.Links != nil {
+			links := make([]nc.Link, len(*config.HostNetwork.Links))
+			for i, l := range *config.HostNetwork.Links {
+				nclink, err := ncLinkFormat(l)
+				if err != nil {
+					return PutErrorResponse(err, nil)
+				}
+				links[i] = nclink
+			}
+			nc.LinksConfigure(links)
+		}
+		if config.HostNetwork.Routes != nil {
+			//TODO
+		}
+	}
 
 	err := errors.New("ConfigSet method not implemented")
 	return PutErrorResponse(err, nil)
