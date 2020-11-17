@@ -925,7 +925,7 @@ components:
                   * `ipvlan` - Direct virtual eth interface connected to the physical interface.
                     Physical interface MAC address is reused. L2 type directly connects the lan to 
                     the host phyisical device. L3 type adds a routing layer in between.
-                  * `ppp` - Point to Point Protocol link type
+                  * `tuntap` - Link for to kernel-to-userspace packet forward
               enum:
                 - device
                 - dummy
@@ -965,19 +965,19 @@ components:
                   description: |
                     Specifies the MII link monitoring frequency in milliseconds. 
                     The default value is 0, and this will disable the MII monitor
-                  example: 100,
+                  example: 100
                   type: integer
                 updelay:
                   description: |
                     Specifies the time, in milliseconds, to wait before enabling a slave after a 
                     link recovery has been detected. The updelay value should be a multiple of the miimon value
-                  example: 0,
+                  example: 0
                   type: integer
                 downdelay:
                   description: |
                     Specifies the time, in milliseconds, to wait before disabling a slave after a 
                     link failure has been detected. The downdelay value should be a multiple of the miimon value.
-                  example: 0,
+                  example: 0
                   type: integer
                 #peer_notify_delay:
                 #  example: 0,

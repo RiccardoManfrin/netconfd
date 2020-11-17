@@ -831,10 +831,10 @@ components:
         - UP
         addr_info:
         - broadcast: broadcast
-          prefixlen: 7
+          prefixlen: 5
           local: 10.1.2.3
         - broadcast: broadcast
-          prefixlen: 7
+          prefixlen: 5
           local: 10.1.2.3
         mtu: 6
         master: bond0
@@ -849,9 +849,9 @@ components:
             queue_id: 0
           info_data:
             mode: active-backup
-            updelay: 5
-            miimon: 5
-            downdelay: 2
+            updelay: 0
+            miimon: 100
+            downdelay: 0
       properties:
         __id:
           description: |
@@ -964,9 +964,9 @@ components:
       description: Additional information on the link
       example:
         mode: active-backup
-        updelay: 5
-        miimon: 5
-        downdelay: 2
+        updelay: 0
+        miimon: 100
+        downdelay: 0
       properties:
         mode:
           description: |
@@ -991,16 +991,19 @@ components:
         miimon:
           description: "Specifies the MII link monitoring frequency in milliseconds.\
             \ \nThe default value is 0, and this will disable the MII monitor\n"
+          example: 100
           type: integer
         updelay:
           description: "Specifies the time, in milliseconds, to wait before enabling\
             \ a slave after a \nlink recovery has been detected. The updelay value\
             \ should be a multiple of the miimon value\n"
+          example: 0
           type: integer
         downdelay:
           description: "Specifies the time, in milliseconds, to wait before disabling\
             \ a slave after a \nlink failure has been detected. The downdelay value\
             \ should be a multiple of the miimon value.\n"
+          example: 0
           type: integer
       type: object
     link_linkinfo:
@@ -1017,9 +1020,9 @@ components:
           queue_id: 0
         info_data:
           mode: active-backup
-          updelay: 5
-          miimon: 5
-          downdelay: 2
+          updelay: 0
+          miimon: 100
+          downdelay: 0
       properties:
         info_slave_kind:
           description: |
@@ -1042,8 +1045,8 @@ components:
             \ mac address\n  * `ipvlan` - Direct virtual eth interface connected to\
             \ the physical interface.\n    Physical interface MAC address is reused.\
             \ L2 type directly connects the lan to \n    the host phyisical device.\
-            \ L3 type adds a routing layer in between.\n  * `ppp` - Point to Point\
-            \ Protocol link type\n"
+            \ L3 type adds a routing layer in between.\n  * `tuntap` - Link for to\
+            \ kernel-to-userspace packet forward\n"
           enum:
           - device
           - dummy
@@ -1061,7 +1064,7 @@ components:
     link_addr_info:
       example:
         broadcast: broadcast
-        prefixlen: 7
+        prefixlen: 5
         local: 10.1.2.3
       properties:
         local:
