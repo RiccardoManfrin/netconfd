@@ -200,10 +200,10 @@ func linkFormat(link Link) (netlink.Link, error) {
 		}
 	case "bond":
 		{
-			nllink = netlink.NewLinkBond(attrs)
-			/*switch link.Linkinfo.InfoData.Mode {
 
-			}*/
+			nllink = netlink.NewLinkBond(attrs)
+			nlbondlink := nllink.(*netlink.Bond)
+			nlbondlink.Mode = netlink.StringToBondMode(link.Linkinfo.InfoData.Mode)
 		}
 	case "bridge":
 		{

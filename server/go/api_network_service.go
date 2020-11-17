@@ -41,6 +41,23 @@ func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error)
 	return GetErrorResponse(err, nil)
 }
 
+func ncLinkFormat(link Link) (nc.Link, error) {
+
+	nclink := nc.Link{
+		Ifname:   link.GetIfname(),
+		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
+		Mtu:      link.GetMtu(),
+		LinkType: link.GetLinkType(),
+	}
+	switch nclink.Linkinfo.InfoKind {
+	case "bond":
+		{
+			nclink.Linkinfo.InfoData.Mode = *link.GetLinkinfo().InfoData.Mode
+		}
+	}
+	return nclink, nil
+}
+
 // ConfigLinkCreate - Configures and brings up a link layer interface
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
 	// TODO - update ConfigLinkCreate with the required logic for this service method.
@@ -55,13 +72,11 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
 	//return Response(400, nil),nil
 
-	nclink := nc.Link{
-		Ifname:   link.GetIfname(),
-		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
-		Mtu:      link.GetMtu(),
-		LinkType: link.GetLinkType(),
+	nclink, err := ncLinkFormat(link)
+	if err != nil {
+		return PostErrorResponse(err, nil)
 	}
-	err := nc.LinkCreate(nclink)
+	err = nc.LinkCreate(nclink)
 	return PostErrorResponse(err, nil)
 }
 
