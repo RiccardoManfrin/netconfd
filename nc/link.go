@@ -48,20 +48,19 @@ type LinkLinkinfo struct {
 	InfoData      LinkLinkinfoInfoData      `json:"info_data,omitempty"`
 }
 
-//LinkID ifname copy identifier
+//LinkID type
 type LinkID string
 
 //Link definition
 type Link struct {
-	LinkID LinkID
 	// Inteface index ID
 	Ifindex int32 `json:"ifindex,omitempty"`
-	// Interface name
-	Ifname string `json:"ifname"`
+	// Interface name identifier
+	Ifname LinkID `json:"ifname"`
 	// Maximum Transfer Unit value
 	Mtu int32 `json:"mtu,omitempty"`
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to.
-	Master   string         `json:"master,omitempty"`
+	Master   LinkID         `json:"master,omitempty"`
 	Linkinfo LinkLinkinfo   `json:"linkinfo,omitempty"`
 	LinkType string         `json:"link_type"`
 	Address  string         `json:"address,omitempty"`
@@ -71,8 +70,7 @@ type Link struct {
 func linkParse(link netlink.Link) Link {
 	nclink := Link{}
 	la := link.Attrs()
-	nclink.LinkID = LinkID(la.Name)
-	nclink.Ifname = la.Name
+	nclink.Ifname = LinkID(la.Name)
 	nclink.Mtu = int32(la.MTU)
 	nclink.Linkinfo.InfoKind = link.Type()
 	nclink.LinkType = la.EncapType
@@ -107,7 +105,7 @@ func linkParse(link netlink.Link) Link {
 	if la.Slave != nil {
 		mkink, err := netlink.LinkByIndex(la.MasterIndex)
 		if err == nil {
-			nclink.Master = mkink.Attrs().Name
+			nclink.Master = LinkID(mkink.Attrs().Name)
 			nclink.Linkinfo.InfoSlaveKind = la.Slave.SlaveType()
 			switch la.Slave.(type) {
 			case *netlink.BondSlave:
@@ -153,8 +151,8 @@ func LinksGet() ([]Link, error) {
 func LinksConfigure(links []Link) error {
 	//Recreate all links
 	for _, link := range links {
-		LinkSetDown(link.LinkID)
-		LinkDelete(LinkID(link.Ifname))
+		LinkSetDown(link.Ifname)
+		LinkDelete(link.Ifname)
 		if err := LinkCreate(link); err != nil {
 			return err
 		}
@@ -163,21 +161,21 @@ func LinksConfigure(links []Link) error {
 	for _, link := range links {
 
 		if link.Master != "" {
-			LinkSetMaster(link.LinkID, LinkID(link.Master))
+			LinkSetMaster(link.Ifname, link.Master)
 		}
 	}
 	//Set all links up
 	for _, link := range links {
-		LinkSetUp(link.LinkID)
+		LinkSetUp(link.Ifname)
 	}
 
 	return nil
 }
 
 //LinkGet Returns the list of existing link layer devices on the machine
-func LinkGet(LinkID LinkID) (Link, error) {
+func LinkGet(ifname LinkID) (Link, error) {
 	nclink := Link{}
-	link, err := netlink.LinkByName(string(LinkID))
+	link, err := netlink.LinkByName(string(ifname))
 	if err == nil {
 		nclink = linkParse(link)
 	}
@@ -196,9 +194,9 @@ func LinkGet(LinkID LinkID) (Link, error) {
 func LinkCreate(link Link) error {
 	var err error = nil
 	ifname := link.Ifname
-	l, _ := netlink.LinkByName(ifname)
+	l, _ := netlink.LinkByName(string(ifname))
 	if l != nil {
-		return NewLinkExistsConflictError(LinkID(ifname))
+		return NewLinkExistsConflictError(ifname)
 	}
 
 	nllink, err := linkFormat(link)
@@ -212,7 +210,7 @@ func LinkCreate(link Link) error {
 func LinkSetUp(ifname LinkID) error {
 	link, _ := netlink.LinkByName(string(ifname))
 	if link == nil {
-		return NewLinkNotFoundError(LinkID(ifname))
+		return NewLinkNotFoundError(ifname)
 	}
 	return netlink.LinkSetUp(link)
 }
@@ -221,7 +219,7 @@ func LinkSetUp(ifname LinkID) error {
 func LinkSetDown(ifname LinkID) error {
 	link, _ := netlink.LinkByName(string(ifname))
 	if link == nil {
-		return NewLinkNotFoundError(LinkID(ifname))
+		return NewLinkNotFoundError(ifname)
 	}
 	return netlink.LinkSetDown(link)
 }
@@ -230,11 +228,11 @@ func LinkSetDown(ifname LinkID) error {
 func LinkSetMaster(ifname LinkID, masterIfname LinkID) error {
 	link, _ := netlink.LinkByName(string(ifname))
 	if link == nil {
-		return NewLinkNotFoundError(LinkID(ifname))
+		return NewLinkNotFoundError(ifname)
 	}
 	masterLink, _ := netlink.LinkByName(string(masterIfname))
 	if masterLink == nil {
-		return NewLinkNotFoundError(LinkID(masterIfname))
+		return NewLinkNotFoundError(masterIfname)
 	}
 	return netlink.LinkSetMaster(link, masterLink)
 }
@@ -243,7 +241,7 @@ func LinkSetMaster(ifname LinkID, masterIfname LinkID) error {
 func LinkDelete(ifname LinkID) error {
 	l, _ := netlink.LinkByName(string(ifname))
 	if l == nil {
-		return NewLinkNotFoundError(LinkID(ifname))
+		return NewLinkNotFoundError(ifname)
 	}
 
 	attrs := netlink.NewLinkAttrs()
@@ -259,7 +257,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 	ifname := link.Ifname
 	kind := link.Linkinfo.InfoKind
 	attrs := netlink.NewLinkAttrs()
-	attrs.Name = ifname
+	attrs.Name = string(ifname)
 	var err error
 	var nllink netlink.Link = nil
 	switch kind {

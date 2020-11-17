@@ -713,8 +713,6 @@ components:
       description: Net Filter Table identifier
       example: 42
       type: integer
-    linkid:
-      $ref: '#/components/schemas/ifname'
     ifname:
       description: |
         Interface name
@@ -825,7 +823,6 @@ components:
         address: address
         ifname: dummy0
         promiscuity: 1
-        __id: dummy0
         flags:
         - UP
         - UP
@@ -853,12 +850,6 @@ components:
             miimon: 100
             downdelay: 0
       properties:
-        __id:
-          description: |
-            Interface name
-          example: dummy0
-          maxLength: 15
-          type: string
         ifindex:
           description: |
             Inteface index ID

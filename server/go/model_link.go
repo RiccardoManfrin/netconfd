@@ -17,8 +17,6 @@ import (
 
 // Link struct for Link
 type Link struct {
-	// Interface name 
-	Id *string `json:"__id,omitempty"`
 	// Inteface index ID 
 	Ifindex *int32 `json:"ifindex,omitempty"`
 	// Interface name 
@@ -54,38 +52,6 @@ func NewLink(ifname string, linkType string, ) *Link {
 func NewLinkWithDefaults() *Link {
 	this := Link{}
 	return &this
-}
-
-// GetId returns the Id field value if set, zero value otherwise.
-func (o *Link) GetId() string {
-	if o == nil || o.Id == nil {
-		var ret string
-		return ret
-	}
-	return *o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Link) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
-		return nil, false
-	}
-	return o.Id, true
-}
-
-// HasId returns a boolean if a field has been set.
-func (o *Link) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
-func (o *Link) SetId(v string) {
-	o.Id = &v
 }
 
 // GetIfindex returns the Ifindex field value if set, zero value otherwise.
@@ -394,9 +360,6 @@ func (o *Link) SetAddrInfo(v []LinkAddrInfo) {
 
 func (o Link) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Id != nil {
-		toSerialize["__id"] = o.Id
-	}
 	if o.Ifindex != nil {
 		toSerialize["ifindex"] = o.Ifindex
 	}

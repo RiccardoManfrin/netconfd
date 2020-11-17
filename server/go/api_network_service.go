@@ -44,7 +44,7 @@ func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error)
 func ncLinkFormat(link Link) (nc.Link, error) {
 
 	nclink := nc.Link{
-		Ifname:   link.GetIfname(),
+		Ifname:   nc.LinkID(link.GetIfname()),
 		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
 		Mtu:      link.GetMtu(),
 		LinkType: link.GetLinkType(),
@@ -70,9 +70,9 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 		return PostErrorResponse(err, nil)
 	}
 	if nclink.Master != "" {
-		nc.LinkSetMaster(nclink.LinkID, nc.LinkID(nclink.Master))
+		nc.LinkSetMaster(nclink.Ifname, nclink.Master)
 	}
-	nc.LinkSetUp(nclink.LinkID)
+	nc.LinkSetUp(nclink.Ifname)
 	return PostErrorResponse(err, nil)
 }
 
@@ -84,8 +84,7 @@ func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (I
 
 func ncLinkParse(nclink nc.Link) Link {
 	link := Link{
-		Id:       &nclink.Ifname,
-		Ifname:   nclink.Ifname,
+		Ifname:   string(nclink.Ifname),
 		Ifindex:  &nclink.Ifindex,
 		LinkType: nclink.LinkType,
 	}
@@ -127,7 +126,7 @@ func ncLinkParse(nclink nc.Link) Link {
 	}
 	if nclink.Master != "" {
 		icisd := &nclink.Linkinfo.InfoSlaveData
-		link.SetMaster(nclink.Master)
+		link.SetMaster(string(nclink.Master))
 		isd.SetState(icisd.State)
 		isd.SetLinkFailureCount(int32(icisd.LinkFailureCount))
 		isd.SetMiiStatus(icisd.MiiStatus)
