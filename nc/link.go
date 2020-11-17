@@ -179,16 +179,28 @@ func LinkCreate(link Link) error {
 	return netlink.LinkAdd(nllink)
 }
 
+//LinkSetMaster enslaves an interface (by ifname) to a master one (by masterIfname)
+func LinkSetMaster(ifname LinkID, masterIfname LinkID) error {
+	link, _ := netlink.LinkByName(string(ifname))
+	if link == nil {
+		return NewLinkNotFoundError(LinkID(ifname))
+	}
+	masterLink, _ := netlink.LinkByName(string(masterIfname))
+	if masterLink == nil {
+		return NewLinkNotFoundError(LinkID(masterIfname))
+	}
+	return netlink.LinkSetMaster(link, masterLink)
+}
+
 //LinkDelete deletes a link layer interface
-func LinkDelete(link Link) error {
-	ifname := link.Ifname
-	l, _ := netlink.LinkByName(ifname)
+func LinkDelete(ifname LinkID) error {
+	l, _ := netlink.LinkByName(string(ifname))
 	if l == nil {
 		return NewLinkNotFoundError(LinkID(ifname))
 	}
 
 	attrs := netlink.NewLinkAttrs()
-	attrs.Name = ifname
+	attrs.Name = string(ifname)
 	// Fool it with a dummy.. it should use ifname and ignore the rest
 	nllink := &netlink.Dummy{
 		LinkAttrs: attrs,

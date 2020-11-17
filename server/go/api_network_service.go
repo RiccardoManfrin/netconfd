@@ -71,8 +71,7 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 
 // ConfigLinkDel - Brings down and delete a link layer interface
 func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (ImplResponse, error) {
-	nclink := nc.Link{Ifname: ifname}
-	err := nc.LinkDelete(nclink)
+	err := nc.LinkDelete(nc.LinkID(ifname))
 	return DeleteErrorResponse(err, nil)
 }
 
@@ -411,11 +410,7 @@ func (s *NetworkApiService) ConfigRulesGet(ctx context.Context) (ImplResponse, e
 
 // ConfigSet - Configures and enforces a new live network configuration
 func (s *NetworkApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
-	// TODO - update ConfigSet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
+	config.HostNetwork.Links
 
 	err := errors.New("ConfigSet method not implemented")
 	return PutErrorResponse(err, nil)
