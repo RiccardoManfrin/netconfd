@@ -143,7 +143,7 @@ func LinksGet() ([]Link, error) {
 	return nclinks, nil
 }
 
-func seekBondActiveSlave(links []Link, bondIfname LinkID) (*Link, error) {
+func findBondActiveSlave(links []Link, bondIfname LinkID) (*Link, error) {
 	for _, link := range links {
 		if link.Master == bondIfname && link.Linkinfo.InfoSlaveData.State == netlink.BondStateActive.String() {
 			return &link, nil
@@ -166,20 +166,45 @@ func LinksConfigure(links []Link) error {
 			return err
 		}
 	}
-	//Set all links cross properties (e.g. being master of some link)
+
+	//Set active-backup bond links active slaves (apparently you need to do this before setting the backups)
 	for _, link := range links {
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
-			if err == nil && l.Linkinfo.InfoKind == "bond" {
+			if err != nil {
+				return err
+			}
+			if l.Linkinfo.InfoKind == "bond" {
 				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
-					//Lookup the ACTIVE one and set it first, to mark it as ACTIVE
-					activeSlave, err := seekBondActiveSlave(links, link.Master)
+					activeSlave, err := findBondActiveSlave(links, link.Master)
 					if err != nil {
 						return err
 					}
-					LinkSetMaster(link.Ifname, link.Master)
+					// Apparently first Link Set becomes master so do it first.
+					LinkSetMaster(activeSlave.Ifname, link.Master)
 				}
-				LinkSetBondSlave(link.Ifname, link.Master)
+			}
+		}
+	}
+
+	//Set all links cross properties (e.g. being slave of some master link interface)
+	for _, link := range links {
+		if link.Master != "" {
+			l, err := LinkGet(link.Master)
+			if err != nil {
+				return err
+			}
+			if l.Linkinfo.InfoKind == "bond" {
+				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
+					if link.Linkinfo.InfoSlaveData.State == netlink.BondStateBackup.String() {
+						LinkSetBondSlave(link.Ifname, link.Master)
+					}
+				} else {
+					if link.Linkinfo.InfoSlaveData.State == netlink.BondStateBackup.String() {
+						return NewBackupSlaveIfaceFoundForNonActiveBackupBondError(link.Ifname, link.Master)
+					}
+					LinkSetBondSlave(link.Ifname, link.Master)
+				}
 			}
 		}
 	}
