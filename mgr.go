@@ -13,7 +13,7 @@ import (
 	"strings"
 	"time"
 
-	openapi "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/server/go"
+	oas "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/server/go"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
@@ -132,18 +132,6 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	logger.Log.Notice("Starting mgmt service on " + m.Conf.Global.Mgmt.Host + ":" + strconv.FormatInt(int64(m.Conf.Global.Mgmt.Port), 10))
 	logger.Log.Notice("Log level set to " + m.Conf.Global.LogLev)
 
-	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
-
-	openapiJSON, _ := swaggeruiFS.Open("/swagger.yaml")
-
-	data, _ := ioutil.ReadAll(openapiJSON)
-	m.openapi, err = openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
-	m.router = openapi3filter.NewRouter().WithSwagger(m.openapi)
-
-	openapi3.DefineIPv4Format()
-	openapi3.DefineIPv6Format()
-
-	m.ServeMux = http.NewServeMux()
 	m.HTTPServer = &http.Server{
 		Addr:           m.Conf.Global.Mgmt.Host + ":" + strconv.FormatUint(uint64(m.Conf.Global.Mgmt.Port), 10),
 		Handler:        m.ServeMux,
@@ -151,13 +139,6 @@ func (m *Manager) LoadConfig(conffile *string) error {
 		WriteTimeout:   15 * time.Second,
 		MaxHeaderBytes: 1 << 20,
 	}
-	m.ServeMux.Handle("/", m)
-	m.ServeMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
-
-	networkApiService := openapi.NewNetworkApiService()
-	networkApiController := openapi.NewNetworkApiController(networkApiService)
-
-	m.routeHandlers = openapi.NewRouter(networkApiController)
 
 	return nil
 }
@@ -202,13 +183,33 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 //NewManager creates new manager
-func NewManager(conffile *string) *Manager {
-	m := &Manager{}
-	m.LoadConfig(conffile)
+func NewManager() *Manager {
+	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
+
+	openapiJSON, _ := swaggeruiFS.Open("/swagger.yaml")
+
+	data, _ := ioutil.ReadAll(openapiJSON)
+	openapi, _ := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
+	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
 	//Opt in IPv4 and IPv6 validation
 	openapi3.DefineIPv4Format()
 	openapi3.DefineIPv6Format()
+
+	serveMux := http.NewServeMux()
+
+	networkApiService := oas.NewNetworkApiService()
+	networkApiController := oas.NewNetworkApiController(networkApiService)
+
+	m := &Manager{
+		openapi:       openapi,
+		router:        router,
+		ServeMux:      serveMux,
+		routeHandlers: oas.NewRouter(networkApiController),
+	}
+	serveMux.Handle("/", m)
+	serveMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
+
 	return m
 }
 

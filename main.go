@@ -15,7 +15,8 @@ func main() {
 
 	logger.LoggerInit(*logfile)
 
-	mgr := NewManager(configfile)
+	mgr := NewManager()
+	mgr.LoadConfig(configfile)
 	mgr.Start()
 
 	for {
