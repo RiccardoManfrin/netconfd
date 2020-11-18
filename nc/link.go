@@ -143,10 +143,10 @@ func LinksGet() ([]Link, error) {
 	return nclinks, nil
 }
 
-func seekBondActiveSlave(links []Link, bondIfname LinkID) (Link, err) {
+func seekBondActiveSlave(links []Link, bondIfname LinkID) (*Link, error) {
 	for _, link := range links {
 		if link.Master == bondIfname && link.Linkinfo.InfoSlaveData.State == netlink.BondStateActive.String() {
-			return link, nil
+			return &link, nil
 		}
 	}
 	return nil, NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname)
@@ -168,16 +168,16 @@ func LinksConfigure(links []Link) error {
 	}
 	//Set all links cross properties (e.g. being master of some link)
 	for _, link := range links {
-
 		if link.Master != "" {
-			LinkSetMaster(link.Ifname, link.Master)
 			l, err := LinkGet(link.Master)
 			if err == nil && l.Linkinfo.InfoKind == "bond" {
 				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
+					//Lookup the ACTIVE one and set it first, to mark it as ACTIVE
 					activeSlave, err := seekBondActiveSlave(links, link.Master)
-					if err == nil {
-						LinkSetBondSlave(activeSlave.Ifname, link.Master)
+					if err != nil {
+						return err
 					}
+					LinkSetMaster(link.Ifname, link.Master)
 				}
 				LinkSetBondSlave(link.Ifname, link.Master)
 			}

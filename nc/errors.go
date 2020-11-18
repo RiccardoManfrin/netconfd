@@ -69,5 +69,5 @@ func NewRouteByIDNotFoundError(routeid RouteID) error {
 
 //NewActiveSlaveIfaceNotFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
 func NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname LinkID) error {
-	return &NotFoundError{reason: "Active Slave Iface not found for Active-Backup bond " + string(bondIfname)}
+	return &SemanticError{reason: "Active Slave Iface not found for Active-Backup bond " + string(bondIfname)}
 }

@@ -61,6 +61,10 @@ func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
 func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
+		case *nc.SemanticError:
+			{
+				return Response(http.StatusBadRequest, err), err
+			}
 		default:
 			{
 				return Response(http.StatusInternalServerError, err), err

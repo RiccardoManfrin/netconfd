@@ -45,17 +45,27 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 
 	nclink := nc.Link{
 		Ifname:   nc.LinkID(link.GetIfname()),
-		Linkinfo: nc.LinkLinkinfo{InfoKind: *link.GetLinkinfo().InfoKind},
+		Linkinfo: nc.LinkLinkinfo{},
 		Mtu:      link.GetMtu(),
 		LinkType: link.GetLinkType(),
 		Master:   nc.LinkID(link.GetMaster()),
 	}
-	switch nclink.Linkinfo.InfoKind {
-	case "bond":
-		{
-			nclink.Linkinfo.InfoData.Mode = *link.GetLinkinfo().InfoData.Mode
-		}
+
+	li := link.GetLinkinfo()
+
+	if li.InfoData != nil {
+		nclink.Linkinfo.InfoData.Mode = li.InfoData.GetMode()
+		nclink.Linkinfo.InfoData.Miimon = li.InfoData.GetMiimon()
+		nclink.Linkinfo.InfoData.Downdelay = li.InfoData.GetDowndelay()
+		nclink.Linkinfo.InfoData.Updelay = li.InfoData.GetUpdelay()
 	}
+
+	nclink.Linkinfo.InfoKind = *li.InfoKind
+
+	if li.InfoSlaveData != nil {
+		nclink.Linkinfo.InfoSlaveData.State = li.InfoSlaveData.GetState()
+	}
+
 	return nclink, nil
 }
 
