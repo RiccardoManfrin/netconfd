@@ -1005,6 +1005,10 @@ components:
               * `layer2` - Hash is made on L2 metadata
               * `layer2+3` - Hash is made on L2 and L3 metadata
               * `layer3+4` - Hash is made on L3 and L4 metadata
+          enum:
+          - layer2
+          - layer2+3
+          - layer3+4
           example: layer2
           type: string
         ad_lacp_rate:
@@ -1012,6 +1016,9 @@ components:
             Rate at which LACP control packets are sent to an LACP-supported interface Supported Modes:
               * `slow` - LACP Slow Rate (less bandwidth)
               * `fast` - LACP Fast Rate (faster fault detection)
+          enum:
+          - slow
+          - fast
           example: slow
           type: string
       type: object

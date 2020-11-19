@@ -1007,6 +1007,10 @@ components:
                       * `layer2` - Hash is made on L2 metadata
                       * `layer2+3` - Hash is made on L2 and L3 metadata
                       * `layer3+4` - Hash is made on L3 and L4 metadata
+                  enum:
+                    - layer2
+                    - layer2+3
+                    - layer3+4
                 #resend_igmp:
                 #  example: 1
                 #  type: integer
@@ -1033,6 +1037,9 @@ components:
                     Supported Modes:
                       * `slow` - LACP Slow Rate (less bandwidth)
                       * `fast` - LACP Fast Rate (faster fault detection)
+                  enum:
+                    - slow
+                    - fast
                 #ad_select:
                 #  example: "stable"
                 #  type: string
