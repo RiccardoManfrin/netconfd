@@ -68,27 +68,27 @@ func NewGenericSemanticError() error {
 
 //NewBadAddressError returns a bad address error on link layer interfaces
 func NewBadAddressError(c CIDRAddr) error {
-	return &SemanticError{Reason: "Bad IP address " + c.String()}
+	return &SemanticError{Code: SEMANTIC, Reason: "Bad IP address " + c.String()}
 }
 
 //NewLinkExistsConflictError returns a Conflict error on link layer interfaces
 func NewLinkExistsConflictError(linkID LinkID) error {
-	return &ConflictError{Reason: "Link " + string(linkID) + " exists"}
+	return &ConflictError{Code: CONFLICT, Reason: "Link " + string(linkID) + " exists"}
 }
 
 //NonBondMasterLinkTypeError returns an error for non bond master link type
 func NonBondMasterLinkTypeError(ifname LinkID) error {
-	return &ConflictError{Reason: "Master link interface " + string(ifname) + " is not a bond"}
+	return &ConflictError{Code: SEMANTIC, Reason: "Master link interface " + string(ifname) + " is not a bond"}
 }
 
 //NewLinkNotFoundError returns a Not found error on link layer interfaces
 func NewLinkNotFoundError(linkID LinkID) error {
-	return &NotFoundError{Reason: "Link " + string(linkID) + " not found"}
+	return &NotFoundError{Code: CONFLICT, Reason: "Link " + string(linkID) + " not found"}
 }
 
 //NewUnknownLinkKindError returns a UnknownTypeError error on link layer type interfaces
 func NewUnknownLinkKindError(linkKind string) error {
-	return &SemanticError{Reason: "LinkKind " + string(linkKind) + " not known"}
+	return &SemanticError{Code: SEMANTIC, Reason: "LinkKind " + string(linkKind) + " not known"}
 }
 
 //NotFoundError is a logical error on the content of the operation requested to be performed
@@ -100,15 +100,15 @@ func (e *NotFoundError) Error() string {
 
 //NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
-	return &NotFoundError{Reason: "Route ID" + string(routeid) + " did not match"}
+	return &NotFoundError{Code: CONFLICT, Reason: "Route ID" + string(routeid) + " did not match"}
 }
 
 //NewActiveSlaveIfaceNotFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
 func NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname LinkID) error {
-	return &SemanticError{Reason: "Active Slave Iface not found for Active-Backup type bond " + string(bondIfname)}
+	return &SemanticError{Code: SEMANTIC, Reason: "Active Slave Iface not found for Active-Backup type bond " + string(bondIfname)}
 }
 
 //NewBackupSlaveIfaceFoundForNonActiveBackupBondError Returns an error if a backup interface is found for a non Active-Backup type bond
 func NewBackupSlaveIfaceFoundForNonActiveBackupBondError(backupIfname LinkID, bondIfname LinkID) error {
-	return &SemanticError{Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
+	return &SemanticError{Code: SEMANTIC, Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
 }

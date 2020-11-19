@@ -10,8 +10,15 @@ import (
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
 )
 
-func TestActiveBackupBondWithNonActiveSlave(t *testing.T) {
-	reqbody := `{
+func newConfigPutReq(reqbody string) *http.Request {
+	iobody := strings.NewReader(reqbody)
+	req, _ := http.NewRequest("PUT", "/api/1/config", iobody)
+	req.Header.Add("Content-Type", "application/json")
+	return req
+}
+
+func TestConfigPutActiveBackupBondWithNonActiveSlave(t *testing.T) {
+	req := newConfigPutReq(`{
 		"global": {},
 		"host_network": {
 		  "links": [
@@ -50,24 +57,24 @@ func TestActiveBackupBondWithNonActiveSlave(t *testing.T) {
 		  ],
 		  "routes": []
 		}
-	  }`
-	iobody := strings.NewReader(reqbody)
+	  }`)
+
 	m := NewManager()
-	req, err := http.NewRequest("PUT", "/api/1/config", iobody)
-	req.Header.Add("Content-Type", "application/json")
-	if err != nil {
-		t.Fatal(err)
-	}
 	rr := httptest.NewRecorder()
 	m.ServeHTTP(rr, req)
 	if status := rr.Code; status != http.StatusBadRequest {
-		t.Errorf("handler returned wrong status code: got %v want %v",
-			status, http.StatusOK)
+		t.Errorf("HTTP Status code mismatch: got %v want %v",
+			status,
+			http.StatusBadRequest)
 	}
-	t.Errorf("%v", string(rr.Body.Bytes()))
 	var genericError nc.GenericError
-	err = json.Unmarshal(rr.Body.Bytes(), &genericError)
+	err := json.Unmarshal(rr.Body.Bytes(), &genericError)
 	if err != nil {
-		t.Errorf(err.Error())
+		t.Errorf("Err Unmarshal failure")
+	}
+	if genericError.Code != nc.SEMANTIC {
+		t.Errorf("Err Code mismatch: got %v, want %v",
+			genericError.Code,
+			nc.SEMANTIC)
 	}
 }
