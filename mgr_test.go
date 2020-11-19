@@ -1,24 +1,18 @@
 package main
 
 import (
+	"bytes"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
+	oas "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/server/go"
 )
 
-func newConfigPutReq(reqbody string) *http.Request {
-	iobody := strings.NewReader(reqbody)
-	req, _ := http.NewRequest("PUT", "/api/1/config", iobody)
-	req.Header.Add("Content-Type", "application/json")
-	return req
-}
-
-func TestConfigPutActiveBackupBondWithNonActiveSlave(t *testing.T) {
-	req := newConfigPutReq(`{
+func genSampleConfig() oas.Config {
+	sampleConfig := `{
 		"global": {},
 		"host_network": {
 		  "links": [
@@ -49,7 +43,7 @@ func TestConfigPutActiveBackupBondWithNonActiveSlave(t *testing.T) {
 			  "linkinfo": {
 				"info_kind": "dummy",
 				"info_slave_data": {
-				  "state": "BACKUP"
+				  "state": "ACTIVE"
 				}
 			  },
 			  "master": "bond0"
@@ -57,12 +51,24 @@ func TestConfigPutActiveBackupBondWithNonActiveSlave(t *testing.T) {
 		  ],
 		  "routes": []
 		}
-	  }`)
+	  }`
+	var config oas.Config
+	json.Unmarshal([]byte(sampleConfig), &config)
+	return config
+}
 
-	m := NewManager()
-	rr := httptest.NewRecorder()
-	m.ServeHTTP(rr, req)
-	if status := rr.Code; status != http.StatusBadRequest {
+func newConfigSetReq(config oas.Config) *http.Request {
+	reqbody, _ := json.Marshal(config)
+	iobody := bytes.NewReader(reqbody)
+	req, _ := http.NewRequest("PUT", "/api/1/config", iobody)
+	req.Header.Add("Content-Type", "application/json")
+	return req
+}
+
+var m *Manager = NewManager()
+
+func checkResponse(t *testing.T, rr *httptest.ResponseRecorder, httpStatusCode int, ncErrorCode nc.ErrorCode, ncreason string) {
+	if status := rr.Code; status != httpStatusCode {
 		t.Errorf("HTTP Status code mismatch: got %v want %v",
 			status,
 			http.StatusBadRequest)
@@ -72,9 +78,44 @@ func TestConfigPutActiveBackupBondWithNonActiveSlave(t *testing.T) {
 	if err != nil {
 		t.Errorf("Err Unmarshal failure")
 	}
-	if genericError.Code != nc.SEMANTIC {
+	if genericError.Code != ncErrorCode {
 		t.Errorf("Err Code mismatch: got %v, want %v",
 			genericError.Code,
 			nc.SEMANTIC)
 	}
+	if ncreason != "" {
+		if genericError.Reason != ncreason {
+			t.Errorf("Err Reason mismatch: got %v, want %v",
+				genericError.Reason,
+				ncreason)
+		}
+	}
+}
+
+func runConfigSet(config oas.Config) *httptest.ResponseRecorder {
+	req := newConfigSetReq(config)
+	rr := httptest.NewRecorder()
+	m.ServeHTTP(rr, req)
+	return rr
+}
+
+func TestActiveBackupBondWithoutActiveSlave(t *testing.T) {
+	c := genSampleConfig()
+	*(*c.HostNetwork.Links)[2].Linkinfo.InfoSlaveData.State = "BACKUP"
+	rr := runConfigSet(c)
+	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Active Slave Iface not found for Active-Backup type bond bond0")
+}
+
+func TestActiveBackupBondWithMultipleActiveSlaves(t *testing.T) {
+	c := genSampleConfig()
+	*(*c.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.State = "ACTIVE"
+	rr := runConfigSet(c)
+	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Multiple Active Slave Ifaces found for Active-Backup type bond bond0")
+}
+
+func TestNonActiveBackupBondWithBackupSlave(t *testing.T) {
+	c := genSampleConfig()
+	*(*c.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
+	rr := runConfigSet(c)
+	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
 }

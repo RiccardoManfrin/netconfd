@@ -143,13 +143,26 @@ func LinksGet() ([]Link, error) {
 	return nclinks, nil
 }
 
-func findBondActiveSlave(links []Link, bondIfname LinkID) (*Link, error) {
+func findActiveBackupBondActiveSlave(links []Link, bondIfname LinkID) (*Link, error) {
+	var foundLink *Link = nil
+	var secondFoundLink *Link = nil
 	for _, link := range links {
 		if link.Master == bondIfname && link.Linkinfo.InfoSlaveData.State == netlink.BondStateActive.String() {
-			return &link, nil
+			if foundLink == nil {
+				foundLink = &link
+			} else {
+				secondFoundLink = &link
+			}
+
 		}
 	}
-	return nil, NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname)
+	if foundLink == nil {
+		return nil, NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname)
+	}
+	if secondFoundLink != nil {
+		return nil, NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError(bondIfname)
+	}
+	return foundLink, nil
 }
 
 //LinksConfigure configures the whole set of links to manage in the correct sequential order
@@ -176,7 +189,7 @@ func LinksConfigure(links []Link) error {
 			}
 			if l.Linkinfo.InfoKind == "bond" {
 				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
-					activeSlave, err := findBondActiveSlave(links, link.Master)
+					activeSlave, err := findActiveBackupBondActiveSlave(links, link.Master)
 					if err != nil {
 						return err
 					}
