@@ -356,8 +356,12 @@ func linkFormat(link Link) (netlink.Link, error) {
 			nlbondlink.Miimon = int(link.Linkinfo.InfoData.Miimon)
 			nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
 			nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
-			nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(link.Linkinfo.InfoData.XmitHashPolicy)
-			nlbondlink.LacpRate = netlink.StringToBondLacpRate(link.Linkinfo.InfoData.AdLacpRate)
+			if link.Linkinfo.InfoData.XmitHashPolicy != "" {
+				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(link.Linkinfo.InfoData.XmitHashPolicy)
+			}
+			if link.Linkinfo.InfoData.AdLacpRate != "" {
+				nlbondlink.LacpRate = netlink.StringToBondLacpRate(link.Linkinfo.InfoData.AdLacpRate)
+			}
 		}
 	case "bridge":
 		{
