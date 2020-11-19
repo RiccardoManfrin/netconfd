@@ -195,7 +195,7 @@ func (c *NetworkApiController) ConfigGet(w http.ResponseWriter, r *http.Request)
 	result, err := c.service.ConfigGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -214,7 +214,7 @@ func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.R
 	result, err := c.service.ConfigLinkCreate(r.Context(), *link)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -229,7 +229,7 @@ func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Requ
 	result, err := c.service.ConfigLinkDel(r.Context(), ifname)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -244,7 +244,7 @@ func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Requ
 	result, err := c.service.ConfigLinkGet(r.Context(), ifname)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -257,7 +257,7 @@ func (c *NetworkApiController) ConfigLinksGet(w http.ResponseWriter, r *http.Req
 	result, err := c.service.ConfigLinksGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -276,7 +276,7 @@ func (c *NetworkApiController) ConfigNFTableCreate(w http.ResponseWriter, r *htt
 	result, err := c.service.ConfigNFTableCreate(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -296,7 +296,7 @@ func (c *NetworkApiController) ConfigNFTableDel(w http.ResponseWriter, r *http.R
 	result, err := c.service.ConfigNFTableDel(r.Context(), nftableid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -316,7 +316,7 @@ func (c *NetworkApiController) ConfigNFTableGet(w http.ResponseWriter, r *http.R
 	result, err := c.service.ConfigNFTableGet(r.Context(), nftableid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -329,7 +329,7 @@ func (c *NetworkApiController) ConfigNFTablesGet(w http.ResponseWriter, r *http.
 	result, err := c.service.ConfigNFTablesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -348,7 +348,7 @@ func (c *NetworkApiController) ConfigNetNSCreate(w http.ResponseWriter, r *http.
 	result, err := c.service.ConfigNetNSCreate(r.Context(), *netns)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -363,7 +363,7 @@ func (c *NetworkApiController) ConfigNetNSDel(w http.ResponseWriter, r *http.Req
 	result, err := c.service.ConfigNetNSDel(r.Context(), netnsid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -378,7 +378,7 @@ func (c *NetworkApiController) ConfigNetNSGet(w http.ResponseWriter, r *http.Req
 	result, err := c.service.ConfigNetNSGet(r.Context(), netnsid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -391,7 +391,7 @@ func (c *NetworkApiController) ConfigNetNSsGet(w http.ResponseWriter, r *http.Re
 	result, err := c.service.ConfigNetNSsGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -410,7 +410,7 @@ func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.
 	result, err := c.service.ConfigRouteCreate(r.Context(), *route)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -430,7 +430,7 @@ func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Req
 	result, err := c.service.ConfigRouteDel(r.Context(), routeid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -450,7 +450,7 @@ func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Req
 	result, err := c.service.ConfigRouteGet(r.Context(), routeid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -463,7 +463,7 @@ func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Re
 	result, err := c.service.ConfigRoutesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -482,7 +482,7 @@ func (c *NetworkApiController) ConfigRuleCreate(w http.ResponseWriter, r *http.R
 	result, err := c.service.ConfigRuleCreate(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -502,7 +502,7 @@ func (c *NetworkApiController) ConfigRuleDel(w http.ResponseWriter, r *http.Requ
 	result, err := c.service.ConfigRuleDel(r.Context(), ruleid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -522,7 +522,7 @@ func (c *NetworkApiController) ConfigRuleGet(w http.ResponseWriter, r *http.Requ
 	result, err := c.service.ConfigRuleGet(r.Context(), ruleid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -535,7 +535,7 @@ func (c *NetworkApiController) ConfigRulesGet(w http.ResponseWriter, r *http.Req
 	result, err := c.service.ConfigRulesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -554,7 +554,7 @@ func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request)
 	result, err := c.service.ConfigSet(r.Context(), *config)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -573,7 +573,7 @@ func (c *NetworkApiController) ConfigVRFCreate(w http.ResponseWriter, r *http.Re
 	result, err := c.service.ConfigVRFCreate(r.Context(), *body)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -593,7 +593,7 @@ func (c *NetworkApiController) ConfigVRFDel(w http.ResponseWriter, r *http.Reque
 	result, err := c.service.ConfigVRFDel(r.Context(), vrfid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -613,7 +613,7 @@ func (c *NetworkApiController) ConfigVRFGet(w http.ResponseWriter, r *http.Reque
 	result, err := c.service.ConfigVRFGet(r.Context(), vrfid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
@@ -626,7 +626,7 @@ func (c *NetworkApiController) ConfigVRFsGet(w http.ResponseWriter, r *http.Requ
 	result, err := c.service.ConfigVRFsGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
-		EncodeJSONResponse(err.Error(), &result.Code, w)
+		EncodeJSONResponse(err, &result.Code, w)
 		return
 	}
 	//If no error, encode the body and the result code
