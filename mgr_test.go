@@ -32,7 +32,9 @@ func genSampleConfig() oas.Config {
 				  "mode": "active-backup",
 				  "downdelay": 800,
 				  "updelay" : 400,
-				  "miimon" : 200
+				  "miimon" : 200,
+				  "xmit_hash_policy" : "layer2+3",
+				  "ad_lacp_rate" : "fast"
 				}
 			  }
 			},
@@ -192,6 +194,12 @@ func deltaLink(l oas.Link, r oas.Link) string {
 	}
 	if lid.GetUpdelay() != rid.GetUpdelay() {
 		return "link_info->info_data->updelay"
+	}
+	if lid.GetXmitHashPolicy() != rid.GetXmitHashPolicy() {
+		return "link_info->info_data->xmit_hash_policy"
+	}
+	if lid.GetAdLacpRate() != rid.GetAdLacpRate() {
+		return "link_info->info_data->ad_lacp_rate"
 	}
 	return ""
 

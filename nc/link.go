@@ -36,6 +36,10 @@ type LinkLinkinfoInfoData struct {
 	Updelay int32 `json:"updelay,omitempty"`
 	// Specifies the time, in milliseconds, to wait before disabling a slave after a  link failure has been detected. The downdelay value should be a multiple of the miimon value.
 	Downdelay int32 `json:"downdelay,omitempty"`
+	// Hash policy to route packets on different bond interfaces.  Supported Modes:   * `layer2` - Hash is made on L2 metadata   * `layer2+3` - Hash is made on L2 and L3 metadata   * `layer3+4` - Hash is made on L3 and L4 metadata
+	XmitHashPolicy string `json:"xmit_hash_policy,omitempty"`
+	// Rate at which LACP control packets are sent to an LACP-supported interface Supported Modes:   * `slow` - LACP Slow Rate (less bandwidth)   * `fast` - LACP Fast Rate (faster fault detection)
+	AdLacpRate string `json:"ad_lacp_rate,omitempty"`
 }
 
 //LinkLinkinfo definition
@@ -92,6 +96,8 @@ func linkParse(link netlink.Link) Link {
 			id.Miimon = int32(bond.Miimon)
 			id.Updelay = int32(bond.UpDelay)
 			id.Downdelay = int32(bond.DownDelay)
+			id.XmitHashPolicy = bond.XmitHashPolicy.String()
+			id.AdLacpRate = bond.LacpRate.String()
 		}
 	case "device":
 	case "bridge":
@@ -350,6 +356,8 @@ func linkFormat(link Link) (netlink.Link, error) {
 			nlbondlink.Miimon = int(link.Linkinfo.InfoData.Miimon)
 			nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
 			nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
+			nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(link.Linkinfo.InfoData.XmitHashPolicy)
+			nlbondlink.LacpRate = netlink.StringToBondLacpRate(link.Linkinfo.InfoData.AdLacpRate)
 		}
 	case "bridge":
 		{

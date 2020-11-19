@@ -66,6 +66,8 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		nclink.Linkinfo.InfoData.Miimon = li.InfoData.GetMiimon()
 		nclink.Linkinfo.InfoData.Downdelay = li.InfoData.GetDowndelay()
 		nclink.Linkinfo.InfoData.Updelay = li.InfoData.GetUpdelay()
+		nclink.Linkinfo.InfoData.XmitHashPolicy = li.InfoData.GetXmitHashPolicy()
+		nclink.Linkinfo.InfoData.AdLacpRate = li.InfoData.GetAdLacpRate()
 	}
 
 	nclink.Linkinfo.InfoKind = *li.InfoKind
@@ -136,6 +138,8 @@ func ncLinkParse(nclink nc.Link) Link {
 			id.Miimon = &nclink.Linkinfo.InfoData.Miimon
 			id.Updelay = &nclink.Linkinfo.InfoData.Updelay
 			id.Downdelay = &nclink.Linkinfo.InfoData.Downdelay
+			id.XmitHashPolicy = &nclink.Linkinfo.InfoData.XmitHashPolicy
+			id.AdLacpRate = &nclink.Linkinfo.InfoData.AdLacpRate
 			lli.InfoData = &id
 		}
 	case "device":
