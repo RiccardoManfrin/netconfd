@@ -32,9 +32,7 @@ func genSampleConfig() oas.Config {
 				  "mode": "active-backup",
 				  "downdelay": 800,
 				  "updelay" : 400,
-				  "miimon" : 200,
-				  "xmit_hash_policy" : "layer2+3",
-				  "ad_lacp_rate" : "fast"
+				  "miimon" : 200
 				}
 			  }
 			},
@@ -195,19 +193,38 @@ func deltaLink(l oas.Link, r oas.Link) string {
 	if lid.GetUpdelay() != rid.GetUpdelay() {
 		return "link_info->info_data->updelay"
 	}
-	if lid.GetXmitHashPolicy() != rid.GetXmitHashPolicy() {
+	if lid.GetXmitHashPolicy() != "" && (lid.GetXmitHashPolicy() != rid.GetXmitHashPolicy()) {
 		return "link_info->info_data->xmit_hash_policy"
 	}
-	if lid.GetAdLacpRate() != rid.GetAdLacpRate() {
+	if lid.GetAdLacpRate() != "" && (lid.GetAdLacpRate() != rid.GetAdLacpRate()) {
 		return "link_info->info_data->ad_lacp_rate"
 	}
 	return ""
 
 }
 
-//Test004 - OK-005 Bond params check
+//Test004 - OK-004 Bond Active-Backup params check
 func Test004(t *testing.T) {
 	cset := genSampleConfig()
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	cget := runConfigGet()
+	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
+	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
+	for ifname, setLink := range cLinksSetMap {
+		getLink := cLinksGetMap[ifname].(oas.Link)
+		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
+			t.Errorf("Mismatch on %v", delta)
+		}
+	}
+}
+
+//Test005 - OK-005 Bond Balance-RR params check
+func Test005(t *testing.T) {
+	cset := genSampleConfig()
+	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
+	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet()
