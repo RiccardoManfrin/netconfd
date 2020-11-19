@@ -306,7 +306,6 @@ func LinkSetBondSlave(ifname LinkID, masterIfname LinkID) error {
 		return NewLinkNotFoundError(masterIfname)
 	}
 	if masterLink.Type() == "bond" {
-		logger.Log.Debug("Setting bond slave")
 		return netlink.LinkSetBondSlave(link, masterLink.(*netlink.Bond))
 	}
 	return NonBondMasterLinkTypeError(masterIfname)
