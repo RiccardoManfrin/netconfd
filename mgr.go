@@ -190,6 +190,9 @@ func NewManager() *Manager {
 
 	data, _ := ioutil.ReadAll(openapiJSON)
 	openapi, _ := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
+	if openapi == nil {
+		panic("Invalid swagger spec")
+	}
 	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
 	//Opt in IPv4 and IPv6 validation
