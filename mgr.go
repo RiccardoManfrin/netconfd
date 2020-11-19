@@ -189,9 +189,9 @@ func NewManager() *Manager {
 	openapiJSON, _ := swaggeruiFS.Open("/swagger.yaml")
 
 	data, _ := ioutil.ReadAll(openapiJSON)
-	openapi, _ := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
-	if openapi == nil {
-		panic("Invalid swagger spec")
+	openapi, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
+	if openapi == nil && err != nil {
+		panic(err)
 	}
 	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
