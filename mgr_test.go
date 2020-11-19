@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"reflect"
 	"testing"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
@@ -28,7 +29,10 @@ func genSampleConfig() oas.Config {
 			  "linkinfo": {
 				"info_kind": "bond",
 				"info_data": {
-				  "mode": "active-backup"
+				  "mode": "active-backup",
+				  "downdelay": 100,
+				  "updelay" : 200,
+				  "miimon" : 500
 				}
 			  }
 			},
@@ -122,6 +126,29 @@ func runConfigGet() oas.Config {
  * - EC are checks on faulty behavior/requests (edge cases)
  */
 
+func listToMap(slice interface{}, key string) map[string]interface{} {
+	s := reflect.ValueOf(slice)
+	if s.Kind() != reflect.Slice {
+		panic("InterfaceSlice() given a non-slice type")
+	}
+	if s.IsNil() {
+		return nil
+	}
+	trueSlice := make([]interface{}, s.Len())
+	for i := 0; i < s.Len(); i++ {
+		trueSlice[i] = s.Index(i).Interface()
+	}
+
+	mappedList := make(map[string]interface{})
+
+	for _, l := range trueSlice {
+		val := reflect.ValueOf(l)
+		kval := val.FieldByName(key).String()
+		mappedList[kval] = l
+	}
+	return mappedList
+}
+
 //Test001 - EC-001 Active-Backup Bond Without ActiveSlave
 func Test001(t *testing.T) {
 	c := genSampleConfig()
@@ -146,13 +173,42 @@ func Test003(t *testing.T) {
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
 }
 
+func deltaLink(l oas.Link, r oas.Link) string {
+	if l.GetMaster() != r.GetMaster() {
+		return "master"
+	}
+	if l.LinkType != r.LinkType {
+		return "link_type"
+	}
+	lli := l.GetLinkinfo()
+	rli := r.GetLinkinfo()
+	lid := lli.GetInfoData()
+	rid := rli.GetInfoData()
+	if lid.GetMode() != rid.GetMode() {
+		return "link_info->info_data->mode"
+	}
+	if lid.GetDowndelay() != rid.GetDowndelay() {
+		return "link_info->info_data->downdelay"
+	}
+	if lid.GetUpdelay() != rid.GetUpdelay() {
+		return "link_info->info_data->updelay"
+	}
+	return ""
+
+}
+
 //Test004 - OK-005 Bond params check
 func Test004(t *testing.T) {
 	cset := genSampleConfig()
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet()
-	if cget != cget {
-		t.Errorf("Figa")
+	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
+	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
+	for ifname, setLink := range cLinksSetMap {
+		getLink := cLinksGetMap[ifname].(oas.Link)
+		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
+			t.Errorf("Mismatch on %v", delta)
+		}
 	}
 }
