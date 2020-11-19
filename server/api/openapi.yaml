@@ -846,8 +846,10 @@ components:
           info_data:
             mode: active-backup
             updelay: 0
+            xmit_hash_policy: layer2
             miimon: 100
             downdelay: 0
+            ad_lacp_rate: slow
       properties:
         ifindex:
           description: |
@@ -955,8 +957,10 @@ components:
       example:
         mode: active-backup
         updelay: 0
+        xmit_hash_policy: layer2
         miimon: 100
         downdelay: 0
+        ad_lacp_rate: slow
       properties:
         mode:
           description: |
@@ -995,6 +999,21 @@ components:
             \ should be a multiple of the miimon value.\n"
           example: 0
           type: integer
+        xmit_hash_policy:
+          description: |
+            Hash policy to route packets on different bond interfaces.  Supported Modes:
+              * `layer2` - Hash is made on L2 metadata
+              * `layer2+3` - Hash is made on L2 and L3 metadata
+              * `layer3+4` - Hash is made on L3 and L4 metadata
+          example: layer2
+          type: string
+        ad_lacp_rate:
+          description: |
+            Rate at which LACP control packets are sent to an LACP-supported interface Supported Modes:
+              * `slow` - LACP Slow Rate (less bandwidth)
+              * `fast` - LACP Fast Rate (faster fault detection)
+          example: slow
+          type: string
       type: object
     link_linkinfo:
       description: |
@@ -1011,8 +1030,10 @@ components:
         info_data:
           mode: active-backup
           updelay: 0
+          xmit_hash_policy: layer2
           miimon: 100
           downdelay: 0
+          ad_lacp_rate: slow
       properties:
         info_slave_kind:
           description: |

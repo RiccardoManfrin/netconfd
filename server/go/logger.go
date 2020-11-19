@@ -11,10 +11,10 @@
 package openapi
 
 import (
-	"bytes"
-	"io/ioutil"
 	"net/http"
 	"time"
+	"io/ioutil"
+	"bytes"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )

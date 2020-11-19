@@ -978,52 +978,63 @@ components:
                   example: 0
                   type: integer
                 #peer_notify_delay:
-                #  example: 0,
+                #  example: 0
                 #  type: integer
                 #use_carrier:
-                #  example: 1,
+                #  example: 1
                 #  type: integer
                 #arp_interval:
-                #  example: 0,
+                #  example: 0
                 #  type: integer
                 #arp_validate:
-                #  example: null,
+                #  example: null
                 #  type: boolean
                 #arp_all_targets:
-                #  example: "any",
+                #  example: "any"
                 #  type: string
                 #primary_reselect:
-                #  example: "always",
+                #  example: "always"
                 #  type: string
                 #fail_over_mac:
-                #  example: "none",
+                #  example: "none"
                 #  type: string
-                #xmit_hash_policy:
-                #  example: "layer2",
-                #  type: string
+                xmit_hash_policy:
+                  example: "layer2"
+                  type: string
+                  description: >
+                    Hash policy to route packets on different bond interfaces. 
+                    Supported Modes:
+                      * `layer2` - Hash is made on L2 metadata
+                      * `layer2+3` - Hash is made on L2 and L3 metadata
+                      * `layer3+4` - Hash is made on L3 and L4 metadata
                 #resend_igmp:
-                #  example: 1,
+                #  example: 1
                 #  type: integer
                 #num_peer_notif:
-                #  example: 1,
+                #  example: 1
                 #  type: integer
                 #all_slaves_active:
-                #  example: 0,
+                #  example: 0
                 #  type: integer
                 #min_links:
-                #  example: 0,
+                #  example: 0
                 #  type: integer
                 #lp_interval:
-                #  example: 1,
+                #  example: 1
                 #  type: integer
                 #packets_per_slave:
-                #  example: 1,
+                #  example: 1
                 #  type: integer
-                #ad_lacp_rate:
-                #  example: "slow",
-                #  type: string
+                ad_lacp_rate:
+                  example: "slow"
+                  type: string
+                  description: >
+                    Rate at which LACP control packets are sent to an LACP-supported interface
+                    Supported Modes:
+                      * `slow` - LACP Slow Rate (less bandwidth)
+                      * `fast` - LACP Fast Rate (faster fault detection)
                 #ad_select:
-                #  example: "stable",
+                #  example: "stable"
                 #  type: string
                 #tlb_dynamic_lb:
                 #  example: 1

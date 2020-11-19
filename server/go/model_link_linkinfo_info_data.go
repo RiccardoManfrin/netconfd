@@ -25,6 +25,10 @@ type LinkLinkinfoInfoData struct {
 	Updelay *int32 `json:"updelay,omitempty"`
 	// Specifies the time, in milliseconds, to wait before disabling a slave after a  link failure has been detected. The downdelay value should be a multiple of the miimon value. 
 	Downdelay *int32 `json:"downdelay,omitempty"`
+	// Hash policy to route packets on different bond interfaces.  Supported Modes:   * `layer2` - Hash is made on L2 metadata   * `layer2+3` - Hash is made on L2 and L3 metadata   * `layer3+4` - Hash is made on L3 and L4 metadata 
+	XmitHashPolicy *string `json:"xmit_hash_policy,omitempty"`
+	// Rate at which LACP control packets are sent to an LACP-supported interface Supported Modes:   * `slow` - LACP Slow Rate (less bandwidth)   * `fast` - LACP Fast Rate (faster fault detection) 
+	AdLacpRate *string `json:"ad_lacp_rate,omitempty"`
 }
 
 // NewLinkLinkinfoInfoData instantiates a new LinkLinkinfoInfoData object
@@ -172,6 +176,70 @@ func (o *LinkLinkinfoInfoData) SetDowndelay(v int32) {
 	o.Downdelay = &v
 }
 
+// GetXmitHashPolicy returns the XmitHashPolicy field value if set, zero value otherwise.
+func (o *LinkLinkinfoInfoData) GetXmitHashPolicy() string {
+	if o == nil || o.XmitHashPolicy == nil {
+		var ret string
+		return ret
+	}
+	return *o.XmitHashPolicy
+}
+
+// GetXmitHashPolicyOk returns a tuple with the XmitHashPolicy field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoData) GetXmitHashPolicyOk() (*string, bool) {
+	if o == nil || o.XmitHashPolicy == nil {
+		return nil, false
+	}
+	return o.XmitHashPolicy, true
+}
+
+// HasXmitHashPolicy returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoData) HasXmitHashPolicy() bool {
+	if o != nil && o.XmitHashPolicy != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetXmitHashPolicy gets a reference to the given string and assigns it to the XmitHashPolicy field.
+func (o *LinkLinkinfoInfoData) SetXmitHashPolicy(v string) {
+	o.XmitHashPolicy = &v
+}
+
+// GetAdLacpRate returns the AdLacpRate field value if set, zero value otherwise.
+func (o *LinkLinkinfoInfoData) GetAdLacpRate() string {
+	if o == nil || o.AdLacpRate == nil {
+		var ret string
+		return ret
+	}
+	return *o.AdLacpRate
+}
+
+// GetAdLacpRateOk returns a tuple with the AdLacpRate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoData) GetAdLacpRateOk() (*string, bool) {
+	if o == nil || o.AdLacpRate == nil {
+		return nil, false
+	}
+	return o.AdLacpRate, true
+}
+
+// HasAdLacpRate returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoData) HasAdLacpRate() bool {
+	if o != nil && o.AdLacpRate != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAdLacpRate gets a reference to the given string and assigns it to the AdLacpRate field.
+func (o *LinkLinkinfoInfoData) SetAdLacpRate(v string) {
+	o.AdLacpRate = &v
+}
+
 func (o LinkLinkinfoInfoData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Mode != nil {
@@ -185,6 +253,12 @@ func (o LinkLinkinfoInfoData) MarshalJSON() ([]byte, error) {
 	}
 	if o.Downdelay != nil {
 		toSerialize["downdelay"] = o.Downdelay
+	}
+	if o.XmitHashPolicy != nil {
+		toSerialize["xmit_hash_policy"] = o.XmitHashPolicy
+	}
+	if o.AdLacpRate != nil {
+		toSerialize["ad_lacp_rate"] = o.AdLacpRate
 	}
 	return json.Marshal(toSerialize)
 }
