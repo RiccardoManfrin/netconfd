@@ -19,7 +19,7 @@ $(OPENAPI):
 	$(AT) ./gen_templates.sh
 
 test:
-	$(AT) go test ./crm -v
+	$(AT) go test -v
 
 swaggerui/statik.go: swaggerui/swagger.yaml $(STATIKTOOL)
 	$(AT) $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js,*.json -p=swaggerui
