@@ -968,13 +968,13 @@ components:
                 updelay:
                   description: |
                     Specifies the time, in milliseconds, to wait before enabling a slave after a 
-                    link recovery has been detected. The updelay value should be a multiple of the miimon value
+                    link recovery has been detected. The updelay value must be a multiple of the miimon value
                   example: 0
                   type: integer
                 downdelay:
                   description: |
                     Specifies the time, in milliseconds, to wait before disabling a slave after a 
-                    link failure has been detected. The downdelay value should be a multiple of the miimon value.
+                    link failure has been detected. The downdelay value must be a multiple of the miimon value.
                   example: 0
                   type: integer
                 #peer_notify_delay:

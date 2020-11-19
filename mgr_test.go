@@ -30,9 +30,9 @@ func genSampleConfig() oas.Config {
 				"info_kind": "bond",
 				"info_data": {
 				  "mode": "active-backup",
-				  "downdelay": 100,
-				  "updelay" : 200,
-				  "miimon" : 500
+				  "downdelay": 800,
+				  "updelay" : 400,
+				  "miimon" : 200
 				}
 			  }
 			},
