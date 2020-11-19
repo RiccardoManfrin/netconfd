@@ -347,6 +347,9 @@ func linkFormat(link Link) (netlink.Link, error) {
 			nllink = netlink.NewLinkBond(attrs)
 			nlbondlink := nllink.(*netlink.Bond)
 			nlbondlink.Mode = netlink.StringToBondMode(link.Linkinfo.InfoData.Mode)
+			nlbondlink.Miimon = int(link.Linkinfo.InfoData.Miimon)
+			nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
+			nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
 		}
 	case "bridge":
 		{
