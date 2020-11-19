@@ -37,8 +37,16 @@ func (s *NetworkApiService) ConfigGet(ctx context.Context) (ImplResponse, error)
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	err := errors.New("ConfigGet method not implemented")
-	return GetErrorResponse(err, nil)
+	links, err := linksGet()
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
+	c := Config{
+		HostNetwork: &Network{
+			Links: &links,
+		},
+	}
+	return GetErrorResponse(nil, c)
 }
 
 func ncLinkFormat(link Link) (nc.Link, error) {
@@ -170,13 +178,7 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 	return GetErrorResponse(err, ncLinkParse(nclink))
 }
 
-// ConfigLinksGet - Get all link layer interfaces
-func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, error) {
-	// TODO - update ConfigLinksGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, []Link{}) or use other options such as http.Ok ...
-	//return Response(200, []Link{}), nil
+func linksGet() ([]Link, error) {
 	var links []Link
 	nclinks, err := nc.LinksGet()
 	if err == nil {
@@ -185,6 +187,17 @@ func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, e
 			links[i] = ncLinkParse(l)
 		}
 	}
+	return links, err
+}
+
+// ConfigLinksGet - Get all link layer interfaces
+func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, error) {
+	// TODO - update ConfigLinksGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, []Link{}) or use other options such as http.Ok ...
+	//return Response(200, []Link{}), nil
+	links, err := linksGet()
 
 	return GetErrorResponse(err, links)
 }
