@@ -14,6 +14,8 @@ const (
 	SEMANTIC
 	//UNKNOWN_TYPE error type (the value type is not recognized/supported)
 	UNKNOWN_TYPE
+	//RESERVED can be used for outer error enum cohexistence
+	RESERVED = 1000
 )
 
 var errorCodeToString = map[ErrorCode]string{

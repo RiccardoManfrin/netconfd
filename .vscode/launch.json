@@ -17,6 +17,22 @@
             },
             "args": ["-config", "netconfd.json", "-log", "-"],
             "showLog": true
+        },
+        {
+            "name": "Test",
+            "type": "go",
+            "request": "launch",
+            "mode": "test",
+            "remotePath": "",
+            "port": 2345,
+            "host": "127.0.0.1",
+            "program": "${workspaceFolder}",
+            "env": {
+                "NETCONFD_HOST": "127.0.0.1",
+                "NETCONFD_PORT": 6666
+            },
+            "args": [],
+            "showLog": true
         }
     ]
 }
