@@ -11,10 +11,10 @@
 package openapi
 
 import (
+	"bytes"
+	"io/ioutil"
 	"net/http"
 	"time"
-	"io/ioutil"
-	"bytes"
 
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )
@@ -26,12 +26,14 @@ func Logger(inner http.Handler, name string) http.Handler {
 
 		inner.ServeHTTP(w, r)
 
-
-		body, err := ioutil.ReadAll(r.Body)
-		r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
-		if err != nil {
-			logger.Log.Warning("Failed to process request body")
-			return
+		body := ""
+		if r.Body != nil {
+			body, err := ioutil.ReadAll(r.Body)
+			r.Body = ioutil.NopCloser(bytes.NewBuffer(body))
+			if err != nil {
+				logger.Log.Warning("Failed to process request body")
+				return
+			}
 		}
 		if r.Method != "GET" {
 			logger.Log.Notice("T:" + time.Since(start).String() + " - API:" + r.Method + ":" + r.URL.Path + ":" + string(body))
