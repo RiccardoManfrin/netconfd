@@ -219,12 +219,31 @@ func Test004(t *testing.T) {
 	}
 }
 
-//Test005 - OK-005 Bond Balance-RR params check
+//Test005 - OK-005 Bond Balance-RR Xmit Hash Policy params check
 func Test005(t *testing.T) {
 	cset := genSampleConfig()
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	cget := runConfigGet()
+	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
+	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
+	for ifname, setLink := range cLinksSetMap {
+		getLink := cLinksGetMap[ifname].(oas.Link)
+		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
+			t.Errorf("Mismatch on %v", delta)
+		}
+	}
+}
+
+//Test006 - OK-006 Bond Balance-RR Xmit Hash Policy params check
+func Test006(t *testing.T) {
+	cset := genSampleConfig()
+	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
+	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet()
