@@ -55,7 +55,9 @@ type LinkLinkinfo struct {
 //LinkID type
 type LinkID string
 
-//Link definition
+// Link definition
+// For Bond parameters information please refer to
+// https://www.kernel.org/doc/Documentation/networking/bonding.txt
 type Link struct {
 	// Inteface index ID
 	Ifindex int32 `json:"ifindex,omitempty"`
