@@ -844,12 +844,27 @@ components:
             link_failure_count: 0
             queue_id: 0
           info_data:
-            mode: active-backup
             updelay: 0
+            arp_validate: none
+            num_peer_notif: 1
+            lp_interval: 1
+            arp_all_targets: any
+            packets_per_slave: 1
+            fail_over_mac: none
             xmit_hash_policy: layer2
             miimon: 100
+            resend_igmp: 1
+            min_links: 0
             downdelay: 0
+            arp_interval: 0
+            primary_reselect: always
+            tlb_dynamic_lb: 1
+            peer_notify_delay: 0
+            ad_select: stable
             ad_lacp_rate: slow
+            mode: active-backup
+            all_slaves_active: 0
+            use_carrier: 1
       properties:
         ifindex:
           description: |
@@ -955,12 +970,27 @@ components:
     link_linkinfo_info_data:
       description: Additional information on the link
       example:
-        mode: active-backup
         updelay: 0
+        arp_validate: none
+        num_peer_notif: 1
+        lp_interval: 1
+        arp_all_targets: any
+        packets_per_slave: 1
+        fail_over_mac: none
         xmit_hash_policy: layer2
         miimon: 100
+        resend_igmp: 1
+        min_links: 0
         downdelay: 0
+        arp_interval: 0
+        primary_reselect: always
+        tlb_dynamic_lb: 1
+        peer_notify_delay: 0
+        ad_select: stable
         ad_lacp_rate: slow
+        mode: active-backup
+        all_slaves_active: 0
+        use_carrier: 1
       properties:
         mode:
           description: |
@@ -990,19 +1020,170 @@ components:
         updelay:
           description: "Specifies the time, in milliseconds, to wait before enabling\
             \ a slave after a \nlink recovery has been detected. The updelay value\
-            \ should be a multiple of the miimon value\n"
+            \ must be a multiple of the miimon value\n"
           example: 0
           type: integer
         downdelay:
           description: "Specifies the time, in milliseconds, to wait before disabling\
             \ a slave after a \nlink failure has been detected. The downdelay value\
-            \ should be a multiple of the miimon value.\n"
+            \ must be a multiple of the miimon value.\n"
           example: 0
           type: integer
+        peer_notify_delay:
+          description: |
+            Specify the delay, in milliseconds, between each peer
+            notification (gratuitous ARP and unsolicited IPv6 Neighbor
+            Advertisement) when they are issued after a failover event.
+            This delay should be a multiple of the link monitor interval
+            (arp_interval or miimon, whichever is active). The default
+            value is 0 which means to match the value of the link monitor
+            interval.
+          example: 0
+          type: integer
+        use_carrier:
+          description: |-
+            Specifies whether or not miimon should use MII or ETHTOOL ioctls vs. netif_carrier_ok() to determine the link status. The MII or ETHTOOL ioctls are less efficient and utilize a deprecated calling sequence within the kernel.  The netif_carrier_ok() relies on the device driver to maintain its state with netif_carrier_on/off; at this writing, most, but not all, device drivers support this facility.
+            If bonding insists that the link is up when it should not be, it may be that your network device driver does not support netif_carrier_on/off.  The default state for netif_carrier is "carrier on," so if a driver does not support netif_carrier, it will appear as if the link is always up.  In this case, setting use_carrier to 0 will cause bonding to revert to the MII / ETHTOOL ioctl method to determine the link state.
+            A value of 1 enables the use of netif_carrier_ok(), a value of 0 will use the deprecated MII / ETHTOOL ioctls.  The default value is 1.
+          example: 1
+          type: integer
+        arp_interval:
+          description: |
+            Specifies the ARP link monitoring frequency in milliseconds.
+            The ARP monitor works by periodically checking the slave devices to determine whether they have sent or received traffic recently (the precise criteria depends upon the bonding mode, and the state of the slave).  Regular traffic is generated via ARP probes issued for the addresses specified by the arp_ip_target option.
+            This behavior can be modified by the arp_validate option, below.
+            If ARP monitoring is used in an etherchannel compatible mode (modes 0 and 2), the switch should be configured in a mode that evenly distributes packets across all links. If the switch is configured to distribute the packets in an XOR fashion, all replies from the ARP targets will be received on the same link which could cause the other team members to fail.  ARP monitoring should not be used in conjunction with miimon.  A value of 0 disables ARP monitoring.  The default value is 0.
+          example: 0
+          type: integer
+        arp_validate:
+          description: |
+            Specifies whether or not ARP probes and replies should be validated in any mode that supports arp monitoring, or whether non-ARP traffic should be filtered (disregarded) for link monitoring purposes.
+            Possible values are:
+            * `none` - or 0
+            No validation or filtering is performed.
+            * `active` - or 1
+            Validation is performed only for the active slave.
+            * `backup` - or 2
+            Validation is performed only for backup slaves.
+            * `all` - or 3
+            Validation is performed for all slaves.
+            * `filter` - or 4
+            Filtering is applied to all slaves. No validation is performed.
+            * `filter_active` - or 5
+            Filtering is applied to all slaves, validation is performed only for the active slave.
+            * `filter_backup` - or 6
+            Filtering is applied to all slaves, validation is performed only for backup slaves.
+          enum:
+          - none
+          - active
+          - backup
+          - all
+          - filter
+          - filter_active
+          - filter_backup
+          type: string
+        arp_all_targets:
+          description: |
+            Specifies the quantity of arp_ip_targets that must be reachable in order for the ARP monitor to consider a slave as being up. This option affects only active-backup mode for slaves with arp_validation enabled.
+            Possible values are:
+            * `any` - or 0
+              consider the slave up only when any of the arp_ip_targets
+              is reachable
+
+            * `all` - or 1
+              consider the slave up only when all of the arp_ip_targets
+              are reachable
+          enum:
+          - any
+          - all
+          example: any
+          type: string
+        primary_reselect:
+          description: |
+            Specifies the reselection policy for the primary slave.  This affects how the primary slave is chosen to become the active slave when failure of the active slave or recovery of the primary slave occurs.  This option is designed to prevent flip-flopping between the primary slave and other slaves.  Possible values are:
+
+              * `always` - or 0 (default)
+                The primary slave becomes the active slave whenever it
+                comes back up.
+              * `better` - or 1
+                The primary slave becomes the active slave when it comes
+                back up, if the speed and duplex of the primary slave is
+                better than the speed and duplex of the current active
+                slave.
+              * `failure` - or 2
+                The primary slave becomes the active slave only if the
+                current active slave fails and the primary slave is up.
+
+            The primary_reselect setting is ignored in two cases:
+
+              * If no slaves are active, the first slave to recover is
+                made the active slave.
+
+              * When initially enslaved, the primary slave is always made
+                the active slave.
+
+            Changing the primary_reselect policy via sysfs will cause an immediate selection of the best active slave according to the new policy.  This may or may not result in a change of the active slave, depending upon the circumstances.
+            This option was added for bonding version 3.6.0.
+          enum:
+          - always
+          - better
+          - slave
+          example: always
+          type: string
+        fail_over_mac:
+          description: |
+            Specifies whether active-backup mode should set all slaves to the same MAC address at enslavement (the traditional behavior), or, when enabled, perform special handling of the bond's MAC address in accordance with the selected policy. The default policy is none, unless the first slave cannot change its MAC address, in which case the active policy is selected by default. This option may be modified via sysfs only when no slaves are present in the bond. This option was added in bonding version 3.2.0.  The "follow" policy was added in bonding version 3.3.0. Possible values are:
+              * `none` - or 0
+              This setting disables fail_over_mac, and causes
+              bonding to set all slaves of an active-backup bond to
+              the same MAC address at enslavement time.  This is the
+              default.
+              * `active` - or 1
+              The "active" fail_over_mac policy indicates that the
+              MAC address of the bond should always be the MAC
+              address of the currently active slave.  The MAC
+              address of the slaves is not changed; instead, the MAC
+              address of the bond changes during a failover.
+              This policy is useful for devices that cannot ever
+              alter their MAC address, or for devices that refuse
+              incoming broadcasts with their own source MAC (which
+              interferes with the ARP monitor).
+              The down side of this policy is that every device on
+              the network must be updated via gratuitous ARP,
+              vs. just updating a switch or set of switches (which
+              often takes place for any traffic, not just ARP
+              traffic, if the switch snoops incoming traffic to
+              update its tables) for the traditional method.  If the
+              gratuitous ARP is lost, communication may be
+              disrupted.
+              When this policy is used in conjunction with the mii
+              monitor, devices which assert link up prior to being
+              able to actually transmit and receive are particularly
+              susceptible to loss of the gratuitous ARP, and an
+              appropriate updelay setting may be required.
+              * `follow` - or 2
+              The "follow" fail_over_mac policy causes the MAC
+              address of the bond to be selected normally (normally
+              the MAC address of the first slave added to the bond).
+              However, the second and subsequent slaves are not set
+              to this MAC address while they are in a backup role; a
+              slave is programmed with the bond's MAC address at
+              failover time (and the formerly active slave receives
+              the newly active slave's MAC address).
+              This policy is useful for multiport devices that
+              either become confused or incur a performance penalty
+              when multiple ports are programmed with the same MAC
+              address.
+          enum:
+          - none
+          - active
+          - follow
+          example: none
+          type: string
         xmit_hash_policy:
           description: |
             Hash policy to route packets on different bond interfaces.  Supported Modes:
-              * `layer2` - Hash is made on L2 metadata
+              * `layer2` - Hash is made on L2 metadata (default)
               * `layer2+3` - Hash is made on L2 and L3 metadata
               * `layer3+4` - Hash is made on L3 and L4 metadata
           enum:
@@ -1011,16 +1192,150 @@ components:
           - layer3+4
           example: layer2
           type: string
+        resend_igmp:
+          description: |
+            Specifies the number of IGMP membership reports to be issued after
+            a failover event. One membership report is issued immediately after
+            the failover, subsequent packets are sent in each 200ms interval.
+
+            The valid range is 0 - 255; the default value is 1. A value of 0
+            prevents the IGMP membership report from being issued in response
+            to the failover event.
+
+            This option is useful for bonding modes balance-rr (0), active-backup
+            (1), balance-tlb (5) and balance-alb (6), in which a failover can
+            switch the IGMP traffic from one slave to another.  Therefore a fresh
+            IGMP report must be issued to cause the switch to forward the incoming
+            IGMP traffic over the newly selected slave.
+
+            This option was added for bonding version 3.7.0.
+          example: 1
+          type: integer
+        num_peer_notif:
+          description: |
+            Specify the number of peer notifications (gratuitous ARPs and
+            unsolicited IPv6 Neighbor Advertisements) to be issued after a
+            failover event.  As soon as the link is up on the new slave
+            (possibly immediately) a peer notification is sent on the
+            bonding device and each VLAN sub-device. This is repeated at
+            the rate specified by peer_notif_delay if the number is
+            greater than 1.
+
+            The valid range is 0 - 255; the default value is 1.  These options
+            affect only the active-backup mode.  These options were added for
+            bonding versions 3.3.0 and 3.4.0 respectively.
+
+            From Linux 3.0 and bonding version 3.7.1, these notifications
+            are generated by the ipv4 and ipv6 code and the numbers of
+            repetitions cannot be set independently.
+          example: 1
+          type: integer
+        all_slaves_active:
+          description: |
+            Specifies that duplicate frames (received on inactive ports) should be
+            dropped (0) or delivered (1).
+
+            Normally, bonding will drop duplicate frames (received on inactive
+            ports), which is desirable for most users. But there are some times
+            it is nice to allow duplicate frames to be delivered.
+
+            The default value is 0 (drop duplicate frames received on inactive
+            ports).
+          example: 0
+          type: integer
+        min_links:
+          description: |
+            Specifies the minimum number of links that must be active before
+            asserting carrier. It is similar to the Cisco EtherChannel min-links
+            feature. This allows setting the minimum number of member ports that
+            must be up (link-up state) before marking the bond device as up
+            (carrier on). This is useful for situations where higher level services
+            such as clustering want to ensure a minimum number of low bandwidth
+            links are active before switchover. This option only affect 802.3ad
+            mode.
+
+            The default value is 0. This will cause carrier to be asserted (for
+            802.3ad mode) whenever there is an active aggregator, regardless of the
+            number of available links in that aggregator. Note that, because an
+            aggregator cannot be active without at least one available link,
+            setting this option to 0 or to 1 has the exact same effect.
+          example: 0
+          type: integer
+        lp_interval:
+          description: |
+            Specifies the number of seconds between instances where the bonding
+            driver sends learning packets to each slaves peer switch.
+
+            The valid range is 1 - 0x7fffffff; the default value is 1. This Option
+            has effect only in balance-tlb and balance-alb modes.
+          example: 1
+          type: integer
+        packets_per_slave:
+          description: |
+            Specify the number of packets to transmit through a slave before
+            moving to the next one. When set to 0 then a slave is chosen at
+            random.
+
+            The valid range is 0 - 65535; the default value is 1. This option
+            has effect only in balance-rr mode.
+          example: 1
+          type: integer
         ad_lacp_rate:
           description: |
             Rate at which LACP control packets are sent to an LACP-supported interface Supported Modes:
-              * `slow` - LACP Slow Rate (less bandwidth)
+              * `slow` - LACP Slow Rate (less bandwidth, default)
               * `fast` - LACP Fast Rate (faster fault detection)
           enum:
           - slow
           - fast
           example: slow
           type: string
+        ad_select:
+          description: "Specifies the 802.3ad aggregation selection logic to use.\
+            \  The possible values and their effects are:\n  * `stable` - or 0\n \
+            \   The active aggregator is chosen by largest aggregate\n    bandwidth.\n\
+            \    Reselection of the active aggregator occurs only when all\n    slaves\
+            \ of the active aggregator are down or the active\n    aggregator has\
+            \ no slaves.\n    This is the default value.\n  * `bandwidth` or 1\n \
+            \   The active aggregator is chosen by largest aggregate\n    bandwidth.\
+            \  Reselection occurs if:\n    - A slave is added to or removed from the\
+            \ bond\n    - Any slave's link state changes\n    - Any slave's 802.3ad\
+            \ association state changes\n    - The bond's administrative state changes\
+            \ to up\n  * `count` - or 2\n    The active aggregator is chosen by the\
+            \ largest number of\n    ports (slaves).  Reselection occurs as described\
+            \ under the\n    \"bandwidth\" setting, above.\n    \nThe bandwidth and\
+            \ count selection policies permit failover of 802.3ad aggregations when\
+            \ partial failure of the active aggregator occurs.  This keeps the aggregator\
+            \ with the highest availability (either in bandwidth or in number of ports)\
+            \ active at all times.\nThis option was added in bonding version 3.4.0.\n"
+          enum:
+          - stable
+          - bandwidth
+          - count
+          example: stable
+          type: string
+        tlb_dynamic_lb:
+          description: |
+            Specifies if dynamic shuffling of flows is enabled in tlb
+            mode. The value has no effect on any other modes.
+
+            The default behavior of tlb mode is to shuffle active flows across
+            slaves based on the load in that interval. This gives nice lb
+            characteristics but can cause packet reordering. If re-ordering is
+            a concern use this variable to disable flow shuffling and rely on
+            load balancing provided solely by the hash distribution.
+            xmit-hash-policy can be used to select the appropriate hashing for
+            the setup.
+
+            The sysfs entry can be used to change the setting per bond device
+            and the initial value is derived from the module parameter. The
+            sysfs entry is allowed to be changed only if the bond device is
+            down.
+
+            The default value is "1" that enables flow shuffling while value "0"
+            disables it. This option was added in bonding driver 3.7.1
+          example: 1
+          type: integer
       type: object
     link_linkinfo:
       description: |
@@ -1035,12 +1350,27 @@ components:
           link_failure_count: 0
           queue_id: 0
         info_data:
-          mode: active-backup
           updelay: 0
+          arp_validate: none
+          num_peer_notif: 1
+          lp_interval: 1
+          arp_all_targets: any
+          packets_per_slave: 1
+          fail_over_mac: none
           xmit_hash_policy: layer2
           miimon: 100
+          resend_igmp: 1
+          min_links: 0
           downdelay: 0
+          arp_interval: 0
+          primary_reselect: always
+          tlb_dynamic_lb: 1
+          peer_notify_delay: 0
+          ad_select: stable
           ad_lacp_rate: slow
+          mode: active-backup
+          all_slaves_active: 0
+          use_carrier: 1
       properties:
         info_slave_kind:
           description: |
@@ -1048,6 +1378,9 @@ components:
             Supported types:
               * `bond`
               * `bridge`
+          enum:
+          - bond
+          - bridge
           example: bond
           type: string
         info_slave_data:
