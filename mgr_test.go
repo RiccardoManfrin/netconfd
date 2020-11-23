@@ -29,10 +29,30 @@ func genSampleConfig() oas.Config {
 			  "linkinfo": {
 				"info_kind": "bond",
 				"info_data": {
-				  "mode": "active-backup",
-				  "downdelay": 800,
-				  "updelay" : 400,
-				  "miimon" : 200
+					"mode": "active-backup",
+					"downdelay": 800,
+					"updelay" : 400,
+					"miimon" : 200,
+					"peer_notify_delay": 1000,
+					"use_carrier": 1,
+					"arp_interval": 1000,
+					"arp_validate": "active",
+					"num_peer_notif": 1,
+					"lp_interval": 1,
+					"arp_all_targets": "any",
+					"packets_per_slave": "1",
+					"fail_over_mac": "none",
+					"xmit_hash_policy": "layer2+3",
+					"resend_igmp": 1,
+					"min_links": 0,
+					"arp_interval": 0,
+					"primary_reselect": "always",
+					"tlb_dynamic_lb": 1,
+					"ad_select": "stable",
+					"ad_lacp_rate": "slow",
+					"mode": "active-backup",
+					"all_slaves_active": 0,
+					"use_carrier": 1
 				}
 			  }
 			},
