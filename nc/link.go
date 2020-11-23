@@ -129,7 +129,7 @@ func linkParse(link netlink.Link) Link {
 			id.Updelay = int32(bond.UpDelay)
 			id.Downdelay = int32(bond.DownDelay)
 
-			//id.PeerNotifyDelay = int32(bond.Pee)
+			//id.PeerNotifyDelay = int32(bond.NumPeerNotif)
 			id.UseCarrier = int32(bond.UseCarrier)
 			id.ArpInterval = int32(bond.ArpInterval)
 			id.ArpValidate = bond.ArpValidate.String()
@@ -406,6 +406,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 			nlbondlink.Miimon = int(link.Linkinfo.InfoData.Miimon)
 			nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
 			nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
+
 			if link.Linkinfo.InfoData.XmitHashPolicy != "" {
 				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(link.Linkinfo.InfoData.XmitHashPolicy)
 			}
