@@ -49,7 +49,6 @@ func genSampleConfig() oas.Config {
 					"primary_reselect": "always",
 					"tlb_dynamic_lb": 1,
 					"ad_select": "stable",
-					"ad_lacp_rate": "slow",
 					"mode": "active-backup",
 					"all_slaves_active": 0,
 					"use_carrier": 1
