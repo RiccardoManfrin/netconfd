@@ -128,8 +128,26 @@ func linkParse(link netlink.Link) Link {
 			id.Miimon = int32(bond.Miimon)
 			id.Updelay = int32(bond.UpDelay)
 			id.Downdelay = int32(bond.DownDelay)
+
+			//id.PeerNotifyDelay = int32(bond.Pee)
+			id.UseCarrier = int32(bond.UseCarrier)
+			id.ArpInterval = int32(bond.ArpInterval)
+			id.ArpValidate = bond.ArpValidate.String()
+			id.NumPeerNotif = int32(bond.NumPeerNotif)
+			id.LpInterval = int32(bond.LpInterval)
+			id.ArpAllTargets = bond.ArpAllTargets.String()
+			id.PacketsPerSlave = int32(bond.PacketsPerSlave)
+			id.FailOverMac = bond.FailOverMac.String()
 			id.XmitHashPolicy = bond.XmitHashPolicy.String()
+			id.ResendIgmp = int32(bond.ResendIgmp)
+			id.MinLinks = int32(bond.MinLinks)
+			id.ArpInterval = int32(bond.ArpInterval)
+			id.PrimaryReselect = bond.PrimaryReselect.String()
+			id.TlbDynamicLb = int32(bond.TlbDynamicLb)
+			id.AdSelect = bond.AdSelect.String()
 			id.AdLacpRate = bond.LacpRate.String()
+			id.AllSlavesActive = int32(bond.AllSlavesActive)
+			id.UseCarrier = int32(bond.UseCarrier)
 		}
 	case "device":
 	case "bridge":
