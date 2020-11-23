@@ -66,8 +66,26 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		nclink.Linkinfo.InfoData.Miimon = li.InfoData.GetMiimon()
 		nclink.Linkinfo.InfoData.Downdelay = li.InfoData.GetDowndelay()
 		nclink.Linkinfo.InfoData.Updelay = li.InfoData.GetUpdelay()
+		nclink.Linkinfo.InfoData.PeerNotifyDelay = li.InfoData.GetPeerNotifyDelay()
+		nclink.Linkinfo.InfoData.UseCarrier = li.InfoData.GetUseCarrier()
+		nclink.Linkinfo.InfoData.ArpInterval = li.InfoData.GetArpInterval()
+		nclink.Linkinfo.InfoData.ArpValidate = li.InfoData.GetArpValidate()
+		nclink.Linkinfo.InfoData.NumPeerNotif = li.InfoData.GetNumPeerNotif()
+		nclink.Linkinfo.InfoData.LpInterval = li.InfoData.GetLpInterval()
+		nclink.Linkinfo.InfoData.ArpAllTargets = li.InfoData.GetArpAllTargets()
+		nclink.Linkinfo.InfoData.PacketsPerSlave = li.InfoData.GetPacketsPerSlave()
+		nclink.Linkinfo.InfoData.FailOverMac = li.InfoData.GetFailOverMac()
 		nclink.Linkinfo.InfoData.XmitHashPolicy = li.InfoData.GetXmitHashPolicy()
+		nclink.Linkinfo.InfoData.ResendIgmp = li.InfoData.GetResendIgmp()
+		nclink.Linkinfo.InfoData.MinLinks = li.InfoData.GetMinLinks()
+		nclink.Linkinfo.InfoData.ArpInterval = li.InfoData.GetArpInterval()
+		nclink.Linkinfo.InfoData.PrimaryReselect = li.InfoData.GetPrimaryReselect()
+		nclink.Linkinfo.InfoData.TlbDynamicLb = li.InfoData.GetTlbDynamicLb()
+		nclink.Linkinfo.InfoData.AdSelect = li.InfoData.GetAdSelect()
 		nclink.Linkinfo.InfoData.AdLacpRate = li.InfoData.GetAdLacpRate()
+		nclink.Linkinfo.InfoData.Mode = li.InfoData.GetMode()
+		nclink.Linkinfo.InfoData.AllSlavesActive = li.InfoData.GetAllSlavesActive()
+		nclink.Linkinfo.InfoData.UseCarrier = li.InfoData.GetUseCarrier()
 	}
 
 	nclink.Linkinfo.InfoKind = *li.InfoKind
@@ -136,10 +154,28 @@ func ncLinkParse(nclink nc.Link) Link {
 			id := LinkLinkinfoInfoData{}
 			id.Mode = &nclink.Linkinfo.InfoData.Mode
 			id.Miimon = &nclink.Linkinfo.InfoData.Miimon
-			id.Updelay = &nclink.Linkinfo.InfoData.Updelay
 			id.Downdelay = &nclink.Linkinfo.InfoData.Downdelay
+			id.Updelay = &nclink.Linkinfo.InfoData.Updelay
+			id.PeerNotifyDelay = &nclink.Linkinfo.InfoData.PeerNotifyDelay
+			id.UseCarrier = &nclink.Linkinfo.InfoData.UseCarrier
+			id.ArpInterval = &nclink.Linkinfo.InfoData.ArpInterval
+			id.ArpValidate = &nclink.Linkinfo.InfoData.ArpValidate
+			id.NumPeerNotif = &nclink.Linkinfo.InfoData.NumPeerNotif
+			id.LpInterval = &nclink.Linkinfo.InfoData.LpInterval
+			id.ArpAllTargets = &nclink.Linkinfo.InfoData.ArpAllTargets
+			id.PacketsPerSlave = &nclink.Linkinfo.InfoData.PacketsPerSlave
+			id.FailOverMac = &nclink.Linkinfo.InfoData.FailOverMac
 			id.XmitHashPolicy = &nclink.Linkinfo.InfoData.XmitHashPolicy
+			id.ResendIgmp = &nclink.Linkinfo.InfoData.ResendIgmp
+			id.MinLinks = &nclink.Linkinfo.InfoData.MinLinks
+			id.ArpInterval = &nclink.Linkinfo.InfoData.ArpInterval
+			id.PrimaryReselect = &nclink.Linkinfo.InfoData.PrimaryReselect
+			id.TlbDynamicLb = &nclink.Linkinfo.InfoData.TlbDynamicLb
+			id.AdSelect = &nclink.Linkinfo.InfoData.AdSelect
 			id.AdLacpRate = &nclink.Linkinfo.InfoData.AdLacpRate
+			id.Mode = &nclink.Linkinfo.InfoData.Mode
+			id.AllSlavesActive = &nclink.Linkinfo.InfoData.AllSlavesActive
+			id.UseCarrier = &nclink.Linkinfo.InfoData.UseCarrier
 			lli.InfoData = &id
 		}
 	case "device":
