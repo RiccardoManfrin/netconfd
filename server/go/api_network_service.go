@@ -62,10 +62,6 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 	li := link.GetLinkinfo()
 
 	if li.InfoData != nil {
-		lpInterval := li.InfoData.GetLpInterval()
-		if lpInterval == 0 {
-			lpInterval = 1
-		}
 		nclink.Linkinfo.InfoData = nc.LinkLinkinfoInfoData{
 			Mode:            li.InfoData.GetMode(),
 			Miimon:          li.InfoData.GetMiimon(),
@@ -75,7 +71,7 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 			UseCarrier:      li.InfoData.GetUseCarrier(),
 			ArpInterval:     li.InfoData.GetArpInterval(),
 			ArpValidate:     li.InfoData.GetArpValidate(),
-			NumPeerNotif:    lpInterval,
+			NumPeerNotif:    li.InfoData.GetLpInterval(),
 			LpInterval:      li.InfoData.GetLpInterval(),
 			ArpAllTargets:   li.InfoData.GetArpAllTargets(),
 			PacketsPerSlave: li.InfoData.GetPacketsPerSlave(),
