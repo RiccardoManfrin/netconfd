@@ -316,7 +316,17 @@ func LinkCreate(link Link) error {
 	if err != nil {
 		return err
 	}
-	return netlink.LinkAdd(nllink)
+	err = netlink.LinkAdd(nllink)
+	if err != nil {
+		switch err.(type) {
+		case syscall.Errno:
+			if err.(syscall.Errno) == syscall.EINVAL {
+				return NewEINVALError()
+			}
+		}
+		return err
+	}
+	return nil
 }
 
 //LinkSetUp set a link up
