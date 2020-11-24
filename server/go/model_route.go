@@ -48,10 +48,10 @@ func NewRouteWithDefaults() *Route {
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value if set, -1 otherwise.
 func (o *Route) GetId() int32 {
 	if o == nil || o.Id == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Id
@@ -208,10 +208,10 @@ func (o *Route) SetProtocol(v string) {
 	o.Protocol = &v
 }
 
-// GetMetric returns the Metric field value if set, zero value otherwise.
+// GetMetric returns the Metric field value if set, -1 otherwise.
 func (o *Route) GetMetric() int32 {
 	if o == nil || o.Metric == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Metric

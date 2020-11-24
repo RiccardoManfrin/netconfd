@@ -71,10 +71,10 @@ func (o *LinkAddrInfo) SetLocal(v Ip) {
 	o.Local = &v
 }
 
-// GetPrefixlen returns the Prefixlen field value if set, zero value otherwise.
+// GetPrefixlen returns the Prefixlen field value if set, -1 otherwise.
 func (o *LinkAddrInfo) GetPrefixlen() int32 {
 	if o == nil || o.Prefixlen == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Prefixlen

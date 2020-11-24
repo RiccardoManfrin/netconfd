@@ -54,10 +54,10 @@ func NewLinkWithDefaults() *Link {
 	return &this
 }
 
-// GetIfindex returns the Ifindex field value if set, zero value otherwise.
+// GetIfindex returns the Ifindex field value if set, -1 otherwise.
 func (o *Link) GetIfindex() int32 {
 	if o == nil || o.Ifindex == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Ifindex
@@ -142,10 +142,10 @@ func (o *Link) SetFlags(v []string) {
 	o.Flags = &v
 }
 
-// GetMtu returns the Mtu field value if set, zero value otherwise.
+// GetMtu returns the Mtu field value if set, -1 otherwise.
 func (o *Link) GetMtu() int32 {
 	if o == nil || o.Mtu == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Mtu
@@ -174,10 +174,10 @@ func (o *Link) SetMtu(v int32) {
 	o.Mtu = &v
 }
 
-// GetPromiscuity returns the Promiscuity field value if set, zero value otherwise.
+// GetPromiscuity returns the Promiscuity field value if set, -1 otherwise.
 func (o *Link) GetPromiscuity() int32 {
 	if o == nil || o.Promiscuity == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Promiscuity

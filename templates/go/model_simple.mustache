@@ -142,10 +142,10 @@ func (o *{{classname}}) Set{{name}}(v {{vendorExtensions.x-go-base-type}}) {
 
 {{/required}}
 {{^required}}
-// Get{{name}} returns the {{name}} field value if set, zero value otherwise{{#isNullable}} (both if not set or set to explicit null){{/isNullable}}.
+// Get{{name}} returns the {{name}} field value if set, {{#isInteger}}-1 otherwise{{/isInteger}}{{^isInteger}}zero value otherwise{{#isNullable}} (both if not set or set to explicit null){{/isNullable}}{{/isInteger}}.
 func (o *{{classname}}) Get{{name}}() {{vendorExtensions.x-go-base-type}} {
 	if o == nil {{^isNullable}}|| o.{{name}} == nil{{/isNullable}}{{#isNullable}}{{^vendorExtensions.x-golang-is-container}}|| o.{{name}}.Get() == nil{{/vendorExtensions.x-golang-is-container}}{{/isNullable}} {
-		var ret {{vendorExtensions.x-go-base-type}}
+		var ret {{vendorExtensions.x-go-base-type}}{{#isInteger}} = -1 {{/isInteger}}
 		return ret
 	}
 {{#isNullable}}

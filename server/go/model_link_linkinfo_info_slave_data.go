@@ -110,10 +110,10 @@ func (o *LinkLinkinfoInfoSlaveData) SetMiiStatus(v string) {
 	o.MiiStatus = &v
 }
 
-// GetLinkFailureCount returns the LinkFailureCount field value if set, zero value otherwise.
+// GetLinkFailureCount returns the LinkFailureCount field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoSlaveData) GetLinkFailureCount() int32 {
 	if o == nil || o.LinkFailureCount == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.LinkFailureCount
@@ -174,10 +174,10 @@ func (o *LinkLinkinfoInfoSlaveData) SetPermHwaddr(v string) {
 	o.PermHwaddr = &v
 }
 
-// GetQueueId returns the QueueId field value if set, zero value otherwise.
+// GetQueueId returns the QueueId field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoSlaveData) GetQueueId() int32 {
 	if o == nil || o.QueueId == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.QueueId

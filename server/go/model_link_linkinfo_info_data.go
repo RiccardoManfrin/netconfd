@@ -110,10 +110,10 @@ func (o *LinkLinkinfoInfoData) SetMode(v string) {
 	o.Mode = &v
 }
 
-// GetMiimon returns the Miimon field value if set, zero value otherwise.
+// GetMiimon returns the Miimon field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetMiimon() int32 {
 	if o == nil || o.Miimon == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Miimon
@@ -142,10 +142,10 @@ func (o *LinkLinkinfoInfoData) SetMiimon(v int32) {
 	o.Miimon = &v
 }
 
-// GetUpdelay returns the Updelay field value if set, zero value otherwise.
+// GetUpdelay returns the Updelay field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetUpdelay() int32 {
 	if o == nil || o.Updelay == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Updelay
@@ -174,10 +174,10 @@ func (o *LinkLinkinfoInfoData) SetUpdelay(v int32) {
 	o.Updelay = &v
 }
 
-// GetDowndelay returns the Downdelay field value if set, zero value otherwise.
+// GetDowndelay returns the Downdelay field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetDowndelay() int32 {
 	if o == nil || o.Downdelay == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.Downdelay
@@ -206,10 +206,10 @@ func (o *LinkLinkinfoInfoData) SetDowndelay(v int32) {
 	o.Downdelay = &v
 }
 
-// GetPeerNotifyDelay returns the PeerNotifyDelay field value if set, zero value otherwise.
+// GetPeerNotifyDelay returns the PeerNotifyDelay field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetPeerNotifyDelay() int32 {
 	if o == nil || o.PeerNotifyDelay == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.PeerNotifyDelay
@@ -238,10 +238,10 @@ func (o *LinkLinkinfoInfoData) SetPeerNotifyDelay(v int32) {
 	o.PeerNotifyDelay = &v
 }
 
-// GetUseCarrier returns the UseCarrier field value if set, zero value otherwise.
+// GetUseCarrier returns the UseCarrier field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetUseCarrier() int32 {
 	if o == nil || o.UseCarrier == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.UseCarrier
@@ -270,10 +270,10 @@ func (o *LinkLinkinfoInfoData) SetUseCarrier(v int32) {
 	o.UseCarrier = &v
 }
 
-// GetArpInterval returns the ArpInterval field value if set, zero value otherwise.
+// GetArpInterval returns the ArpInterval field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetArpInterval() int32 {
 	if o == nil || o.ArpInterval == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.ArpInterval
@@ -462,10 +462,10 @@ func (o *LinkLinkinfoInfoData) SetXmitHashPolicy(v string) {
 	o.XmitHashPolicy = &v
 }
 
-// GetResendIgmp returns the ResendIgmp field value if set, zero value otherwise.
+// GetResendIgmp returns the ResendIgmp field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetResendIgmp() int32 {
 	if o == nil || o.ResendIgmp == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.ResendIgmp
@@ -494,10 +494,10 @@ func (o *LinkLinkinfoInfoData) SetResendIgmp(v int32) {
 	o.ResendIgmp = &v
 }
 
-// GetNumPeerNotif returns the NumPeerNotif field value if set, zero value otherwise.
+// GetNumPeerNotif returns the NumPeerNotif field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetNumPeerNotif() int32 {
 	if o == nil || o.NumPeerNotif == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.NumPeerNotif
@@ -526,10 +526,10 @@ func (o *LinkLinkinfoInfoData) SetNumPeerNotif(v int32) {
 	o.NumPeerNotif = &v
 }
 
-// GetAllSlavesActive returns the AllSlavesActive field value if set, zero value otherwise.
+// GetAllSlavesActive returns the AllSlavesActive field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetAllSlavesActive() int32 {
 	if o == nil || o.AllSlavesActive == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.AllSlavesActive
@@ -558,10 +558,10 @@ func (o *LinkLinkinfoInfoData) SetAllSlavesActive(v int32) {
 	o.AllSlavesActive = &v
 }
 
-// GetMinLinks returns the MinLinks field value if set, zero value otherwise.
+// GetMinLinks returns the MinLinks field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetMinLinks() int32 {
 	if o == nil || o.MinLinks == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.MinLinks
@@ -590,10 +590,10 @@ func (o *LinkLinkinfoInfoData) SetMinLinks(v int32) {
 	o.MinLinks = &v
 }
 
-// GetLpInterval returns the LpInterval field value if set, zero value otherwise.
+// GetLpInterval returns the LpInterval field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetLpInterval() int32 {
 	if o == nil || o.LpInterval == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.LpInterval
@@ -622,10 +622,10 @@ func (o *LinkLinkinfoInfoData) SetLpInterval(v int32) {
 	o.LpInterval = &v
 }
 
-// GetPacketsPerSlave returns the PacketsPerSlave field value if set, zero value otherwise.
+// GetPacketsPerSlave returns the PacketsPerSlave field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetPacketsPerSlave() int32 {
 	if o == nil || o.PacketsPerSlave == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.PacketsPerSlave
@@ -718,10 +718,10 @@ func (o *LinkLinkinfoInfoData) SetAdSelect(v string) {
 	o.AdSelect = &v
 }
 
-// GetTlbDynamicLb returns the TlbDynamicLb field value if set, zero value otherwise.
+// GetTlbDynamicLb returns the TlbDynamicLb field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetTlbDynamicLb() int32 {
 	if o == nil || o.TlbDynamicLb == nil {
-		var ret int32
+		var ret int32 = -1 
 		return ret
 	}
 	return *o.TlbDynamicLb
