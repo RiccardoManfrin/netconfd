@@ -278,7 +278,7 @@ func Test005(t *testing.T) {
 	}
 }
 
-//Test006 - OK-006 Bond Balance-RR Xmit Hash Policy params check
+//Test006 - OK-006 Bond 802.3ad mix
 func Test006(t *testing.T) {
 	cset := genSampleConfig()
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
@@ -312,7 +312,7 @@ func Test006(t *testing.T) {
 	}
 }
 
-//Test007 - OK-007 Bond Balance-RR Xmit Hash Policy params check
+//Test007 - OK-007 Bond Balance-RR Mix
 func Test007(t *testing.T) {
 	cset := genSampleConfig()
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
@@ -346,17 +346,17 @@ func Test007(t *testing.T) {
 	}
 }
 
-//Test008 - OK-008 Bond Balance-RR Xmit Hash Policy params check
+//Test008 - OK-008 Bond Balance-TLB
 func Test008(t *testing.T) {
 	cset := genSampleConfig()
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
+	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-tlb"
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
+	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
@@ -366,7 +366,7 @@ func Test008(t *testing.T) {
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
+	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(0)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
 	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
@@ -383,7 +383,7 @@ func Test008(t *testing.T) {
 	}
 }
 
-//Test009 - OK-009 Bond Balance-RR Xmit Hash Policy params check
+//Test009 - OK-009 Bond Active-Backup mix
 func Test009(t *testing.T) {
 	cset := genSampleConfig()
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
