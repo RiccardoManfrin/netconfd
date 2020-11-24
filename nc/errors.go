@@ -66,9 +66,19 @@ func NewGenericSemanticError() error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Generic Semantic Error"}
 }
 
+//NewUnknownLinkKindError returns a UnknownTypeError error on link layer type interfaces
+func NewUnknownLinkKindError(linkKind string) error {
+	return &SemanticError{Code: SEMANTIC, Reason: "LinkKind " + string(linkKind) + " not known"}
+}
+
 //NewBadAddressError returns a bad address error on link layer interfaces
 func NewBadAddressError(c CIDRAddr) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Bad IP address " + c.String()}
+}
+
+//NewEINVALError returns a bad address error on link layer interfaces
+func NewEINVALError() error {
+	return &SemanticError{Code: SEMANTIC, Reason: "Syscall EINVAL error (check dmesg)"}
 }
 
 //NewLinkExistsConflictError returns a Conflict error on link layer interfaces
@@ -84,11 +94,6 @@ func NonBondMasterLinkTypeError(ifname LinkID) error {
 //NewLinkNotFoundError returns a Not found error on link layer interfaces
 func NewLinkNotFoundError(linkID LinkID) error {
 	return &NotFoundError{Code: CONFLICT, Reason: "Link " + string(linkID) + " not found"}
-}
-
-//NewUnknownLinkKindError returns a UnknownTypeError error on link layer type interfaces
-func NewUnknownLinkKindError(linkKind string) error {
-	return &SemanticError{Code: SEMANTIC, Reason: "LinkKind " + string(linkKind) + " not known"}
 }
 
 //NotFoundError is a logical error on the content of the operation requested to be performed
