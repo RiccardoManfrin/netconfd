@@ -27,6 +27,23 @@ build:
     - ./image.tar
     - ./image_id.txt
 
+uploadspec:
+  stage: build
+  image: docker:stable
+  tags:
+  - docker
+  before_script:
+  - apk add --no-cache git openssh-client curl
+  script:
+  - git clone https://github.com/juanlb/openapi2swagger.git
+  - cd openapi2swagger
+  - docker build -t openapi2swagger:latest .
+  - cd ..
+  - docker run -v $(pwd):/tmp -e OPENAPI_FILE=swaggerui/swagger.yaml  openapi2swagger:latest > ~/swagger.json
+  - tar cvzf archive.tar.gz swagger.json
+  - curl -X PUT -F bundle=@archive.tar.gz http://srv-buildrepo.lan.athonet.com/api/v1/products/5g/components/netconfd/openapi/0.1.0
+
+
 #scan_push:
 #    stage: scan_push
 #    image: docker:stable
