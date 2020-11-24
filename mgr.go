@@ -170,7 +170,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	responseValidationInput := &openapi3filter.ResponseValidationInput{
 		RequestValidationInput: requestValidationInput,
-		Status:                 200,
+		Status:                 wrw.Status,
 		Header:                 w.Header(),
 	}
 
@@ -226,10 +226,17 @@ func (m *Manager) Start() {
 
 type wrapperResponseWriter struct {
 	http.ResponseWriter
-	buf *bytes.Buffer
+	buf    *bytes.Buffer
+	Status int
 }
 
 func (wrw *wrapperResponseWriter) Write(p []byte) (int, error) {
 	wrw.ResponseWriter.Write(p)
 	return wrw.buf.Write(p)
+}
+
+//WriteHeader wrapper to record status
+func (wrw *wrapperResponseWriter) WriteHeader(status int) {
+	wrw.Status = status
+	wrw.ResponseWriter.WriteHeader(status)
 }

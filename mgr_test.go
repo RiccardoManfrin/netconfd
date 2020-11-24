@@ -32,26 +32,7 @@ func genSampleConfig() oas.Config {
 					"mode": "active-backup",
 					"downdelay": 800,
 					"updelay" : 400,
-					"miimon" : 200,
-					"peer_notify_delay": 1000,
-					"use_carrier": 1,
-					"arp_interval": 1000,
-					"arp_validate": "active",
-					"num_peer_notif": 1,
-					"lp_interval": 1,
-					"arp_all_targets": "any",
-					"packets_per_slave": "1",
-					"fail_over_mac": "none",
-					"xmit_hash_policy": "layer2+3",
-					"resend_igmp": 1,
-					"min_links": 0,
-					"arp_interval": 0,
-					"primary_reselect": "always",
-					"tlb_dynamic_lb": 1,
-					"ad_select": "stable",
-					"mode": "active-backup",
-					"all_slaves_active": 0,
-					"use_carrier": 1
+					"miimon" : 200
 				}
 			  }
 			},
@@ -101,9 +82,9 @@ var m *Manager = NewManager()
 
 func checkResponse(t *testing.T, rr *httptest.ResponseRecorder, httpStatusCode int, ncErrorCode nc.ErrorCode, ncreason string) {
 	if status := rr.Code; status != httpStatusCode {
-		t.Errorf("HTTP Status code mismatch: got %v want %v",
+		t.Errorf("HTTP Status code mismatch: got [%v] want [%v]",
 			status,
-			http.StatusBadRequest)
+			httpStatusCode)
 	}
 	var genericError nc.GenericError
 	err := json.Unmarshal(rr.Body.Bytes(), &genericError)
@@ -112,14 +93,14 @@ func checkResponse(t *testing.T, rr *httptest.ResponseRecorder, httpStatusCode i
 	}
 	if ncErrorCode != nc.RESERVED {
 		if genericError.Code != ncErrorCode {
-			t.Errorf("Err Code mismatch: got %v, want %v",
+			t.Errorf("Err Code mismatch: got [%v], want [%v]",
 				genericError.Code,
 				nc.SEMANTIC)
 		}
 	}
 	if ncreason != "" {
 		if genericError.Reason != ncreason {
-			t.Errorf("Err Reason mismatch: got %v, want %v",
+			t.Errorf("Err Reason mismatch: got [%v], want [%v]",
 				genericError.Reason,
 				ncreason)
 		}
@@ -219,7 +200,6 @@ func deltaLink(l oas.Link, r oas.Link) string {
 		return "link_info->info_data->ad_lacp_rate"
 	}
 	return ""
-
 }
 
 //Test004 - OK-004 Bond Active-Backup params check
