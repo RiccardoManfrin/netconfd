@@ -186,7 +186,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func NewManager() *Manager {
 	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
 
-	openapiJSON, _ := swaggeruiFS.Open("/swagger.yaml")
+	openapiJSON, _ := swaggeruiFS.Open("/openapi.yaml")
 
 	data, _ := ioutil.ReadAll(openapiJSON)
 	openapi, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)

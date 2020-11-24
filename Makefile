@@ -21,7 +21,7 @@ $(OPENAPI):
 test:
 	$(AT) go test -v
 
-swaggerui/statik.go: swaggerui/swagger.yaml $(STATIKTOOL)
+swaggerui/statik.go: swaggerui/openapi.yaml $(STATIKTOOL)
 	$(AT) $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js,*.json -p=swaggerui
 	
 $(STATIKTOOL):
