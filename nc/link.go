@@ -421,19 +421,39 @@ func linkFormat(link Link) (netlink.Link, error) {
 
 			id := &link.Linkinfo.InfoData
 
-			nlbondlink.UseCarrier = int(id.UseCarrier)
-			nlbondlink.ArpInterval = int(id.ArpInterval)
-
-			nlbondlink.NumPeerNotif = int(id.NumPeerNotif)
-			nlbondlink.LpInterval = int(id.LpInterval)
-
-			nlbondlink.PacketsPerSlave = int(id.PacketsPerSlave)
-			nlbondlink.ResendIgmp = int(id.ResendIgmp)
-			nlbondlink.MinLinks = int(id.MinLinks)
-			nlbondlink.ArpInterval = int(id.ArpInterval)
-			nlbondlink.TlbDynamicLb = int(id.TlbDynamicLb)
-			nlbondlink.AllSlavesActive = int(id.AllSlavesActive)
-			nlbondlink.UseCarrier = int(id.UseCarrier)
+			if id.UseCarrier != -1 {
+				nlbondlink.UseCarrier = int(id.UseCarrier)
+			}
+			if id.ArpInterval != -1 {
+				nlbondlink.ArpInterval = int(id.ArpInterval)
+			}
+			if id.NumPeerNotif != -1 {
+				nlbondlink.NumPeerNotif = int(id.NumPeerNotif)
+			}
+			if id.LpInterval != -1 {
+				nlbondlink.LpInterval = int(id.LpInterval)
+			}
+			if id.PacketsPerSlave != -1 {
+				nlbondlink.PacketsPerSlave = int(id.PacketsPerSlave)
+			}
+			if id.ResendIgmp != -1 {
+				nlbondlink.ResendIgmp = int(id.ResendIgmp)
+			}
+			if id.MinLinks != -1 {
+				nlbondlink.MinLinks = int(id.MinLinks)
+			}
+			if id.ArpInterval != -1 {
+				nlbondlink.ArpInterval = int(id.ArpInterval)
+			}
+			if id.TlbDynamicLb != -1 {
+				nlbondlink.TlbDynamicLb = int(id.TlbDynamicLb)
+			}
+			if id.AllSlavesActive != -1 {
+				nlbondlink.AllSlavesActive = int(id.AllSlavesActive)
+			}
+			if id.UseCarrier != -1 {
+				nlbondlink.UseCarrier = int(id.UseCarrier)
+			}
 			if id.XmitHashPolicy != "" {
 				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(id.XmitHashPolicy)
 			}
