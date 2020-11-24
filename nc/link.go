@@ -4,7 +4,7 @@ import (
 	"syscall"
 
 	"github.com/vishvananda/netlink"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 // LinkAddrInfo struct for LinkAddrInfo

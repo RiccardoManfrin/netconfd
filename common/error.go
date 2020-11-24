@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
+	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
 // ErrorString is an error string

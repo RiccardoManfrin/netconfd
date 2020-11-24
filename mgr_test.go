@@ -8,8 +8,8 @@ import (
 	"reflect"
 	"testing"
 
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
-	oas "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/server/go"
+	"gitlab.lan.athonet.com/core/netconfd/nc"
+	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
 )
 
 func parseSampleConfig(sampleConfig string) oas.Config {

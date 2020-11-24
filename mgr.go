@@ -13,15 +13,15 @@ import (
 	"strings"
 	"time"
 
-	oas "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/server/go"
+	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
-	comm "gitlab.lan.athonet.com/riccardo.manfrin/netconfd/common"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/swaggerui"
+	comm "gitlab.lan.athonet.com/core/netconfd/common"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"gitlab.lan.athonet.com/core/netconfd/swaggerui"
 )
 
 //RouteHandler is the handler for a certain route OperationID

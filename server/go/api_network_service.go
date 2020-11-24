@@ -14,8 +14,8 @@ import (
 	"context"
 	"errors"
 
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/nc"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
 // NetworkApiService is a service that implents the logic for the NetworkApiServicer

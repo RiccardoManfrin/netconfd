@@ -16,7 +16,7 @@ import (
 	"io/ioutil"
 	"bytes"
 
-	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 //Logger wrapper for logging before inner HTTP serving
