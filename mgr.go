@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"math"
@@ -179,6 +180,12 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	// Validate response.
 	if err := openapi3filter.ValidateResponse(ctx, responseValidationInput); err != nil {
 		panic(err)
+	}
+
+	if (wrw.Status != http.StatusOK) && (wrw.Status != http.StatusCreated) {
+		logger.Log.Warning(fmt.Sprintf("HTTP Error %v: %v", wrw.Status, string(wrw.buf.Bytes())))
+	} else {
+		logger.Log.Debug(fmt.Sprintf("HTTP Ok %v: %v", wrw.Status, string(wrw.buf.Bytes())))
 	}
 }
 
