@@ -71,7 +71,6 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 			UseCarrier:      li.InfoData.GetUseCarrier(),
 			ArpInterval:     li.InfoData.GetArpInterval(),
 			ArpValidate:     li.InfoData.GetArpValidate(),
-			NumPeerNotif:    li.InfoData.GetLpInterval(),
 			LpInterval:      li.InfoData.GetLpInterval(),
 			ArpAllTargets:   li.InfoData.GetArpAllTargets(),
 			PacketsPerSlave: li.InfoData.GetPacketsPerSlave(),
@@ -160,7 +159,6 @@ func ncLinkParse(nclink nc.Link) Link {
 			id.UseCarrier = &nclink.Linkinfo.InfoData.UseCarrier
 			id.ArpInterval = &nclink.Linkinfo.InfoData.ArpInterval
 			id.ArpValidate = &nclink.Linkinfo.InfoData.ArpValidate
-			id.NumPeerNotif = &nclink.Linkinfo.InfoData.NumPeerNotif
 			id.LpInterval = &nclink.Linkinfo.InfoData.LpInterval
 			id.ArpAllTargets = &nclink.Linkinfo.InfoData.ArpAllTargets
 			id.PacketsPerSlave = &nclink.Linkinfo.InfoData.PacketsPerSlave
