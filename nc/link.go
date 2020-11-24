@@ -1,6 +1,8 @@
 package nc
 
 import (
+	"syscall"
+
 	"github.com/vishvananda/netlink"
 	"gitlab.lan.athonet.com/riccardo.manfrin/netconfd/logger"
 )
@@ -417,12 +419,49 @@ func linkFormat(link Link) (netlink.Link, error) {
 			nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
 			nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
 
-			if link.Linkinfo.InfoData.XmitHashPolicy != "" {
-				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(link.Linkinfo.InfoData.XmitHashPolicy)
+			id := &link.Linkinfo.InfoData
+
+			nlbondlink.UseCarrier = int(id.UseCarrier)
+			nlbondlink.ArpInterval = int(id.ArpInterval)
+
+			nlbondlink.NumPeerNotif = int(id.NumPeerNotif)
+			nlbondlink.LpInterval = int(id.LpInterval)
+
+			nlbondlink.PacketsPerSlave = int(id.PacketsPerSlave)
+			nlbondlink.ResendIgmp = int(id.ResendIgmp)
+			nlbondlink.MinLinks = int(id.MinLinks)
+			nlbondlink.ArpInterval = int(id.ArpInterval)
+			nlbondlink.TlbDynamicLb = int(id.TlbDynamicLb)
+			nlbondlink.AllSlavesActive = int(id.AllSlavesActive)
+			nlbondlink.UseCarrier = int(id.UseCarrier)
+			if id.XmitHashPolicy != "" {
+				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(id.XmitHashPolicy)
 			}
-			if link.Linkinfo.InfoData.AdLacpRate != "" {
-				nlbondlink.LacpRate = netlink.StringToBondLacpRate(link.Linkinfo.InfoData.AdLacpRate)
+			if id.AdLacpRate != "" {
+				nlbondlink.LacpRate = netlink.StringToBondLacpRate(id.AdLacpRate)
 			}
+			if id.ArpValidate != "" {
+				nlbondlink.ArpValidate = netlink.StringToBondArpValidateMap[id.ArpValidate]
+			}
+			if id.ArpAllTargets != "" {
+				nlbondlink.ArpAllTargets = netlink.StringToBondArpAllTargetsMap[id.ArpAllTargets]
+			}
+			if id.FailOverMac != "" {
+				nlbondlink.FailOverMac = netlink.StringToBondFailOverMacMap[id.FailOverMac]
+			}
+			if id.XmitHashPolicy != "" {
+				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicyMap[id.XmitHashPolicy]
+			}
+			if id.PrimaryReselect != "" {
+				nlbondlink.PrimaryReselect = netlink.StringToBondPrimaryReselectMap[id.PrimaryReselect]
+			}
+			if id.AdSelect != "" {
+				nlbondlink.AdSelect = netlink.StringToBondAdSelectMap[id.AdSelect]
+			}
+			if id.AdLacpRate != "" {
+				nlbondlink.LacpRate = netlink.StringToBondLacpRateMap[id.AdLacpRate]
+			}
+
 		}
 	case "bridge":
 		{
