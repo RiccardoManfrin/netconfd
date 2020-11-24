@@ -29,9 +29,11 @@ paths:
       - config
       - admin
       - monitor
-    put:
-      description: |
-        Configures and enforces a new live network configuration
+    patch:
+      description: "Preserves existing non conflicting configuration intact. \n\n\
+        All conflicting configuration is erased and recreated according to the \n\
+        new config.\n\nIf an error is encountered, the reconfiguration procedure is\
+        \ aborted \nand network state potentially remains inconsistent.\n"
       operationId: ConfigSet
       requestBody:
         content:

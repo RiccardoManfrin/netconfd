@@ -159,7 +159,7 @@ func (c *NetworkApiController) Routes() Routes {
 		},
 		{
 			"ConfigSet",
-			strings.ToUpper("Put"),
+			strings.ToUpper("Patch"),
 			"/api/1/config",
 			c.ConfigSet,
 		},

@@ -14,7 +14,7 @@ tags:
     description: Network config APIs
 paths:
   /config:
-    put:
+    patch:
       x-authorization:
         - config
         - admin
@@ -24,7 +24,13 @@ paths:
       summary: |
         Configures and enforces a new live network configuration
       description: |
-        Configures and enforces a new live network configuration
+        Preserves existing non conflicting configuration intact. 
+        
+        All conflicting configuration is erased and recreated according to the 
+        new config.
+        
+        If an error is encountered, the reconfiguration procedure is aborted 
+        and network state potentially remains inconsistent.
       requestBody:
         description: Full Config
         required: true
