@@ -1,0 +1,9 @@
+[submodule "vendor/github.com/getkin/kin-openapi"]
+	path = vendor/github.com/getkin/kin-openapi
+	url = https://github.com/getkin/kin-openapi.git
+[submodule "vendor/github.com/gorilla/mux"]
+	path = vendor/github.com/gorilla/mux
+	url = https://github.com/gorilla/mux.git
+[submodule "vendor/github.com/vishvananda/netlink"]
+	path = vendor/github.com/vishvananda/netlink
+	url = git@github.com:RiccardoManfrin/netlink.git
