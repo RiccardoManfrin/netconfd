@@ -62,30 +62,34 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 	li := link.GetLinkinfo()
 
 	if li.InfoData != nil {
-		nclink.Linkinfo.InfoData.Mode = li.InfoData.GetMode()
-		nclink.Linkinfo.InfoData.Miimon = li.InfoData.GetMiimon()
-		nclink.Linkinfo.InfoData.Downdelay = li.InfoData.GetDowndelay()
-		nclink.Linkinfo.InfoData.Updelay = li.InfoData.GetUpdelay()
-		nclink.Linkinfo.InfoData.PeerNotifyDelay = li.InfoData.GetPeerNotifyDelay()
-		nclink.Linkinfo.InfoData.UseCarrier = li.InfoData.GetUseCarrier()
-		nclink.Linkinfo.InfoData.ArpInterval = li.InfoData.GetArpInterval()
-		nclink.Linkinfo.InfoData.ArpValidate = li.InfoData.GetArpValidate()
-		nclink.Linkinfo.InfoData.NumPeerNotif = li.InfoData.GetNumPeerNotif()
-		nclink.Linkinfo.InfoData.LpInterval = li.InfoData.GetLpInterval()
-		nclink.Linkinfo.InfoData.ArpAllTargets = li.InfoData.GetArpAllTargets()
-		nclink.Linkinfo.InfoData.PacketsPerSlave = li.InfoData.GetPacketsPerSlave()
-		nclink.Linkinfo.InfoData.FailOverMac = li.InfoData.GetFailOverMac()
-		nclink.Linkinfo.InfoData.XmitHashPolicy = li.InfoData.GetXmitHashPolicy()
-		nclink.Linkinfo.InfoData.ResendIgmp = li.InfoData.GetResendIgmp()
-		nclink.Linkinfo.InfoData.MinLinks = li.InfoData.GetMinLinks()
-		nclink.Linkinfo.InfoData.ArpInterval = li.InfoData.GetArpInterval()
-		nclink.Linkinfo.InfoData.PrimaryReselect = li.InfoData.GetPrimaryReselect()
-		nclink.Linkinfo.InfoData.TlbDynamicLb = li.InfoData.GetTlbDynamicLb()
-		nclink.Linkinfo.InfoData.AdSelect = li.InfoData.GetAdSelect()
-		nclink.Linkinfo.InfoData.AdLacpRate = li.InfoData.GetAdLacpRate()
-		nclink.Linkinfo.InfoData.Mode = li.InfoData.GetMode()
-		nclink.Linkinfo.InfoData.AllSlavesActive = li.InfoData.GetAllSlavesActive()
-		nclink.Linkinfo.InfoData.UseCarrier = li.InfoData.GetUseCarrier()
+		lpInterval := li.InfoData.GetLpInterval()
+		if lpInterval == 0 {
+			lpInterval = 1
+		}
+		nclink.Linkinfo.InfoData = nc.LinkLinkinfoInfoData{
+			Mode:            li.InfoData.GetMode(),
+			Miimon:          li.InfoData.GetMiimon(),
+			Downdelay:       li.InfoData.GetDowndelay(),
+			Updelay:         li.InfoData.GetUpdelay(),
+			PeerNotifyDelay: li.InfoData.GetPeerNotifyDelay(),
+			UseCarrier:      li.InfoData.GetUseCarrier(),
+			ArpInterval:     li.InfoData.GetArpInterval(),
+			ArpValidate:     li.InfoData.GetArpValidate(),
+			NumPeerNotif:    lpInterval,
+			LpInterval:      li.InfoData.GetLpInterval(),
+			ArpAllTargets:   li.InfoData.GetArpAllTargets(),
+			PacketsPerSlave: li.InfoData.GetPacketsPerSlave(),
+			FailOverMac:     li.InfoData.GetFailOverMac(),
+			XmitHashPolicy:  li.InfoData.GetXmitHashPolicy(),
+			ResendIgmp:      li.InfoData.GetResendIgmp(),
+			MinLinks:        li.InfoData.GetMinLinks(),
+			PrimaryReselect: li.InfoData.GetPrimaryReselect(),
+			TlbDynamicLb:    li.InfoData.GetTlbDynamicLb(),
+			AdSelect:        li.InfoData.GetAdSelect(),
+			AdLacpRate:      li.InfoData.GetAdLacpRate(),
+			AllSlavesActive: li.InfoData.GetAllSlavesActive(),
+		}
+
 	}
 
 	nclink.Linkinfo.InfoKind = *li.InfoKind
