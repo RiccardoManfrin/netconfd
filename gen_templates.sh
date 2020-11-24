@@ -30,7 +30,7 @@ docker run \
     --rm \
     -v "${PWD}:/local" \
     openapitools/openapi-generator-cli generate \
-    -i /local/swaggerui/openapi.yaml \
+    -i /local/swaggerui/openapi.yaml -t /local/templates/go/\
     -g go -o /local/server/go-client/ 2>&1 > /dev/null
 
 cp server/go-client/model_*.go server/go/

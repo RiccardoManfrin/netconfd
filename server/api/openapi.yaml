@@ -1407,7 +1407,6 @@ components:
           - veth
           - macvlan
           - ipvlan
-          - ppp
           type: string
         info_data:
           $ref: '#/components/schemas/link_linkinfo_info_data'
