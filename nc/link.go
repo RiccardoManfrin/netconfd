@@ -128,7 +128,6 @@ func linkParse(link netlink.Link) Link {
 			id.Miimon = int32(bond.Miimon)
 			id.Updelay = int32(bond.UpDelay)
 			id.Downdelay = int32(bond.DownDelay)
-
 			id.UseCarrier = int32(bond.UseCarrier)
 			id.ArpInterval = int32(bond.ArpInterval)
 			id.ArpValidate = bond.ArpValidate.String()

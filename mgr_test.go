@@ -284,41 +284,7 @@ func Test006(t *testing.T) {
 	cset := genSampleConfig()
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
-	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
-	rr := runConfigSet(cset)
-	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
-	}
-}
-
-//Test007 - OK-007 Bond Balance-RR Xmit Hash Policy params check
-func Test007(t *testing.T) {
-	cset := genSampleConfig()
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
+	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
