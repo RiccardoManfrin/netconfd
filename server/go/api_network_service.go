@@ -59,11 +59,13 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		Master:   nc.LinkID(link.GetMaster()),
 	}
 
-	flagsLen := len(*link.Flags)
-	if flagsLen > 0 {
-		nclink.Flags = make([]nc.LinkFlags, flagsLen)
-		for i, lf := range *link.Flags {
-			nclink.Flags[i] = nc.LinkFlags(lf)
+	if link.Flags != nil {
+		flagsLen := len(*link.Flags)
+		if flagsLen > 0 {
+			nclink.Flags = make([]nc.LinkFlags, flagsLen)
+			for i, lf := range *link.Flags {
+				nclink.Flags[i] = nc.LinkFlags(lf)
+			}
 		}
 	}
 
