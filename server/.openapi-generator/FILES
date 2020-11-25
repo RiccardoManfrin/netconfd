@@ -14,6 +14,7 @@ go/model_default.go
 go/model_ip.go
 go/model_link.go
 go/model_link_addr_info.go
+go/model_link_flags.go
 go/model_link_linkinfo.go
 go/model_link_linkinfo_info_data.go
 go/model_link_linkinfo_info_slave_data.go

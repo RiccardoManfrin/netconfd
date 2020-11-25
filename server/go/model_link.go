@@ -22,7 +22,7 @@ type Link struct {
 	// Interface name 
 	Ifname string `json:"ifname"`
 	// Flags of the interface Supported types:   * `BROADCAST` - Support for broadcast   * `MULTICAST` - Support for multicast   * `SLAVE` - Is slave   * `UP` - Is up   * `LOWER UP` - Is lower interface up 
-	Flags *[]string `json:"flags,omitempty"`
+	Flags *[]LinkFlags `json:"flags,omitempty"`
 	// Maximum Transfer Unit value 
 	Mtu *int32 `json:"mtu,omitempty"`
 	// Promiscuous mode flag
@@ -111,9 +111,9 @@ func (o *Link) SetIfname(v string) {
 }
 
 // GetFlags returns the Flags field value if set, zero value otherwise.
-func (o *Link) GetFlags() []string {
+func (o *Link) GetFlags() []LinkFlags {
 	if o == nil || o.Flags == nil {
-		var ret []string
+		var ret []LinkFlags
 		return ret
 	}
 	return *o.Flags
@@ -121,7 +121,7 @@ func (o *Link) GetFlags() []string {
 
 // GetFlagsOk returns a tuple with the Flags field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Link) GetFlagsOk() (*[]string, bool) {
+func (o *Link) GetFlagsOk() (*[]LinkFlags, bool) {
 	if o == nil || o.Flags == nil {
 		return nil, false
 	}
@@ -137,8 +137,8 @@ func (o *Link) HasFlags() bool {
 	return false
 }
 
-// SetFlags gets a reference to the given []string and assigns it to the Flags field.
-func (o *Link) SetFlags(v []string) {
+// SetFlags gets a reference to the given []LinkFlags and assigns it to the Flags field.
+func (o *Link) SetFlags(v []LinkFlags) {
 	o.Flags = &v
 }
 

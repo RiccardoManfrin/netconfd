@@ -817,6 +817,15 @@ components:
             $ref: '#/components/schemas/route_flags'
           type: array
       type: object
+    link_flags:
+      enum:
+      - BROADCAST
+      - MULTICAST
+      - SLAVE
+      - UP
+      - LOWER_UP
+      example: UP
+      type: string
     link:
       example:
         link_type: ether
@@ -886,14 +895,7 @@ components:
               * `UP` - Is up
               * `LOWER UP` - Is lower interface up
           items:
-            enum:
-            - BROADCAST
-            - MULTICAST
-            - SLAVE
-            - UP
-            - LOWER_UP
-            example: UP
-            type: string
+            $ref: '#/components/schemas/link_flags'
           type: array
         mtu:
           description: |
