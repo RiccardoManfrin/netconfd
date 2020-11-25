@@ -819,6 +819,15 @@ components:
             Route flags
           items:
             $ref: '#/components/schemas/route_flags'
+    link_flags:
+      type: string
+      enum:
+        - BROADCAST
+        - MULTICAST
+        - SLAVE
+        - UP
+        - LOWER_UP
+      example: UP
     link:
       type: object
       properties:
@@ -839,15 +848,7 @@ components:
               * `LOWER UP` - Is lower interface up
           type: array
           items:
-            type: string
-            enum:
-              - BROADCAST
-              - MULTICAST
-              - SLAVE
-              - UP
-              - LOWER_UP
-            example: UP
-
+            $ref: '#/components/schemas/link_flags'
         mtu:
           description: |
             Maximum Transfer Unit value
