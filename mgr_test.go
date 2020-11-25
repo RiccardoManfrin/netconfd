@@ -20,49 +20,51 @@ func parseSampleConfig(sampleConfig string) oas.Config {
 }
 
 func genSampleConfig() oas.Config {
-	sampleConfig := `{
-		"global": {},
-		"host_network": {
-		  "links": [
-			{
-			  "ifname": "bond0",
-			  "link_type": "ether",
-			  "linkinfo": {
-				"info_kind": "bond",
-				"info_data": {
-					"mode": "active-backup",
-					"downdelay": 800,
-					"updelay" : 400,
-					"miimon" : 200
-				}
-			  }
-			},
-			{
-			  "ifname": "dummy0",
-			  "link_type": "ether",
-			  "linkinfo": {
-				"info_kind": "dummy",
-				"info_slave_data": {
-				  "state": "BACKUP"
-				}
-			  },
-			  "master": "bond0"
-			},
-			{
-			  "ifname": "dummy1",
-			  "link_type": "ether",
-			  "linkinfo": {
-				"info_kind": "dummy",
-				"info_slave_data": {
-				  "state": "ACTIVE"
-				}
-			  },
-			  "master": "bond0"
-			}
-		  ],
-		  "routes": []
+	sampleConfig := `
+{
+"global": {},
+"host_network": {
+	"links": [
+	{
+		"ifname": "bond0",
+		"link_type": "ether",
+		"flags": ["DOWN"],
+		"linkinfo": {
+		"info_kind": "bond",
+		"info_data": {
+			"mode": "active-backup",
+			"downdelay": 800,
+			"updelay" : 400,
+			"miimon" : 200
 		}
-	  }`
+		}
+	},
+	{
+		"ifname": "dummy0",
+		"link_type": "ether",
+		"linkinfo": {
+		"info_kind": "dummy",
+		"info_slave_data": {
+			"state": "BACKUP"
+		}
+		},
+		"master": "bond0"
+	},
+	{
+		"ifname": "dummy1",
+		"link_type": "ether",
+		"linkinfo": {
+		"info_kind": "dummy",
+		"info_slave_data": {
+			"state": "ACTIVE"
+		}
+		},
+		"master": "bond0"
+	}
+	],
+	"routes": []
+}
+}`
 	return parseSampleConfig(sampleConfig)
 }
 
