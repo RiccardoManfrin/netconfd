@@ -101,6 +101,7 @@ type Link struct {
 	LinkType string         `json:"link_type"`
 	Address  string         `json:"address,omitempty"`
 	AddrInfo []LinkAddrInfo `json:"addr_info,omitempty"`
+	Flags    []string       `json:"flags,omitempty"`
 }
 
 func linkParse(link netlink.Link) Link {

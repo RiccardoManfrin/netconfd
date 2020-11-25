@@ -57,6 +57,7 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		Mtu:      link.GetMtu(),
 		LinkType: link.GetLinkType(),
 		Master:   nc.LinkID(link.GetMaster()),
+		Flags:    *link.Flags,
 	}
 
 	li := link.GetLinkinfo()
@@ -125,6 +126,9 @@ func ncLinkParse(nclink nc.Link) Link {
 		Ifname:   string(nclink.Ifname),
 		Ifindex:  &nclink.Ifindex,
 		LinkType: nclink.LinkType,
+	}
+	if len(nclink.Flags) > 0 {
+		link.Flags = &nclink.Flags
 	}
 	if len(nclink.AddrInfo) > 0 {
 		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
