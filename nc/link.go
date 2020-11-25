@@ -85,6 +85,9 @@ type LinkLinkinfo struct {
 //LinkID type
 type LinkID string
 
+// LinkFlags the model 'LinkFlags'
+type LinkFlags string
+
 // Link definition
 // For Bond parameters information please refer to
 // https://www.kernel.org/doc/Documentation/networking/bonding.txt
@@ -101,7 +104,7 @@ type Link struct {
 	LinkType string         `json:"link_type"`
 	Address  string         `json:"address,omitempty"`
 	AddrInfo []LinkAddrInfo `json:"addr_info,omitempty"`
-	Flags    []string       `json:"flags,omitempty"`
+	Flags    []LinkFlags    `json:"flags,omitempty"`
 }
 
 func linkParse(link netlink.Link) Link {
