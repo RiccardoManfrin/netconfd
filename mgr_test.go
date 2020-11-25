@@ -71,7 +71,7 @@ func genSampleConfig() oas.Config {
 func newConfigSetReq(config oas.Config) *http.Request {
 	reqbody, _ := json.Marshal(config)
 	iobody := bytes.NewReader(reqbody)
-	req, _ := http.NewRequest("PUT", "/api/1/config", iobody)
+	req, _ := http.NewRequest("PATCH", "/api/1/config", iobody)
 	req.Header.Add("Content-Type", "application/json")
 	return req
 }
