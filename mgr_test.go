@@ -75,12 +75,12 @@ func genSampleConfig(t *testing.T) oas.Config {
 func newConfigSetReq(config oas.Config) *http.Request {
 	reqbody, _ := json.Marshal(config)
 	iobody := bytes.NewReader(reqbody)
-	req, _ := http.NewRequest("PATCH", "/api/1/config", iobody)
+	req, _ := http.NewRequest("PATCH", "/api/1/mgmt/config", iobody)
 	req.Header.Add("Content-Type", "application/json")
 	return req
 }
 func newConfigGetReq() *http.Request {
-	req, _ := http.NewRequest("GET", "/api/1/config", nil)
+	req, _ := http.NewRequest("GET", "/api/1/mgmt/config", nil)
 	req.Header.Add("Content-Type", "application/json")
 	return req
 }
