@@ -139,10 +139,10 @@ func ncLinkParse(nclink nc.Link) Link {
 
 	flagsLen := len(nclink.Flags)
 	if flagsLen > 0 {
-		lfs := make([]LinkFlags, flagsLen)
+		lfs := make([]LinkFlag, flagsLen)
 		link.Flags = &lfs
 		for i, lf := range *link.Flags {
-			(*link.Flags)[i] = LinkFlags(lf)
+			(*link.Flags)[i] = LinkFlag(lf)
 		}
 	}
 
