@@ -179,6 +179,34 @@ func Test003(t *testing.T) {
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
 }
 
+func linkStateCheck(setLinkData oas.Link, getLinkData oas.Link) string {
+	//Check for up request to correspond to up interface
+	upIsUp := false
+	lfs := setLinkData.GetFlags()
+	if lfs != nil {
+		for _, lf := range lfs {
+			if lf == "UP" {
+				rfs := getLinkData.GetFlags()
+				for _, rf := range rfs {
+					if rf == "UP" {
+						upIsUp = true
+					}
+				}
+				if upIsUp == false {
+					return fmt.Sprintf("link_flags -> UP not up")
+				} else {
+					//Let's also check operstate:
+					operstate := getLinkData.GetOperstate()
+					if operstate != "up" {
+						return "Not up link->operstate"
+					}
+				}
+			}
+		}
+	}
+	return ""
+}
+
 func deltaLink(setLinkData oas.Link, getLinkData oas.Link) string {
 	if setLinkData.GetMaster() != getLinkData.GetMaster() {
 		return "master"
@@ -245,7 +273,7 @@ func deltaLink(setLinkData oas.Link, getLinkData oas.Link) string {
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
 
-	return ""
+	return linkStateCheck(setLinkData, getLinkData)
 }
 
 //Test004 - OK-004 Bond Active-Backup params check
