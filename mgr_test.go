@@ -31,7 +31,7 @@ func genSampleConfig(t *testing.T) oas.Config {
 	{
 		"ifname": "bond0",
 		"link_type": "ether",
-		"flags": ["UP"],
+		"flags": ["up"],
 		"linkinfo": {
 		"info_kind": "bond",
 		"info_data": {
