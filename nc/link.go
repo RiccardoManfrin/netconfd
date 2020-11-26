@@ -270,6 +270,21 @@ func (flags LinkFlags) HaveFlag(flag LinkFlag) bool {
 	return false
 }
 
+//LinksDelete remove all non physical and non loopback links
+func LinksDelete() error {
+	links, err := netlink.LinkList()
+	if err != nil {
+		return mapNetlinkError(err)
+	}
+	for _, link := range links {
+		err := netlink.LinkDel(link)
+		if err != nil {
+			return mapNetlinkError(err)
+		}
+	}
+	return nil
+}
+
 //LinksConfigure configures the whole set of links to manage in the correct sequential order
 //for example some of the link properties require other links to be established already or
 //to have the link down/up etc..
@@ -344,6 +359,9 @@ func LinkGet(ifname LinkID) (Link, error) {
 	link, err := netlink.LinkByName(string(ifname))
 	if err == nil {
 		nclink = linkParse(link)
+	} else {
+		//Translate to our err codes
+		err = NewLinkNotFoundError(ifname)
 	}
 	return nclink, err
 }
@@ -381,6 +399,10 @@ func LinkCreate(link Link) error {
 		return err
 	}
 	err = netlink.LinkAdd(nllink)
+	return mapNetlinkError(err)
+}
+
+func mapNetlinkError(err error) error {
 	if err != nil {
 		switch err.(type) {
 		case syscall.Errno:
@@ -388,9 +410,8 @@ func LinkCreate(link Link) error {
 				return NewEINVALError()
 			}
 		}
-		return err
 	}
-	return nil
+	return err
 }
 
 //LinkSetUp set a link up

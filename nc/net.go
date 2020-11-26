@@ -19,7 +19,17 @@ func Patch(n Network) error {
 
 //Put network config (wipe out and redeploy)
 func Put(n Network) error {
+	Del()
 	err := LinksConfigure(n.Links)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+//Del delete whole network config
+func Del() error {
+	err := LinksDelete()
 	if err != nil {
 		return err
 	}

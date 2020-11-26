@@ -13,6 +13,7 @@ package openapi
 import (
 	"context"
 	"errors"
+	"time"
 
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
@@ -47,7 +48,13 @@ func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (Impl
 // ConfigSet - Replace existing configuration with new one
 func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
 	network := ncNetFormat(config)
-	return PutErrorResponse(nc.Put(network), nil)
+	go delayedConfigSet(network)
+	return PutErrorResponse(nil, nil)
+}
+
+func delayedConfigSet(network nc.Network) error {
+	time.Sleep(1 * time.Second)
+	return nc.Put(network)
 }
 
 // PersistConfig - Persist live configuration
