@@ -1,6 +1,7 @@
 package nc
 
 import (
+	"net"
 	"syscall"
 
 	"github.com/vishvananda/netlink"
@@ -222,6 +223,15 @@ func findActiveBackupBondActiveSlave(links []Link, bondIfname LinkID) (*Link, er
 	return foundLink, nil
 }
 
+func LinkHasFlag(link Link, flag string) bool {
+	for _, f := range link.Flags {
+		if string(f) == flag {
+			return true
+		}
+	}
+	return false
+}
+
 //LinksConfigure configures the whole set of links to manage in the correct sequential order
 //for example some of the link properties require other links to be established already or
 //to have the link down/up etc..
@@ -278,10 +288,13 @@ func LinksConfigure(links []Link) error {
 			}
 		}
 	}
+	// You can set the UP flag (and all the others) when you create it
 	//Set all links up
-	for _, link := range links {
-		LinkSetUp(link.Ifname)
-	}
+	//for _, link := range links {
+	//	if LinkHasFlag(link, "UP") {
+	//		LinkSetUp(link.Ifname)
+	//	}
+	//}
 
 	return nil
 }
@@ -392,6 +405,37 @@ func LinkDelete(ifname LinkID) error {
 		LinkAttrs: attrs,
 	}
 	return netlink.LinkDel(nllink)
+}
+func linkFlagsFormat(link Link) (net.Flags, error) {
+	var flags net.Flags
+	for _, f := range link.Flags {
+		switch string(f) {
+		case net.FlagUp.String():
+			{
+				flags += net.FlagUp
+			}
+		case net.FlagBroadcast.String():
+			{
+				flags += net.FlagBroadcast
+			}
+		case net.FlagMulticast.String():
+			{
+				flags += net.FlagMulticast
+			}
+		case net.FlagLoopback.String():
+			{
+				flags += net.FlagLoopback
+			}
+		case net.FlagPointToPoint.String():
+			{
+				flags += net.FlagPointToPoint
+			}
+		default:
+			return flags, NewLinkUnknownFlagTypeError(f)
+		}
+
+	}
+	return flags, nil
 }
 
 func linkFormat(link Link) (netlink.Link, error) {
@@ -518,5 +562,10 @@ func linkFormat(link Link) (netlink.Link, error) {
 	default:
 		err = NewUnknownLinkKindError(kind)
 	}
+	netFlags, err := linkFlagsFormat(link)
+	if err != nil {
+		return nil, err
+	}
+	nllink.Attrs().Flags = netFlags
 	return nllink, err
 }
