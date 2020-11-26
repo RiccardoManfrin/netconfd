@@ -11,10 +11,9 @@
 #    -g go-server \
 #    -o /local/templates/go-server/
 
-rm server -rf
-mkdir server
-
-
+if [ -f ./server/.openapi-generator/FILES ]; then
+    for f in $(cat ./server/.openapi-generator/FILES); do rm server/$f; done
+fi
 docker run \
     -e GO_POST_PROCESS_FILE="/usr/local/bin/gofmt -w" \
     -u $(id -u):$(id -g) \
