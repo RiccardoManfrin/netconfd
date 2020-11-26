@@ -13,7 +13,7 @@ tags:
   - name: Network
     description: Network config APIs
 paths:
-  /config:
+  /mgmt/config:
     patch:
       x-authorization:
         - config
@@ -58,7 +58,7 @@ paths:
       responses:
         '200':
           description: Successful alignment
-  /config/links:
+  /links:
     get:
       x-authorization:
         - config
@@ -116,7 +116,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /config/links/{ifname}:
+  /links/{ifname}:
     get:
       x-authorization:
         - config
@@ -162,7 +162,7 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /config/routes:
+  /routes:
     get:
       x-authorization:
         - config
@@ -219,7 +219,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /config/routes/{routeid}:
+  /routes/{routeid}:
     get:
       x-authorization:
         - config
@@ -265,7 +265,7 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /config/rules:
+  /rules:
     get:
       x-authorization:
         - config
@@ -322,7 +322,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /config/rules/{ruleid}:
+  /rules/{ruleid}:
     get:
       x-authorization:
         - config
@@ -368,7 +368,7 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /config/netns:
+  /netns:
     get:
       x-authorization:
         - config
@@ -425,7 +425,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /config/netns/{netnsid}:
+  /netns/{netnsid}:
     get:
       x-authorization:
         - config
@@ -471,7 +471,7 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /config/vrfs:
+  /vrfs:
     get:
       x-authorization:
         - config
@@ -528,7 +528,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /config/vrfs/{vrfid}:
+  /vrfs/{vrfid}:
     get:
       x-authorization:
         - config
@@ -575,7 +575,7 @@ paths:
         "404":
           description: Not found
 
-  /config/nftables:
+  /nftables:
     get:
       x-authorization:
         - config
@@ -632,7 +632,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /config/ntables/{nftableid}:
+  /ntables/{nftableid}:
     get:
       x-authorization:
         - config

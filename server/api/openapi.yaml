@@ -13,7 +13,7 @@ tags:
 - description: Network config APIs
   name: Network
 paths:
-  /config:
+  /mgmt/config:
     get:
       description: |
         Configures and enforces a new live network configuration
@@ -54,7 +54,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/links:
+  /links:
     get:
       description: |
         Returns the array of the existing link layer interfaces by their ifname id
@@ -109,7 +109,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/links/{ifname}:
+  /links/{ifname}:
     delete:
       description: |
         Brings down and delete a link layer interface
@@ -159,7 +159,7 @@ paths:
       - config
       - admin
       - monitor
-  /config/routes:
+  /routes:
     get:
       description: |
         Returns the array of the existing routing tables routes ids
@@ -213,7 +213,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/routes/{routeid}:
+  /routes/{routeid}:
     delete:
       description: |
         Brings down and delete an L3 IP route
@@ -263,7 +263,7 @@ paths:
       - config
       - admin
       - monitor
-  /config/rules:
+  /rules:
     get:
       description: |
         Get all ip rules list
@@ -317,7 +317,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/rules/{ruleid}:
+  /rules/{ruleid}:
     delete:
       description: |
         Removes an IP Rule
@@ -367,7 +367,7 @@ paths:
       - config
       - admin
       - monitor
-  /config/netns:
+  /netns:
     get:
       description: |
         Get the list all network namespaces
@@ -421,7 +421,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/netns/{netnsid}:
+  /netns/{netnsid}:
     delete:
       description: |
         Removes an IP Rule
@@ -471,7 +471,7 @@ paths:
       - config
       - admin
       - monitor
-  /config/vrfs:
+  /vrfs:
     get:
       description: |
         Get the list all VRFs
@@ -525,7 +525,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/vrfs/{vrfid}:
+  /vrfs/{vrfid}:
     delete:
       description: |
         Removes a VRF
@@ -575,7 +575,7 @@ paths:
       - config
       - admin
       - monitor
-  /config/nftables:
+  /nftables:
     get:
       description: |
         Get the list all NFTables
@@ -629,7 +629,7 @@ paths:
       x-authorization:
       - config
       - admin
-  /config/ntables/{nftableid}:
+  /ntables/{nftableid}:
     delete:
       description: |
         Removes a NFTable
