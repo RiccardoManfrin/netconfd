@@ -13,13 +13,16 @@ import (
 	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
 )
 
-func parseSampleConfig(sampleConfig string) oas.Config {
+func parseSampleConfig(t *testing.T, sampleConfig string) oas.Config {
 	var config oas.Config
-	json.Unmarshal([]byte(sampleConfig), &config)
+	err := json.Unmarshal([]byte(sampleConfig), &config)
+	if err != nil {
+		t.Error(err)
+	}
 	return config
 }
 
-func genSampleConfig() oas.Config {
+func genSampleConfig(t *testing.T) oas.Config {
 	sampleConfig := `
 {
 "global": {},
@@ -28,7 +31,7 @@ func genSampleConfig() oas.Config {
 	{
 		"ifname": "bond0",
 		"link_type": "ether",
-		"flags": ["DOWN"],
+		"flags": ["UP"],
 		"linkinfo": {
 		"info_kind": "bond",
 		"info_data": {
@@ -65,7 +68,7 @@ func genSampleConfig() oas.Config {
 	"routes": []
 }
 }`
-	return parseSampleConfig(sampleConfig)
+	return parseSampleConfig(t, sampleConfig)
 }
 
 func newConfigSetReq(config oas.Config) *http.Request {
@@ -117,11 +120,11 @@ func runConfigSet(config oas.Config) *httptest.ResponseRecorder {
 	return rr
 }
 
-func runConfigGet() oas.Config {
+func runConfigGet(t *testing.T) oas.Config {
 	req := newConfigGetReq()
 	rr := httptest.NewRecorder()
 	m.ServeHTTP(rr, req)
-	return parseSampleConfig(string(rr.Body.Bytes()))
+	return parseSampleConfig(t, string(rr.Body.Bytes()))
 }
 
 /* Tests are divided by OK and EC where
@@ -154,7 +157,7 @@ func listToMap(slice interface{}, key string) map[string]interface{} {
 
 //Test001 - EC-001 Active-Backup Bond Without ActiveSlave
 func Test001(t *testing.T) {
-	c := genSampleConfig()
+	c := genSampleConfig(t)
 	*(*c.HostNetwork.Links)[2].Linkinfo.InfoSlaveData.State = "BACKUP"
 	rr := runConfigSet(c)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Active Slave Iface not found for Active-Backup type bond bond0")
@@ -162,7 +165,7 @@ func Test001(t *testing.T) {
 
 //Test002 - EC-002 Active-Backup Bond With Multiple Active Slaves
 func Test002(t *testing.T) {
-	c := genSampleConfig()
+	c := genSampleConfig(t)
 	*(*c.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.State = "ACTIVE"
 	rr := runConfigSet(c)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Multiple Active Slave Ifaces found for Active-Backup type bond bond0")
@@ -170,7 +173,7 @@ func Test002(t *testing.T) {
 
 //Test003 - EC-003 Non Active-Backup Bond With Backup Slave
 func Test003(t *testing.T) {
-	c := genSampleConfig()
+	c := genSampleConfig(t)
 	*(*c.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
 	rr := runConfigSet(c)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
@@ -247,10 +250,10 @@ func deltaLink(l oas.Link, r oas.Link) string {
 
 //Test004 - OK-004 Bond Active-Backup params check
 func Test004(t *testing.T) {
-	cset := genSampleConfig()
+	cset := genSampleConfig(t)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
+	cget := runConfigGet(t)
 	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
 	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
 	for ifname, setLink := range cLinksSetMap {
@@ -263,13 +266,13 @@ func Test004(t *testing.T) {
 
 //Test005 - OK-005 Bond Balance-RR Xmit Hash Policy params check
 func Test005(t *testing.T) {
-	cset := genSampleConfig()
+	cset := genSampleConfig(t)
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
 	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
+	cget := runConfigGet(t)
 	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
 	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
 	for ifname, setLink := range cLinksSetMap {
@@ -282,7 +285,7 @@ func Test005(t *testing.T) {
 
 //Test006 - OK-006 Bond 802.3ad mix
 func Test006(t *testing.T) {
-	cset := genSampleConfig()
+	cset := genSampleConfig(t)
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
@@ -303,7 +306,7 @@ func Test006(t *testing.T) {
 	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
+	cget := runConfigGet(t)
 	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
 	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
 	for ifname, setLink := range cLinksSetMap {
@@ -316,7 +319,7 @@ func Test006(t *testing.T) {
 
 //Test007 - OK-007 Bond Balance-RR Mix
 func Test007(t *testing.T) {
-	cset := genSampleConfig()
+	cset := genSampleConfig(t)
 	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
@@ -337,7 +340,7 @@ func Test007(t *testing.T) {
 	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
+	cget := runConfigGet(t)
 	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
 	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
 	for ifname, setLink := range cLinksSetMap {
@@ -350,7 +353,7 @@ func Test007(t *testing.T) {
 
 //Test008 - OK-008 Bond Balance-TLB
 func Test008(t *testing.T) {
-	cset := genSampleConfig()
+	cset := genSampleConfig(t)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
@@ -374,7 +377,7 @@ func Test008(t *testing.T) {
 	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
+	cget := runConfigGet(t)
 	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
 	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
 	for ifname, setLink := range cLinksSetMap {
@@ -387,7 +390,7 @@ func Test008(t *testing.T) {
 
 //Test009 - OK-009 Bond Active-Backup mix
 func Test009(t *testing.T) {
-	cset := genSampleConfig()
+	cset := genSampleConfig(t)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
@@ -410,7 +413,7 @@ func Test009(t *testing.T) {
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	cget := runConfigGet()
+	cget := runConfigGet(t)
 	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
 	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
 	for ifname, setLink := range cLinksSetMap {
