@@ -37,26 +37,10 @@ func (e *GenericError) Error() string {
 	return string(strerr)
 }
 
-//ConflictError describes a conflict with the network state and requested changes
-type ConflictError GenericError
-
-func (e *ConflictError) Error() string {
-	strerr, _ := json.Marshal(*e)
-	return string(strerr)
-}
-
 //SemanticError is a logical error on the content of the operation requested to be performed
 type SemanticError GenericError
 
 func (e *SemanticError) Error() string {
-	strerr, _ := json.Marshal(*e)
-	return string(strerr)
-}
-
-//UnknownTypeError is a logical error on the content of the operation requested to be performed
-type UnknownTypeError GenericError
-
-func (e *UnknownTypeError) Error() string {
 	strerr, _ := json.Marshal(*e)
 	return string(strerr)
 }
@@ -66,7 +50,7 @@ func NewGenericSemanticError() error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Generic Semantic Error"}
 }
 
-//NewUnknownLinkKindError returns a UnknownTypeError error on link layer type interfaces
+//NewUnknownLinkKindError returns a SemanticError error on link layer type interfaces
 func NewUnknownLinkKindError(linkKind string) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "LinkKind " + string(linkKind) + " not known"}
 }
@@ -79,33 +63,6 @@ func NewBadAddressError(c CIDRAddr) error {
 //NewEINVALError returns a bad address error on link layer interfaces
 func NewEINVALError() error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Syscall EINVAL error (check dmesg)"}
-}
-
-//NewLinkExistsConflictError returns a Conflict error on link layer interfaces
-func NewLinkExistsConflictError(linkID LinkID) error {
-	return &ConflictError{Code: CONFLICT, Reason: "Link " + string(linkID) + " exists"}
-}
-
-//NonBondMasterLinkTypeError returns an error for non bond master link type
-func NonBondMasterLinkTypeError(ifname LinkID) error {
-	return &ConflictError{Code: SEMANTIC, Reason: "Master link interface " + string(ifname) + " is not a bond"}
-}
-
-//NewLinkNotFoundError returns a Not found error on link layer interfaces
-func NewLinkNotFoundError(linkID LinkID) error {
-	return &NotFoundError{Code: CONFLICT, Reason: "Link " + string(linkID) + " not found"}
-}
-
-//NotFoundError is a logical error on the content of the operation requested to be performed
-type NotFoundError ConflictError
-
-func (e *NotFoundError) Error() string {
-	return fmt.Sprintf("Not Found: %s", e.Reason)
-}
-
-//NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
-func NewRouteByIDNotFoundError(routeid RouteID) error {
-	return &NotFoundError{Code: CONFLICT, Reason: "Route ID" + string(routeid) + " did not match"}
 }
 
 //NewActiveSlaveIfaceNotFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
@@ -121,4 +78,52 @@ func NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError(bondIfname LinkID
 //NewBackupSlaveIfaceFoundForNonActiveBackupBondError Returns an error if a backup interface is found for a non Active-Backup type bond
 func NewBackupSlaveIfaceFoundForNonActiveBackupBondError(backupIfname LinkID, bondIfname LinkID) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
+}
+
+//UnknownTypeError is a logical error on the content of the operation requested to be performed
+type UnknownTypeError GenericError
+
+func (e *UnknownTypeError) Error() string {
+	strerr, _ := json.Marshal(*e)
+	return string(strerr)
+}
+
+//NewLinkExistsConflictError returns a Conflict error on link layer interfaces
+func NewLinkUnknownFlagTypeError(flag LinkFlags) error {
+	return &UnknownTypeError{Code: UNKNOWN_TYPE, Reason: "Link Flag Type" + string(flag) + " unknown/unsupported"}
+}
+
+//ConflictError describes a conflict with the network state and requested changes
+type ConflictError GenericError
+
+func (e *ConflictError) Error() string {
+	strerr, _ := json.Marshal(*e)
+	return string(strerr)
+}
+
+//NewLinkExistsConflictError returns a Conflict error on link layer interfaces
+func NewLinkExistsConflictError(linkID LinkID) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Link " + string(linkID) + " exists"}
+}
+
+//NonBondMasterLinkTypeError returns an error for non bond master link type
+func NonBondMasterLinkTypeError(ifname LinkID) error {
+	return &ConflictError{Code: SEMANTIC, Reason: "Master link interface " + string(ifname) + " is not a bond"}
+}
+
+//NotFoundError is a logical error on the content of the operation requested to be performed
+type NotFoundError ConflictError
+
+func (e *NotFoundError) Error() string {
+	return fmt.Sprintf("Not Found: %s", e.Reason)
+}
+
+//NewLinkNotFoundError returns a Not found error on link layer interfaces
+func NewLinkNotFoundError(linkID LinkID) error {
+	return &NotFoundError{Code: CONFLICT, Reason: "Link " + string(linkID) + " not found"}
+}
+
+//NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
+func NewRouteByIDNotFoundError(routeid RouteID) error {
+	return &NotFoundError{Code: CONFLICT, Reason: "Route ID" + string(routeid) + " did not match"}
 }
