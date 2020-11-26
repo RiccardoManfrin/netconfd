@@ -28,6 +28,7 @@ func genSampleConfig() oas.Config {
 	{
 		"ifname": "bond0",
 		"link_type": "ether",
+		"flags": ["DOWN"],
 		"linkinfo": {
 		"info_kind": "bond",
 		"info_data": {
