@@ -30,11 +30,8 @@ func NewNetworkApiService() NetworkApiServicer {
 
 // ConfigLinkCreate - Configures and brings up a link layer interface
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
-	nclink, err := ncLinkFormat(link)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	err = nc.LinkCreateDown(nclink)
+	nclink := ncLinkFormat(link)
+	err := nc.LinkCreateDown(nclink)
 	if err != nil {
 		return PostErrorResponse(err, nil)
 	}

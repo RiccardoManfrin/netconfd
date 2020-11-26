@@ -105,7 +105,7 @@ func ncLinkParse(nclink nc.Link) Link {
 	return link
 }
 
-func ncLinkFormat(link Link) (nc.Link, error) {
+func ncLinkFormat(link Link) nc.Link {
 
 	nclink := nc.Link{
 		Ifname:   nc.LinkID(link.GetIfname()),
@@ -159,5 +159,34 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		nclink.Linkinfo.InfoSlaveData.State = li.InfoSlaveData.GetState()
 	}
 
-	return nclink, nil
+	return nclink
+}
+
+func ncNetFormat(config Config) nc.Network {
+	network := nc.Network{}
+	if config.HostNetwork != nil {
+		if config.HostNetwork.Links != nil {
+			network.Links = make([]nc.Link, len(*config.HostNetwork.Links))
+			for i, l := range *config.HostNetwork.Links {
+				network.Links[i] = ncLinkFormat(l)
+			}
+
+		}
+		if config.HostNetwork.Routes != nil {
+			//TODO
+		}
+	}
+	return network
+}
+
+func ncNetParse(net nc.Network) Config {
+	links := make([]Link, len(net.Links))
+	for i, l := range net.Links {
+		links[i] = ncLinkParse(l)
+	}
+	return Config{
+		HostNetwork: &Network{
+			Links: &links,
+		},
+	}
 }
