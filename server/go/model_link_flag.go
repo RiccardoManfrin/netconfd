@@ -16,7 +16,7 @@ import (
 	"fmt"
 )
 
-// LinkFlag Flags of the interface  Supported types:   * `broadcast` - Request support for broadcast   * `multicast` - Request support for multicast   * `loopback` - Specify interface as loopback type   * `up` - Request link UP state 
+// LinkFlag Flags of the interface  Supported types:   * `broadcast` - Request support for broadcast   * `multicast` - Request support for multicast   * `loopback` - Specify interface as loopback type   * `pointtopoint` - Request support for point-to-point   * `up` - Request link UP state 
 type LinkFlag string
 
 // List of link_flag
@@ -25,6 +25,7 @@ const (
 	MULTICAST LinkFlag = "multicast"
 	LOOPBACK LinkFlag = "loopback"
 	UP LinkFlag = "up"
+	POINTTOPOINT LinkFlag = "pointtopoint"
 )
 
 func (v *LinkFlag) UnmarshalJSON(src []byte) error {
@@ -34,7 +35,7 @@ func (v *LinkFlag) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := LinkFlag(value)
-	for _, existing := range []LinkFlag{ "broadcast", "multicast", "loopback", "up",   } {
+	for _, existing := range []LinkFlag{ "broadcast", "multicast", "loopback", "up", "pointtopoint",   } {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

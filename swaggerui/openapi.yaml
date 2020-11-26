@@ -827,6 +827,7 @@ components:
           * `broadcast` - Request support for broadcast
           * `multicast` - Request support for multicast
           * `loopback` - Specify interface as loopback type
+          * `pointtopoint` - Request support for point-to-point
           * `up` - Request link UP state
       type: string
       enum:
@@ -834,6 +835,7 @@ components:
         - multicast
         - loopback
         - up
+        - pointtopoint
       example: UP
     link:
       type: object
