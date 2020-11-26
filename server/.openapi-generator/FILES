@@ -6,6 +6,8 @@ go.mod
 go/api.go
 go/api_network.go
 go/api_network_service.go
+go/api_system.go
+go/api_system_service.go
 go/helpers.go
 go/impl.go
 go/logger.go

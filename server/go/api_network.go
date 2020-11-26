@@ -32,12 +32,6 @@ func NewNetworkApiController(s NetworkApiServicer) Router {
 func (c *NetworkApiController) Routes() Routes {
 	return Routes{ 
 		{
-			"ConfigGet",
-			strings.ToUpper("Get"),
-			"/api/1/mgmt/config",
-			c.ConfigGet,
-		},
-		{
 			"ConfigLinkCreate",
 			strings.ToUpper("Post"),
 			"/api/1/links",
@@ -158,12 +152,6 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigRulesGet,
 		},
 		{
-			"ConfigSet",
-			strings.ToUpper("Patch"),
-			"/api/1/mgmt/config",
-			c.ConfigSet,
-		},
-		{
 			"ConfigVRFCreate",
 			strings.ToUpper("Post"),
 			"/api/1/vrfs",
@@ -188,19 +176,6 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigVRFsGet,
 		},
 	}
-}
-
-// ConfigGet - Configures and enforces a new live network configuration 
-func (c *NetworkApiController) ConfigGet(w http.ResponseWriter, r *http.Request) { 
-	result, err := c.service.ConfigGet(r.Context())
-	//If an error occured, encode the error with the status code
-	if err != nil {
-		EncodeJSONResponse(err, &result.Code, w)
-		return
-	}
-	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
-	
 }
 
 // ConfigLinkCreate - Configures and brings up a link layer interface 
@@ -533,25 +508,6 @@ func (c *NetworkApiController) ConfigRuleGet(w http.ResponseWriter, r *http.Requ
 // ConfigRulesGet - Get all ip rules list 
 func (c *NetworkApiController) ConfigRulesGet(w http.ResponseWriter, r *http.Request) { 
 	result, err := c.service.ConfigRulesGet(r.Context())
-	//If an error occured, encode the error with the status code
-	if err != nil {
-		EncodeJSONResponse(err, &result.Code, w)
-		return
-	}
-	//If no error, encode the body and the result code
-	EncodeJSONResponse(result.Body, &result.Code, w)
-	
-}
-
-// ConfigSet - Configures and enforces a new live network configuration 
-func (c *NetworkApiController) ConfigSet(w http.ResponseWriter, r *http.Request) { 
-	config := &Config{}
-	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	
-	result, err := c.service.ConfigSet(r.Context(), *config)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err, &result.Code, w)

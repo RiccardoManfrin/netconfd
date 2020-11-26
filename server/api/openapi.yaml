@@ -13,27 +13,92 @@ tags:
 - description: Network config APIs
   name: Network
 paths:
+  /mgmt/diagnostic:
+    post:
+      description: |
+        Validates the environment by running a set of unit tests on the
+        below system.
+      operationId: RunDiagnostics
+      responses:
+        "200":
+          description: Diagnostics completed
+      summary: Run a diagnostic session
+      tags:
+      - System
+      x-authorization:
+      - internal
+  /mgmt/persist_config:
+    post:
+      description: "Persist all the live configuration in place \n"
+      operationId: PersistConfig
+      responses:
+        "200":
+          description: Diagnostics completed
+      summary: Persist live configuration
+      tags:
+      - System
+      x-authorization:
+      - support
+      - admin
+  /mgmt/reload_config:
+    post:
+      description: |
+        summary: Reload persisted configuration back into live configuration
+      operationId: ResetConfig
+      responses:
+        "200":
+          description: Diagnostics completed
+      summary: Reload persisted configuration back
+      tags:
+      - System
+      x-authorization:
+      - support
+      - admin
   /mgmt/config:
     get:
       description: |
-        Configures and enforces a new live network configuration
+        Get current live configuration
       operationId: ConfigGet
       responses:
         "200":
           description: Successful alignment
       summary: |
-        Configures and enforces a new live network configuration
+        Get current live configuration
       tags:
-      - Network
+      - System
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     patch:
-      description: "Preserves existing non conflicting configuration intact. \n\n\
-        All conflicting configuration is erased and recreated according to the \n\
-        new config.\n\nIf an error is encountered, the reconfiguration procedure is\
+      description: "Preserve existing non conflicting configuration intact. \n\nAll\
+        \ conflicting configuration is erased and recreated according to the \nnew\
+        \ config.\n\nIf an error is encountered, the reconfiguration procedure is\
         \ aborted \nand network state potentially remains inconsistent.\n"
+      operationId: ConfigPatch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/config'
+        description: Full Config
+        required: true
+      responses:
+        "400":
+          description: Bad Request (malformed/bad syntax/validation errors)
+        "200":
+          description: Successful alignment
+      summary: |
+        Patch existing configuration with new one
+      tags:
+      - System
+      x-authorization:
+      - support
+      - admin
+    put:
+      description: "Wipe out all existing config and replace it with a new one.\n\n\
+        If an error is encountered, the reconfiguration procedure is aborted \nand\
+        \ network state potentially remains inconsistent.\n"
       operationId: ConfigSet
       requestBody:
         content:
@@ -48,11 +113,11 @@ paths:
         "200":
           description: Successful alignment
       summary: |
-        Configures and enforces a new live network configuration
+        Replace existing configuration with new one
       tags:
-      - Network
+      - System
       x-authorization:
-      - config
+      - support
       - admin
   /links:
     get:
@@ -73,7 +138,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     post:
@@ -107,7 +172,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
   /links/{ifname}:
     delete:
@@ -132,7 +197,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
     get:
       description: |
@@ -156,7 +221,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
   /routes:
@@ -178,7 +243,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     post:
@@ -211,7 +276,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
   /routes/{routeid}:
     delete:
@@ -236,7 +301,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
     get:
       description: |
@@ -260,7 +325,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
   /rules:
@@ -282,7 +347,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     post:
@@ -315,7 +380,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
   /rules/{ruleid}:
     delete:
@@ -340,7 +405,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
     get:
       description: |
@@ -364,7 +429,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
   /netns:
@@ -386,7 +451,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     post:
@@ -419,7 +484,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
   /netns/{netnsid}:
     delete:
@@ -444,7 +509,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
     get:
       description: |
@@ -468,7 +533,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
   /vrfs:
@@ -490,7 +555,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     post:
@@ -523,7 +588,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
   /vrfs/{vrfid}:
     delete:
@@ -548,7 +613,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
     get:
       description: |
@@ -572,7 +637,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
   /nftables:
@@ -594,7 +659,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
     post:
@@ -627,7 +692,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
   /ntables/{nftableid}:
     delete:
@@ -652,7 +717,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
     get:
       description: |
@@ -676,7 +741,7 @@ paths:
       tags:
       - Network
       x-authorization:
-      - config
+      - support
       - admin
       - monitor
 components:

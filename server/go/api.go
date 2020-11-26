@@ -21,7 +21,6 @@ import (
 // The NetworkApiRouter implementation should parse necessary information from the http request, 
 // pass the data to a NetworkApiServicer to perform the required actions, then write the service results to the http response.
 type NetworkApiRouter interface { 
-	ConfigGet(http.ResponseWriter, *http.Request)
 	ConfigLinkCreate(http.ResponseWriter, *http.Request)
 	ConfigLinkDel(http.ResponseWriter, *http.Request)
 	ConfigLinkGet(http.ResponseWriter, *http.Request)
@@ -42,11 +41,21 @@ type NetworkApiRouter interface {
 	ConfigRuleDel(http.ResponseWriter, *http.Request)
 	ConfigRuleGet(http.ResponseWriter, *http.Request)
 	ConfigRulesGet(http.ResponseWriter, *http.Request)
-	ConfigSet(http.ResponseWriter, *http.Request)
 	ConfigVRFCreate(http.ResponseWriter, *http.Request)
 	ConfigVRFDel(http.ResponseWriter, *http.Request)
 	ConfigVRFGet(http.ResponseWriter, *http.Request)
 	ConfigVRFsGet(http.ResponseWriter, *http.Request)
+}
+// SystemApiRouter defines the required methods for binding the api requests to a responses for the SystemApi
+// The SystemApiRouter implementation should parse necessary information from the http request, 
+// pass the data to a SystemApiServicer to perform the required actions, then write the service results to the http response.
+type SystemApiRouter interface { 
+	ConfigGet(http.ResponseWriter, *http.Request)
+	ConfigPatch(http.ResponseWriter, *http.Request)
+	ConfigSet(http.ResponseWriter, *http.Request)
+	PersistConfig(http.ResponseWriter, *http.Request)
+	ResetConfig(http.ResponseWriter, *http.Request)
+	RunDiagnostics(http.ResponseWriter, *http.Request)
 }
 
 
@@ -55,7 +64,6 @@ type NetworkApiRouter interface {
 // while the service implementation can ignored with the .openapi-generator-ignore file 
 // and updated with the logic required for the API.
 type NetworkApiServicer interface { 
-	ConfigGet(context.Context) (ImplResponse, error)
 	ConfigLinkCreate(context.Context, Link) (ImplResponse, error)
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
 	ConfigLinkGet(context.Context, string) (ImplResponse, error)
@@ -76,9 +84,22 @@ type NetworkApiServicer interface {
 	ConfigRuleDel(context.Context, int32) (ImplResponse, error)
 	ConfigRuleGet(context.Context, int32) (ImplResponse, error)
 	ConfigRulesGet(context.Context) (ImplResponse, error)
-	ConfigSet(context.Context, Config) (ImplResponse, error)
 	ConfigVRFCreate(context.Context, map[string]interface{}) (ImplResponse, error)
 	ConfigVRFDel(context.Context, int32) (ImplResponse, error)
 	ConfigVRFGet(context.Context, int32) (ImplResponse, error)
 	ConfigVRFsGet(context.Context) (ImplResponse, error)
+}
+
+
+// SystemApiServicer defines the api actions for the SystemApi service
+// This interface intended to stay up to date with the openapi yaml used to generate it, 
+// while the service implementation can ignored with the .openapi-generator-ignore file 
+// and updated with the logic required for the API.
+type SystemApiServicer interface { 
+	ConfigGet(context.Context) (ImplResponse, error)
+	ConfigPatch(context.Context, Config) (ImplResponse, error)
+	ConfigSet(context.Context, Config) (ImplResponse, error)
+	PersistConfig(context.Context) (ImplResponse, error)
+	ResetConfig(context.Context) (ImplResponse, error)
+	RunDiagnostics(context.Context) (ImplResponse, error)
 }

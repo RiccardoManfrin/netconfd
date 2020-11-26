@@ -23,7 +23,10 @@ func main() {
 	NetworkApiService := openapi.NewNetworkApiService()
 	NetworkApiController := openapi.NewNetworkApiController(NetworkApiService)
 
-	router := openapi.NewRouter(NetworkApiController)
+	SystemApiService := openapi.NewSystemApiService()
+	SystemApiController := openapi.NewSystemApiController(SystemApiService)
+
+	router := openapi.NewRouter(NetworkApiController, SystemApiController)
 
 	log.Fatal(http.ListenAndServe(":8080", router))
 }
