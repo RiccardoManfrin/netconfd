@@ -88,8 +88,8 @@ func (e *UnknownTypeError) Error() string {
 	return string(strerr)
 }
 
-//NewLinkExistsConflictError returns a Conflict error on link layer interfaces
-func NewLinkUnknownFlagTypeError(flag LinkFlags) error {
+//NewLinkUnknownFlagTypeError returns a Conflict error on link layer interfaces
+func NewLinkUnknownFlagTypeError(flag LinkFlag) error {
 	return &UnknownTypeError{Code: UNKNOWN_TYPE, Reason: "Link Flag Type" + string(flag) + " unknown/unsupported"}
 }
 

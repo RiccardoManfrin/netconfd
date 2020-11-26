@@ -86,8 +86,16 @@ type LinkLinkinfo struct {
 //LinkID type
 type LinkID string
 
-// LinkFlags the model 'LinkFlags'
-type LinkFlags string
+// LinkFlag the model 'LinkFlag'
+type LinkFlag string
+
+// List of link_flag
+const (
+	BROADCAST LinkFlag = "broadcast"
+	MULTICAST LinkFlag = "multicast"
+	LOOPBACK  LinkFlag = "loopback"
+	UP        LinkFlag = "up"
+)
 
 // Link definition
 // For Bond parameters information please refer to
@@ -105,7 +113,9 @@ type Link struct {
 	LinkType string         `json:"link_type"`
 	Address  string         `json:"address,omitempty"`
 	AddrInfo []LinkAddrInfo `json:"addr_info,omitempty"`
-	Flags    []LinkFlags    `json:"flags,omitempty"`
+	Flags    []LinkFlag     `json:"flags,omitempty"`
+	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config
+	Operstate string `json:"operstate,omitempty"`
 }
 
 func linkParse(link netlink.Link) Link {
@@ -115,6 +125,7 @@ func linkParse(link netlink.Link) Link {
 	nclink.Mtu = int32(la.MTU)
 	nclink.Linkinfo.InfoKind = link.Type()
 	nclink.LinkType = la.EncapType
+	nclink.Operstate = la.OperState.String()
 	addrs, err := netlink.AddrList(link, netlink.FAMILY_ALL)
 	if err == nil {
 		nclink.AddrInfo = make([]LinkAddrInfo, len(addrs))
@@ -185,6 +196,9 @@ func linkParse(link netlink.Link) Link {
 			logger.Log.Warning(err)
 		}
 	}
+
+	nclink.Flags = linkFlagsParse(link.Attrs().Flags)
+
 	return nclink
 }
 
@@ -406,6 +420,29 @@ func LinkDelete(ifname LinkID) error {
 	}
 	return netlink.LinkDel(nllink)
 }
+
+func linkFlagsParse(flags net.Flags) []LinkFlag {
+	var linkFlags []LinkFlag
+
+	if (flags & net.FlagUp) > 0 {
+		linkFlags = append(linkFlags, LinkFlag(net.FlagUp.String()))
+	}
+	if (flags & net.FlagBroadcast) > 0 {
+		linkFlags = append(linkFlags, LinkFlag(net.FlagBroadcast.String()))
+	}
+	if (flags & net.FlagMulticast) > 0 {
+		linkFlags = append(linkFlags, LinkFlag(net.FlagMulticast.String()))
+	}
+	if (flags & net.FlagLoopback) > 0 {
+		linkFlags = append(linkFlags, LinkFlag(net.FlagLoopback.String()))
+	}
+	if (flags & net.FlagPointToPoint) > 0 {
+		linkFlags = append(linkFlags, LinkFlag(net.FlagPointToPoint.String()))
+	}
+	return linkFlags
+
+}
+
 func linkFlagsFormat(link Link) (net.Flags, error) {
 	var flags net.Flags
 	for _, f := range link.Flags {

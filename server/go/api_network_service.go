@@ -62,9 +62,9 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 	if link.Flags != nil {
 		flagsLen := len(*link.Flags)
 		if flagsLen > 0 {
-			nclink.Flags = make([]nc.LinkFlags, flagsLen)
+			nclink.Flags = make([]nc.LinkFlag, flagsLen)
 			for i, lf := range *link.Flags {
-				nclink.Flags[i] = nc.LinkFlags(lf)
+				nclink.Flags[i] = nc.LinkFlag(lf)
 			}
 		}
 	}
@@ -132,16 +132,17 @@ func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (I
 
 func ncLinkParse(nclink nc.Link) Link {
 	link := Link{
-		Ifname:   string(nclink.Ifname),
-		Ifindex:  &nclink.Ifindex,
-		LinkType: nclink.LinkType,
+		Ifname:    string(nclink.Ifname),
+		Ifindex:   &nclink.Ifindex,
+		LinkType:  nclink.LinkType,
+		Operstate: &nclink.Operstate,
 	}
 
 	flagsLen := len(nclink.Flags)
 	if flagsLen > 0 {
 		lfs := make([]LinkFlag, flagsLen)
 		link.Flags = &lfs
-		for i, lf := range *link.Flags {
+		for i, lf := range nclink.Flags {
 			(*link.Flags)[i] = LinkFlag(lf)
 		}
 	}
