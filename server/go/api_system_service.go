@@ -13,6 +13,8 @@ package openapi
 import (
 	"context"
 	"errors"
+
+	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
 // SystemApiService is a service that implents the logic for the SystemApiServicer
@@ -26,34 +28,46 @@ func NewSystemApiService() SystemApiServicer {
 	return &SystemApiService{}
 }
 
-// ConfigGet - Get current live configuration 
+// ConfigGet - Get current live configuration
 func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) {
-	// TODO - update ConfigGet with the required logic for this service method.
-	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	err := errors.New("ConfigGet method not implemented")
-	return GetErrorResponse(err, nil)
+	links, err := linksGet()
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
+	c := Config{
+		HostNetwork: &Network{
+			Links: &links,
+		},
+	}
+	return GetErrorResponse(nil, c)
 }
 
-// ConfigPatch - Patch existing configuration with new one 
+// ConfigPatch - Patch existing configuration with new one
 func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (ImplResponse, error) {
-	// TODO - update ConfigPatch with the required logic for this service method.
-	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	if config.HostNetwork != nil {
+		if config.HostNetwork.Links != nil {
+			links := make([]nc.Link, len(*config.HostNetwork.Links))
+			for i, l := range *config.HostNetwork.Links {
+				nclink, err := ncLinkFormat(l)
+				if err != nil {
+					return PutErrorResponse(err, nil)
+				}
+				links[i] = nclink
+			}
+			err := nc.LinksConfigure(links)
+			if err != nil {
+				return PutErrorResponse(err, nil)
+			}
+		}
+		if config.HostNetwork.Routes != nil {
+			//TODO
+		}
+	}
 
-	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	//return Response(400, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	err := errors.New("ConfigPatch method not implemented")
-	return PatchErrorResponse(err, nil)
+	return PutErrorResponse(nil, nil)
 }
 
-// ConfigSet - Replace existing configuration with new one 
+// ConfigSet - Replace existing configuration with new one
 func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
 	// TODO - update ConfigSet with the required logic for this service method.
 	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -103,4 +117,3 @@ func (s *SystemApiService) RunDiagnostics(ctx context.Context) (ImplResponse, er
 	err := errors.New("RunDiagnostics method not implemented")
 	return PostErrorResponse(err, nil)
 }
-
