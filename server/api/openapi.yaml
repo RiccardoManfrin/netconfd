@@ -817,13 +817,20 @@ components:
             $ref: '#/components/schemas/route_flags'
           type: array
       type: object
-    link_flags:
+    link_flag:
+      description: |
+        Flags of the interface
+
+        Supported types:
+          * `broadcast` - Support for broadcast
+          * `multicast` - Support for multicast
+          * `loopback` - Is a loopback interface
+          * `up` - Is up
       enum:
-      - BROADCAST
-      - MULTICAST
-      - SLAVE
-      - UP
-      - LOWER_UP
+      - broadcast
+      - multicast
+      - loopback
+      - up
       example: UP
       type: string
     link:
@@ -887,15 +894,9 @@ components:
           maxLength: 15
           type: string
         flags:
-          description: |
-            Flags of the interface Supported types:
-              * `BROADCAST` - Support for broadcast
-              * `MULTICAST` - Support for multicast
-              * `SLAVE` - Is slave
-              * `UP` - Is up
-              * `LOWER UP` - Is lower interface up
+          description: Composition of flags of the interface
           items:
-            $ref: '#/components/schemas/link_flags'
+            $ref: '#/components/schemas/link_flag'
           type: array
         mtu:
           description: |
