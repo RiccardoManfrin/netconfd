@@ -195,7 +195,15 @@ func linkStateCheck(setLinkData oas.Link, getLinkData oas.Link) string {
 				}
 				if upIsUp == false {
 					return fmt.Sprintf("link_flags -> UP not up")
-				} else {
+				}
+
+				// Dummy interfaces report unknown operstate
+				// https://serverfault.com/questions/629676/dummy-network-interface-in-linux
+				// which according to  the kernel doc
+				// https://www.kernel.org/doc/Documentation/networking/operstates.txt
+				// just tells that the setting of the operational state was not implemented by
+				// the below driver (can be a bug / lack of compliance)
+				if getLinkData.Linkinfo != nil && *getLinkData.Linkinfo.InfoKind == "dummy" {
 					//Let's also check operstate:
 					operstate := getLinkData.GetOperstate()
 					if operstate != "up" {
