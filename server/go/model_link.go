@@ -30,6 +30,8 @@ type Link struct {
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to. 
 	Master *string `json:"master,omitempty"`
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
+	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config 
+	Operstate *string `json:"operstate,omitempty"`
 	LinkType string `json:"link_type"`
 	Address *string `json:"address,omitempty"`
 	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
@@ -270,6 +272,38 @@ func (o *Link) SetLinkinfo(v LinkLinkinfo) {
 	o.Linkinfo = &v
 }
 
+// GetOperstate returns the Operstate field value if set, zero value otherwise.
+func (o *Link) GetOperstate() string {
+	if o == nil || o.Operstate == nil {
+		var ret string
+		return ret
+	}
+	return *o.Operstate
+}
+
+// GetOperstateOk returns a tuple with the Operstate field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetOperstateOk() (*string, bool) {
+	if o == nil || o.Operstate == nil {
+		return nil, false
+	}
+	return o.Operstate, true
+}
+
+// HasOperstate returns a boolean if a field has been set.
+func (o *Link) HasOperstate() bool {
+	if o != nil && o.Operstate != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetOperstate gets a reference to the given string and assigns it to the Operstate field.
+func (o *Link) SetOperstate(v string) {
+	o.Operstate = &v
+}
+
 // GetLinkType returns the LinkType field value
 func (o *Link) GetLinkType() string {
 	if o == nil  {
@@ -380,6 +414,9 @@ func (o Link) MarshalJSON() ([]byte, error) {
 	}
 	if o.Linkinfo != nil {
 		toSerialize["linkinfo"] = o.Linkinfo
+	}
+	if o.Operstate != nil {
+		toSerialize["operstate"] = o.Operstate
 	}
 	if true {
 		toSerialize["link_type"] = o.LinkType

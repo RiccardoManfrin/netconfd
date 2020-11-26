@@ -1369,8 +1369,14 @@ components:
                     disables it. This option was added in bonding driver 3.7.1
         #qdisc:
         #  type: string
-        #operstate:
-        #  type: string
+        operstate:
+          description: |
+            Readonly state of the interface.
+
+            Provides information on the state being for example UP of an interface.
+            
+            It is ignored when applying the config
+          type: string
         #group:
         #  type: string
         #txqlen:

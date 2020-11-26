@@ -822,10 +822,10 @@ components:
         Flags of the interface
 
         Supported types:
-          * `broadcast` - Support for broadcast
-          * `multicast` - Support for multicast
-          * `loopback` - Is a loopback interface
-          * `up` - Is up
+          * `broadcast` - Request support for broadcast
+          * `multicast` - Request support for multicast
+          * `loopback` - Specify interface as loopback type
+          * `up` - Request link UP state
       enum:
       - broadcast
       - multicast
@@ -843,6 +843,7 @@ components:
         flags:
         - UP
         - UP
+        operstate: operstate
         addr_info:
         - broadcast: broadcast
           prefixlen: 5
@@ -914,6 +915,14 @@ components:
           example: bond0
         linkinfo:
           $ref: '#/components/schemas/link_linkinfo'
+        operstate:
+          description: |
+            Readonly state of the interface.
+
+            Provides information on the state being for example UP of an interface.
+
+            It is ignored when applying the config
+          type: string
         link_type:
           enum:
           - ether

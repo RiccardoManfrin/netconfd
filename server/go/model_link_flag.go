@@ -16,7 +16,7 @@ import (
 	"fmt"
 )
 
-// LinkFlag Flags of the interface  Supported types:   * `broadcast` - Support for broadcast   * `multicast` - Support for multicast   * `loopback` - Is a loopback interface   * `up` - Is up 
+// LinkFlag Flags of the interface  Supported types:   * `broadcast` - Request support for broadcast   * `multicast` - Request support for multicast   * `loopback` - Specify interface as loopback type   * `up` - Request link UP state 
 type LinkFlag string
 
 // List of link_flag
