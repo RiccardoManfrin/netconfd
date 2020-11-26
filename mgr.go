@@ -113,7 +113,9 @@ func (m *Manager) overrideWithEnv() error {
 
 //LoadConfig loads the configuration
 func (m *Manager) LoadConfig(conffile *string) error {
-	js, err := os.Open(*configfile)
+
+	logger.Log.Info("Loading config from " + *conffile)
+	js, err := os.Open(*conffile)
 	if err != nil {
 		fail(-1, fmt.Sprintf("Config File %v access error [%v]: your network will not be configured. Aborting...", *conffile, err.Error()))
 	}

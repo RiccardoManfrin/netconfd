@@ -14,6 +14,7 @@ func main() {
 	flag.Parse()
 
 	logger.LoggerInit(*logfile)
+	logger.LoggerSetLevel("INF")
 
 	mgr := NewManager()
 	mgr.LoadConfig(configfile)
