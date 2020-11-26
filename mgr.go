@@ -115,7 +115,7 @@ func (m *Manager) overrideWithEnv() error {
 func (m *Manager) LoadConfig(conffile *string) error {
 	js, err := os.Open(*configfile)
 	if err != nil {
-		fail(-1, "Missing config file...")
+		fail(-1, fmt.Sprintf("Config File %v access error [%v]: your network will not be configured. Aborting...", *conffile, err.Error()))
 	}
 	defer js.Close()
 
@@ -226,7 +226,7 @@ func NewManager() *Manager {
 //Start activates manager
 func (m *Manager) Start() {
 
-	logger.Log.Notice("Starting manager...")
+	logger.Log.Notice("Started netConfD manager...")
 
 	go m.HTTPServer.ListenAndServe()
 }
