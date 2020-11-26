@@ -27,7 +27,7 @@ paths:
       responses:
         '200':
           description: Diagnostics completed
-  /mgmt/persist_config:
+  /mgmt/config/persist:
     post:
       x-authorization:
         - support
@@ -41,7 +41,7 @@ paths:
       responses:
         '200':
           description: Diagnostics completed
-  /mgmt/reload_config:
+  /mgmt/config/reload:
     post:
       x-authorization:
         - support
@@ -51,7 +51,7 @@ paths:
       operationId: ResetConfig
       summary: Reload persisted configuration back
       description: |
-        summary: Reload persisted configuration back into live configuration
+        Reload persisted configuration back and re-apply it, ovewriting the volatile live one
       responses:
         '200':
           description: Diagnostics completed
