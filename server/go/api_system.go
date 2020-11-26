@@ -50,13 +50,13 @@ func (c *SystemApiController) Routes() Routes {
 		{
 			"PersistConfig",
 			strings.ToUpper("Post"),
-			"/api/1/mgmt/persist_config",
+			"/api/1/mgmt/config/persist",
 			c.PersistConfig,
 		},
 		{
 			"ResetConfig",
 			strings.ToUpper("Post"),
-			"/api/1/mgmt/reload_config",
+			"/api/1/mgmt/config/reload",
 			c.ResetConfig,
 		},
 		{

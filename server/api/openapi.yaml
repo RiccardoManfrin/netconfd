@@ -27,7 +27,7 @@ paths:
       - System
       x-authorization:
       - internal
-  /mgmt/persist_config:
+  /mgmt/config/persist:
     post:
       description: "Persist all the live configuration in place \n"
       operationId: PersistConfig
@@ -40,10 +40,10 @@ paths:
       x-authorization:
       - support
       - admin
-  /mgmt/reload_config:
+  /mgmt/config/reload:
     post:
       description: |
-        summary: Reload persisted configuration back into live configuration
+        Reload persisted configuration back and re-apply it, ovewriting the volatile live one
       operationId: ResetConfig
       responses:
         "200":
