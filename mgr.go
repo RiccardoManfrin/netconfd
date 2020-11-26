@@ -212,12 +212,13 @@ func NewManager() *Manager {
 
 	networkApiService := oas.NewNetworkApiService()
 	networkApiController := oas.NewNetworkApiController(networkApiService)
-
+	systemApiService := oas.NewSystemApiService()
+	systemAPIController := oas.NewSystemApiController(systemApiService)
 	m := &Manager{
 		openapi:       openapi,
 		router:        router,
 		ServeMux:      serveMux,
-		routeHandlers: oas.NewRouter(networkApiController),
+		routeHandlers: oas.NewRouter(networkApiController, systemAPIController),
 	}
 	serveMux.Handle("/", m)
 	serveMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))

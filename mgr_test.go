@@ -72,7 +72,7 @@ func genSampleConfig(t *testing.T) oas.Config {
 	return parseSampleConfig(t, sampleConfig)
 }
 
-func newConfigSetReq(config oas.Config) *http.Request {
+func newConfigPatchReq(config oas.Config) *http.Request {
 	reqbody, _ := json.Marshal(config)
 	iobody := bytes.NewReader(reqbody)
 	req, _ := http.NewRequest("PATCH", "/api/1/mgmt/config", iobody)
@@ -115,7 +115,7 @@ func checkResponse(t *testing.T, rr *httptest.ResponseRecorder, httpStatusCode i
 }
 
 func runConfigSet(config oas.Config) *httptest.ResponseRecorder {
-	req := newConfigSetReq(config)
+	req := newConfigPatchReq(config)
 	rr := httptest.NewRecorder()
 	m.ServeHTTP(rr, req)
 	return rr
