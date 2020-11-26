@@ -113,14 +113,16 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	if err != nil {
 		return PostErrorResponse(err, nil)
 	}
-	err = nc.LinkCreate(nclink)
+	err = nc.LinkCreateDown(nclink)
 	if err != nil {
 		return PostErrorResponse(err, nil)
 	}
 	if nclink.Master != "" {
 		nc.LinkSetMaster(nclink.Ifname, nclink.Master)
 	}
-	nc.LinkSetUp(nclink.Ifname)
+	if nclink.Flags.HaveFlag(nc.LinkFlag("UP")) {
+		nc.LinkSetUp(nclink.Ifname)
+	}
 	return PostErrorResponse(err, nil)
 }
 
