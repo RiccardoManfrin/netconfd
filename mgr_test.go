@@ -45,6 +45,7 @@ func genSampleConfig(t *testing.T) oas.Config {
 	{
 		"ifname": "dummy0",
 		"link_type": "ether",
+		"flags": ["up"],
 		"linkinfo": {
 		"info_kind": "dummy",
 		"info_slave_data": {
