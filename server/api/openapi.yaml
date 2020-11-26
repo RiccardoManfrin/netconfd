@@ -834,6 +834,9 @@ components:
       example: UP
       type: string
     link:
+      description: "Definition of an ip link interface (emulating iproute2 API)\n\n\
+        References: \n* https://www.kernel.org/doc/Documentation/networking/\n* https://www.kernel.org/doc/Documentation/networking/bonding.txt\n\
+        * https://www.kernel.org/doc/Documentation/networking/operstates.txt\n"
       example:
         link_type: ether
         ifindex: 0

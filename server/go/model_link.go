@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// Link struct for Link
+// Link Definition of an ip link interface (emulating iproute2 API)  References:  * https://www.kernel.org/doc/Documentation/networking/ * https://www.kernel.org/doc/Documentation/networking/bonding.txt * https://www.kernel.org/doc/Documentation/networking/operstates.txt 
 type Link struct {
 	// Inteface index ID 
 	Ifindex *int32 `json:"ifindex,omitempty"`

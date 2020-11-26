@@ -837,6 +837,13 @@ components:
       example: UP
     link:
       type: object
+      description: |
+        Definition of an ip link interface (emulating iproute2 API)
+
+        References: 
+        * https://www.kernel.org/doc/Documentation/networking/
+        * https://www.kernel.org/doc/Documentation/networking/bonding.txt
+        * https://www.kernel.org/doc/Documentation/networking/operstates.txt
       properties:
         ifindex:
           description: |
