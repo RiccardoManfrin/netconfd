@@ -179,15 +179,15 @@ func Test003(t *testing.T) {
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
 }
 
-func deltaLink(l oas.Link, r oas.Link) string {
-	if l.GetMaster() != r.GetMaster() {
+func deltaLink(setLinkData oas.Link, getLinkData oas.Link) string {
+	if setLinkData.GetMaster() != getLinkData.GetMaster() {
 		return "master"
 	}
-	if l.LinkType != r.LinkType {
+	if setLinkData.LinkType != getLinkData.LinkType {
 		return "link_type"
 	}
-	lli := l.GetLinkinfo()
-	rli := r.GetLinkinfo()
+	lli := setLinkData.GetLinkinfo()
+	rli := getLinkData.GetLinkinfo()
 	lid := lli.GetInfoData()
 	rid := rli.GetInfoData()
 	if lid.GetMode() != rid.GetMode() {
@@ -411,6 +411,23 @@ func Test009(t *testing.T) {
 	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
 	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	cget := runConfigGet(t)
+	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
+	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
+	for ifname, setLink := range cLinksSetMap {
+		getLink := cLinksGetMap[ifname].(oas.Link)
+		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
+			t.Errorf("Mismatch on %v", delta)
+		}
+	}
+}
+
+//Test010 - OK-010 Up/Down flag and operstate
+func Test010(t *testing.T) {
+	cset := genSampleConfig(t)
+	(*cset.HostNetwork.Links)[0].Flags = nil
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
