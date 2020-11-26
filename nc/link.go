@@ -89,6 +89,9 @@ type LinkID string
 // LinkFlag the model 'LinkFlag'
 type LinkFlag string
 
+//LinkFlags is a slice of flags
+type LinkFlags []LinkFlag
+
 // List of link_flag
 const (
 	BROADCAST LinkFlag = "broadcast"
@@ -114,7 +117,7 @@ type Link struct {
 	LinkType string         `json:"link_type"`
 	Address  string         `json:"address,omitempty"`
 	AddrInfo []LinkAddrInfo `json:"addr_info,omitempty"`
-	Flags    []LinkFlag     `json:"flags,omitempty"`
+	Flags    LinkFlags      `json:"flags,omitempty"`
 	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config
 	Operstate string `json:"operstate,omitempty"`
 }
@@ -238,9 +241,29 @@ func findActiveBackupBondActiveSlave(links []Link, bondIfname LinkID) (*Link, er
 	return foundLink, nil
 }
 
-func LinkHasFlag(link Link, flag string) bool {
-	for _, f := range link.Flags {
-		if string(f) == flag {
+//SetFlag return true if the searched flag is found
+func (flags LinkFlags) SetFlag(flag LinkFlag) LinkFlags {
+	if !flags.HaveFlag(flag) {
+		return append(flags, flag)
+	}
+	return flags
+}
+
+//ClearFlag return true if the searched flag is found
+func (flags LinkFlags) ClearFlag(flag LinkFlag) LinkFlags {
+	var outFlags []LinkFlag
+	for _, f := range flags {
+		if f != flag {
+			outFlags = append(outFlags, f)
+		}
+	}
+	return outFlags
+}
+
+//HaveFlag return true if the searched flag is found
+func (flags LinkFlags) HaveFlag(flag LinkFlag) bool {
+	for _, f := range flags {
+		if f == flag {
 			return true
 		}
 	}
@@ -257,7 +280,7 @@ func LinksConfigure(links []Link) error {
 	for _, link := range links {
 		LinkSetDown(link.Ifname)
 		LinkDelete(link.Ifname)
-		if err := LinkCreate(link); err != nil {
+		if err := LinkCreateDown(link); err != nil {
 			return err
 		}
 	}
@@ -303,13 +326,14 @@ func LinksConfigure(links []Link) error {
 			}
 		}
 	}
-	// You can set the UP flag (and all the others) when you create it
-	//Set all links up
-	//for _, link := range links {
-	//	if LinkHasFlag(link, "UP") {
-	//		LinkSetUp(link.Ifname)
-	//	}
-	//}
+	//Because slave interface cannot set up BEFORE enslaving them
+	//we just set all links with LinkCreateDown and then set them up at the end with no
+	//distinction
+	for _, link := range links {
+		if link.Flags.HaveFlag(LinkFlag(net.FlagUp.String())) {
+			LinkSetUp(link.Ifname)
+		}
+	}
 
 	return nil
 }
@@ -322,6 +346,17 @@ func LinkGet(ifname LinkID) (Link, error) {
 		nclink = linkParse(link)
 	}
 	return nclink, err
+}
+
+//LinkCreateDown Creates a link interface but does not bring it up
+func LinkCreateDown(link Link) error {
+	isFlagUp := link.Flags.HaveFlag(LinkFlag(net.FlagUp.String()))
+	link.Flags = link.Flags.ClearFlag(LinkFlag(net.FlagUp.String()))
+	err := LinkCreate(link)
+	if isFlagUp {
+		link.Flags = link.Flags.SetFlag(LinkFlag(net.FlagUp.String()))
+	}
+	return err
 }
 
 // LinkCreate creates a link layer interface
