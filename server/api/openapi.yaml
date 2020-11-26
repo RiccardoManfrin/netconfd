@@ -26,7 +26,8 @@ paths:
       tags:
       - System
       x-authorization:
-      - internal
+      - admin
+      - support
   /mgmt/config/persist:
     post:
       description: "Persist all the live configuration in place \n"

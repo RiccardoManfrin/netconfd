@@ -16,7 +16,8 @@ paths:
   /mgmt/diagnostic:
     post:
       x-authorization:
-        - internal
+        - admin
+        - support
       tags:
         - System
       operationId: RunDiagnostics
