@@ -1,6 +1,7 @@
 package nc
 
 import (
+	"fmt"
 	"net"
 	"syscall"
 
@@ -271,12 +272,20 @@ func (flags LinkFlags) HaveFlag(flag LinkFlag) bool {
 }
 
 //LinksDelete remove all non physical and non loopback links
+// Refs:
+// Loopback uniqueness: https://elixir.bootlin.com/linux/latest/source/drivers/net/loopback.c#L195
+
 func LinksDelete() error {
 	links, err := netlink.LinkList()
 	if err != nil {
 		return mapNetlinkError(err)
 	}
 	for _, link := range links {
+		if link.Attrs().Index == 1 {
+			logger.Log.Debug(fmt.Sprintf("Skipping loopback iface %v as per %v", link.Attrs().Name, loopbackUniquenessRef))
+			continue
+		}
+		logger.Log.Warning("Removing link " + link.Attrs().Name)
 		err := netlink.LinkDel(link)
 		if err != nil {
 			return mapNetlinkError(err)
