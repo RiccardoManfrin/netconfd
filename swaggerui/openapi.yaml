@@ -71,6 +71,14 @@ paths:
         
         If an error is encountered, the reconfiguration procedure is aborted 
         and network state potentially remains inconsistent.
+
+        Loopback interface cannot be removed as it is unique and not accessory to the (defailt) 
+        linux kernel namespace.
+
+        Refs:
+          * [Loopback uniqueness](https://elixir.bootlin.com/linux/latest/source/drivers/net/loopback.c#L195)
+          * [Loopback identification and need](https://elixir.bootlin.com/linux/latest/source/include/net/flow.h#L18)
+
       requestBody:
         description: Full Config
         required: true
