@@ -273,8 +273,10 @@ func (flags LinkFlags) HaveFlag(flag LinkFlag) bool {
 
 //LinksDelete remove all non physical and non loopback links
 // Refs:
-// Loopback uniqueness: https://elixir.bootlin.com/linux/latest/source/drivers/net/loopback.c#L195
-
+// Loopback uniqueness:
+// https://elixir.bootlin.com/linux/latest/source/drivers/net/loopback.c#L195
+// Phy interfaces can't be removed if not for modprobe -r or Hot-Plug events
+// https://github.com/ryoon/e1000e-linux/blob/master/src/netdev.c#L7968
 func LinksDelete() error {
 	links, err := netlink.LinkList()
 	if err != nil {
@@ -282,7 +284,11 @@ func LinksDelete() error {
 	}
 	for _, link := range links {
 		if link.Attrs().Index == 1 {
-			logger.Log.Debug(fmt.Sprintf("Skipping loopback iface %v as per %v", link.Attrs().Name, loopbackUniquenessRef))
+			logger.Log.Debug(fmt.Sprintf("Skipping loopback iface %v removal as per %v", link.Attrs().Name, loopbackUniquenessRef))
+			continue
+		}
+		if _, ok := link.(*netlink.Device); ok {
+			logger.Log.Debug(fmt.Sprintf("Skipping physical iface %v removal as per %v", link.Attrs().Name, ethernetNoRemovalRef))
 			continue
 		}
 		logger.Log.Warning("Removing link " + link.Attrs().Name)
