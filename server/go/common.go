@@ -152,8 +152,9 @@ func ncLinkFormat(link Link) nc.Link {
 		}
 
 	}
-
-	nclink.Linkinfo.InfoKind = *li.InfoKind
+	if li.InfoKind != nil {
+		nclink.Linkinfo.InfoKind = *li.InfoKind
+	}
 
 	if li.InfoSlaveData != nil {
 		nclink.Linkinfo.InfoSlaveData.State = li.InfoSlaveData.GetState()
