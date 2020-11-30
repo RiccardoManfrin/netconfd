@@ -43,7 +43,7 @@ func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) 
 // ConfigPatch - Patch existing configuration with new one
 func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (ImplResponse, error) {
 	network := ncNetFormat(config)
-	return PutErrorResponse(nc.Patch(network), nil)
+	return PatchErrorResponse(nc.Patch(network), nil)
 }
 
 // ConfigSet - Replace existing configuration with new one
