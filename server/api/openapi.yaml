@@ -99,7 +99,10 @@ paths:
     put:
       description: "Wipe out all existing config and replace it with a new one.\n\n\
         If an error is encountered, the reconfiguration procedure is aborted \nand\
-        \ network state potentially remains inconsistent.\n"
+        \ network state potentially remains inconsistent.\n\nLoopback interface cannot\
+        \ be removed as it is unique and not accessory to the (defailt) \nlinux kernel\
+        \ namespace.\n\nRefs:\n  * [Loopback uniqueness](https://elixir.bootlin.com/linux/latest/source/drivers/net/loopback.c#L195)\n\
+        \  * [Loopback identification and need](https://elixir.bootlin.com/linux/latest/source/include/net/flow.h#L18)\n"
       operationId: ConfigSet
       requestBody:
         content:
@@ -1486,4 +1489,7 @@ components:
           type: integer
         broadcast:
           type: string
+      required:
+      - local
+      - prefixlen
       type: object
