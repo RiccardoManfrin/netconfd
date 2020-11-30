@@ -17,8 +17,8 @@ import (
 
 // LinkAddrInfo struct for LinkAddrInfo
 type LinkAddrInfo struct {
-	Local *Ip `json:"local,omitempty"`
-	Prefixlen *int32 `json:"prefixlen,omitempty"`
+	Local Ip `json:"local"`
+	Prefixlen int32 `json:"prefixlen"`
 	Broadcast *string `json:"broadcast,omitempty"`
 }
 
@@ -26,8 +26,10 @@ type LinkAddrInfo struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLinkAddrInfo() *LinkAddrInfo {
+func NewLinkAddrInfo(local Ip, prefixlen int32, ) *LinkAddrInfo {
 	this := LinkAddrInfo{}
+	this.Local = local
+	this.Prefixlen = prefixlen
 	return &this
 }
 
@@ -39,68 +41,52 @@ func NewLinkAddrInfoWithDefaults() *LinkAddrInfo {
 	return &this
 }
 
-// GetLocal returns the Local field value if set, zero value otherwise.
+// GetLocal returns the Local field value
 func (o *LinkAddrInfo) GetLocal() Ip {
-	if o == nil || o.Local == nil {
+	if o == nil  {
 		var ret Ip
 		return ret
 	}
-	return *o.Local
+
+	return o.Local
 }
 
-// GetLocalOk returns a tuple with the Local field value if set, nil otherwise
+// GetLocalOk returns a tuple with the Local field value
 // and a boolean to check if the value has been set.
 func (o *LinkAddrInfo) GetLocalOk() (*Ip, bool) {
-	if o == nil || o.Local == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Local, true
+	return &o.Local, true
 }
 
-// HasLocal returns a boolean if a field has been set.
-func (o *LinkAddrInfo) HasLocal() bool {
-	if o != nil && o.Local != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetLocal gets a reference to the given Ip and assigns it to the Local field.
+// SetLocal sets field value
 func (o *LinkAddrInfo) SetLocal(v Ip) {
-	o.Local = &v
+	o.Local = v
 }
 
-// GetPrefixlen returns the Prefixlen field value if set, -1 otherwise.
+// GetPrefixlen returns the Prefixlen field value
 func (o *LinkAddrInfo) GetPrefixlen() int32 {
-	if o == nil || o.Prefixlen == nil {
-		var ret int32 = -1 
+	if o == nil  {
+		var ret int32
 		return ret
 	}
-	return *o.Prefixlen
+
+	return o.Prefixlen
 }
 
-// GetPrefixlenOk returns a tuple with the Prefixlen field value if set, nil otherwise
+// GetPrefixlenOk returns a tuple with the Prefixlen field value
 // and a boolean to check if the value has been set.
 func (o *LinkAddrInfo) GetPrefixlenOk() (*int32, bool) {
-	if o == nil || o.Prefixlen == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Prefixlen, true
+	return &o.Prefixlen, true
 }
 
-// HasPrefixlen returns a boolean if a field has been set.
-func (o *LinkAddrInfo) HasPrefixlen() bool {
-	if o != nil && o.Prefixlen != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetPrefixlen gets a reference to the given int32 and assigns it to the Prefixlen field.
+// SetPrefixlen sets field value
 func (o *LinkAddrInfo) SetPrefixlen(v int32) {
-	o.Prefixlen = &v
+	o.Prefixlen = v
 }
 
 // GetBroadcast returns the Broadcast field value if set, zero value otherwise.
@@ -137,10 +123,10 @@ func (o *LinkAddrInfo) SetBroadcast(v string) {
 
 func (o LinkAddrInfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Local != nil {
+	if true {
 		toSerialize["local"] = o.Local
 	}
-	if o.Prefixlen != nil {
+	if true {
 		toSerialize["prefixlen"] = o.Prefixlen
 	}
 	if o.Broadcast != nil {
