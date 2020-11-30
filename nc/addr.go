@@ -23,6 +23,27 @@ func NewCIDRAddr(addr string) CIDRAddr {
 	return a
 }
 
+//ParseIP parses the IP address
+func (a *CIDRAddr) ParseIP(ip string) {
+	a.ip = net.ParseIP(ip)
+}
+
+//ParseNetmask parses the network mask (e.g. "255.255.255.0")
+func (a *CIDRAddr) ParseNetmask(netmask string) {
+	a.net.IP = net.ParseIP(netmask)
+}
+
+//ParsePrefixLen translates an IP network prefix length into a CIDRAddr mask
+func (a *CIDRAddr) ParsePrefixLen(len int) {
+	if !a.net.IP.IsUnspecified() {
+		if a.ip.To4() != nil {
+			a.net.Mask = net.CIDRMask(len, 32)
+		} else {
+			a.net.Mask = net.CIDRMask(len, 128)
+		}
+	}
+}
+
 //ParseIPNet translates an IP network into a CIDRAddr
 func (a *CIDRAddr) ParseIPNet(ip net.IPNet) {
 	a.Parse(ip.String())
