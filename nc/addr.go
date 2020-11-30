@@ -49,6 +49,11 @@ func (a *CIDRAddr) ParseIPNet(ip net.IPNet) {
 	a.Parse(ip.String())
 }
 
+//ToIPNet returns an IP network (the non network part is zeroed out)
+func (a *CIDRAddr) ToIPNet() net.IPNet {
+	return net.IPNet{IP: a.ip, Mask: a.net.Mask}
+}
+
 //Parse loads a CIDR address from a string. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
 func (a *CIDRAddr) Parse(straddr string) error {
 	var e error

@@ -5,6 +5,7 @@ import (
 	"fmt"
 )
 
+//ErrorCode describes the error type via enumeration
 type ErrorCode int
 
 const (
@@ -35,6 +36,11 @@ type GenericError struct {
 func (e *GenericError) Error() string {
 	strerr, _ := json.Marshal(*e)
 	return string(strerr)
+}
+
+//NewGenericError returns a generic semantic error
+func NewGenericError() error {
+	return &GenericError{Code: UNKNOWN_TYPE, Reason: "Generic uncharted error"}
 }
 
 //SemanticError is a logical error on the content of the operation requested to be performed
@@ -106,9 +112,14 @@ func NewLinkExistsConflictError(linkID LinkID) error {
 	return &ConflictError{Code: CONFLICT, Reason: "Link " + string(linkID) + " exists"}
 }
 
-//NonBondMasterLinkTypeError returns an error for non bond master link type
-func NonBondMasterLinkTypeError(ifname LinkID) error {
-	return &ConflictError{Code: SEMANTIC, Reason: "Master link interface " + string(ifname) + " is not a bond"}
+//NewNonBondMasterLinkTypeError returns an error for non bond master link type
+func NewNonBondMasterLinkTypeError(ifname LinkID) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Master link interface " + string(ifname) + " is not a bond"}
+}
+
+//NewEPERMError returns a missing permissions error
+func NewEPERMError() error {
+	return &ConflictError{Code: CONFLICT, Reason: "Got EPERM error: insufficient permissions to perform action"}
 }
 
 //NotFoundError is a logical error on the content of the operation requested to be performed

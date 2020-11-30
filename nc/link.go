@@ -7,6 +7,7 @@ import (
 
 	"github.com/vishvananda/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"golang.org/x/sys/unix"
 )
 
 // LinkAddrInfo struct for LinkAddrInfo
@@ -414,7 +415,23 @@ func LinkCreate(link Link) error {
 		return err
 	}
 	err = netlink.LinkAdd(nllink)
+
+	for _, a := range link.AddrInfo {
+		linkAddrAdd(ifname, a.Local)
+	}
+
 	return mapNetlinkError(err)
+}
+
+func linkAddrAdd(ifname LinkID, addr CIDRAddr) error {
+	l, _ := netlink.LinkByName(string(ifname))
+	if l == nil {
+		return NewLinkNotFoundError(ifname)
+	}
+	net := addr.ToIPNet()
+	nladdr := netlink.Addr{IPNet: &net, Label: string(ifname), Scope: unix.RT_SCOPE_UNIVERSE, Flags: unix.IFA_F_PERMANENT}
+	netlink.AddrAdd(l, &nladdr)
+	return nil
 }
 
 func mapNetlinkError(err error) error {
@@ -423,6 +440,10 @@ func mapNetlinkError(err error) error {
 		case syscall.Errno:
 			if err.(syscall.Errno) == syscall.EINVAL {
 				return NewEINVALError()
+			} else if err.(syscall.Errno) == syscall.EPERM {
+				return NewEPERMError()
+			} else {
+				return NewGenericError()
 			}
 		}
 	}
@@ -474,7 +495,7 @@ func LinkSetBondSlave(ifname LinkID, masterIfname LinkID) error {
 	if masterLink.Type() == "bond" {
 		return netlink.LinkSetBondSlave(link, masterLink.(*netlink.Bond))
 	}
-	return NonBondMasterLinkTypeError(masterIfname)
+	return NewNonBondMasterLinkTypeError(masterIfname)
 }
 
 //LinkDelete deletes a link layer interface
