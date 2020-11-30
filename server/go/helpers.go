@@ -74,6 +74,23 @@ func PutErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	return Response(http.StatusOK, body), nil
 }
 
+//PatchErrorResponse maps Put requests errors into HTTP status codes
+func PatchErrorResponse(err error, body interface{}) (ImplResponse, error) {
+	if err != nil {
+		switch err.(type) {
+		case *nc.SemanticError:
+			{
+				return Response(http.StatusBadRequest, err), err
+			}
+		default:
+			{
+				return Response(http.StatusInternalServerError, err), err
+			}
+		}
+	}
+	return Response(http.StatusOK, body), nil
+}
+
 //DeleteErrorResponse maps Delete requests errors into HTTP status codes
 func DeleteErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
