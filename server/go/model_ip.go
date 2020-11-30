@@ -18,35 +18,34 @@ import (
 
 // Ip - struct for Ip
 type Ip struct {
-	string *string
+	Value *string
 }
 
 // stringAsIp is a convenience function that returns string wrapped in Ip
 func stringAsIp(v *string) Ip {
-	return Ip{ string: v}
+	return Ip{Value: v}
 }
-
 
 // Unmarshal JSON data into one of the pointers in the struct
 func (dst *Ip) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
 	// try to unmarshal data into string
-	err = json.Unmarshal(data, &dst.string)
+	err = json.Unmarshal(data, &dst.Value)
 	if err == nil {
-		jsonstring, _ := json.Marshal(dst.string)
+		jsonstring, _ := json.Marshal(dst.Value)
 		if string(jsonstring) == "{}" { // empty struct
-			dst.string = nil
+			dst.Value = nil
 		} else {
 			match++
 		}
 	} else {
-		dst.string = nil
+		dst.Value = nil
 	}
 
 	if match > 1 { // more than 1 match
 		// reset to nil
-		dst.string = nil
+		dst.Value = nil
 
 		return fmt.Errorf("Data matches more than one schema in oneOf(Ip)")
 	} else if match == 1 {
@@ -58,17 +57,17 @@ func (dst *Ip) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src Ip) MarshalJSON() ([]byte, error) {
-	if src.string != nil {
-		return json.Marshal(&src.string)
+	if src.Value != nil {
+		return json.Marshal(&src.Value)
 	}
 
 	return nil, nil // no data in oneOf schemas
 }
 
 // Get the actual instance
-func (obj *Ip) GetActualInstance() (interface{}) {
-	if obj.string != nil {
-		return obj.string
+func (obj *Ip) GetActualInstance() interface{} {
+	if obj.Value != nil {
+		return obj.Value
 	}
 
 	// all schemas are nil
@@ -110,5 +109,3 @@ func (v *NullableIp) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

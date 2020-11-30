@@ -38,7 +38,7 @@ func ncLinkParse(nclink nc.Link) Link {
 		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
 		for i, a := range nclink.AddrInfo {
 			ip := a.Local.Address()
-			lai[i].Local = &Ip{string: &ip}
+			lai[i].Local = &Ip{Value: &ip}
 		}
 		link.AddrInfo = &lai
 	}
@@ -159,7 +159,18 @@ func ncLinkFormat(link Link) nc.Link {
 	if li.InfoSlaveData != nil {
 		nclink.Linkinfo.InfoSlaveData.State = li.InfoSlaveData.GetState()
 	}
-
+	if link.AddrInfo != nil {
+		nclink.AddrInfo = make([]nc.LinkAddrInfo, len(*link.AddrInfo))
+		for i, addr := range *link.AddrInfo {
+			var cidrnet nc.CIDRAddr
+			cidrnet.ParseIP(*(addr.Local.Value))
+			cidrnet.ParsePrefixLen(int(*(addr.Prefixlen)))
+			lai := nc.LinkAddrInfo{
+				Local: cidrnet,
+			}
+			nclink.AddrInfo[i] = lai
+		}
+	}
 	return nclink
 }
 
