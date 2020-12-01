@@ -413,24 +413,31 @@ func LinkCreate(link Link) error {
 	var err error = nil
 	ifname := link.Ifname
 	l, _ := netlink.LinkByName(string(ifname))
-	removable, _ := isLinkRemovable(l)
+
+	removable := true
+	if l != nil {
+		removable, _ = isLinkRemovable(l)
+	}
 	if removable && (l != nil) {
 		return NewLinkExistsConflictError(ifname)
 	}
 
-	nllink, err := linkFormat(link)
-	if err != nil {
-		return err
+	if removable {
+		nllink, err := linkFormat(link)
+		if err != nil {
+			return err
+		}
+		err = netlink.LinkAdd(nllink)
 	}
-	err = netlink.LinkAdd(nllink)
 
-	if !removable {
-		addrlist, err := netlink.AddrList(nllink, netlink.FAMILY_ALL)
+	if l != nil {
+		addrlist, err := netlink.AddrList(l, netlink.FAMILY_ALL)
 		if err != nil {
 			return NewGenericErrorWithReason(fmt.Sprintf("Failed to get address list: error %v", err))
 		}
+
 		for _, addr := range addrlist {
-			netlink.AddrDel(nllink, &addr)
+			netlink.AddrDel(l, &addr)
 		}
 	}
 
@@ -588,6 +595,7 @@ func linkFlagsFormat(link Link) (net.Flags, error) {
 
 func linkFormat(link Link) (netlink.Link, error) {
 	ifname := link.Ifname
+	//linkType := link.LinkType
 	kind := link.Linkinfo.InfoKind
 	attrs := netlink.NewLinkAttrs()
 	attrs.Name = string(ifname)
