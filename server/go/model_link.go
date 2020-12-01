@@ -32,7 +32,7 @@ type Link struct {
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to. 
 	Master *string `json:"master,omitempty"`
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
-	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config 
+	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down 
 	Operstate *string `json:"operstate,omitempty"`
 	Linkmode *string `json:"linkmode,omitempty"`
 	Group *string `json:"group,omitempty"`

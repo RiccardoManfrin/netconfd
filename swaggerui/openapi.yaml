@@ -913,7 +913,7 @@ components:
         - loopback
         - up
         - pointtopoint
-      example: UP
+      example: up
     link:
       type: object
       description: |
@@ -1498,7 +1498,16 @@ components:
             Provides information on the state being for example UP of an interface.
             
             It is ignored when applying the config
+
+            Possible values:
+
+              * `up` - Interface is up
+              * `down` - Interface is down
           type: string
+          enum:
+            - up
+            - down
+          example: "down"
         #txqlen:
         #  type: integer
         linkmode:

@@ -902,7 +902,7 @@ components:
       - loopback
       - up
       - pointtopoint
-      example: UP
+      example: up
       type: string
     link:
       description: "Definition of an ip link interface (emulating iproute2 API)\n\n\
@@ -914,14 +914,14 @@ components:
         linkmode: DEFAULT
         link: ""
         flags:
-        - UP
-        - UP
+        - up
+        - up
         mtu: 6
         master: bond0
         link_type: ether
         ifname: dummy0
         promiscuity: 1
-        operstate: operstate
+        operstate: down
         addr_info:
         - broadcast: broadcast
           prefixlen: 5
@@ -1011,6 +1011,15 @@ components:
             Provides information on the state being for example UP of an interface.
 
             It is ignored when applying the config
+
+            Possible values:
+
+              * `up` - Interface is up
+              * `down` - Interface is down
+          enum:
+          - up
+          - down
+          example: down
           type: string
         linkmode:
           example: DEFAULT
