@@ -159,12 +159,6 @@ paths:
         required: true
       responses:
         "201":
-          content:
-            application/json:
-              schema:
-                items:
-                  $ref: '#/components/schemas/ifname'
-                type: array
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -266,9 +260,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/routeid'
-                type: array
+                $ref: '#/components/schemas/routeid'
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
