@@ -1020,6 +1020,7 @@ components:
                     Physical interface MAC address is reused. L2 type directly connects the lan to 
                     the host phyisical device. L3 type adds a routing layer in between.
                   * `tuntap` - Link for to kernel-to-userspace packet forward
+                  * `ppp` - Point to point [readonly]
               enum:
                 - device
                 - dummy
@@ -1029,6 +1030,7 @@ components:
                 - veth
                 - macvlan
                 - ipvlan
+                - ppp
             info_data:
               type: object
               description: Additional information on the link

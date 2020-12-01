@@ -960,7 +960,7 @@ components:
             ad_lacp_rate: slow
             mode: active-backup
             all_slaves_active: 0
-            protocol: 802.1Q
+            protocol: 802.1q
             id: 100
             use_carrier: 1
         group: default
@@ -1092,7 +1092,7 @@ components:
         ad_lacp_rate: slow
         mode: active-backup
         all_slaves_active: 0
-        protocol: 802.1Q
+        protocol: 802.1q
         id: 100
         use_carrier: 1
       properties:
@@ -1100,10 +1100,12 @@ components:
           description: |
             VLAN protocols.
             Supported protocols:
-              * `802.1Q` - 802.1Q protocol
+              * `802.1q` - 802.1Q protocol
+              * `802.1ad` - 802.1AD protocol
           enum:
-          - 802.1Q
-          example: 802.1Q
+          - 802.1q
+          - 802.1ad
+          example: 802.1q
           type: string
         id:
           description: VLAN TAG ID
@@ -1487,7 +1489,7 @@ components:
           ad_lacp_rate: slow
           mode: active-backup
           all_slaves_active: 0
-          protocol: 802.1Q
+          protocol: 802.1q
           id: 100
           use_carrier: 1
       properties:
@@ -1516,7 +1518,7 @@ components:
             \ the physical interface.\n    Physical interface MAC address is reused.\
             \ L2 type directly connects the lan to \n    the host phyisical device.\
             \ L3 type adds a routing layer in between.\n  * `tuntap` - Link for to\
-            \ kernel-to-userspace packet forward\n"
+            \ kernel-to-userspace packet forward\n  * `ppp` - Point to point [readonly]\n"
           enum:
           - device
           - dummy
@@ -1526,6 +1528,7 @@ components:
           - veth
           - macvlan
           - ipvlan
+          - ppp
           type: string
         info_data:
           $ref: '#/components/schemas/link_linkinfo_info_data'

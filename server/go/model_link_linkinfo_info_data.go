@@ -17,7 +17,7 @@ import (
 
 // LinkLinkinfoInfoData Additional information on the link
 type LinkLinkinfoInfoData struct {
-	// VLAN protocols. Supported protocols:   * `802.1Q` - 802.1Q protocol 
+	// VLAN protocols. Supported protocols:   * `802.1q` - 802.1Q protocol   * `802.1ad` - 802.1AD protocol 
 	Protocol *string `json:"protocol,omitempty"`
 	// VLAN TAG ID
 	Id *int32 `json:"id,omitempty"`
