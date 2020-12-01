@@ -1039,10 +1039,12 @@ components:
                     VLAN protocols.
                     
                     Supported protocols:
-                      * `802.1Q` - 802.1Q protocol
+                      * `802.1q` - 802.1Q protocol
+                      * `802.1ad` - 802.1AD protocol
                   enum:
-                    - 802.1Q
-                  example: "802.1Q"
+                    - 802.1q
+                    - 802.1ad
+                  example: "802.1q"
                 id: 
                   type: integer
                   description: VLAN TAG ID
