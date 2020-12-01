@@ -423,6 +423,17 @@ func LinkCreate(link Link) error {
 	}
 	err = netlink.LinkAdd(nllink)
 
+	removable, _ := isLinkRemovable(nllink)
+	if !removable {
+		addrlist, err := netlink.AddrList(nllink, netlink.FAMILY_ALL)
+		if err != nil {
+			return NewGenericErrorWithReason(fmt.Sprintf("Failed to get address list: error %v", err))
+		}
+		for _, addr := range addrlist {
+			netlink.AddrDel(nllink, &addr)
+		}
+	}
+
 	for _, a := range link.AddrInfo {
 		linkAddrAdd(ifname, a.Local)
 	}

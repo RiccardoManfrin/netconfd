@@ -43,6 +43,11 @@ func NewGenericError() error {
 	return &GenericError{Code: UNKNOWN_TYPE, Reason: "Generic uncharted error"}
 }
 
+//NewGenericErrorWithReason returns a generic semantic error
+func NewGenericErrorWithReason(reason string) error {
+	return &GenericError{Code: UNKNOWN_TYPE, Reason: reason}
+}
+
 //SemanticError is a logical error on the content of the operation requested to be performed
 type SemanticError GenericError
 
