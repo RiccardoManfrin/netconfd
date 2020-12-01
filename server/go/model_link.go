@@ -32,6 +32,8 @@ type Link struct {
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
 	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config 
 	Operstate *string `json:"operstate,omitempty"`
+	Linkmode *string `json:"linkmode,omitempty"`
+	Group *string `json:"group,omitempty"`
 	LinkType string `json:"link_type"`
 	Address *string `json:"address,omitempty"`
 	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
@@ -304,6 +306,70 @@ func (o *Link) SetOperstate(v string) {
 	o.Operstate = &v
 }
 
+// GetLinkmode returns the Linkmode field value if set, zero value otherwise.
+func (o *Link) GetLinkmode() string {
+	if o == nil || o.Linkmode == nil {
+		var ret string
+		return ret
+	}
+	return *o.Linkmode
+}
+
+// GetLinkmodeOk returns a tuple with the Linkmode field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetLinkmodeOk() (*string, bool) {
+	if o == nil || o.Linkmode == nil {
+		return nil, false
+	}
+	return o.Linkmode, true
+}
+
+// HasLinkmode returns a boolean if a field has been set.
+func (o *Link) HasLinkmode() bool {
+	if o != nil && o.Linkmode != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLinkmode gets a reference to the given string and assigns it to the Linkmode field.
+func (o *Link) SetLinkmode(v string) {
+	o.Linkmode = &v
+}
+
+// GetGroup returns the Group field value if set, zero value otherwise.
+func (o *Link) GetGroup() string {
+	if o == nil || o.Group == nil {
+		var ret string
+		return ret
+	}
+	return *o.Group
+}
+
+// GetGroupOk returns a tuple with the Group field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetGroupOk() (*string, bool) {
+	if o == nil || o.Group == nil {
+		return nil, false
+	}
+	return o.Group, true
+}
+
+// HasGroup returns a boolean if a field has been set.
+func (o *Link) HasGroup() bool {
+	if o != nil && o.Group != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetGroup gets a reference to the given string and assigns it to the Group field.
+func (o *Link) SetGroup(v string) {
+	o.Group = &v
+}
+
 // GetLinkType returns the LinkType field value
 func (o *Link) GetLinkType() string {
 	if o == nil  {
@@ -417,6 +483,12 @@ func (o Link) MarshalJSON() ([]byte, error) {
 	}
 	if o.Operstate != nil {
 		toSerialize["operstate"] = o.Operstate
+	}
+	if o.Linkmode != nil {
+		toSerialize["linkmode"] = o.Linkmode
+	}
+	if o.Group != nil {
+		toSerialize["group"] = o.Group
 	}
 	if true {
 		toSerialize["link_type"] = o.LinkType

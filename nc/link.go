@@ -73,6 +73,12 @@ type LinkLinkinfoInfoData struct {
 	AdSelect string `json:"ad_select,omitempty"`
 	// Specifies if dynamic shuffling of flows is enabled in tlb mode. The value has no effect on any other modes.  The default behavior of tlb mode is to shuffle active flows across slaves based on the load in that interval. This gives nice lb characteristics but can cause packet reordering. If re-ordering is a concern use this variable to disable flow shuffling and rely on load balancing provided solely by the hash distribution. xmit-hash-policy can be used to select the appropriate hashing for the setup.  The sysfs entry can be used to change the setting per bond device and the initial value is derived from the module parameter. The sysfs entry is allowed to be changed only if the bond device is down.  The default value is \"1\" that enables flow shuffling while value \"0\" disables it. This option was added in bonding driver 3.7.1
 	TlbDynamicLb int32 `json:"tlb_dynamic_lb,omitempty"`
+	// VLAN protocols. Supported protocols:   * `802.1Q` - 802.1Q protocol
+	Protocol string `json:"protocol,omitempty"`
+	// VLAN TAG ID
+	Id int32 `json:"id,omitempty"`
+	// Flags of the virtual device
+	Flags []string `json:"flags,omitempty"`
 }
 
 //LinkLinkinfo definition

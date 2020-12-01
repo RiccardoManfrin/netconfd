@@ -17,6 +17,11 @@ import (
 
 // LinkLinkinfoInfoData Additional information on the link
 type LinkLinkinfoInfoData struct {
+	// VLAN protocols. Supported protocols:   * `802.1Q` - 802.1Q protocol 
+	Protocol *string `json:"protocol,omitempty"`
+	// VLAN TAG ID
+	Id *int32 `json:"id,omitempty"`
+	Flags *[]string `json:"flags,omitempty"`
 	// Bonding modes. Supported Modes:   * `balance-rr` - Round-robin: Transmit network packets in sequential order from the first available network interface (NIC) slave through the last. This mode provides load balancing and fault tolerance.   * `active-backup` - Active-backup: Only one NIC slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The single logical bonded interface's MAC address is externally visible on only one NIC (port) to avoid distortion in the network switch. This mode provides fault tolerance.   * `balance-xor` - XOR: Transmit network packets based on a hash of the packet's source and destination. The default algorithm only considers MAC addresses (layer2). Newer versions allow selection of additional policies based on IP addresses (layer2+3) and TCP/UDP port numbers (layer3+4). This selects the same NIC slave for each destination MAC address, IP address, or IP address and port combination, respectively. This mode provides load balancing and fault tolerance.   * `broadcast` - Broadcast: Transmit network packets on all slave network interfaces. This mode provides fault tolerance.   * `802.3ad` - IEEE 802.3ad Dynamic link aggregation: Creates aggregation groups that share the same speed and duplex settings. Utilizes all slave network interfaces in the active aggregator group according to the 802.3ad specification. This mode is similar to the XOR mode above and supports the same balancing policies. The link is set up dynamically between two LACP-supporting peers.   * `balance-tlb` - Adaptive transmit load balancing: Linux bonding driver mode that does not require any special network-switch support. The outgoing network packet traffic is distributed according to the current load (computed relative to the speed) on each network interface slave. Incoming traffic is received by one currently designated slave network interface. If this receiving slave fails, another slave takes over the MAC address of the failed receiving slave.   * `balance-alb` - Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special network switch support. The receive load balancing is achieved by ARP negotiation. The bonding driver intercepts the ARP Replies sent by the local system on their way out and overwrites the source hardware address with the unique hardware address of one of the NIC slaves in the single logical bonded interface such that different network-peers use different MAC addresses for their network packet traffic. 
 	Mode *string `json:"mode,omitempty"`
 	// Specifies the MII link monitoring frequency in milliseconds.  The default value is 0, and this will disable the MII monitor 
@@ -74,6 +79,102 @@ func NewLinkLinkinfoInfoData() *LinkLinkinfoInfoData {
 func NewLinkLinkinfoInfoDataWithDefaults() *LinkLinkinfoInfoData {
 	this := LinkLinkinfoInfoData{}
 	return &this
+}
+
+// GetProtocol returns the Protocol field value if set, zero value otherwise.
+func (o *LinkLinkinfoInfoData) GetProtocol() string {
+	if o == nil || o.Protocol == nil {
+		var ret string
+		return ret
+	}
+	return *o.Protocol
+}
+
+// GetProtocolOk returns a tuple with the Protocol field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoData) GetProtocolOk() (*string, bool) {
+	if o == nil || o.Protocol == nil {
+		return nil, false
+	}
+	return o.Protocol, true
+}
+
+// HasProtocol returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoData) HasProtocol() bool {
+	if o != nil && o.Protocol != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetProtocol gets a reference to the given string and assigns it to the Protocol field.
+func (o *LinkLinkinfoInfoData) SetProtocol(v string) {
+	o.Protocol = &v
+}
+
+// GetId returns the Id field value if set, -1 otherwise.
+func (o *LinkLinkinfoInfoData) GetId() int32 {
+	if o == nil || o.Id == nil {
+		var ret int32 = -1 
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoData) GetIdOk() (*int32, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoData) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given int32 and assigns it to the Id field.
+func (o *LinkLinkinfoInfoData) SetId(v int32) {
+	o.Id = &v
+}
+
+// GetFlags returns the Flags field value if set, zero value otherwise.
+func (o *LinkLinkinfoInfoData) GetFlags() []string {
+	if o == nil || o.Flags == nil {
+		var ret []string
+		return ret
+	}
+	return *o.Flags
+}
+
+// GetFlagsOk returns a tuple with the Flags field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoData) GetFlagsOk() (*[]string, bool) {
+	if o == nil || o.Flags == nil {
+		return nil, false
+	}
+	return o.Flags, true
+}
+
+// HasFlags returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoData) HasFlags() bool {
+	if o != nil && o.Flags != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFlags gets a reference to the given []string and assigns it to the Flags field.
+func (o *LinkLinkinfoInfoData) SetFlags(v []string) {
+	o.Flags = &v
 }
 
 // GetMode returns the Mode field value if set, zero value otherwise.
@@ -718,6 +819,15 @@ func (o *LinkLinkinfoInfoData) SetTlbDynamicLb(v int32) {
 
 func (o LinkLinkinfoInfoData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Protocol != nil {
+		toSerialize["protocol"] = o.Protocol
+	}
+	if o.Id != nil {
+		toSerialize["id"] = o.Id
+	}
+	if o.Flags != nil {
+		toSerialize["flags"] = o.Flags
+	}
 	if o.Mode != nil {
 		toSerialize["mode"] = o.Mode
 	}

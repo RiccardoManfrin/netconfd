@@ -909,14 +909,17 @@ components:
         References: \n* https://www.kernel.org/doc/Documentation/networking/\n* https://www.kernel.org/doc/Documentation/networking/bonding.txt\n\
         * https://www.kernel.org/doc/Documentation/networking/operstates.txt\n"
       example:
-        link_type: ether
         ifindex: 0
         address: address
-        ifname: dummy0
-        promiscuity: 1
+        linkmode: DEFAULT
         flags:
         - UP
         - UP
+        mtu: 6
+        master: bond0
+        link_type: ether
+        ifname: dummy0
+        promiscuity: 1
         operstate: operstate
         addr_info:
         - broadcast: broadcast
@@ -925,8 +928,6 @@ components:
         - broadcast: broadcast
           prefixlen: 5
           local: 10.1.2.3
-        mtu: 6
-        master: bond0
         linkinfo:
           info_kind: device
           info_slave_kind: bond
@@ -947,6 +948,9 @@ components:
             miimon: 100
             resend_igmp: 1
             min_links: 0
+            flags:
+            - REORDER_HDR
+            - REORDER_HDR
             downdelay: 0
             arp_interval: 0
             primary_reselect: always
@@ -956,7 +960,10 @@ components:
             ad_lacp_rate: slow
             mode: active-backup
             all_slaves_active: 0
+            protocol: 802.1Q
+            id: 100
             use_carrier: 1
+        group: default
       properties:
         ifindex:
           description: |
@@ -996,6 +1003,12 @@ components:
             Provides information on the state being for example UP of an interface.
 
             It is ignored when applying the config
+          type: string
+        linkmode:
+          example: DEFAULT
+          type: string
+        group:
+          example: default
           type: string
         link_type:
           enum:
@@ -1067,6 +1080,9 @@ components:
         miimon: 100
         resend_igmp: 1
         min_links: 0
+        flags:
+        - REORDER_HDR
+        - REORDER_HDR
         downdelay: 0
         arp_interval: 0
         primary_reselect: always
@@ -1076,11 +1092,43 @@ components:
         ad_lacp_rate: slow
         mode: active-backup
         all_slaves_active: 0
+        protocol: 802.1Q
+        id: 100
         use_carrier: 1
       properties:
+        protocol:
+          description: |
+            VLAN protocols.
+            Supported protocols:
+              * `802.1Q` - 802.1Q protocol
+          enum:
+          - 802.1Q
+          example: 802.1Q
+          type: string
+        id:
+          description: VLAN TAG ID
+          example: 100
+          type: integer
+        flags:
+          items:
+            description: "Supported flags for virtual device:\n* `REORDER_HDR` - specifies\
+              \ whether ethernet headers are reordered or not (default is on). If\
+              \ reorder_hdr is on then VLAN header will be not inserted immediately\
+              \ but only before passing to the physical device (if this device does\
+              \ not support VLAN offloading), the similar on the RX direction - by\
+              \ default the packet will be untagged before being received by VLAN\
+              \ device. Reordering allows to accelerate tagging on egress and to hide\
+              \ VLAN header on ingress so the packet looks like regular Ethernet packet,\
+              \ at the same time it might be confusing for packet capture as the VLAN\
+              \ header does not exist within the packet. \n"
+            enum:
+            - REORDER_HDR
+            type: string
+          type: array
         mode:
           description: |
-            Bonding modes. Supported Modes:
+            Bonding modes.
+            Supported Modes:
               * `balance-rr` - Round-robin: Transmit network packets in sequential order from the first available network interface (NIC) slave through the last. This mode provides load balancing and fault tolerance.
               * `active-backup` - Active-backup: Only one NIC slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The single logical bonded interface's MAC address is externally visible on only one NIC (port) to avoid distortion in the network switch. This mode provides fault tolerance.
               * `balance-xor` - XOR: Transmit network packets based on a hash of the packet's source and destination. The default algorithm only considers MAC addresses (layer2). Newer versions allow selection of additional policies based on IP addresses (layer2+3) and TCP/UDP port numbers (layer3+4). This selects the same NIC slave for each destination MAC address, IP address, or IP address and port combination, respectively. This mode provides load balancing and fault tolerance.
@@ -1427,6 +1475,9 @@ components:
           miimon: 100
           resend_igmp: 1
           min_links: 0
+          flags:
+          - REORDER_HDR
+          - REORDER_HDR
           downdelay: 0
           arp_interval: 0
           primary_reselect: always
@@ -1436,6 +1487,8 @@ components:
           ad_lacp_rate: slow
           mode: active-backup
           all_slaves_active: 0
+          protocol: 802.1Q
+          id: 100
           use_carrier: 1
       properties:
         info_slave_kind:
