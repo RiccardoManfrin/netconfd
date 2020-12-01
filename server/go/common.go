@@ -56,6 +56,13 @@ func ncLinkParse(nclink nc.Link) Link {
 	}
 
 	switch nclink.Linkinfo.InfoKind {
+	case "vlan":
+		{
+			id := LinkLinkinfoInfoData{}
+			id.Protocol = &nclink.Linkinfo.InfoData.Protocol
+			id.Id = &nclink.Linkinfo.InfoData.Id
+			lli.InfoData = &id
+		}
 	case "bond":
 		{
 			id := LinkLinkinfoInfoData{}

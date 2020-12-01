@@ -180,9 +180,10 @@ func linkParse(link netlink.Link) Link {
 	case "vlan":
 		{
 			id := &nclink.Linkinfo.InfoData
-			id.Protocol
-			id.Id
-			id.Flags
+			vlan := link.(*netlink.Vlan)
+
+			id.Protocol = vlan.VlanProtocol.String()
+			id.Id = int32(vlan.VlanId)
 		}
 	case "ppp":
 	default:
