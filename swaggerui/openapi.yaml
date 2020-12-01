@@ -930,6 +930,13 @@ components:
           type: integer
         ifname:
           $ref: '#/components/schemas/ifname'
+        link:
+          allOf:
+            - $ref: '#/components/schemas/ifname'
+          description: |
+            Specify what is the VLAN physical device the virtual device is linked to.
+
+            Applies to vlan type virtual devices
         flags:
           description: Composition of flags of the interface
           type: array

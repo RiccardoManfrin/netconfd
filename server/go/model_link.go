@@ -21,6 +21,8 @@ type Link struct {
 	Ifindex *int32 `json:"ifindex,omitempty"`
 	// Interface name 
 	Ifname string `json:"ifname"`
+	// Specify what is the VLAN physical device the virtual device is linked to.  Applies to vlan type virtual devices 
+	Link *string `json:"link,omitempty"`
 	// Composition of flags of the interface
 	Flags *[]LinkFlag `json:"flags,omitempty"`
 	// Maximum Transfer Unit value 
@@ -112,6 +114,38 @@ func (o *Link) GetIfnameOk() (*string, bool) {
 // SetIfname sets field value
 func (o *Link) SetIfname(v string) {
 	o.Ifname = v
+}
+
+// GetLink returns the Link field value if set, zero value otherwise.
+func (o *Link) GetLink() string {
+	if o == nil || o.Link == nil {
+		var ret string
+		return ret
+	}
+	return *o.Link
+}
+
+// GetLinkOk returns a tuple with the Link field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Link) GetLinkOk() (*string, bool) {
+	if o == nil || o.Link == nil {
+		return nil, false
+	}
+	return o.Link, true
+}
+
+// HasLink returns a boolean if a field has been set.
+func (o *Link) HasLink() bool {
+	if o != nil && o.Link != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetLink gets a reference to the given string and assigns it to the Link field.
+func (o *Link) SetLink(v string) {
+	o.Link = &v
 }
 
 // GetFlags returns the Flags field value if set, zero value otherwise.
@@ -465,6 +499,9 @@ func (o Link) MarshalJSON() ([]byte, error) {
 	}
 	if true {
 		toSerialize["ifname"] = o.Ifname
+	}
+	if o.Link != nil {
+		toSerialize["link"] = o.Link
 	}
 	if o.Flags != nil {
 		toSerialize["flags"] = o.Flags
