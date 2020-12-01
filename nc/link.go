@@ -117,6 +117,8 @@ type Link struct {
 	Ifindex int32 `json:"ifindex,omitempty"`
 	// Interface name identifier
 	Ifname LinkID `json:"ifname"`
+	// Specify what is the physical device the virtual device is linked to. Applies to vlan type virtual devices
+	Link LinkID `json:"link,omitempty"`
 	// Maximum Transfer Unit value
 	Mtu int32 `json:"mtu,omitempty"`
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to.
@@ -184,7 +186,12 @@ func linkParse(link netlink.Link) Link {
 		{
 			id := &nclink.Linkinfo.InfoData
 			vlan := link.(*netlink.Vlan)
+			mkink, err := netlink.LinkByIndex(vlan.Attrs().ParentIndex)
+			if err == nil {
+				logger.Log.Warning(fmt.Sprintf("Virtual vlan link device parent link not found by index %v", vlan.Attrs().ParentIndex))
+			}
 
+			nclink.Link = LinkID(mkink.Attrs().Name)
 			id.Protocol = vlan.VlanProtocol.String()
 			id.Id = int32(vlan.VlanId)
 		}

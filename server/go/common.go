@@ -63,6 +63,8 @@ func ncLinkParse(nclink nc.Link) Link {
 			id.Protocol = &nclink.Linkinfo.InfoData.Protocol
 			id.Id = &nclink.Linkinfo.InfoData.Id
 			lli.InfoData = &id
+			parentLink := string(nclink.Link)
+			link.Link = &parentLink
 		}
 	case "bond":
 		{
