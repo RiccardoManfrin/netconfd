@@ -21,7 +21,7 @@ type Link struct {
 	Ifindex *int32 `json:"ifindex,omitempty"`
 	// Interface name 
 	Ifname string `json:"ifname"`
-	// Specify what is the VLAN physical device the virtual device is linked to.  Applies to vlan type virtual devices 
+	// Specify what is the VLAN physical device the virtual device is linked to. Applies to vlan type virtual devices 
 	Link *string `json:"link,omitempty"`
 	// Composition of flags of the interface
 	Flags *[]LinkFlag `json:"flags,omitempty"`

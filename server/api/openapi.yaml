@@ -912,7 +912,7 @@ components:
         ifindex: 0
         address: address
         linkmode: DEFAULT
-        link: ""
+        link: eth0
         flags:
         - up
         - up
@@ -981,8 +981,8 @@ components:
           - $ref: '#/components/schemas/ifname'
           description: |
             Specify what is the VLAN physical device the virtual device is linked to.
-
             Applies to vlan type virtual devices
+          example: eth0
         flags:
           description: Composition of flags of the interface
           items:
