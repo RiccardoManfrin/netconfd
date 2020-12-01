@@ -171,6 +171,13 @@ func linkParse(link netlink.Link) Link {
 	case "device":
 	case "bridge":
 	case "dummy":
+	case "vlan":
+		{
+			id := &nclink.Linkinfo.InfoData
+			id.Protocol
+			id.Id
+			id.Flags
+		}
 	case "ppp":
 	default:
 		{
