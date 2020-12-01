@@ -413,7 +413,8 @@ func LinkCreate(link Link) error {
 	var err error = nil
 	ifname := link.Ifname
 	l, _ := netlink.LinkByName(string(ifname))
-	if l != nil {
+	removable, _ := isLinkRemovable(l)
+	if removable && (l != nil) {
 		return NewLinkExistsConflictError(ifname)
 	}
 
@@ -423,7 +424,6 @@ func LinkCreate(link Link) error {
 	}
 	err = netlink.LinkAdd(nllink)
 
-	removable, _ := isLinkRemovable(nllink)
 	if !removable {
 		addrlist, err := netlink.AddrList(nllink, netlink.FAMILY_ALL)
 		if err != nil {
