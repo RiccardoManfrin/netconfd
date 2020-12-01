@@ -1529,8 +1529,10 @@ components:
                 $ref: '#/components/schemas/ip'
               prefixlen:
                 type: integer
+                example: 24
               broadcast:
                 type: string
+                example: "10.1.2.255"
               #scope:
               #  $ref: '#/components/schemas/scope'
               #dynamic:
