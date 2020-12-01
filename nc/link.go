@@ -712,6 +712,11 @@ func linkFormat(link Link) (netlink.Link, error) {
 		case "vlan":
 			{
 				id := &link.Linkinfo.InfoData
+				parentLink, err := netlink.LinkByName(string(link.Link))
+				if err != nil {
+					return nllink, NewParentLinkNotFoundForVlan(ifname, link.Link)
+				}
+				attrs.ParentIndex = parentLink.Attrs().Index
 				nllink = &netlink.Vlan{
 					LinkAttrs:    attrs,
 					VlanId:       int(id.Id),

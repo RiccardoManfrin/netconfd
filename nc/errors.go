@@ -139,6 +139,11 @@ func NewLinkNotFoundError(linkID LinkID) error {
 	return &NotFoundError{Code: CONFLICT, Reason: "Link " + string(linkID) + " not found"}
 }
 
+//NewParentLinkNotFoundForVlan returns a Not found error on link layer interfaces
+func NewParentLinkNotFoundForVlan(ifname LinkID, parentIfname LinkID) error {
+	return &NotFoundError{Code: CONFLICT, Reason: "Parent Link " + string(parentIfname) + " not found for Vlan Link " + string(ifname)}
+}
+
 //NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
 	return &NotFoundError{Code: CONFLICT, Reason: "Route ID" + string(routeid) + " did not match"}
