@@ -125,6 +125,10 @@ func ncLinkFormat(link Link) nc.Link {
 		Master:   nc.LinkID(link.GetMaster()),
 	}
 
+	if link.Link != nil {
+		nclink.Link = nc.LinkID(*link.Link)
+	}
+
 	if link.Flags != nil {
 		flagsLen := len(*link.Flags)
 		if flagsLen > 0 {
@@ -159,6 +163,8 @@ func ncLinkFormat(link Link) nc.Link {
 			AdSelect:        li.InfoData.GetAdSelect(),
 			AdLacpRate:      li.InfoData.GetAdLacpRate(),
 			AllSlavesActive: li.InfoData.GetAllSlavesActive(),
+			Protocol:        li.InfoData.GetProtocol(),
+			Id:              li.InfoData.GetId(),
 		}
 
 	}

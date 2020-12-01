@@ -711,8 +711,11 @@ func linkFormat(link Link) (netlink.Link, error) {
 			}
 		case "vlan":
 			{
+				id := &link.Linkinfo.InfoData
 				nllink = &netlink.Vlan{
-					LinkAttrs: attrs,
+					LinkAttrs:    attrs,
+					VlanId:       int(id.Id),
+					VlanProtocol: netlink.StringToVlanProtocol(id.Protocol),
 				}
 			}
 		case "veth":
