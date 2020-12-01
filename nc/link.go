@@ -134,6 +134,7 @@ func linkParse(link netlink.Link) Link {
 	nclink := Link{}
 	la := link.Attrs()
 	nclink.Ifname = LinkID(la.Name)
+	nclink.Ifindex = int32(la.Index)
 	nclink.Mtu = int32(la.MTU)
 	nclink.Linkinfo.InfoKind = link.Type()
 	nclink.LinkType = la.EncapType
