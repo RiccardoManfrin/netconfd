@@ -593,122 +593,125 @@ func linkFormat(link Link) (netlink.Link, error) {
 	attrs.Name = string(ifname)
 	var err error
 	var nllink netlink.Link = nil
-	switch kind {
-	case "dummy":
-		{
-			nllink = &netlink.Dummy{
-				LinkAttrs: attrs,
+	if kind != "" {
+		switch kind {
+		case "dummy":
+			{
+				nllink = &netlink.Dummy{
+					LinkAttrs: attrs,
+				}
 			}
-		}
-	case "bond":
-		{
+		case "bond":
+			{
+				nllink = netlink.NewLinkBond(attrs)
+				nlbondlink := nllink.(*netlink.Bond)
+				nlbondlink.Mode = netlink.StringToBondMode(link.Linkinfo.InfoData.Mode)
+				nlbondlink.Miimon = int(link.Linkinfo.InfoData.Miimon)
+				nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
+				nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
 
-			nllink = netlink.NewLinkBond(attrs)
-			nlbondlink := nllink.(*netlink.Bond)
-			nlbondlink.Mode = netlink.StringToBondMode(link.Linkinfo.InfoData.Mode)
-			nlbondlink.Miimon = int(link.Linkinfo.InfoData.Miimon)
-			nlbondlink.DownDelay = int(link.Linkinfo.InfoData.Downdelay)
-			nlbondlink.UpDelay = int(link.Linkinfo.InfoData.Updelay)
+				id := &link.Linkinfo.InfoData
 
-			id := &link.Linkinfo.InfoData
+				if id.UseCarrier != -1 {
+					nlbondlink.UseCarrier = int(id.UseCarrier)
+				}
+				if id.ArpInterval != -1 {
+					nlbondlink.ArpInterval = int(id.ArpInterval)
+				}
+				if id.LpInterval != -1 {
+					nlbondlink.LpInterval = int(id.LpInterval)
+				}
+				if id.PacketsPerSlave != -1 {
+					nlbondlink.PacketsPerSlave = int(id.PacketsPerSlave)
+				}
+				if id.ResendIgmp != -1 {
+					nlbondlink.ResendIgmp = int(id.ResendIgmp)
+				}
+				if id.MinLinks != -1 {
+					nlbondlink.MinLinks = int(id.MinLinks)
+				}
+				if id.ArpInterval != -1 {
+					nlbondlink.ArpInterval = int(id.ArpInterval)
+				}
+				if id.TlbDynamicLb != -1 {
+					nlbondlink.TlbDynamicLb = int(id.TlbDynamicLb)
+				}
+				if id.AllSlavesActive != -1 {
+					nlbondlink.AllSlavesActive = int(id.AllSlavesActive)
+				}
+				if id.UseCarrier != -1 {
+					nlbondlink.UseCarrier = int(id.UseCarrier)
+				}
+				if id.XmitHashPolicy != "" {
+					nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(id.XmitHashPolicy)
+				}
+				if id.AdLacpRate != "" {
+					nlbondlink.LacpRate = netlink.StringToBondLacpRate(id.AdLacpRate)
+				}
+				if id.ArpValidate != "" {
+					nlbondlink.ArpValidate = netlink.StringToBondArpValidateMap[id.ArpValidate]
+				}
+				if id.ArpAllTargets != "" {
+					nlbondlink.ArpAllTargets = netlink.StringToBondArpAllTargetsMap[id.ArpAllTargets]
+				}
+				if id.FailOverMac != "" {
+					nlbondlink.FailOverMac = netlink.StringToBondFailOverMacMap[id.FailOverMac]
+				}
+				if id.XmitHashPolicy != "" {
+					nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicyMap[id.XmitHashPolicy]
+				}
+				if id.PrimaryReselect != "" {
+					nlbondlink.PrimaryReselect = netlink.StringToBondPrimaryReselectMap[id.PrimaryReselect]
+				}
+				if id.AdSelect != "" {
+					nlbondlink.AdSelect = netlink.StringToBondAdSelectMap[id.AdSelect]
+				}
+				if id.AdLacpRate != "" {
+					nlbondlink.LacpRate = netlink.StringToBondLacpRateMap[id.AdLacpRate]
+				}
 
-			if id.UseCarrier != -1 {
-				nlbondlink.UseCarrier = int(id.UseCarrier)
 			}
-			if id.ArpInterval != -1 {
-				nlbondlink.ArpInterval = int(id.ArpInterval)
+		case "bridge":
+			{
+				nllink = &netlink.Bridge{
+					LinkAttrs: attrs,
+				}
 			}
-			if id.LpInterval != -1 {
-				nlbondlink.LpInterval = int(id.LpInterval)
+		case "vlan":
+			{
+				nllink = &netlink.Vlan{
+					LinkAttrs: attrs,
+				}
 			}
-			if id.PacketsPerSlave != -1 {
-				nlbondlink.PacketsPerSlave = int(id.PacketsPerSlave)
+		case "veth":
+			{
+				nllink = &netlink.Veth{
+					LinkAttrs: attrs,
+				}
 			}
-			if id.ResendIgmp != -1 {
-				nlbondlink.ResendIgmp = int(id.ResendIgmp)
+		case "ipvlan":
+			{
+				nllink = &netlink.IPVlan{
+					LinkAttrs: attrs,
+				}
 			}
-			if id.MinLinks != -1 {
-				nlbondlink.MinLinks = int(id.MinLinks)
+		case "macvlan":
+			{
+				nllink = &netlink.Macvlan{
+					LinkAttrs: attrs,
+				}
 			}
-			if id.ArpInterval != -1 {
-				nlbondlink.ArpInterval = int(id.ArpInterval)
+		case "tuntap":
+			{
+				nllink = &netlink.Tuntap{
+					LinkAttrs: attrs,
+				}
 			}
-			if id.TlbDynamicLb != -1 {
-				nlbondlink.TlbDynamicLb = int(id.TlbDynamicLb)
-			}
-			if id.AllSlavesActive != -1 {
-				nlbondlink.AllSlavesActive = int(id.AllSlavesActive)
-			}
-			if id.UseCarrier != -1 {
-				nlbondlink.UseCarrier = int(id.UseCarrier)
-			}
-			if id.XmitHashPolicy != "" {
-				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicy(id.XmitHashPolicy)
-			}
-			if id.AdLacpRate != "" {
-				nlbondlink.LacpRate = netlink.StringToBondLacpRate(id.AdLacpRate)
-			}
-			if id.ArpValidate != "" {
-				nlbondlink.ArpValidate = netlink.StringToBondArpValidateMap[id.ArpValidate]
-			}
-			if id.ArpAllTargets != "" {
-				nlbondlink.ArpAllTargets = netlink.StringToBondArpAllTargetsMap[id.ArpAllTargets]
-			}
-			if id.FailOverMac != "" {
-				nlbondlink.FailOverMac = netlink.StringToBondFailOverMacMap[id.FailOverMac]
-			}
-			if id.XmitHashPolicy != "" {
-				nlbondlink.XmitHashPolicy = netlink.StringToBondXmitHashPolicyMap[id.XmitHashPolicy]
-			}
-			if id.PrimaryReselect != "" {
-				nlbondlink.PrimaryReselect = netlink.StringToBondPrimaryReselectMap[id.PrimaryReselect]
-			}
-			if id.AdSelect != "" {
-				nlbondlink.AdSelect = netlink.StringToBondAdSelectMap[id.AdSelect]
-			}
-			if id.AdLacpRate != "" {
-				nlbondlink.LacpRate = netlink.StringToBondLacpRateMap[id.AdLacpRate]
-			}
-
+		default:
+			return nil, NewUnknownLinkKindError(kind)
 		}
-	case "bridge":
-		{
-			nllink = &netlink.Bridge{
-				LinkAttrs: attrs,
-			}
-		}
-	case "vlan":
-		{
-			nllink = &netlink.Vlan{
-				LinkAttrs: attrs,
-			}
-		}
-	case "veth":
-		{
-			nllink = &netlink.Veth{
-				LinkAttrs: attrs,
-			}
-		}
-	case "ipvlan":
-		{
-			nllink = &netlink.IPVlan{
-				LinkAttrs: attrs,
-			}
-		}
-	case "macvlan":
-		{
-			nllink = &netlink.Macvlan{
-				LinkAttrs: attrs,
-			}
-		}
-	case "tuntap":
-		{
-			nllink = &netlink.Tuntap{
-				LinkAttrs: attrs,
-			}
-		}
-	default:
-		err = NewUnknownLinkKindError(kind)
+	} else {
+		nllink = &netlink.Device{}
 	}
 	netFlags, err := linkFlagsFormat(link)
 	if err != nil {
