@@ -95,3 +95,9 @@ func (a *CIDRAddr) Netmask() string {
 func (a *CIDRAddr) Address() string {
 	return a.ip.String()
 }
+
+//PrefixLen returns the length of the network prefix
+func (a *CIDRAddr) PrefixLen() int {
+	ones, _ := a.net.Mask.Size()
+	return ones
+}

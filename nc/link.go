@@ -143,7 +143,9 @@ func linkParse(link netlink.Link) Link {
 	if err == nil {
 		nclink.AddrInfo = make([]LinkAddrInfo, len(addrs))
 		for i, a := range addrs {
-			nclink.AddrInfo[i].Local.Parse(a.IPNet.String())
+			//nclink.AddrInfo[i].Local.Parse(a.IPNet.String())
+			//ones, bits := a.IPNet.Mask.Size()
+			nclink.AddrInfo[i].Local.ParseIPNet(*a.IPNet)
 		}
 	} else {
 		logger.Log.Warning(err)

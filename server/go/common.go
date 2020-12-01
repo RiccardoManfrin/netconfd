@@ -39,6 +39,7 @@ func ncLinkParse(nclink nc.Link) Link {
 		for i, a := range nclink.AddrInfo {
 			ip := a.Local.Address()
 			lai[i].Local = Ip{string: &ip}
+			lai[i].Prefixlen = int32(a.Local.PrefixLen())
 		}
 		link.AddrInfo = &lai
 	}
