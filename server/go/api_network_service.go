@@ -38,7 +38,7 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	if nclink.Master != "" {
 		nc.LinkSetMaster(nclink.Ifname, nclink.Master)
 	}
-	if nclink.Flags.HaveFlag(nc.LinkFlag("UP")) {
+	if nclink.Flags.HaveFlag(nc.LinkFlag("up")) {
 		nc.LinkSetUp(nclink.Ifname)
 	}
 	return PostErrorResponse(err, nil)
