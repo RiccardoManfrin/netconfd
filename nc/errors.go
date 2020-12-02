@@ -13,6 +13,8 @@ const (
 	CONFLICT ErrorCode = iota
 	//SEMANTIC error type of the requested operation in the syntax or logical content
 	SEMANTIC
+	//SYNTAX error type is for synctactical errors
+	SYNTAX
 	//UNKNOWN_TYPE error type (the value type is not recognized/supported)
 	UNKNOWN_TYPE
 	//RESERVED can be used for outer error enum cohexistence
@@ -22,6 +24,7 @@ const (
 var errorCodeToString = map[ErrorCode]string{
 	CONFLICT:     "Conflict Error",
 	SEMANTIC:     "Semantic Error",
+	SYNTAX:       "Syntax Error",
 	UNKNOWN_TYPE: "UnknownType Error",
 }
 
@@ -38,7 +41,7 @@ func (e *GenericError) Error() string {
 	return string(strerr)
 }
 
-//NewGenericError returns a generic semantic error
+//NewGenericError returns a generic error
 func NewGenericError() error {
 	return &GenericError{Code: UNKNOWN_TYPE, Reason: "Generic uncharted error"}
 }
@@ -89,6 +92,19 @@ func NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError(bondIfname LinkID
 //NewBackupSlaveIfaceFoundForNonActiveBackupBondError Returns an error if a backup interface is found for a non Active-Backup type bond
 func NewBackupSlaveIfaceFoundForNonActiveBackupBondError(backupIfname LinkID, bondIfname LinkID) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
+}
+
+//SyntaxError is a logical error on the content of the operation requested to be performed
+type SyntaxError GenericError
+
+func (e *SyntaxError) Error() string {
+	strerr, _ := json.Marshal(*e)
+	return string(strerr)
+}
+
+//NewInvalidIPAddressError Returns an error if a backup interface is found for a non Active-Backup type bond
+func NewInvalidIPAddressError(addr string) error {
+	return &SyntaxError{Code: SYNTAX, Reason: "Invalid IP Address/Network  " + addr}
 }
 
 //UnknownTypeError is a logical error on the content of the operation requested to be performed
