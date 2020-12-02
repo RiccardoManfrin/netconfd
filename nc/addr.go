@@ -1,19 +1,18 @@
 package nc
 
 import (
-	"errors"
 	"net"
 	"strconv"
 )
 
-// CIDRAddr is an address and a network mask
+// CIDRAddr is an address and a network mask (According to RFC 4632 and RFC 4291).
 // Additionally to a net.IPNet, it allows for specifying
 // further than the netmask bits. Those are intended to define
 // an addresses within the IP network being defined along with.
 // E.g. : 10.1.2.3/24 -> 10.1.2.3 in network 10.1.2.0/24
 type CIDRAddr struct {
-	ip  net.IP
-	net net.IPNet
+	ip   net.IP
+	mask int
 }
 
 //NewCIDRAddr creates new CIDR address. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
@@ -28,20 +27,26 @@ func (a *CIDRAddr) ParseIP(ip string) {
 	a.ip = net.ParseIP(ip)
 }
 
-//ParseNetmask parses the network mask (e.g. "255.255.255.0")
-func (a *CIDRAddr) ParseNetmask(netmask string) {
-	a.net.IP = net.ParseIP(netmask)
+//SetIP parses the IP address
+func (a *CIDRAddr) SetIP(ip net.IP) {
+	a.ip = ip
+	if a.IsV4() {
+		a.mask = 32
+	} else {
+		a.mask = 128
+	}
+}
+
+//SetNet parses the IP address
+func (a *CIDRAddr) SetNet(ipnet net.IPNet) {
+	a.ip = ipnet.IP
+	ones, _ := ipnet.Mask.Size()
+	a.mask = ones
 }
 
 //ParsePrefixLen translates an IP network prefix length into a CIDRAddr mask
 func (a *CIDRAddr) ParsePrefixLen(len int) {
-	if !a.net.IP.IsUnspecified() {
-		if a.ip.To4() != nil {
-			a.net.Mask = net.CIDRMask(len, 32)
-		} else {
-			a.net.Mask = net.CIDRMask(len, 128)
-		}
-	}
+	a.mask = len
 }
 
 //ParseIPNet translates an IP network into a CIDRAddr
@@ -51,7 +56,14 @@ func (a *CIDRAddr) ParseIPNet(ip net.IPNet) {
 
 //ToIPNet returns an IP network (the non network part is zeroed out)
 func (a *CIDRAddr) ToIPNet() net.IPNet {
-	return net.IPNet{IP: a.ip, Mask: a.net.Mask}
+
+	if a.IsV4() {
+		ipMask := net.CIDRMask(a.mask, 32)
+		return net.IPNet{IP: a.ip, Mask: ipMask}
+	} else {
+		ipMask := net.CIDRMask(a.mask, 128)
+		return net.IPNet{IP: a.ip, Mask: ipMask}
+	}
 }
 
 //Parse loads a CIDR address from a string. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
@@ -62,33 +74,43 @@ func (a *CIDRAddr) Parse(straddr string) error {
 	if e != nil {
 		a.ip = net.ParseIP(straddr)
 		if a.ip == nil {
-			return errors.New("Invalid Address")
+			return NewInvalidIPAddressError(straddr)
 		}
-		if a.ip.To4() != nil {
-			a.net.Mask = net.CIDRMask(32, 32)
-			a.net.IP = a.ip.Mask(a.net.Mask)
+		if a.IsV4() {
+			a.mask = 32
 		} else {
-			a.net.Mask = net.CIDRMask(128, 128)
-			a.net.IP = a.ip.Mask(a.net.Mask)
+			a.mask = 128
 		}
 
 	} else {
-		a.net = *ipnet
+		a.ip = ipnet.IP
+		a.mask, _ = ipnet.Mask.Size()
 	}
 	return nil
 }
 
+//IsV4 tells if the address is V4
+func (a *CIDRAddr) IsV4() bool {
+	return a.ip.To4() != nil
+}
+
 func (a *CIDRAddr) String() string {
-	ones, bits := a.net.Mask.Size()
-	if ones == bits {
+
+	if a.mask == 32 && a.IsV4() {
 		return a.ip.String()
+	} else if a.mask == 128 && !a.IsV4() {
+		return a.ip.String()
+	} else {
+		return a.ip.String() + "/" + strconv.Itoa(a.mask)
 	}
-	return a.ip.String() + "/" + strconv.Itoa(ones)
 }
 
 //Netmask returns the netmask (e.g. 255.255.255.0) of a CIDR address/network
 func (a *CIDRAddr) Netmask() string {
-	return a.net.IP.String()
+	if a.IsV4() {
+		return net.CIDRMask(a.mask, 32).String()
+	}
+	return net.CIDRMask(a.mask, 128).String()
 }
 
 //Address returns the address (e.g. 255.255.255.0) of a CIDR address/network
@@ -98,6 +120,5 @@ func (a *CIDRAddr) Address() string {
 
 //PrefixLen returns the length of the network prefix
 func (a *CIDRAddr) PrefixLen() int {
-	ones, _ := a.net.Mask.Size()
-	return ones
+	return a.mask
 }
