@@ -131,3 +131,9 @@ func (a *CIDRAddr) Address() string {
 func (a *CIDRAddr) PrefixLen() int {
 	return a.mask
 }
+
+//CIDRAddrValidate validates a string as being or not a CIDR addr
+func CIDRAddrValidate(cidraddr string) error {
+	var a CIDRAddr
+	return a.Parse(cidraddr)
+}
