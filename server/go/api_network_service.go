@@ -242,13 +242,7 @@ func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid int32) (
 
 // ConfigRoutesGet - Get all routing table routes
 func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, error) {
-	// TODO - update ConfigRoutesGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, []Route{}) or use other options such as http.Ok ...
-	//return Response(200, []Route{}), nil
-
-	routes, err := nc.RoutesGet()
+	routes, err := routesGet()
 	return GetErrorResponse(err, routes)
 }
 

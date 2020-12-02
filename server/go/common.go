@@ -17,6 +17,35 @@ func linksGet() ([]Link, error) {
 	return links, err
 }
 
+func ncRouteParse(ncroute nc.Route) Route {
+	var route Route
+	prefsrc := ncroute.Prefsrc.String()
+	if prefsrc != "" {
+		route.SetPrefsrc(Ip{string: &prefsrc})
+	}
+	dst := ncroute.Dst.String()
+	if dst != "" {
+		route.SetDst(RouteDst{Ip: &Ip{string: &dst}})
+	}
+	gw := ncroute.Gateway.String()
+	if gw != "" {
+		route.SetGateway(Ip{string: &gw})
+	}
+	return route
+}
+
+func routesGet() ([]Route, error) {
+	var routes []Route
+	ncroutes, err := nc.RoutesGet()
+	if err == nil {
+		routes = make([]Route, len(ncroutes))
+		for i, r := range ncroutes {
+			routes[i] = ncRouteParse(r)
+		}
+	}
+	return routes, err
+}
+
 func ncLinkParse(nclink nc.Link) Link {
 	link := Link{
 		Ifname:    string(nclink.Ifname),

@@ -16,6 +16,13 @@ type RouteDst struct {
 	ModelDefault ModelDefault
 }
 
+func (r *RouteDst) String() string {
+	if r.ModelDefault == "default" {
+		return string(r.ModelDefault)
+	}
+	return r.Ip.String()
+}
+
 // Scope scope of the object (link or global)
 type Scope string
 
