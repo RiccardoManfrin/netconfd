@@ -25,7 +25,7 @@ type Route struct {
 	Dst     RouteDst `json:"dst,omitempty"`
 	Gateway CIDRAddr `json:"gateway,omitempty"`
 	// Interface name
-	Dev      string   `json:"dev,omitempty"`
+	Dev      LinkID   `json:"dev,omitempty"`
 	Protocol string   `json:"protocol,omitempty"`
 	Metric   int32    `json:"metric,omitempty"`
 	Scope    Scope    `json:"scope,omitempty"`
@@ -34,12 +34,18 @@ type Route struct {
 	Flags *[]string `json:"flags,omitempty"`
 }
 
-func routeParse(route netlink.Route) Route {
+func routeParse(route netlink.Route) (Route, error) {
 	ncroute := Route{}
 	if route.Dst != nil {
 		ncroute.Dst.Ip.ParseIPNet(*route.Dst)
+		l, err := netlink.LinkByIndex(route.LinkIndex)
+		if err != nil {
+			return ncroute, err
+		}
+		ncroute.Dev = LinkID(l.Attrs().Name)
+
 	}
-	return ncroute
+	return ncroute, nil
 }
 
 //RouteID identifies a route
@@ -57,7 +63,10 @@ func RoutesGet() ([]Route, error) {
 	}
 	ncroutes := make([]Route, len(routes))
 	for i, r := range routes {
-		ncroutes[i] = routeParse(r)
+		ncroutes[i], err = routeParse(r)
+		if err != nil {
+			return ncroutes, err
+		}
 	}
 	return ncroutes, nil
 }
