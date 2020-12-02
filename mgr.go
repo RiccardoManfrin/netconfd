@@ -22,6 +22,7 @@ import (
 	"github.com/rakyll/statik/fs"
 	comm "gitlab.lan.athonet.com/core/netconfd/common"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"gitlab.lan.athonet.com/core/netconfd/nc"
 	"gitlab.lan.athonet.com/core/netconfd/swaggerui"
 )
 
@@ -202,11 +203,13 @@ func NewManager() *Manager {
 	if openapi == nil && err != nil {
 		panic(err)
 	}
-	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
 	//Opt in IPv4 and IPv6 validation
 	openapi3.DefineIPv4Format()
 	openapi3.DefineIPv6Format()
+	openapi3.DefineStringFormatCallback("cidraddr", nc.CIDRAddrValidate)
+
+	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
 	serveMux := http.NewServeMux()
 
