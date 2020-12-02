@@ -15,7 +15,6 @@ import (
 	"errors"
 	"time"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
@@ -49,16 +48,17 @@ func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (Impl
 // ConfigSet - Replace existing configuration with new one
 func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
 	network := ncNetFormat(config)
-	go delayedConfigSet(network)
-	return PutErrorResponse(nil, nil)
+	//go delayedConfigSet(network)
+	return PutErrorResponse(delayedConfigSet(network), nil)
 }
 
-func delayedConfigSet(network nc.Network) {
+func delayedConfigSet(network nc.Network) error {
 	time.Sleep(1 * time.Second)
 	err := nc.Put(network)
 	if err != nil {
-		logger.Log.Warning(err.Error())
+		return err
 	}
+	return nil
 }
 
 // PersistConfig - Persist live configuration
