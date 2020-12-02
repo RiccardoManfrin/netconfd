@@ -1,6 +1,11 @@
 package nc
 
-import "github.com/vishvananda/netlink"
+import (
+	"fmt"
+
+	"github.com/vishvananda/netlink"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
+)
 
 // ModelDefault This is equivalent to 0.0.0.0/0 or ::/0
 type ModelDefault string
@@ -43,7 +48,10 @@ func routeParse(route netlink.Route) (Route, error) {
 			return ncroute, err
 		}
 		ncroute.Dev = LinkID(l.Attrs().Name)
-
+		ncroute.Gateway.SetIP(route.Gw)
+		logger.Log.Warning("Convert Protocol number to string (\"dhcp\"/\"static\")")
+		ncroute.Protocol = fmt.Sprintln(route.Protocol)
+		ncroute.Prefsrc.SetIP(route.Src)
 	}
 	return ncroute, nil
 }
