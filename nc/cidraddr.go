@@ -22,6 +22,11 @@ func NewCIDRAddr(addr string) CIDRAddr {
 	return a
 }
 
+//IsValid returns true if address is set and valid
+func (a *CIDRAddr) IsValid() bool {
+	return a.ip != nil && len(a.ip) > 0
+}
+
 //ParseIP parses the IP address
 func (a *CIDRAddr) ParseIP(ip string) {
 	a.ip = net.ParseIP(ip)
@@ -30,7 +35,9 @@ func (a *CIDRAddr) ParseIP(ip string) {
 //SetIP parses the IP address
 func (a *CIDRAddr) SetIP(ip net.IP) {
 	a.ip = ip
-	if a.IsV4() {
+	if ip == nil {
+		a.mask = 0
+	} else if a.IsV4() {
 		a.mask = 32
 	} else {
 		a.mask = 128
@@ -60,10 +67,9 @@ func (a *CIDRAddr) ToIPNet() net.IPNet {
 	if a.IsV4() {
 		ipMask := net.CIDRMask(a.mask, 32)
 		return net.IPNet{IP: a.ip, Mask: ipMask}
-	} else {
-		ipMask := net.CIDRMask(a.mask, 128)
-		return net.IPNet{IP: a.ip, Mask: ipMask}
 	}
+	ipMask := net.CIDRMask(a.mask, 128)
+	return net.IPNet{IP: a.ip, Mask: ipMask}
 }
 
 //Parse loads a CIDR address from a string. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
@@ -96,6 +102,9 @@ func (a *CIDRAddr) IsV4() bool {
 
 func (a *CIDRAddr) String() string {
 
+	if !a.IsValid() {
+		return ""
+	}
 	if a.mask == 32 && a.IsV4() {
 		return a.ip.String()
 	} else if a.mask == 128 && !a.IsV4() {
