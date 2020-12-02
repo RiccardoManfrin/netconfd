@@ -761,6 +761,10 @@ components:
       oneOf:
         - $ref: '#/components/schemas/ipv4'
         - $ref: '#/components/schemas/ipv6'
+    cidraddr:
+      type: string
+      format: cidraddr
+      example: "10.1.2.3/24"
     default:
       type: string
       description: "This is equivalent to 0.0.0.0/0 or ::/0"
@@ -801,9 +805,7 @@ components:
     route_flags:
       type: string
     route_dst:
-      oneOf:
-        - $ref: '#/components/schemas/ip'
-        - $ref: '#/components/schemas/default'
+      $ref: '#/components/schemas/cidraddr'
     config:
       type: object
       #required:
