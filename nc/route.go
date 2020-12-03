@@ -1,6 +1,8 @@
 package nc
 
 import (
+	"crypto/md5"
+	"fmt"
 	"net"
 
 	"github.com/riccardomanfrin/netlink"
@@ -41,6 +43,7 @@ const (
 
 // Route IP L3 Ruote entry
 type Route struct {
+	ID      RouteID  `json:"id"`
 	Dst     RouteDst `json:"dst,omitempty"`
 	Gateway CIDRAddr `json:"gateway,omitempty"`
 	// Interface name
@@ -69,11 +72,13 @@ func routeParse(route netlink.Route) (Route, error) {
 	return ncroute, nil
 }
 
-//RouteID identifies a route
+//RouteID identifies a route via MD5 of its content
 type RouteID string
 
 func routeID(route Route) RouteID {
-	return RouteID(route.Dst.Ip.String())
+	md := md5.New()
+	data := md.Sum([]byte(route.Dst.Ip.String()))
+	return RouteID(fmt.Sprintf("%x", md5.Sum(data)))
 }
 
 //RoutesGet returns the array of routes
