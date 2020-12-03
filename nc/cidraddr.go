@@ -63,7 +63,6 @@ func (a *CIDRAddr) ParseIPNet(ip net.IPNet) {
 
 //ToIPNet returns an IP network (the non network part is zeroed out)
 func (a *CIDRAddr) ToIPNet() net.IPNet {
-
 	if a.IsV4() {
 		ipMask := net.CIDRMask(a.mask, 32)
 		return net.IPNet{IP: a.ip, Mask: ipMask}

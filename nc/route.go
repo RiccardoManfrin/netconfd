@@ -23,16 +23,26 @@ func (r *RouteDst) String() string {
 	}
 	return r.Ip.String()
 }
-func (r *RouteDst) Load(routedst *string) error {
-	if routedst == nil || *routedst == "default" {
+
+//Load checks for "default" or CIDR network string values
+func (r *RouteDst) Load(routedst string) error {
+	if routedst == "default" {
 		r.Ip.ParseCIDRNetStr("0.0.0.0/0")
 	} else {
-		err := r.Ip.ParseCIDRNetStr(*routedst)
+		err := r.Ip.ParseCIDRNetStr(routedst)
 		if err != nil {
 			return err
 		}
 	}
 	return nil
+}
+
+//ToIPNet Converts route destination to ip network
+func (r *RouteDst) ToIPNet() (net.IPNet, error) {
+	if r.Ip.IsValid() {
+		return r.Ip.ToIPNet(), nil
+	}
+	return r.Ip.ToIPNet(), NewInvalidIPAddressError(r.Ip.String())
 }
 
 func (r *RouteDst) parse(dst *net.IPNet) {
@@ -122,4 +132,15 @@ func RouteGet(_routeID RouteID) (Route, error) {
 		}
 	}
 	return Route{}, NewRouteByIDNotFoundError(_routeID)
+}
+
+func RouteCreate(route Route) (RouteID, error) {
+	routeid := routeID(route)
+	nlroute := netlink.Route{}
+	dst, err := route.Dst.ToIPNet()
+	if err != nil {
+		return routeid, err
+	}
+	nlroute.Dst = &dst
+	return routeid, nil
 }

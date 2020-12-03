@@ -194,18 +194,8 @@ func (s *NetworkApiService) ConfigNetNSsGet(ctx context.Context) (ImplResponse, 
 
 // ConfigRouteCreate - Configures a route
 func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) (ImplResponse, error) {
-	// TODO - update ConfigRouteCreate with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(201, []int32{}) or use other options such as http.Ok ...
-	//return Response(201, []int32{}), nil
-
-	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
-	//return Response(409, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	//return Response(400, nil),nil
-
+	ncroute := ncRouteFormat(route)
+	nc.RouteCreate(ncroute)
 	err := errors.New("ConfigRouteCreate method not implemented")
 	return PostErrorResponse(err, nil)
 }

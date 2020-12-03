@@ -19,7 +19,11 @@ func linksGet() ([]Link, error) {
 
 func ncRouteFormat(route Route) nc.Route {
 	ncroute := nc.Route{}
-	ncroute.Dst.Load(route.Dst.string)
+	dst, ok := route.Dst.GetActualInstance().(string)
+	if ok != true {
+		panic("Should not be possible")
+	}
+	ncroute.Dst.Load(dst)
 	return ncroute
 }
 
