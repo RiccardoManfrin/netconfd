@@ -17,6 +17,7 @@ RUN --mount=type=ssh \
 FROM alpine:3.7
 ARG CI_PROJECT_PATH
 ARG CI_PROJECT_NAME
+ENV CI_PROJECT_NAME=$CI_PROJECT_NAME
 ENV GOPATH /go/
 ENV SRCPATH $GOPATH/src/gitlab.lan.athonet.com/$CI_PROJECT_PATH
 RUN mkdir /app/
