@@ -17,6 +17,12 @@ func linksGet() ([]Link, error) {
 	return links, err
 }
 
+func ncRouteFormat(route Route) nc.Route {
+	ncroute := nc.Route{}
+	ncroute.Dst.Load(route.Dst.string)
+	return ncroute
+}
+
 func ncRouteParse(ncroute nc.Route) Route {
 	var route Route
 	id := string(ncroute.ID)

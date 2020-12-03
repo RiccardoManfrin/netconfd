@@ -23,6 +23,17 @@ func (r *RouteDst) String() string {
 	}
 	return r.Ip.String()
 }
+func (r *RouteDst) Load(routedst *string) error {
+	if routedst == nil || *routedst == "default" {
+		r.Ip.ParseCIDRNetStr("0.0.0.0/0")
+	} else {
+		err := r.Ip.ParseCIDRNetStr(*routedst)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
 func (r *RouteDst) parse(dst *net.IPNet) {
 	if dst == nil {

@@ -18,7 +18,7 @@ type CIDRAddr struct {
 //NewCIDRAddr creates new CIDR address. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
 func NewCIDRAddr(addr string) CIDRAddr {
 	a := CIDRAddr{}
-	a.Parse(addr)
+	a.ParseCIDRNetStr(addr)
 	return a
 }
 
@@ -58,7 +58,7 @@ func (a *CIDRAddr) ParsePrefixLen(len int) {
 
 //ParseIPNet translates an IP network into a CIDRAddr
 func (a *CIDRAddr) ParseIPNet(ip net.IPNet) {
-	a.Parse(ip.String())
+	a.ParseCIDRNetStr(ip.String())
 }
 
 //ToIPNet returns an IP network (the non network part is zeroed out)
@@ -72,8 +72,8 @@ func (a *CIDRAddr) ToIPNet() net.IPNet {
 	return net.IPNet{IP: a.ip, Mask: ipMask}
 }
 
-//Parse loads a CIDR address from a string. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
-func (a *CIDRAddr) Parse(straddr string) error {
+//ParseCIDRNetStr loads a CIDR network from a string. If network is unspecified it is assumed to be /32 for ipv4 and /128 for ipv6
+func (a *CIDRAddr) ParseCIDRNetStr(straddr string) error {
 	var e error
 	var ipnet *net.IPNet
 	a.ip, ipnet, e = net.ParseCIDR(straddr)
@@ -135,5 +135,5 @@ func (a *CIDRAddr) PrefixLen() int {
 //CIDRAddrValidate validates a string as being or not a CIDR addr
 func CIDRAddrValidate(cidraddr string) error {
 	var a CIDRAddr
-	return a.Parse(cidraddr)
+	return a.ParseCIDRNetStr(cidraddr)
 }
