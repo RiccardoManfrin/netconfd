@@ -225,8 +225,8 @@ func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid int32) (
 	return DeleteErrorResponse(err, nil)
 }
 
-// ConfigRouteGet - Get a L3 route details
-func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid int32) (ImplResponse, error) {
+// ConfigRouteGet - Get a L3 route details 
+func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) (ImplResponse, error) {
 	// TODO - update ConfigRouteGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
