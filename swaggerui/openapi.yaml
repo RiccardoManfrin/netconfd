@@ -810,11 +810,7 @@ components:
     route_dst:
       oneOf:
         - $ref: '#/components/schemas/cidraddr'
-        - type: string
-          description: "\"default\" meaning 0.0.0.0/0"
-          enum:
-            - default
-
+        - $ref: '#/components/schemas/default'
     config:
       type: object
       #required:
@@ -919,6 +915,8 @@ components:
             Route flags
           items:
             $ref: '#/components/schemas/route_flags'
+      required:
+        - dst
     link_flag:
       description: |
         Flags of the interface

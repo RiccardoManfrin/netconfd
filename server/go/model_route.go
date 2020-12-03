@@ -19,7 +19,7 @@ import (
 type Route struct {
 	// MD5 identifier based on relevant context (ignored in creation)
 	Id *string `json:"__id,omitempty"`
-	Dst *RouteDst `json:"dst,omitempty"`
+	Dst RouteDst `json:"dst"`
 	Gateway *Ip `json:"gateway,omitempty"`
 	// Interface name 
 	Dev *string `json:"dev,omitempty"`
@@ -37,8 +37,9 @@ type Route struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoute() *Route {
+func NewRoute(dst RouteDst, ) *Route {
 	this := Route{}
+	this.Dst = dst
 	return &this
 }
 
@@ -82,36 +83,28 @@ func (o *Route) SetId(v string) {
 	o.Id = &v
 }
 
-// GetDst returns the Dst field value if set, zero value otherwise.
+// GetDst returns the Dst field value
 func (o *Route) GetDst() RouteDst {
-	if o == nil || o.Dst == nil {
+	if o == nil  {
 		var ret RouteDst
 		return ret
 	}
-	return *o.Dst
+
+	return o.Dst
 }
 
-// GetDstOk returns a tuple with the Dst field value if set, nil otherwise
+// GetDstOk returns a tuple with the Dst field value
 // and a boolean to check if the value has been set.
 func (o *Route) GetDstOk() (*RouteDst, bool) {
-	if o == nil || o.Dst == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Dst, true
+	return &o.Dst, true
 }
 
-// HasDst returns a boolean if a field has been set.
-func (o *Route) HasDst() bool {
-	if o != nil && o.Dst != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetDst gets a reference to the given RouteDst and assigns it to the Dst field.
+// SetDst sets field value
 func (o *Route) SetDst(v RouteDst) {
-	o.Dst = &v
+	o.Dst = v
 }
 
 // GetGateway returns the Gateway field value if set, zero value otherwise.
@@ -343,7 +336,7 @@ func (o Route) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["__id"] = o.Id
 	}
-	if o.Dst != nil {
+	if true {
 		toSerialize["dst"] = o.Dst
 	}
 	if o.Gateway != nil {

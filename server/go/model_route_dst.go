@@ -18,7 +18,13 @@ import (
 
 // RouteDst - struct for RouteDst
 type RouteDst struct {
+	ModelDefault *ModelDefault
 	string *string
+}
+
+// ModelDefaultAsRouteDst is a convenience function that returns ModelDefault wrapped in RouteDst
+func ModelDefaultAsRouteDst(v *ModelDefault) RouteDst {
+	return RouteDst{ ModelDefault: v}
 }
 
 // stringAsRouteDst is a convenience function that returns string wrapped in RouteDst
@@ -31,6 +37,19 @@ func stringAsRouteDst(v *string) RouteDst {
 func (dst *RouteDst) UnmarshalJSON(data []byte) error {
 	var err error
 	match := 0
+	// try to unmarshal data into ModelDefault
+	err = json.Unmarshal(data, &dst.ModelDefault)
+	if err == nil {
+		jsonModelDefault, _ := json.Marshal(dst.ModelDefault)
+		if string(jsonModelDefault) == "{}" { // empty struct
+			dst.ModelDefault = nil
+		} else {
+			match++
+		}
+	} else {
+		dst.ModelDefault = nil
+	}
+
 	// try to unmarshal data into string
 	err = json.Unmarshal(data, &dst.string)
 	if err == nil {
@@ -46,6 +65,7 @@ func (dst *RouteDst) UnmarshalJSON(data []byte) error {
 
 	if match > 1 { // more than 1 match
 		// reset to nil
+		dst.ModelDefault = nil
 		dst.string = nil
 
 		return fmt.Errorf("Data matches more than one schema in oneOf(RouteDst)")
@@ -58,6 +78,10 @@ func (dst *RouteDst) UnmarshalJSON(data []byte) error {
 
 // Marshal data from the first non-nil pointers in the struct to JSON
 func (src RouteDst) MarshalJSON() ([]byte, error) {
+	if src.ModelDefault != nil {
+		return json.Marshal(&src.ModelDefault)
+	}
+
 	if src.string != nil {
 		return json.Marshal(&src.string)
 	}
@@ -67,6 +91,10 @@ func (src RouteDst) MarshalJSON() ([]byte, error) {
 
 // Get the actual instance
 func (obj *RouteDst) GetActualInstance() (interface{}) {
+	if obj.ModelDefault != nil {
+		return obj.ModelDefault
+	}
+
 	if obj.string != nil {
 		return obj.string
 	}
