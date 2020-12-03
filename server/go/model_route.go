@@ -19,7 +19,7 @@ import (
 type Route struct {
 	// Incremental route identifier
 	Id *int32 `json:"__id,omitempty"`
-	Dst *string `json:"dst,omitempty"`
+	Dst *RouteDst `json:"dst,omitempty"`
 	Gateway *Ip `json:"gateway,omitempty"`
 	// Interface name 
 	Dev *string `json:"dev,omitempty"`
@@ -81,9 +81,9 @@ func (o *Route) SetId(v int32) {
 }
 
 // GetDst returns the Dst field value if set, zero value otherwise.
-func (o *Route) GetDst() string {
+func (o *Route) GetDst() RouteDst {
 	if o == nil || o.Dst == nil {
-		var ret string
+		var ret RouteDst
 		return ret
 	}
 	return *o.Dst
@@ -91,7 +91,7 @@ func (o *Route) GetDst() string {
 
 // GetDstOk returns a tuple with the Dst field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Route) GetDstOk() (*string, bool) {
+func (o *Route) GetDstOk() (*RouteDst, bool) {
 	if o == nil || o.Dst == nil {
 		return nil, false
 	}
@@ -107,8 +107,8 @@ func (o *Route) HasDst() bool {
 	return false
 }
 
-// SetDst gets a reference to the given string and assigns it to the Dst field.
-func (o *Route) SetDst(v string) {
+// SetDst gets a reference to the given RouteDst and assigns it to the Dst field.
+func (o *Route) SetDst(v RouteDst) {
 	o.Dst = &v
 }
 

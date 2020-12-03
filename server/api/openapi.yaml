@@ -797,7 +797,12 @@ components:
     route_flags:
       type: string
     route_dst:
-      $ref: '#/components/schemas/cidraddr'
+      oneOf:
+      - $ref: '#/components/schemas/cidraddr'
+      - description: '"default" meaning 0.0.0.0/0'
+        enum:
+        - default
+        type: string
     config:
       properties:
         global:
@@ -844,7 +849,6 @@ components:
       example:
         prefsrc: 10.1.2.3
         protocol: protocol
-        dst: 10.1.2.3/24
         dev: dummy0
         metric: 0
         __id: 42
@@ -858,9 +862,7 @@ components:
           example: 42
           type: integer
         dst:
-          example: 10.1.2.3/24
-          format: cidraddr
-          type: string
+          $ref: '#/components/schemas/route_dst'
         gateway:
           $ref: '#/components/schemas/ip'
         dev:

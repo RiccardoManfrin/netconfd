@@ -805,7 +805,13 @@ components:
     route_flags:
       type: string
     route_dst:
-      $ref: '#/components/schemas/cidraddr'
+      oneOf:
+        - $ref: '#/components/schemas/cidraddr'
+        - type: string
+          description: "\"default\" meaning 0.0.0.0/0"
+          enum:
+            - default
+
     config:
       type: object
       #required:

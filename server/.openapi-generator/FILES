@@ -23,6 +23,7 @@ go/model_link_linkinfo_info_slave_data.go
 go/model_netns.go
 go/model_network.go
 go/model_route.go
+go/model_route_dst.go
 go/model_scope.go
 go/routers.go
 main.go
