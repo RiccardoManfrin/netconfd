@@ -31,6 +31,7 @@ func ncRouteParse(ncroute nc.Route) Route {
 	if gw != "" {
 		route.SetGateway(Ip{string: &gw})
 	}
+	route.SetDev(string(ncroute.Dev))
 	return route
 }
 

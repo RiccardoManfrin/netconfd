@@ -2,6 +2,7 @@ package nc
 
 import (
 	"fmt"
+	"net"
 
 	"github.com/vishvananda/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
@@ -21,6 +22,14 @@ func (r *RouteDst) String() string {
 		return string(r.ModelDefault)
 	}
 	return r.Ip.String()
+}
+
+func (r *RouteDst) parse(dst *net.IPNet) {
+	if dst == nil {
+		r.ModelDefault = "default"
+	} else {
+		r.Ip.ParseIPNet(*dst)
+	}
 }
 
 // Scope scope of the object (link or global)
@@ -48,18 +57,17 @@ type Route struct {
 
 func routeParse(route netlink.Route) (Route, error) {
 	ncroute := Route{}
-	if route.Dst != nil {
-		ncroute.Dst.Ip.ParseIPNet(*route.Dst)
-		l, err := netlink.LinkByIndex(route.LinkIndex)
-		if err != nil {
-			return ncroute, err
-		}
-		ncroute.Dev = LinkID(l.Attrs().Name)
-		ncroute.Gateway.SetIP(route.Gw)
-		logger.Log.Warning("Convert Protocol number to string (\"dhcp\"/\"static\")")
-		ncroute.Protocol = fmt.Sprintln(route.Protocol)
-		ncroute.Prefsrc.SetIP(route.Src)
+	ncroute.Dst.parse(route.Dst)
+	l, err := netlink.LinkByIndex(route.LinkIndex)
+	if err != nil {
+		return ncroute, err
 	}
+	ncroute.Dev = LinkID(l.Attrs().Name)
+	ncroute.Gateway.SetIP(route.Gw)
+	logger.Log.Warning("Convert Protocol number to string (\"dhcp\"/\"static\")")
+	ncroute.Protocol = fmt.Sprintln(route.Protocol)
+	ncroute.Prefsrc.SetIP(route.Src)
+
 	return ncroute, nil
 }
 
