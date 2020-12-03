@@ -7,3 +7,5 @@
 /src.tar.gz
 /server/go.sum
 /__debug_bin
+/server/go.mod
+/server/main.go
