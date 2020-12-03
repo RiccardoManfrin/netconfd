@@ -13,6 +13,10 @@ ADD src.tar.gz $SRCPATH
 RUN --mount=type=ssh \
 	cd $SRCPATH && \
     make
+#coverage
+RUN apk add libc-dev
+RUN cd $SRCPATH && \
+    go test -cover
 
 FROM alpine:3.7
 ARG CI_PROJECT_PATH
