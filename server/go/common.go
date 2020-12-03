@@ -242,12 +242,17 @@ func ncNetFormat(config Config) nc.Network {
 
 func ncNetParse(net nc.Network) Config {
 	links := make([]Link, len(net.Links))
+	routes := make([]Route, len(net.Routes))
 	for i, l := range net.Links {
 		links[i] = ncLinkParse(l)
 	}
+	for i, r := range net.Routes {
+		routes[i] = ncRouteParse(r)
+	}
 	return Config{
 		HostNetwork: &Network{
-			Links: &links,
+			Links:  &links,
+			Routes: &routes,
 		},
 	}
 }

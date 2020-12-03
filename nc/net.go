@@ -46,6 +46,13 @@ func Get() (Network, error) {
 	if err != nil {
 		return n, err
 	}
+	routes, err := RoutesGet()
+	if err != nil {
+		return n, err
+	}
+
 	n.Links = links
+	n.Routes = routes
+
 	return n, nil
 }
