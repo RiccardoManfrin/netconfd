@@ -1,7 +1,6 @@
 package nc
 
 import (
-	"fmt"
 	"net"
 
 	"github.com/vishvananda/netlink"
@@ -65,9 +64,10 @@ func routeParse(route netlink.Route) (Route, error) {
 	ncroute.Dev = LinkID(l.Attrs().Name)
 	ncroute.Gateway.SetIP(route.Gw)
 	logger.Log.Warning("Convert Protocol number to string (\"dhcp\"/\"static\")")
-	ncroute.Protocol = fmt.Sprintln(route.Protocol)
+	ncroute.Protocol = route.Protocol.String()
 	ncroute.Prefsrc.SetIP(route.Src)
-
+	ncroute.Metric = int32(route.Priority)
+	ncroute.Scope = Scope(route.Scope.String())
 	return ncroute, nil
 }
 

@@ -25,13 +25,16 @@ func ncRouteParse(ncroute nc.Route) Route {
 	}
 	dst := ncroute.Dst.String()
 	if dst != "" {
-		route.SetDst(dst)
+		route.SetDst(RouteDst{string: &dst})
 	}
 	gw := ncroute.Gateway.String()
 	if gw != "" {
 		route.SetGateway(Ip{string: &gw})
 	}
 	route.SetDev(string(ncroute.Dev))
+	route.SetProtocol(ncroute.Protocol)
+	route.SetMetric(ncroute.Metric)
+	route.SetScope(Scope(ncroute.Scope))
 	return route
 }
 
