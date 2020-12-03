@@ -225,19 +225,13 @@ func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid int32) (
 	return DeleteErrorResponse(err, nil)
 }
 
-// ConfigRouteGet - Get a L3 route details 
+// ConfigRouteGet - Get a L3 route details
 func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) (ImplResponse, error) {
-	// TODO - update ConfigRouteGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	//return Response(404, nil),nil
-
-	err := errors.New("ConfigRouteGet method not implemented")
-	return GetErrorResponse(err, nil)
+	ncroute, err := nc.RouteGet(nc.RouteID(routeid))
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
+	return GetErrorResponse(err, ncRouteParse(ncroute))
 }
 
 // ConfigRoutesGet - Get all routing table routes

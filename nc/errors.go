@@ -2,7 +2,6 @@ package nc
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 //ErrorCode describes the error type via enumeration
@@ -11,6 +10,8 @@ type ErrorCode int
 const (
 	//CONFLICT error type (inconsistency with respect to the existing state)
 	CONFLICT ErrorCode = iota
+	//NOT_FOUND error types encodes a restful resource not found by its ID
+	NOT_FOUND
 	//SEMANTIC error type of the requested operation in the syntax or logical content
 	SEMANTIC
 	//SYNTAX error type is for synctactical errors
@@ -84,6 +85,11 @@ func NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname LinkID) erro
 	return &SemanticError{Code: SEMANTIC, Reason: "Active Slave Iface not found for Active-Backup type bond " + string(bondIfname)}
 }
 
+//NewParentLinkNotFoundForVlan returns a Not found error on link layer interfaces
+func NewParentLinkNotFoundForVlan(ifname LinkID, parentIfname LinkID) error {
+	return &SemanticError{Code: SEMANTIC, Reason: "Parent Link " + string(parentIfname) + " not found for Vlan Link " + string(ifname)}
+}
+
 //NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
 func NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError(bondIfname LinkID) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Multiple Active Slave Ifaces found for Active-Backup type bond " + string(bondIfname)}
@@ -147,20 +153,16 @@ func NewEPERMError() error {
 type NotFoundError ConflictError
 
 func (e *NotFoundError) Error() string {
-	return fmt.Sprintf("Not Found: %s", e.Reason)
+	strerr, _ := json.Marshal(*e)
+	return string(strerr)
 }
 
 //NewLinkNotFoundError returns a Not found error on link layer interfaces
 func NewLinkNotFoundError(linkID LinkID) error {
-	return &NotFoundError{Code: CONFLICT, Reason: "Link " + string(linkID) + " not found"}
-}
-
-//NewParentLinkNotFoundForVlan returns a Not found error on link layer interfaces
-func NewParentLinkNotFoundForVlan(ifname LinkID, parentIfname LinkID) error {
-	return &NotFoundError{Code: CONFLICT, Reason: "Parent Link " + string(parentIfname) + " not found for Vlan Link " + string(ifname)}
+	return &NotFoundError{Code: NOT_FOUND, Reason: "Link " + string(linkID) + " not found"}
 }
 
 //NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
-	return &NotFoundError{Code: CONFLICT, Reason: "Route ID" + string(routeid) + " did not match"}
+	return &NotFoundError{Code: NOT_FOUND, Reason: "Route ID " + string(routeid) + " not found"}
 }

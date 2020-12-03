@@ -48,6 +48,14 @@ func PostErrorResponse(err error, body interface{}) (ImplResponse, error) {
 func GetErrorResponse(err error, body interface{}) (ImplResponse, error) {
 	if err != nil {
 		switch err.(type) {
+		case *nc.NotFoundError:
+			{
+				return Response(http.StatusNotFound, err), err
+			}
+		case *nc.SemanticError:
+			{
+				return Response(http.StatusBadRequest, err), err
+			}
 		default:
 			{
 				return Response(http.StatusInternalServerError, err), err
