@@ -16,13 +16,16 @@ import (
 	"fmt"
 )
 
-// Scope scope of the object (link or global)
+// Scope scope of the object
 type Scope string
 
 // List of scope
 const (
 	LINK Scope = "link"
 	GLOBAL Scope = "global"
+	UNIVERSE Scope = "universe"
+	SITE Scope = "site"
+	NOWHERE Scope = "nowhere"
 )
 
 func (v *Scope) UnmarshalJSON(src []byte) error {
@@ -32,7 +35,7 @@ func (v *Scope) UnmarshalJSON(src []byte) error {
 		return err
 	}
 	enumTypeValue := Scope(value)
-	for _, existing := range []Scope{ "link", "global",   } {
+	for _, existing := range []Scope{ "link", "global", "universe", "site", "nowhere",   } {
 		if existing == enumTypeValue {
 			*v = enumTypeValue
 			return nil

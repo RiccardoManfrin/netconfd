@@ -789,10 +789,13 @@ components:
       maxLength: 15
       type: string
     scope:
-      description: scope of the object (link or global)
+      description: scope of the object
       enum:
       - link
       - global
+      - universe
+      - site
+      - nowhere
       type: string
     route_flags:
       type: string
@@ -872,8 +875,14 @@ components:
           maxLength: 15
           type: string
         protocol:
+          description: "Tells the origin of a route.\n\nRefs:\n  * [Netlink](https://github.com/torvalds/linux/blob/master/include/uapi/linux/rtnetlink.h)\n\
+            \  * [Go Unix constants](https://pkg.go.dev/golang.org/x/sys/unix?utm_source=gopls#pkg-constants)\n\
+            \nTypical values types:\n  \n  * `redirect`\n  * `kernel`\n  * `boot`\n\
+            \  * `static`\n  * `dhcp`\n  * `bgp`\n  * `bird`\n  * `ospf`\n  * `rip`\n\
+            \  * `zebra`\n"
           type: string
         metric:
+          description: priority of the route
           type: integer
         scope:
           $ref: '#/components/schemas/scope'
@@ -905,8 +914,9 @@ components:
       type: string
     link:
       description: "Definition of an ip link interface (emulating iproute2 API)\n\n\
-        References: \n* https://www.kernel.org/doc/Documentation/networking/\n* https://www.kernel.org/doc/Documentation/networking/bonding.txt\n\
-        * https://www.kernel.org/doc/Documentation/networking/operstates.txt\n"
+        References: \n* [Linux Networking](https://www.kernel.org/doc/Documentation/networking/)\n\
+        * [Linux Bonding](https://www.kernel.org/doc/Documentation/networking/bonding.txt)\n\
+        * [Links Operstate](https://www.kernel.org/doc/Documentation/networking/operstates.txt)\n"
       example:
         ifindex: 0
         address: address

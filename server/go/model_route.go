@@ -23,7 +23,9 @@ type Route struct {
 	Gateway *Ip `json:"gateway,omitempty"`
 	// Interface name 
 	Dev *string `json:"dev,omitempty"`
+	// Tells the origin of a route.  Refs:   * [Netlink](https://github.com/torvalds/linux/blob/master/include/uapi/linux/rtnetlink.h)   * [Go Unix constants](https://pkg.go.dev/golang.org/x/sys/unix?utm_source=gopls#pkg-constants)  Typical values types:      * `redirect`   * `kernel`   * `boot`   * `static`   * `dhcp`   * `bgp`   * `bird`   * `ospf`   * `rip`   * `zebra` 
 	Protocol *string `json:"protocol,omitempty"`
+	// priority of the route
 	Metric *int32 `json:"metric,omitempty"`
 	Scope *Scope `json:"scope,omitempty"`
 	Prefsrc *Ip `json:"prefsrc,omitempty"`

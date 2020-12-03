@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 )
 
-// Link Definition of an ip link interface (emulating iproute2 API)  References:  * https://www.kernel.org/doc/Documentation/networking/ * https://www.kernel.org/doc/Documentation/networking/bonding.txt * https://www.kernel.org/doc/Documentation/networking/operstates.txt 
+// Link Definition of an ip link interface (emulating iproute2 API)  References:  * [Linux Networking](https://www.kernel.org/doc/Documentation/networking/) * [Linux Bonding](https://www.kernel.org/doc/Documentation/networking/bonding.txt) * [Links Operstate](https://www.kernel.org/doc/Documentation/networking/operstates.txt) 
 type Link struct {
 	// Inteface index ID 
 	Ifindex *int32 `json:"ifindex,omitempty"`
