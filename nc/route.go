@@ -58,6 +58,7 @@ type Route struct {
 
 func routeParse(route netlink.Route) (Route, error) {
 	ncroute := Route{}
+
 	ncroute.Dst.parse(route.Dst)
 	l, err := netlink.LinkByIndex(route.LinkIndex)
 	if err != nil {
@@ -69,6 +70,7 @@ func routeParse(route netlink.Route) (Route, error) {
 	ncroute.Prefsrc.SetIP(route.Src)
 	ncroute.Metric = int32(route.Priority)
 	ncroute.Scope = Scope(route.Scope.String())
+	ncroute.ID = routeID(ncroute)
 	return ncroute, nil
 }
 

@@ -19,6 +19,8 @@ func linksGet() ([]Link, error) {
 
 func ncRouteParse(ncroute nc.Route) Route {
 	var route Route
+	id := string(ncroute.ID)
+	route.Id = &id
 	prefsrc := ncroute.Prefsrc.String()
 	if prefsrc != "" {
 		route.SetPrefsrc(Ip{string: &prefsrc})
