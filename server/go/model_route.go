@@ -17,8 +17,8 @@ import (
 
 // Route IP L3 Ruote entry
 type Route struct {
-	// Incremental route identifier
-	Id *int32 `json:"__id,omitempty"`
+	// MD5 identifier based on relevant context (ignored in creation)
+	Id *string `json:"__id,omitempty"`
 	Dst *RouteDst `json:"dst,omitempty"`
 	Gateway *Ip `json:"gateway,omitempty"`
 	// Interface name 
@@ -50,10 +50,10 @@ func NewRouteWithDefaults() *Route {
 	return &this
 }
 
-// GetId returns the Id field value if set, -1 otherwise.
-func (o *Route) GetId() int32 {
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *Route) GetId() string {
 	if o == nil || o.Id == nil {
-		var ret int32 = -1 
+		var ret string
 		return ret
 	}
 	return *o.Id
@@ -61,7 +61,7 @@ func (o *Route) GetId() int32 {
 
 // GetIdOk returns a tuple with the Id field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Route) GetIdOk() (*int32, bool) {
+func (o *Route) GetIdOk() (*string, bool) {
 	if o == nil || o.Id == nil {
 		return nil, false
 	}
@@ -77,8 +77,8 @@ func (o *Route) HasId() bool {
 	return false
 }
 
-// SetId gets a reference to the given int32 and assigns it to the Id field.
-func (o *Route) SetId(v int32) {
+// SetId gets a reference to the given string and assigns it to the Id field.
+func (o *Route) SetId(v string) {
 	o.Id = &v
 }
 

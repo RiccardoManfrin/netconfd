@@ -78,7 +78,7 @@ type NetworkApiServicer interface {
 	ConfigNetNSsGet(context.Context) (ImplResponse, error)
 	ConfigRouteCreate(context.Context, Route) (ImplResponse, error)
 	ConfigRouteDel(context.Context, int32) (ImplResponse, error)
-	ConfigRouteGet(context.Context, int32) (ImplResponse, error)
+	ConfigRouteGet(context.Context, string) (ImplResponse, error)
 	ConfigRoutesGet(context.Context) (ImplResponse, error)
 	ConfigRuleCreate(context.Context, map[string]interface{}) (ImplResponse, error)
 	ConfigRuleDel(context.Context, int32) (ImplResponse, error)

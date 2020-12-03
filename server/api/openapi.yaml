@@ -763,9 +763,9 @@ components:
       - default
       type: string
     routeid:
-      description: Incremental route identifier
-      example: 42
-      type: integer
+      description: MD5 identifier based on relevant context (ignored in creation)
+      example: b0804ec967f48520697662a204f5fe72
+      type: string
     ruleid:
       description: Incremental rule identifier
       example: 42
@@ -854,16 +854,16 @@ components:
         protocol: protocol
         dev: dummy0
         metric: 0
-        __id: 42
+        __id: b0804ec967f48520697662a204f5fe72
         flags:
         - null
         - null
         gateway: 10.1.2.3
       properties:
         __id:
-          description: Incremental route identifier
-          example: 42
-          type: integer
+          description: MD5 identifier based on relevant context (ignored in creation)
+          example: b0804ec967f48520697662a204f5fe72
+          type: string
         dst:
           $ref: '#/components/schemas/route_dst'
         gateway:

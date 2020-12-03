@@ -416,12 +416,7 @@ func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Req
 // ConfigRouteGet - Get a L3 route details 
 func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	routeid, err := parseInt32Parameter(params["routeid"])
-	if err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	
+	routeid := params["routeid"]
 	result, err := c.service.ConfigRouteGet(r.Context(), routeid)
 	//If an error occured, encode the error with the status code
 	if err != nil {

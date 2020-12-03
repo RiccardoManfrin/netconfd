@@ -771,9 +771,9 @@ components:
       enum: 
         - "default"
     routeid:
-      type: integer
-      example: 42
-      description: Incremental route identifier
+      type: string
+      example: b0804ec967f48520697662a204f5fe72
+      description: MD5 identifier based on relevant context (ignored in creation)
     ruleid:
       type: integer
       example: 42
