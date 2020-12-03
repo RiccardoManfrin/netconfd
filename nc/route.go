@@ -3,7 +3,7 @@ package nc
 import (
 	"net"
 
-	"github.com/vishvananda/netlink"
+	"github.com/riccardomanfrin/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
