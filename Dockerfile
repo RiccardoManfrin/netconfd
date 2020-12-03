@@ -25,4 +25,4 @@ COPY --from=builder $SRCPATH/$CI_PROJECT_NAME /app/$CI_PROJECT_NAME
 RUN mkdir /conf/
 COPY --from=builder $SRCPATH/$CI_PROJECT_NAME.json /conf/
 WORKDIR /app/
-ENTRYPOINT ["./$CI_PROJECT_NAME", "--config", "/conf/$CI_PROJECT_NAME.json"]
+ENTRYPOINT ./$CI_PROJECT_NAME --config /conf/$CI_PROJECT_NAME.json
