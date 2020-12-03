@@ -20,8 +20,8 @@ build:
   - docker build --pull --iidfile=image_id.txt --ssh default
     --build-arg CI_PROJECT_PATH=$CI_PROJECT_PATH
     --build-arg CI_PROJECT_NAME=$CI_PROJECT_NAME
-    -f Dockerfile ./
-    -t nc:dev
+    -f Dockerfile 
+    -t nc:dev ./
   - docker save $(cat image_id.txt) -o ./image.tar
   artifacts:
     expire_in: 1 hour

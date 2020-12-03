@@ -4,7 +4,6 @@ import (
 	"net"
 
 	"github.com/riccardomanfrin/netlink"
-	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 // ModelDefault This is equivalent to 0.0.0.0/0 or ::/0
@@ -63,7 +62,6 @@ func routeParse(route netlink.Route) (Route, error) {
 	}
 	ncroute.Dev = LinkID(l.Attrs().Name)
 	ncroute.Gateway.SetIP(route.Gw)
-	logger.Log.Warning("Convert Protocol number to string (\"dhcp\"/\"static\")")
 	ncroute.Protocol = route.Protocol.String()
 	ncroute.Prefsrc.SetIP(route.Src)
 	ncroute.Metric = int32(route.Priority)
