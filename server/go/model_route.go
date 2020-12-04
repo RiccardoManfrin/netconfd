@@ -20,9 +20,9 @@ import (
 // Route IP L3 Ruote entry
 type Route struct {
 	// MD5 identifier based on relevant context (ignored in creation)
-	Id      *string     `json:"__id,omitempty"`
-	Dst     nc.CIDRAddr `json:"dst"`
-	Gateway *Ip         `json:"gateway,omitempty"`
+	Id      *string      `json:"__id,omitempty"`
+	Dst     nc.CIDRAddr  `json:"dst"`
+	Gateway *nc.CIDRAddr `json:"gateway,omitempty"`
 	// Interface name
 	Dev *string `json:"dev,omitempty"`
 	// Tells the origin of a route.  Refs:   * [Netlink](https://github.com/torvalds/linux/blob/master/include/uapi/linux/rtnetlink.h)   * [Go Unix constants](https://pkg.go.dev/golang.org/x/sys/unix?utm_source=gopls#pkg-constants)  Typical values types:      * `redirect`   * `kernel`   * `boot`   * `static`   * `dhcp`   * `bgp`   * `bird`   * `ospf`   * `rip`   * `zebra`

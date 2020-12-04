@@ -20,7 +20,7 @@ func linksGet() ([]Link, error) {
 func ncRouteFormat(route Route) nc.Route {
 	ncroute := nc.Route{}
 	ncroute.Dst = route.Dst
-	//ncroute.Gateway.SetIP(*route.Gateway)
+	ncroute.Gateway = *route.Gateway
 	return ncroute
 }
 
