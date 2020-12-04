@@ -203,17 +203,8 @@ func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) 
 }
 
 // ConfigRouteDel - Brings down and delete an L3 IP route
-func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid int32) (ImplResponse, error) {
-	// TODO - update ConfigRouteDel with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	//return Response(404, nil),nil
-
-	err := errors.New("ConfigRouteDel method not implemented")
+func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) (ImplResponse, error) {
+	err := nc.RouteDelete(nc.RouteID(routeid))
 	return DeleteErrorResponse(err, nil)
 }
 

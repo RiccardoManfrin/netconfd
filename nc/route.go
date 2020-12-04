@@ -86,7 +86,7 @@ func routeID(route Route) RouteID {
 func RoutesGet() ([]Route, error) {
 	routes, err := netlink.RouteList(nil, netlink.FAMILY_ALL)
 	if err != nil {
-		return nil, err
+		return nil, mapNetlinkError(err, nil)
 	}
 	ncroutes := make([]Route, len(routes))
 	for i, r := range routes {
@@ -110,6 +110,25 @@ func RouteGet(_routeID RouteID) (Route, error) {
 		}
 	}
 	return Route{}, NewRouteByIDNotFoundError(_routeID)
+}
+
+//RouteDelete deletes a route by ID
+func RouteDelete(routeid RouteID) error {
+	routes, err := netlink.RouteList(nil, netlink.FAMILY_ALL)
+	if err != nil {
+		return mapNetlinkError(err, nil)
+	}
+
+	for _, r := range routes {
+		route, err := routeParse(r)
+		if err != nil {
+			return mapNetlinkError(err, nil)
+		}
+		if routeid == routeID(route) {
+			return mapNetlinkError(netlink.RouteDel(&r), nil)
+		}
+	}
+	return NewRouteByIDNotFoundError(routeid)
 }
 
 //RouteCreate create and add a new route
