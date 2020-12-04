@@ -53,7 +53,7 @@ func routeParse(route netlink.Route) (Route, error) {
 	ncroute.Prefsrc = route.Src
 	ncroute.Metric = int32(route.Priority)
 	ncroute.Scope = Scope(route.Scope.String())
-	ncroute.ID = routeID(ncroute)
+	ncroute.ID = RouteIDGet(ncroute)
 	return ncroute, nil
 }
 
@@ -74,7 +74,7 @@ func routeFormat(route Route) (netlink.Route, error) {
 //RouteID identifies a route via MD5 of its content
 type RouteID string
 
-func routeID(route Route) RouteID {
+func RouteIDGet(route Route) RouteID {
 	md := md5.New()
 	md.Sum([]byte(route.Gateway.String()))
 	md.Sum([]byte(route.Dev))
@@ -105,7 +105,7 @@ func RouteGet(_routeID RouteID) (Route, error) {
 		return Route{}, err
 	}
 	for _, r := range routes {
-		if routeID(r) == _routeID {
+		if RouteIDGet(r) == _routeID {
 			return r, nil
 		}
 	}
@@ -124,7 +124,7 @@ func RouteDelete(routeid RouteID) error {
 		if err != nil {
 			return mapNetlinkError(err, nil)
 		}
-		if routeid == routeID(route) {
+		if routeid == RouteIDGet(route) {
 			return mapNetlinkError(netlink.RouteDel(&r), nil)
 		}
 	}
@@ -133,7 +133,7 @@ func RouteDelete(routeid RouteID) error {
 
 //RouteCreate create and add a new route
 func RouteCreate(route Route) (RouteID, error) {
-	routeid := routeID(route)
+	routeid := RouteIDGet(route)
 	route.ID = routeid
 	routes, err := RoutesGet()
 	if err != nil {
