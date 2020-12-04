@@ -103,9 +103,14 @@ func NewBackupSlaveIfaceFoundForNonActiveBackupBondError(backupIfname LinkID, bo
 	return &SemanticError{Code: SEMANTIC, Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
 }
 
-//NewRouteLinkDeviceNotFoundError
+//NewRouteLinkDeviceNotFoundError describes a link device not found for a route to create
 func NewRouteLinkDeviceNotFoundError(routeID RouteID, linkID LinkID) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Route " + string(routeID) + " Link Device " + string(linkID) + " not found"}
+}
+
+//NewENETUNREACHError returns a network unreachable error
+func NewENETUNREACHError(r Route) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r)}
 }
 
 //SyntaxError is a logical error on the content of the operation requested to be performed
@@ -155,11 +160,6 @@ func NewNonBondMasterLinkTypeError(ifname LinkID) error {
 //NewEPERMError returns a missing permissions error
 func NewEPERMError() error {
 	return &ConflictError{Code: CONFLICT, Reason: "Got EPERM error: insufficient permissions to perform action"}
-}
-
-//NewENETUNREACHError returns a network unreachable error
-func NewENETUNREACHError(r Route) error {
-	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r)}
 }
 
 //NewRouteExistsConflictError returns a Conflict error on link layer interfaces

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"net"
 	"net/http"
 	"net/http/httptest"
 	"reflect"
@@ -22,8 +23,7 @@ func parseSampleConfig(t *testing.T, sampleConfig string) oas.Config {
 	return config
 }
 
-func genSampleConfig(t *testing.T) oas.Config {
-	sampleConfig := `
+var sampleConfig string = `
 {
 "global": {},
 "host_network": {
@@ -69,6 +69,8 @@ func genSampleConfig(t *testing.T) oas.Config {
 	"routes": []
 }
 }`
+
+func genSampleConfig(t *testing.T) oas.Config {
 	return parseSampleConfig(t, sampleConfig)
 }
 
@@ -476,4 +478,65 @@ func Test010(t *testing.T) {
 			t.Errorf("Mismatch on %v", delta)
 		}
 	}
+}
+
+var sampleRouteConfig string = `
+{
+  "__id": "498b44c3999f2edfa715123748696ad8",
+  "dev": "dummy0",
+  "dst": "10.1.2.0/24",
+  "gateway": "10.1.2.3",
+  "metric": 50,
+  "protocol": "boot",
+  "scope": "universe"
+}
+`
+
+func runRequest(method string, uri string, body string) *httptest.ResponseRecorder {
+	iobody := bytes.NewReader([]byte(body))
+	req, _ := http.NewRequest(method, uri, iobody)
+	req.Header.Add("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	m.ServeHTTP(rr, req)
+	return rr
+}
+
+//Test011 - EC-011 Route network not found
+func Test011(t *testing.T) {
+	cset := genSampleConfig(t)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC,
+		`Got ENETUNREACH error: network is not reachable for route {498b44c3999f2edfa715123748696ad8 {[10 1 2 0] 24} 10.1.2.3 dummy0  50  <nil> <nil>}`)
+}
+
+//Test012 - EC-012 Link not found for route to create
+func Test012(t *testing.T) {
+	cset := genSampleConfig(t)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("DELETE", "/api/1/links/dummy0", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC,
+		`Route 498b44c3999f2edfa715123748696ad8 Link Device dummy0 not found`)
+}
+
+//Test013 - EC-013 Route Exists
+func Test013(t *testing.T) {
+	cset := genSampleConfig(t)
+	lai := []oas.LinkAddrInfo{
+		{
+			Local:     net.IPv4(10, 1, 2, 3),
+			Prefixlen: 24,
+		},
+	}
+
+	(*cset.HostNetwork.Links)[1].AddrInfo = &lai
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkResponse(t, rr, http.StatusConflict, nc.CONFLICT,
+		`Route 498b44c3999f2edfa715123748696ad8 exists`)
 }
