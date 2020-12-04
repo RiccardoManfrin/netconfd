@@ -526,11 +526,11 @@ func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
 		(setRoute.Gateway == nil && getRoute.Gateway != nil) {
 		return false
 	}
-	//if setRoute.Gateway != nil && getRoute.Gateway != nil {
-	//	if setRoute.Gateway.Equal(*getRoute.Gateway) == false {
-	//		return false
-	//	}
-	//}
+	if setRoute.Gateway != nil && getRoute.Gateway != nil {
+		if setRoute.Gateway.Equal(*getRoute.Gateway) == false {
+			return false
+		}
+	}
 
 	return true
 }
