@@ -762,7 +762,11 @@ components:
     routeid:
       type: string
       example: b0804ec967f48520697662a204f5fe72
-      description: MD5 identifier based on relevant context (ignored in creation)
+      description: | 
+
+        MD5 hash based on route relevant context.
+
+        Ignored in creation (readonly), it is only used to identify a route to get or delete
     ruleid:
       type: integer
       example: 42
@@ -796,6 +800,8 @@ components:
         - "nowhere"
     route_flags:
       type: string
+      description: Additonal route info (readonly)
+      example: "linkdown"
     route_dst:
       $ref: '#/components/schemas/cidraddr'
     config:
@@ -870,6 +876,7 @@ components:
           $ref: '#/components/schemas/ifname'
         protocol:
           type: string
+          example: static
           description: |
             Tells the origin of a route.
             
