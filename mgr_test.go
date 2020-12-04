@@ -516,10 +516,6 @@ func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
 	setRoute := _setRoute.(oas.Route)
 	getRoute := _getRoute.(oas.Route)
 
-	if (setRoute.Dev != nil && getRoute.Dev == nil) ||
-		(setRoute.Dev == nil && getRoute.Dev != nil) {
-		return false
-	}
 	if setRoute.Dev != nil && getRoute.Dev != nil {
 		if *setRoute.Dev != *getRoute.Dev {
 			return false
