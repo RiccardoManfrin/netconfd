@@ -396,12 +396,7 @@ func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.
 // ConfigRouteDel - Brings down and delete an L3 IP route 
 func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	routeid, err := parseInt32Parameter(params["routeid"])
-	if err != nil {
-		w.WriteHeader(500)
-		return
-	}
-	
+	routeid := params["routeid"]
 	result, err := c.service.ConfigRouteDel(r.Context(), routeid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
