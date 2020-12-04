@@ -19,11 +19,8 @@ func linksGet() ([]Link, error) {
 
 func ncRouteFormat(route Route) nc.Route {
 	ncroute := nc.Route{}
-	dst, ok := route.Dst.GetActualInstance().(string)
-	if ok != true {
-		panic("Should not be possible")
-	}
-	ncroute.Dst.Load(dst)
+	ncroute.Dst = route.Dst
+	//ncroute.Gateway.SetIP(*route.Gateway)
 	return ncroute
 }
 
@@ -37,7 +34,7 @@ func ncRouteParse(ncroute nc.Route) Route {
 	}
 	dst := ncroute.Dst.String()
 	if dst != "" {
-		route.SetDst(RouteDst{string: &dst})
+		route.SetDst(dst)
 	}
 	gw := ncroute.Gateway.String()
 	if gw != "" {

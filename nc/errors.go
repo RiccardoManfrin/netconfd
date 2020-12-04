@@ -18,6 +18,8 @@ const (
 	SYNTAX
 	//UNKNOWN_TYPE error type (the value type is not recognized/supported)
 	UNKNOWN_TYPE
+	//UNEXPECTED_CORNER_CASE error type describes an error that was not meant to appear
+	UNEXPECTED_CORNER_CASE
 	//RESERVED can be used for outer error enum cohexistence
 	RESERVED = 1000
 )
@@ -100,6 +102,11 @@ func NewBackupSlaveIfaceFoundForNonActiveBackupBondError(backupIfname LinkID, bo
 	return &SemanticError{Code: SEMANTIC, Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
 }
 
+//NewRouteLinkDeviceNotFoundError
+func NewRouteLinkDeviceNotFoundError(routeID RouteID, linkID LinkID) error {
+	return &SemanticError{Code: SEMANTIC, Reason: "Route " + string(routeID) + " Link Device " + string(linkID) + " not found"}
+}
+
 //SyntaxError is a logical error on the content of the operation requested to be performed
 type SyntaxError GenericError
 
@@ -149,6 +156,11 @@ func NewEPERMError() error {
 	return &ConflictError{Code: CONFLICT, Reason: "Got EPERM error: insufficient permissions to perform action"}
 }
 
+//NewRouteExistsConflictError returns a Conflict error on link layer interfaces
+func NewRouteExistsConflictError(routeID RouteID) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Route " + string(routeID) + " exists"}
+}
+
 //NotFoundError is a logical error on the content of the operation requested to be performed
 type NotFoundError ConflictError
 
@@ -165,4 +177,18 @@ func NewLinkNotFoundError(linkID LinkID) error {
 //NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
 	return &NotFoundError{Code: NOT_FOUND, Reason: "Route ID " + string(routeid) + " not found"}
+}
+
+//UnexpetecdCornerCaseError is fundamentally an implementation error catch exception
+//It makes explitic to developer that he did not think of a case that instead happened
+type UnexpetecdCornerCaseError GenericError
+
+func (e *UnexpetecdCornerCaseError) Error() string {
+	strerr, _ := json.Marshal(*e)
+	return string(strerr)
+}
+
+//NewUnexpectedCornerCaseError returns a Conflict error on link layer interfaces
+func NewUnexpectedCornerCaseError(reason string) error {
+	return &UnexpetecdCornerCaseError{Code: UNEXPECTED_CORNER_CASE, Reason: reason}
 }

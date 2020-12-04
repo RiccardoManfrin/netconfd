@@ -3,55 +3,12 @@ package nc
 import (
 	"crypto/md5"
 	"fmt"
-	"net"
 
 	"github.com/riccardomanfrin/netlink"
 )
 
 // ModelDefault This is equivalent to 0.0.0.0/0 or ::/0
 type ModelDefault string
-
-// RouteDst - struct for RouteDst
-type RouteDst struct {
-	Ip           CIDRAddr
-	ModelDefault ModelDefault
-}
-
-func (r *RouteDst) String() string {
-	if r.ModelDefault == "default" {
-		return string(r.ModelDefault)
-	}
-	return r.Ip.String()
-}
-
-//Load checks for "default" or CIDR network string values
-func (r *RouteDst) Load(routedst string) error {
-	if routedst == "default" {
-		r.Ip.ParseCIDRNetStr("0.0.0.0/0")
-	} else {
-		err := r.Ip.ParseCIDRNetStr(routedst)
-		if err != nil {
-			return err
-		}
-	}
-	return nil
-}
-
-//ToIPNet Converts route destination to ip network
-func (r *RouteDst) ToIPNet() (net.IPNet, error) {
-	if r.Ip.IsValid() {
-		return r.Ip.ToIPNet(), nil
-	}
-	return r.Ip.ToIPNet(), NewInvalidIPAddressError(r.Ip.String())
-}
-
-func (r *RouteDst) parse(dst *net.IPNet) {
-	if dst == nil {
-		r.ModelDefault = "default"
-	} else {
-		r.Ip.ParseIPNet(*dst)
-	}
-}
 
 // Scope scope of the object (link or global)
 type Scope string
@@ -65,7 +22,7 @@ const (
 // Route IP L3 Ruote entry
 type Route struct {
 	ID      RouteID  `json:"id"`
-	Dst     RouteDst `json:"dst,omitempty"`
+	Dst     CIDRAddr `json:"dst,omitempty"`
 	Gateway CIDRAddr `json:"gateway,omitempty"`
 	// Interface name
 	Dev      LinkID   `json:"dev,omitempty"`
@@ -79,8 +36,10 @@ type Route struct {
 
 func routeParse(route netlink.Route) (Route, error) {
 	ncroute := Route{}
-
-	ncroute.Dst.parse(route.Dst)
+	if route.Dst == nil {
+		return ncroute, NewUnexpectedCornerCaseError("Route is not supposed to have no dst")
+	}
+	ncroute.Dst.SetNet(*route.Dst)
 	l, err := netlink.LinkByIndex(route.LinkIndex)
 	if err != nil {
 		return ncroute, err
@@ -100,7 +59,7 @@ type RouteID string
 
 func routeID(route Route) RouteID {
 	md := md5.New()
-	data := md.Sum([]byte(route.Dst.Ip.String()))
+	data := md.Sum([]byte(route.Dst.String()))
 	return RouteID(fmt.Sprintf("%x", md5.Sum(data)))
 }
 
@@ -134,13 +93,33 @@ func RouteGet(_routeID RouteID) (Route, error) {
 	return Route{}, NewRouteByIDNotFoundError(_routeID)
 }
 
+//RouteCreate create and add a new route
 func RouteCreate(route Route) (RouteID, error) {
 	routeid := routeID(route)
-	nlroute := netlink.Route{}
-	dst, err := route.Dst.ToIPNet()
+	routes, err := RoutesGet()
 	if err != nil {
 		return routeid, err
 	}
+	for _, r := range routes {
+		if r.ID == routeid {
+			return routeid, NewRouteExistsConflictError(routeid)
+		}
+	}
+
+	nlroute := netlink.Route{}
+	dst := route.Dst.ToIPNet()
 	nlroute.Dst = &dst
+	nlroute.Gw = route.Gateway.ip
+	l, err := LinkGet(route.Dev)
+	if err != nil {
+		return routeid, NewRouteLinkDeviceNotFoundError(routeid, route.Dev)
+	}
+	nlroute.LinkIndex = int(l.Ifindex)
+
+	err = netlink.RouteAdd(&nlroute)
+	if err != nil {
+		return routeid, mapNetlinkError(err)
+	}
+
 	return routeid, nil
 }

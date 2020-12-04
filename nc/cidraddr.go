@@ -75,6 +75,11 @@ func (a *CIDRAddr) ToIPNet() net.IPNet {
 func (a *CIDRAddr) ParseCIDRNetStr(straddr string) error {
 	var e error
 	var ipnet *net.IPNet
+
+	if straddr == "default" {
+		straddr = "0.0.0.0/0"
+	}
+
 	a.ip, ipnet, e = net.ParseCIDR(straddr)
 	if e != nil {
 		a.ip = net.ParseIP(straddr)
@@ -135,4 +140,18 @@ func (a *CIDRAddr) PrefixLen() int {
 func CIDRAddrValidate(cidraddr string) error {
 	var a CIDRAddr
 	return a.ParseCIDRNetStr(cidraddr)
+}
+
+//UnmarshalJSON implements unmarshalling
+func (a *CIDRAddr) UnmarshalJSON(data []byte) error {
+	unquotedStr, err := strconv.Unquote(string(data))
+	if err != nil {
+		return err
+	}
+	return a.ParseCIDRNetStr(unquotedStr)
+}
+
+//MarshalJSON JSON Marshaller
+func (a CIDRAddr) MarshalJSON() ([]byte, error) {
+	return []byte(strconv.Quote(a.String())), nil
 }
