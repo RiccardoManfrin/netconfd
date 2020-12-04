@@ -765,11 +765,6 @@ components:
       type: string
       format: cidraddr
       example: "10.1.2.3/24"
-    default:
-      type: string
-      description: "This is equivalent to 0.0.0.0/0 or ::/0"
-      enum: 
-        - "default"
     routeid:
       type: string
       example: b0804ec967f48520697662a204f5fe72
@@ -808,9 +803,7 @@ components:
     route_flags:
       type: string
     route_dst:
-      oneOf:
-        - $ref: '#/components/schemas/cidraddr'
-        - $ref: '#/components/schemas/default'
+      $ref: '#/components/schemas/cidraddr'
     config:
       type: object
       #required:

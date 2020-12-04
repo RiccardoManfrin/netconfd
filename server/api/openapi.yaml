@@ -757,11 +757,6 @@ components:
       example: 10.1.2.3/24
       format: cidraddr
       type: string
-    default:
-      description: This is equivalent to 0.0.0.0/0 or ::/0
-      enum:
-      - default
-      type: string
     routeid:
       description: MD5 identifier based on relevant context (ignored in creation)
       example: b0804ec967f48520697662a204f5fe72
@@ -800,9 +795,7 @@ components:
     route_flags:
       type: string
     route_dst:
-      oneOf:
-      - $ref: '#/components/schemas/cidraddr'
-      - $ref: '#/components/schemas/default'
+      $ref: '#/components/schemas/cidraddr'
     config:
       properties:
         global:
@@ -849,6 +842,7 @@ components:
       example:
         prefsrc: 10.1.2.3
         protocol: protocol
+        dst: 10.1.2.3/24
         dev: dummy0
         metric: 0
         __id: b0804ec967f48520697662a204f5fe72
@@ -862,7 +856,9 @@ components:
           example: b0804ec967f48520697662a204f5fe72
           type: string
         dst:
-          $ref: '#/components/schemas/route_dst'
+          example: 10.1.2.3/24
+          format: cidraddr
+          type: string
         gateway:
           $ref: '#/components/schemas/ip'
         dev:

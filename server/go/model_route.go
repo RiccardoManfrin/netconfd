@@ -19,7 +19,7 @@ import (
 type Route struct {
 	// MD5 identifier based on relevant context (ignored in creation)
 	Id *string `json:"__id,omitempty"`
-	Dst RouteDst `json:"dst"`
+	Dst string `json:"dst"`
 	Gateway *Ip `json:"gateway,omitempty"`
 	// Interface name 
 	Dev *string `json:"dev,omitempty"`
@@ -37,7 +37,7 @@ type Route struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoute(dst RouteDst, ) *Route {
+func NewRoute(dst string, ) *Route {
 	this := Route{}
 	this.Dst = dst
 	return &this
@@ -84,9 +84,9 @@ func (o *Route) SetId(v string) {
 }
 
 // GetDst returns the Dst field value
-func (o *Route) GetDst() RouteDst {
+func (o *Route) GetDst() string {
 	if o == nil  {
-		var ret RouteDst
+		var ret string
 		return ret
 	}
 
@@ -95,7 +95,7 @@ func (o *Route) GetDst() RouteDst {
 
 // GetDstOk returns a tuple with the Dst field value
 // and a boolean to check if the value has been set.
-func (o *Route) GetDstOk() (*RouteDst, bool) {
+func (o *Route) GetDstOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -103,7 +103,7 @@ func (o *Route) GetDstOk() (*RouteDst, bool) {
 }
 
 // SetDst sets field value
-func (o *Route) SetDst(v RouteDst) {
+func (o *Route) SetDst(v string) {
 	o.Dst = v
 }
 
