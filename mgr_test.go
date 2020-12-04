@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -176,7 +175,7 @@ func Test003(t *testing.T) {
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
 }
 
-func linkStateCheck(setLinkData oas.Link, getLinkData oas.Link) string {
+func linkStateMatch(setLinkData oas.Link, getLinkData oas.Link) bool {
 	//Check for up request to correspond to up interface
 	upIsUp := false
 	lfs := setLinkData.GetFlags()
@@ -190,7 +189,7 @@ func linkStateCheck(setLinkData oas.Link, getLinkData oas.Link) string {
 					}
 				}
 				if upIsUp == false {
-					return fmt.Sprintf("link_flags -> UP not up")
+					return false
 				}
 
 				// Dummy interfaces report unknown operstate
@@ -203,94 +202,78 @@ func linkStateCheck(setLinkData oas.Link, getLinkData oas.Link) string {
 					//Let's also check operstate:
 					operstate := getLinkData.GetOperstate()
 					if operstate != "up" {
-						return "Not up link->operstate"
+						return false
 					}
 				}
 			}
 		}
 	}
-	return ""
+	return true
 }
 
-func compareSetLinks(setList []oas.Link, getList []oas.Link) string {
-	setMap := comm.ListToMap(setList, "Ifname")
-	getMap := comm.ListToMap(getList, "Ifname")
-	for ifname, setLink := range setMap {
-		getLink := getMap[ifname]
-		if delta := compareSetLink(setLink.(oas.Link), getLink.(oas.Link)); delta != "" {
-			return delta
-		}
-	}
-	return ""
-}
-
-func compareSetLink(setLinkData oas.Link, getLinkData oas.Link) string {
+func linkMatch(_setLinkData interface{}, _getLinkData interface{}) bool {
+	setLinkData := _setLinkData.(oas.Link)
+	getLinkData := _getLinkData.(oas.Link)
 	if setLinkData.GetMaster() != getLinkData.GetMaster() {
-		return "master"
+		return false
 	}
 	if setLinkData.LinkType != getLinkData.LinkType {
-		return "link_type"
+		return false
 	}
 	lli := setLinkData.GetLinkinfo()
 	rli := getLinkData.GetLinkinfo()
 	lid := lli.GetInfoData()
 	rid := rli.GetInfoData()
 	if lid.GetMode() != rid.GetMode() {
-		return "link_info->info_data->mode"
+		return false
 	}
 	if lid.GetMiimon() != -1 && lid.GetMiimon() != rid.GetMiimon() {
-		return fmt.Sprintf("link_info->info_data->Miimon: l:[%v], r:[%v]", lid.GetMiimon(), rid.GetMiimon())
+		return false
 	}
 	if lid.GetDowndelay() != -1 && lid.GetDowndelay() != rid.GetDowndelay() {
-		return fmt.Sprintf("link_info->info_data->Downdelay: l:[%v], r:[%v]", lid.GetDowndelay(), rid.GetDowndelay())
+		return false
 	}
 	if lid.GetUpdelay() != -1 && lid.GetUpdelay() != rid.GetUpdelay() {
-		return fmt.Sprintf("link_info->info_data->Updelay: l:[%v], r:[%v]", lid.GetUpdelay(), rid.GetUpdelay())
+		return false
 	}
 	if lid.GetXmitHashPolicy() != "" && (lid.GetXmitHashPolicy() != rid.GetXmitHashPolicy()) {
-		return fmt.Sprintf("link_info->info_data->XmitHashPolicy: l:[%v], r:[%v]", lid.GetXmitHashPolicy(), rid.GetXmitHashPolicy())
+		return false
 	}
 	if lid.GetAdLacpRate() != "" && lid.GetAdLacpRate() != rid.GetAdLacpRate() {
-		return fmt.Sprintf("link_info->info_data->AdLacpRate: l:[%v], r:[%v]", lid.GetAdLacpRate(), rid.GetAdLacpRate())
+		return false
 	}
 	if lid.GetPeerNotifyDelay() != -1 && lid.GetPeerNotifyDelay() != rid.GetPeerNotifyDelay() {
-		return fmt.Sprintf("link_info->info_data->PeerNotifyDelay: l:[%v], r:[%v]", lid.GetPeerNotifyDelay(), rid.GetPeerNotifyDelay())
+		return false
 	}
 	if lid.GetUseCarrier() != -1 && lid.GetUseCarrier() != rid.GetUseCarrier() {
-		return fmt.Sprintf("link_info->info_data->UseCarrier: l:[%v], r:[%v]", lid.GetUseCarrier(), rid.GetUseCarrier())
+		return false
 	}
 	if lid.GetLpInterval() != -1 && lid.GetLpInterval() != rid.GetLpInterval() {
-		return fmt.Sprintf("link_info->info_data->LpInterval: l:[%v], r:[%v]", lid.GetLpInterval(), rid.GetLpInterval())
+		return false
 	}
 	if lid.GetArpAllTargets() != "" && lid.GetArpAllTargets() != rid.GetArpAllTargets() {
-		return fmt.Sprintf("link_info->info_data->ArpAllTargets: l:[%v], r:[%v]", lid.GetArpAllTargets(), rid.GetArpAllTargets())
+		return false
 	}
 	if lid.GetXmitHashPolicy() != "" && lid.GetXmitHashPolicy() != rid.GetXmitHashPolicy() {
-		return fmt.Sprintf("link_info->info_data->XmitHashPolicy: l:[%v], r:[%v]", lid.GetXmitHashPolicy(), rid.GetXmitHashPolicy())
+		return false
 	}
 	if lid.GetResendIgmp() != -1 && lid.GetResendIgmp() != rid.GetResendIgmp() {
-		return fmt.Sprintf("link_info->info_data->ResendIgmp: l:[%v], r:[%v]", lid.GetResendIgmp(), rid.GetResendIgmp())
+		return false
 	}
 	if lid.GetMinLinks() != -1 && lid.GetMinLinks() != rid.GetMinLinks() {
-		return fmt.Sprintf("link_info->info_data->MinLinks: l:[%v], r:[%v]", lid.GetMinLinks(), rid.GetMinLinks())
+		return false
 	}
 	if lid.GetPrimaryReselect() != "" && lid.GetPrimaryReselect() != rid.GetPrimaryReselect() {
-		return fmt.Sprintf("link_info->info_data->PrimaryReselect: l:[%v], r:[%v]", lid.GetPrimaryReselect(), rid.GetPrimaryReselect())
+		return false
 	}
 	if lid.GetAdSelect() != "" && lid.GetAdSelect() != rid.GetAdSelect() {
-		return fmt.Sprintf("link_info->info_data->AdSelect: l:[%v], r:[%v]", lid.GetAdSelect(), rid.GetAdSelect())
+		return false
 	}
 	if lid.GetAllSlavesActive() != -1 && lid.GetAllSlavesActive() != rid.GetAllSlavesActive() {
-		return fmt.Sprintf("link_info->info_data->AllSlavesActive: l:[%v], r:[%v]", lid.GetAllSlavesActive(), rid.GetAllSlavesActive())
+		return false
 	}
 
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
-
-	return linkStateCheck(setLinkData, getLinkData)
+	return linkStateMatch(setLinkData, getLinkData)
 }
 
 //Test004 - OK-004 Bond Active-Backup params check
@@ -299,8 +282,7 @@ func Test004(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 
@@ -315,7 +297,7 @@ func Test005(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -344,7 +326,7 @@ func Test006(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -373,7 +355,7 @@ func Test007(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -405,7 +387,7 @@ func Test008(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -436,7 +418,7 @@ func Test009(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -448,7 +430,7 @@ func Test010(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -554,17 +536,32 @@ func Test014(t *testing.T) {
 		`Route 498b44c3999f2edfa715123748696ad8 exists`)
 }
 
-func compareSetRoutes(setRoutesData []oas.Route, getRoutesData []oas.Route) string {
-	return ""
+func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
+	setRoute := _setRoute.(oas.Route)
+	getRoute := _getRoute.(oas.Route)
+
+	if (setRoute.Dev != nil && getRoute.Dev == nil) ||
+		(setRoute.Dev == nil && getRoute.Dev != nil) {
+		return false
+	}
+	if setRoute.Dev != nil && getRoute.Dev != nil {
+		if *setRoute.Dev != *getRoute.Dev {
+			return false
+		}
+	}
+	return true
 }
 
 func Test15(t *testing.T) {
 	cset := genSampleConfig(t)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	//cget := runConfigGet(t)
-	//if cget != cset {
-	//	t.Errorf("Get/Set configs differ")
-	//}
-	//compareSetLinks(setLink.(oas.Link), getLink)
+	cget := runConfigGet(t)
+
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+		t.Errorf("Mismatch on %v", delta)
+	}
+	if delta := comm.ListCompare(*cset.HostNetwork.Routes, *cget.HostNetwork.Routes, routeMatch); delta != nil {
+		t.Errorf("Mismatch on %v", delta)
+	}
 }
