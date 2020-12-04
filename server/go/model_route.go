@@ -13,6 +13,7 @@ package openapi
 
 import (
 	"encoding/json"
+	"net"
 
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
@@ -20,17 +21,19 @@ import (
 // Route IP L3 Ruote entry
 type Route struct {
 	// MD5 identifier based on relevant context (ignored in creation)
-	Id      *string      `json:"__id,omitempty"`
-	Dst     nc.CIDRAddr  `json:"dst"`
-	Gateway *nc.CIDRAddr `json:"gateway,omitempty"`
+	Id  *string     `json:"__id,omitempty"`
+	Dst nc.CIDRAddr `json:"dst"`
+	// IPv4 or IPv6 address
+	Gateway *net.IP `json:"gateway,omitempty"`
 	// Interface name
 	Dev *string `json:"dev,omitempty"`
 	// Tells the origin of a route.  Refs:   * [Netlink](https://github.com/torvalds/linux/blob/master/include/uapi/linux/rtnetlink.h)   * [Go Unix constants](https://pkg.go.dev/golang.org/x/sys/unix?utm_source=gopls#pkg-constants)  Typical values types:      * `redirect`   * `kernel`   * `boot`   * `static`   * `dhcp`   * `bgp`   * `bird`   * `ospf`   * `rip`   * `zebra`
 	Protocol *string `json:"protocol,omitempty"`
 	// priority of the route
-	Metric  *int32 `json:"metric,omitempty"`
-	Scope   *Scope `json:"scope,omitempty"`
-	Prefsrc *Ip    `json:"prefsrc,omitempty"`
+	Metric *int32 `json:"metric,omitempty"`
+	Scope  *Scope `json:"scope,omitempty"`
+	// IPv4 or IPv6 address
+	Prefsrc *net.IP `json:"prefsrc,omitempty"`
 	// Route flags
 	Flags *[]string `json:"flags,omitempty"`
 }
@@ -111,21 +114,22 @@ func (o *Route) SetDst(v string) {
 }
 
 // GetGateway returns the Gateway field value if set, zero value otherwise.
-func (o *Route) GetGateway() Ip {
+func (o *Route) GetGateway() string {
 	if o == nil || o.Gateway == nil {
-		var ret Ip
+		var ret string
 		return ret
 	}
-	return *o.Gateway
+	return o.Gateway.String()
 }
 
 // GetGatewayOk returns a tuple with the Gateway field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Route) GetGatewayOk() (*Ip, bool) {
+func (o *Route) GetGatewayOk() (*string, bool) {
 	if o == nil || o.Gateway == nil {
 		return nil, false
 	}
-	return o.Gateway, true
+	res := o.Gateway.String()
+	return &res, true
 }
 
 // HasGateway returns a boolean if a field has been set.
@@ -137,9 +141,9 @@ func (o *Route) HasGateway() bool {
 	return false
 }
 
-// SetGateway gets a reference to the given Ip and assigns it to the Gateway field.
-func (o *Route) SetGateway(v Ip) {
-	o.Gateway = &v
+// SetGateway gets a reference to the given string and assigns it to the Gateway field.
+func (o *Route) SetGateway(v string) {
+	o.Gateway.UnmarshalText([]byte(v))
 }
 
 // GetDev returns the Dev field value if set, zero value otherwise.
@@ -271,21 +275,22 @@ func (o *Route) SetScope(v Scope) {
 }
 
 // GetPrefsrc returns the Prefsrc field value if set, zero value otherwise.
-func (o *Route) GetPrefsrc() Ip {
+func (o *Route) GetPrefsrc() string {
 	if o == nil || o.Prefsrc == nil {
-		var ret Ip
+		var ret string
 		return ret
 	}
-	return *o.Prefsrc
+	return o.Prefsrc.String()
 }
 
 // GetPrefsrcOk returns a tuple with the Prefsrc field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Route) GetPrefsrcOk() (*Ip, bool) {
+func (o *Route) GetPrefsrcOk() (*string, bool) {
 	if o == nil || o.Prefsrc == nil {
 		return nil, false
 	}
-	return o.Prefsrc, true
+	res := o.Prefsrc.String()
+	return &res, true
 }
 
 // HasPrefsrc returns a boolean if a field has been set.
@@ -297,9 +302,9 @@ func (o *Route) HasPrefsrc() bool {
 	return false
 }
 
-// SetPrefsrc gets a reference to the given Ip and assigns it to the Prefsrc field.
-func (o *Route) SetPrefsrc(v Ip) {
-	o.Prefsrc = &v
+// SetPrefsrc gets a reference to the given string and assigns it to the Prefsrc field.
+func (o *Route) SetPrefsrc(v string) {
+	o.Prefsrc.UnmarshalText([]byte(v))
 }
 
 // GetFlags returns the Flags field value if set, zero value otherwise.

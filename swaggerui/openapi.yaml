@@ -750,17 +750,11 @@ paths:
 
 components:
   schemas:
-    ipv4:
-      type: string
-      format: ipv4
-    ipv6:
-      type: string
-      format: ipv6
     ip:
+      description: IPv4 or IPv6 address
+      type: string
       example: "10.1.2.3"
-      oneOf:
-        - $ref: '#/components/schemas/ipv4'
-        - $ref: '#/components/schemas/ipv6'
+      format: ipaddr
     cidraddr:
       type: string
       format: cidraddr

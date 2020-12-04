@@ -742,17 +742,11 @@ paths:
       - monitor
 components:
   schemas:
-    ipv4:
-      format: ipv4
-      type: string
-    ipv6:
-      format: ipv6
-      type: string
     ip:
+      description: IPv4 or IPv6 address
       example: 10.1.2.3
-      oneOf:
-      - $ref: '#/components/schemas/ipv4'
-      - $ref: '#/components/schemas/ipv6'
+      format: ipaddr
+      type: string
     cidraddr:
       example: 10.1.2.3/24
       format: cidraddr
@@ -860,7 +854,10 @@ components:
           format: cidraddr
           type: string
         gateway:
-          $ref: '#/components/schemas/ip'
+          description: IPv4 or IPv6 address
+          example: 10.1.2.3
+          format: ipaddr
+          type: string
         dev:
           description: |
             Interface name
@@ -880,7 +877,10 @@ components:
         scope:
           $ref: '#/components/schemas/scope'
         prefsrc:
-          $ref: '#/components/schemas/ip'
+          description: IPv4 or IPv6 address
+          example: 10.1.2.3
+          format: ipaddr
+          type: string
         flags:
           description: Route flags
           items:
@@ -1561,7 +1561,10 @@ components:
         local: 10.1.2.3
       properties:
         local:
-          $ref: '#/components/schemas/ip'
+          description: IPv4 or IPv6 address
+          example: 10.1.2.3
+          format: ipaddr
+          type: string
         prefixlen:
           example: 24
           type: integer

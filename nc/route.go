@@ -3,6 +3,7 @@ package nc
 import (
 	"crypto/md5"
 	"fmt"
+	"net"
 
 	"github.com/riccardomanfrin/netlink"
 )
@@ -23,13 +24,13 @@ const (
 type Route struct {
 	ID      RouteID  `json:"id"`
 	Dst     CIDRAddr `json:"dst,omitempty"`
-	Gateway CIDRAddr `json:"gateway,omitempty"`
+	Gateway net.IP   `json:"gateway,omitempty"`
 	// Interface name
-	Dev      LinkID   `json:"dev,omitempty"`
-	Protocol string   `json:"protocol,omitempty"`
-	Metric   int32    `json:"metric,omitempty"`
-	Scope    Scope    `json:"scope,omitempty"`
-	Prefsrc  CIDRAddr `json:"prefsrc,omitempty"`
+	Dev      LinkID `json:"dev,omitempty"`
+	Protocol string `json:"protocol,omitempty"`
+	Metric   int32  `json:"metric,omitempty"`
+	Scope    Scope  `json:"scope,omitempty"`
+	Prefsrc  net.IP `json:"prefsrc,omitempty"`
 	// Route flags
 	Flags *[]string `json:"flags,omitempty"`
 }
@@ -45,9 +46,9 @@ func routeParse(route netlink.Route) (Route, error) {
 		return ncroute, err
 	}
 	ncroute.Dev = LinkID(l.Attrs().Name)
-	ncroute.Gateway.SetIP(route.Gw)
+	ncroute.Gateway = route.Gw
 	ncroute.Protocol = route.Protocol.String()
-	ncroute.Prefsrc.SetIP(route.Src)
+	ncroute.Prefsrc = route.Src
 	ncroute.Metric = int32(route.Priority)
 	ncroute.Scope = Scope(route.Scope.String())
 	ncroute.ID = routeID(ncroute)
@@ -109,7 +110,7 @@ func RouteCreate(route Route) (RouteID, error) {
 	nlroute := netlink.Route{}
 	dst := route.Dst.ToIPNet()
 	nlroute.Dst = &dst
-	nlroute.Gw = route.Gateway.ip
+	nlroute.Gw = route.Gateway
 	l, err := LinkGet(route.Dev)
 	if err != nil {
 		return routeid, NewRouteLinkDeviceNotFoundError(routeid, route.Dev)

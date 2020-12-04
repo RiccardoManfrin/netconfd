@@ -20,7 +20,12 @@ func linksGet() ([]Link, error) {
 func ncRouteFormat(route Route) nc.Route {
 	ncroute := nc.Route{}
 	ncroute.Dst = route.Dst
-	ncroute.Gateway = *route.Gateway
+	if route.Gateway != nil {
+		ncroute.Gateway = *route.Gateway
+	}
+	if route.Prefsrc != nil {
+		ncroute.Prefsrc = *route.Prefsrc
+	}
 	return ncroute
 }
 
@@ -30,7 +35,7 @@ func ncRouteParse(ncroute nc.Route) Route {
 	route.Id = &id
 	prefsrc := ncroute.Prefsrc.String()
 	if prefsrc != "" {
-		route.SetPrefsrc(Ip{string: &prefsrc})
+		route.SetPrefsrc(prefsrc)
 	}
 	dst := ncroute.Dst.String()
 	if dst != "" {
@@ -38,7 +43,7 @@ func ncRouteParse(ncroute nc.Route) Route {
 	}
 	gw := ncroute.Gateway.String()
 	if gw != "" {
-		route.SetGateway(Ip{string: &gw})
+		route.SetGateway(gw)
 	}
 	route.SetDev(string(ncroute.Dev))
 	route.SetProtocol(ncroute.Protocol)
@@ -79,8 +84,7 @@ func ncLinkParse(nclink nc.Link) Link {
 	if len(nclink.AddrInfo) > 0 {
 		lai := make([]LinkAddrInfo, len(nclink.AddrInfo))
 		for i, a := range nclink.AddrInfo {
-			ip := a.Local.Address()
-			lai[i].Local = Ip{string: &ip}
+			lai[i].Local = a.Local.ToIPNet().IP
 			lai[i].Prefixlen = int32(a.Local.PrefixLen())
 		}
 		link.AddrInfo = &lai
@@ -221,7 +225,7 @@ func ncLinkFormat(link Link) nc.Link {
 		nclink.AddrInfo = make([]nc.LinkAddrInfo, len(*link.AddrInfo))
 		for i, addr := range *link.AddrInfo {
 			var cidrnet nc.CIDRAddr
-			cidrnet.ParseIP(*(addr.Local.string))
+			cidrnet.SetIP(addr.Local)
 			cidrnet.ParsePrefixLen(int(addr.Prefixlen))
 			lai := nc.LinkAddrInfo{
 				Local: cidrnet,

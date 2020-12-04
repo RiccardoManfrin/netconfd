@@ -13,12 +13,14 @@ package openapi
 
 import (
 	"encoding/json"
+	"net"
 )
 
 // LinkAddrInfo struct for LinkAddrInfo
 type LinkAddrInfo struct {
-	Local Ip `json:"local"`
-	Prefixlen int32 `json:"prefixlen"`
+	// IPv4 or IPv6 address
+	Local     net.IP  `json:"local"`
+	Prefixlen int32   `json:"prefixlen"`
 	Broadcast *string `json:"broadcast,omitempty"`
 }
 
@@ -26,9 +28,9 @@ type LinkAddrInfo struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLinkAddrInfo(local Ip, prefixlen int32, ) *LinkAddrInfo {
+func NewLinkAddrInfo(local string, prefixlen int32) *LinkAddrInfo {
 	this := LinkAddrInfo{}
-	this.Local = local
+	this.Local.UnmarshalText([]byte(local))
 	this.Prefixlen = prefixlen
 	return &this
 }
@@ -42,32 +44,33 @@ func NewLinkAddrInfoWithDefaults() *LinkAddrInfo {
 }
 
 // GetLocal returns the Local field value
-func (o *LinkAddrInfo) GetLocal() Ip {
-	if o == nil  {
-		var ret Ip
+func (o *LinkAddrInfo) GetLocal() string {
+	if o == nil {
+		var ret string
 		return ret
 	}
 
-	return o.Local
+	return o.Local.String()
 }
 
 // GetLocalOk returns a tuple with the Local field value
 // and a boolean to check if the value has been set.
-func (o *LinkAddrInfo) GetLocalOk() (*Ip, bool) {
-	if o == nil  {
+func (o *LinkAddrInfo) GetLocalOk() (*string, bool) {
+	if o == nil {
 		return nil, false
 	}
-	return &o.Local, true
+	res := o.Local.String()
+	return &res, true
 }
 
 // SetLocal sets field value
-func (o *LinkAddrInfo) SetLocal(v Ip) {
-	o.Local = v
+func (o *LinkAddrInfo) SetLocal(v string) {
+	o.Local.UnmarshalText([]byte(v))
 }
 
 // GetPrefixlen returns the Prefixlen field value
 func (o *LinkAddrInfo) GetPrefixlen() int32 {
-	if o == nil  {
+	if o == nil {
 		var ret int32
 		return ret
 	}
@@ -78,7 +81,7 @@ func (o *LinkAddrInfo) GetPrefixlen() int32 {
 // GetPrefixlenOk returns a tuple with the Prefixlen field value
 // and a boolean to check if the value has been set.
 func (o *LinkAddrInfo) GetPrefixlenOk() (*int32, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Prefixlen, true
@@ -170,5 +173,3 @@ func (v *NullableLinkAddrInfo) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-
