@@ -226,7 +226,7 @@ func ncLinkFormat(link Link) nc.Link {
 		for i, addr := range *link.AddrInfo {
 			var cidrnet nc.CIDRAddr
 			cidrnet.SetIP(addr.Local)
-			cidrnet.ParsePrefixLen(int(addr.Prefixlen))
+			cidrnet.SetPrefixLen(int(addr.Prefixlen))
 			lai := nc.LinkAddrInfo{
 				Local: cidrnet,
 			}

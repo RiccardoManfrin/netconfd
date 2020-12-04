@@ -143,7 +143,10 @@ func (o *Route) HasGateway() bool {
 
 // SetGateway gets a reference to the given string and assigns it to the Gateway field.
 func (o *Route) SetGateway(v string) {
-	o.Gateway.UnmarshalText([]byte(v))
+	ip := net.ParseIP(v)
+	if ip != nil {
+		o.Gateway = &ip
+	}
 }
 
 // GetDev returns the Dev field value if set, zero value otherwise.
@@ -304,7 +307,10 @@ func (o *Route) HasPrefsrc() bool {
 
 // SetPrefsrc gets a reference to the given string and assigns it to the Prefsrc field.
 func (o *Route) SetPrefsrc(v string) {
-	o.Prefsrc.UnmarshalText([]byte(v))
+	ip := net.ParseIP(v)
+	if ip != nil {
+		o.Prefsrc = &ip
+	}
 }
 
 // GetFlags returns the Flags field value if set, zero value otherwise.

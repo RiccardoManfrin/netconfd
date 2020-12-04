@@ -51,8 +51,8 @@ func (a *CIDRAddr) SetNet(ipnet net.IPNet) {
 	a.mask = ones
 }
 
-//ParsePrefixLen translates an IP network prefix length into a CIDRAddr mask
-func (a *CIDRAddr) ParsePrefixLen(len int) {
+//SetPrefixLen translates an IP network prefix length into a CIDRAddr mask
+func (a *CIDRAddr) SetPrefixLen(len int) {
 	a.mask = len
 }
 

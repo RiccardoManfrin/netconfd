@@ -15,37 +15,37 @@ import (
 	"encoding/json"
 )
 
-// Link Definition of an ip link interface (emulating iproute2 API)  References:  * [Linux Networking](https://www.kernel.org/doc/Documentation/networking/) * [Linux Bonding](https://www.kernel.org/doc/Documentation/networking/bonding.txt) * [Links Operstate](https://www.kernel.org/doc/Documentation/networking/operstates.txt) 
+// Link Definition of an ip link interface (emulating iproute2 API)  References:  * [Linux Networking](https://www.kernel.org/doc/Documentation/networking/) * [Linux Bonding](https://www.kernel.org/doc/Documentation/networking/bonding.txt) * [Links Operstate](https://www.kernel.org/doc/Documentation/networking/operstates.txt)
 type Link struct {
-	// Inteface index ID 
+	// Inteface index ID
 	Ifindex *int32 `json:"ifindex,omitempty"`
-	// Interface name 
+	// Interface name
 	Ifname string `json:"ifname"`
-	// Specify what is the VLAN physical device the virtual device is linked to. Applies to vlan type virtual devices 
+	// Specify what is the VLAN physical device the virtual device is linked to. Applies to vlan type virtual devices
 	Link *string `json:"link,omitempty"`
 	// Composition of flags of the interface
 	Flags *[]LinkFlag `json:"flags,omitempty"`
-	// Maximum Transfer Unit value 
+	// Maximum Transfer Unit value
 	Mtu *int32 `json:"mtu,omitempty"`
 	// Promiscuous mode flag
 	Promiscuity *int32 `json:"promiscuity,omitempty"`
-	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to. 
-	Master *string `json:"master,omitempty"`
+	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to.
+	Master   *string       `json:"master,omitempty"`
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
-	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down 
-	Operstate *string `json:"operstate,omitempty"`
-	Linkmode *string `json:"linkmode,omitempty"`
-	Group *string `json:"group,omitempty"`
-	LinkType string `json:"link_type"`
-	Address *string `json:"address,omitempty"`
-	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
+	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down
+	Operstate *string         `json:"operstate,omitempty"`
+	Linkmode  *string         `json:"linkmode,omitempty"`
+	Group     *string         `json:"group,omitempty"`
+	LinkType  string          `json:"link_type"`
+	Address   *string         `json:"address,omitempty"`
+	AddrInfo  *[]LinkAddrInfo `json:"addr_info,omitempty"`
 }
 
 // NewLink instantiates a new Link object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLink(ifname string, linkType string, ) *Link {
+func NewLink(ifname string, linkType string) *Link {
 	this := Link{}
 	this.Ifname = ifname
 	this.LinkType = linkType
@@ -63,7 +63,7 @@ func NewLinkWithDefaults() *Link {
 // GetIfindex returns the Ifindex field value if set, -1 otherwise.
 func (o *Link) GetIfindex() int32 {
 	if o == nil || o.Ifindex == nil {
-		var ret int32 = -1 
+		var ret int32 = -1
 		return ret
 	}
 	return *o.Ifindex
@@ -94,7 +94,7 @@ func (o *Link) SetIfindex(v int32) {
 
 // GetIfname returns the Ifname field value
 func (o *Link) GetIfname() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -105,7 +105,7 @@ func (o *Link) GetIfname() string {
 // GetIfnameOk returns a tuple with the Ifname field value
 // and a boolean to check if the value has been set.
 func (o *Link) GetIfnameOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.Ifname, true
@@ -183,7 +183,7 @@ func (o *Link) SetFlags(v []LinkFlag) {
 // GetMtu returns the Mtu field value if set, -1 otherwise.
 func (o *Link) GetMtu() int32 {
 	if o == nil || o.Mtu == nil {
-		var ret int32 = -1 
+		var ret int32 = -1
 		return ret
 	}
 	return *o.Mtu
@@ -215,7 +215,7 @@ func (o *Link) SetMtu(v int32) {
 // GetPromiscuity returns the Promiscuity field value if set, -1 otherwise.
 func (o *Link) GetPromiscuity() int32 {
 	if o == nil || o.Promiscuity == nil {
-		var ret int32 = -1 
+		var ret int32 = -1
 		return ret
 	}
 	return *o.Promiscuity
@@ -406,7 +406,7 @@ func (o *Link) SetGroup(v string) {
 
 // GetLinkType returns the LinkType field value
 func (o *Link) GetLinkType() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
@@ -417,7 +417,7 @@ func (o *Link) GetLinkType() string {
 // GetLinkTypeOk returns a tuple with the LinkType field value
 // and a boolean to check if the value has been set.
 func (o *Link) GetLinkTypeOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
 	return &o.LinkType, true
@@ -574,5 +574,3 @@ func (v *NullableLink) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

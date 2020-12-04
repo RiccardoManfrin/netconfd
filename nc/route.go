@@ -38,9 +38,11 @@ type Route struct {
 func routeParse(route netlink.Route) (Route, error) {
 	ncroute := Route{}
 	if route.Dst == nil {
-		return ncroute, NewUnexpectedCornerCaseError("Route is not supposed to have no dst")
+		ncroute.Dst.SetIP(net.IPv4(0, 0, 0, 0))
+		ncroute.Dst.SetPrefixLen(0)
+	} else {
+		ncroute.Dst.SetNet(*route.Dst)
 	}
-	ncroute.Dst.SetNet(*route.Dst)
 	l, err := netlink.LinkByIndex(route.LinkIndex)
 	if err != nil {
 		return ncroute, err
@@ -60,6 +62,8 @@ type RouteID string
 
 func routeID(route Route) RouteID {
 	md := md5.New()
+	md.Sum([]byte(route.Gateway.String()))
+	md.Sum([]byte(route.Dev))
 	data := md.Sum([]byte(route.Dst.String()))
 	return RouteID(fmt.Sprintf("%x", md5.Sum(data)))
 }
