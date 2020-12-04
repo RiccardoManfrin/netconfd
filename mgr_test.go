@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"testing"
 
+	comm "gitlab.lan.athonet.com/core/netconfd/common"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
 )
@@ -28,45 +29,60 @@ var sampleConfig string = `
 "global": {},
 "host_network": {
 	"links": [
-	{
-		"ifname": "bond0",
-		"link_type": "ether",
-		"flags": ["up"],
-		"linkinfo": {
-		"info_kind": "bond",
-		"info_data": {
-			"mode": "active-backup",
-			"downdelay": 800,
-			"updelay" : 400,
-			"miimon" : 200
-		}
-		}
-	},
-	{
-		"ifname": "dummy0",
-		"link_type": "ether",
-		"flags": ["up"],
-		"linkinfo": {
-		"info_kind": "dummy",
-		"info_slave_data": {
-			"state": "BACKUP"
-		}
+		{
+			"ifname": "bond0",
+			"link_type": "ether",
+			"flags": ["up"],
+			"linkinfo": {
+			"info_kind": "bond",
+			"info_data": {
+				"mode": "active-backup",
+				"downdelay": 800,
+				"updelay" : 400,
+				"miimon" : 200
+			}
+			}
 		},
-		"master": "bond0"
-	},
-	{
-		"ifname": "dummy1",
-		"link_type": "ether",
-		"linkinfo": {
-		"info_kind": "dummy",
-		"info_slave_data": {
-			"state": "ACTIVE"
-		}
+		{
+			"ifname": "dummy0",
+			"link_type": "ether",
+			"flags": ["up"],
+			"linkinfo": {
+				"info_kind": "dummy",
+				"info_slave_data": {
+					"state": "BACKUP"
+				}
+			},
+			"addr_info": [
+				{
+					"local": "10.6.7.8",
+					"prefixlen": 24
+				}
+			],
+			"master": "bond0"
 		},
-		"master": "bond0"
-	}
+		{
+			"ifname": "dummy1",
+			"link_type": "ether",
+			"linkinfo": {
+			"info_kind": "dummy",
+			"info_slave_data": {
+				"state": "ACTIVE"
+			}
+			},
+			"master": "bond0"
+		}
 	],
-	"routes": []
+	"routes": [
+		{
+			"dev": "dummy0",
+			"dst": "10.8.9.0/24",
+			"gateway": "10.6.7.8",
+			"metric": 50,
+			"protocol": "boot",
+			"scope": "universe"
+		}
+	]
 }
 }`
 
@@ -96,23 +112,25 @@ func checkResponse(t *testing.T, rr *httptest.ResponseRecorder, httpStatusCode i
 			httpStatusCode)
 	}
 	var genericError nc.GenericError
-	err := json.Unmarshal(rr.Body.Bytes(), &genericError)
-	if err != nil {
-		t.Errorf("Err Unmarshal failure")
-	}
 	if ncErrorCode != nc.RESERVED {
+		err := json.Unmarshal(rr.Body.Bytes(), &genericError)
+		if err != nil {
+			t.Errorf("Err Unmarshal failure")
+		}
 		if genericError.Code != ncErrorCode {
 			t.Errorf("Err Code mismatch: got [%v], want [%v]",
 				genericError.Code,
 				nc.SEMANTIC)
 		}
-	}
-	if ncreason != "" {
-		if genericError.Reason != ncreason {
-			t.Errorf("Err Reason mismatch: got [%v], want [%v]",
-				genericError.Reason,
-				ncreason)
+		if ncreason != "" {
+			if genericError.Reason != ncreason {
+				t.Errorf("Err Reason mismatch: got [%v], want [%v]",
+					genericError.Reason,
+					ncreason)
+			}
 		}
+	} else {
+		rr.Body.Bytes()
 	}
 }
 
@@ -134,29 +152,6 @@ func runConfigGet(t *testing.T) oas.Config {
  * - OK are checks on a correct action
  * - EC are checks on faulty behavior/requests (edge cases)
  */
-
-func listToMap(slice interface{}, key string) map[string]interface{} {
-	s := reflect.ValueOf(slice)
-	if s.Kind() != reflect.Slice {
-		panic("InterfaceSlice() given a non-slice type")
-	}
-	if s.IsNil() {
-		return nil
-	}
-	trueSlice := make([]interface{}, s.Len())
-	for i := 0; i < s.Len(); i++ {
-		trueSlice[i] = s.Index(i).Interface()
-	}
-
-	mappedList := make(map[string]interface{})
-
-	for _, l := range trueSlice {
-		val := reflect.ValueOf(l)
-		kval := val.FieldByName(key).String()
-		mappedList[kval] = l
-	}
-	return mappedList
-}
 
 //Test001 - EC-001 Active-Backup Bond Without ActiveSlave
 func Test001(t *testing.T) {
@@ -218,7 +213,19 @@ func linkStateCheck(setLinkData oas.Link, getLinkData oas.Link) string {
 	return ""
 }
 
-func deltaLink(setLinkData oas.Link, getLinkData oas.Link) string {
+func compareSetLinks(setList []oas.Link, getList []oas.Link) string {
+	setMap := comm.ListToMap(setList, "Ifname")
+	getMap := comm.ListToMap(getList, "Ifname")
+	for ifname, setLink := range setMap {
+		getLink := getMap[ifname]
+		if delta := compareSetLink(setLink.(oas.Link), getLink.(oas.Link)); delta != "" {
+			return delta
+		}
+	}
+	return ""
+}
+
+func compareSetLink(setLinkData oas.Link, getLinkData oas.Link) string {
 	if setLinkData.GetMaster() != getLinkData.GetMaster() {
 		return "master"
 	}
@@ -293,14 +300,11 @@ func Test004(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
+
 }
 
 //Test005 - OK-005 Bond Balance-RR Xmit Hash Policy params check
@@ -312,13 +316,8 @@ func Test005(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
 }
 
@@ -346,13 +345,8 @@ func Test006(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
 }
 
@@ -380,13 +374,8 @@ func Test007(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
 }
 
@@ -417,13 +406,8 @@ func Test008(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
 }
 
@@ -453,13 +437,8 @@ func Test009(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
 }
 
@@ -470,13 +449,8 @@ func Test010(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	cLinksSetMap := listToMap(*cset.HostNetwork.Links, "Ifname")
-	cLinksGetMap := listToMap(*cget.HostNetwork.Links, "Ifname")
-	for ifname, setLink := range cLinksSetMap {
-		getLink := cLinksGetMap[ifname].(oas.Link)
-		if delta := deltaLink(setLink.(oas.Link), getLink); delta != "" {
-			t.Errorf("Mismatch on %v", delta)
-		}
+	if delta := compareSetLinks(*cset.HostNetwork.Links, *cget.HostNetwork.Links); delta != "" {
+		t.Errorf("Mismatch on %v", delta)
 	}
 }
 
@@ -523,7 +497,31 @@ func Test012(t *testing.T) {
 		`Route 498b44c3999f2edfa715123748696ad8 Link Device dummy0 not found`)
 }
 
-//Test013 - EC-013 Route Exists
+// JSONBytesEqual compares the JSON in two byte slices.
+func JSONBytesEqual(a, b []byte) (bool, error) {
+	var j, j2 interface{}
+	if err := json.Unmarshal(a, &j); err != nil {
+		return false, err
+	}
+	if err := json.Unmarshal(b, &j2); err != nil {
+		return false, err
+	}
+	return reflect.DeepEqual(j2, j), nil
+}
+
+func checkBody(t *testing.T, rr *httptest.ResponseRecorder, body string) {
+	res, err := JSONBytesEqual(rr.Body.Bytes(), []byte(body))
+	if err != nil {
+		t.Error(err)
+	}
+	if res != true {
+		t.Errorf("Body mismatch: got [%v], want [%v]",
+			string(rr.Body.Bytes()),
+			body)
+	}
+}
+
+//Test013 - EC-013 Route Creation + Route Check + Route Exists
 func Test013(t *testing.T) {
 	cset := genSampleConfig(t)
 	lai := []oas.LinkAddrInfo{
@@ -536,7 +534,50 @@ func Test013(t *testing.T) {
 	(*cset.HostNetwork.Links)[1].AddrInfo = &lai
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
+	checkBody(t, rr, `"498b44c3999f2edfa715123748696ad8"`)
 	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
 	checkResponse(t, rr, http.StatusConflict, nc.CONFLICT,
 		`Route 498b44c3999f2edfa715123748696ad8 exists`)
+}
+
+//Test014 - OK-014 Batch Link + Route config
+func Test014(t *testing.T) {
+	cset := genSampleConfig(t)
+	lai := []oas.LinkAddrInfo{
+		{
+			Local:     net.IPv4(10, 1, 2, 3),
+			Prefixlen: 24,
+		},
+	}
+
+	(*cset.HostNetwork.Links)[1].AddrInfo = &lai
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
+	checkBody(t, rr, `"498b44c3999f2edfa715123748696ad8"`)
+	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkResponse(t, rr, http.StatusConflict, nc.CONFLICT,
+		`Route 498b44c3999f2edfa715123748696ad8 exists`)
+}
+
+func compareSetRoutes(setRoutesData []oas.Route, getRoutesData []oas.Route) string {
+	return ""
+}
+
+func Test15(t *testing.T) {
+	cset := genSampleConfig(t)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	//cget := runConfigGet(t)
+	//if cget != cset {
+	//	t.Errorf("Get/Set configs differ")
+	//}
+	//compareSetLinks(setLink.(oas.Link), getLink)
 }
