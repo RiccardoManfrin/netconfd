@@ -512,26 +512,6 @@ func Test013(t *testing.T) {
 		`Route 498b44c3999f2edfa715123748696ad8 exists`)
 }
 
-//Test014 - OK-014 Batch Link + Route config
-func Test014(t *testing.T) {
-	cset := genSampleConfig(t)
-	lai := oas.LinkAddrInfo{
-		Local:     net.IPv4(10, 1, 2, 3),
-		Prefixlen: 24,
-	}
-
-	*(*cset.HostNetwork.Links)[1].AddrInfo = append(*(*cset.HostNetwork.Links)[1].AddrInfo, lai)
-	rr := runConfigSet(cset)
-	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
-	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
-	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
-	checkBody(t, rr, `"498b44c3999f2edfa715123748696ad8"`)
-	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
-	checkResponse(t, rr, http.StatusConflict, nc.CONFLICT,
-		`Route 498b44c3999f2edfa715123748696ad8 exists`)
-}
-
 func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
 	setRoute := _setRoute.(oas.Route)
 	getRoute := _getRoute.(oas.Route)
@@ -559,10 +539,35 @@ func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
 	return true
 }
 
+//Test014 - OK-014 Batch Link + Route config
+func Test14(t *testing.T) {
+	cset := genSampleConfig(t)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	cget := runConfigGet(t)
+
+	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+		t.Errorf("Mismatch on %v", delta)
+	}
+	if delta := comm.ListCompare(*cset.HostNetwork.Routes, *cget.HostNetwork.Routes, routeMatch); delta != nil {
+		t.Errorf("Mismatch on %v", delta)
+	}
+}
+
+//Test015 - OK-015 Route without dev
 func Test15(t *testing.T) {
 	cset := genSampleConfig(t)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	newroute := `
+{
+	"dst": "10.102.2.0/24",
+	"gateway": "10.6.7.8",
+	"metric": 50
+}`
+	rr = runRequest("POST", "/api/1/routes", newroute)
+	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 	cget := runConfigGet(t)
 
 	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {

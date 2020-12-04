@@ -63,11 +63,13 @@ func routeFormat(route Route) (netlink.Route, error) {
 	nlroute.Dst = &dst
 	nlroute.Gw = route.Gateway
 	nlroute.Priority = int(route.Metric)
-	l, err := LinkGet(route.Dev)
-	if err != nil {
-		return nlroute, NewRouteLinkDeviceNotFoundError(route.ID, route.Dev)
+	if route.Dev.IsValid() {
+		l, err := LinkGet(route.Dev)
+		if err != nil {
+			return nlroute, NewRouteLinkDeviceNotFoundError(route.ID, route.Dev)
+		}
+		nlroute.LinkIndex = int(l.Ifindex)
 	}
-	nlroute.LinkIndex = int(l.Ifindex)
 	return nlroute, nil
 }
 

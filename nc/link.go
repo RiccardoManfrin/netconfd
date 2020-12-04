@@ -94,6 +94,11 @@ type LinkLinkinfo struct {
 //LinkID type
 type LinkID string
 
+//IsValid checks whether a link is valid
+func (l LinkID) IsValid() bool {
+	return string(l) != "" /* && len(string(l)) <= 15 */
+}
+
 // LinkFlag the model 'LinkFlag'
 type LinkFlag string
 
