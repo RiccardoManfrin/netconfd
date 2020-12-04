@@ -2,6 +2,7 @@ package nc
 
 import (
 	"encoding/json"
+	"fmt"
 )
 
 //ErrorCode describes the error type via enumeration
@@ -154,6 +155,11 @@ func NewNonBondMasterLinkTypeError(ifname LinkID) error {
 //NewEPERMError returns a missing permissions error
 func NewEPERMError() error {
 	return &ConflictError{Code: CONFLICT, Reason: "Got EPERM error: insufficient permissions to perform action"}
+}
+
+//NewENETUNREACHError returns a network unreachable error
+func NewENETUNREACHError(r Route) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r)}
 }
 
 //NewRouteExistsConflictError returns a Conflict error on link layer interfaces

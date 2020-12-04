@@ -57,6 +57,20 @@ func routeParse(route netlink.Route) (Route, error) {
 	return ncroute, nil
 }
 
+func routeFormat(route Route) (netlink.Route, error) {
+	nlroute := netlink.Route{}
+	dst := route.Dst.ToIPNet()
+	nlroute.Dst = &dst
+	nlroute.Gw = route.Gateway
+	nlroute.Priority = int(route.Metric)
+	l, err := LinkGet(route.Dev)
+	if err != nil {
+		return nlroute, NewRouteLinkDeviceNotFoundError(route.ID, route.Dev)
+	}
+	nlroute.LinkIndex = int(l.Ifindex)
+	return nlroute, nil
+}
+
 //RouteID identifies a route via MD5 of its content
 type RouteID string
 
@@ -101,6 +115,7 @@ func RouteGet(_routeID RouteID) (Route, error) {
 //RouteCreate create and add a new route
 func RouteCreate(route Route) (RouteID, error) {
 	routeid := routeID(route)
+	route.ID = routeid
 	routes, err := RoutesGet()
 	if err != nil {
 		return routeid, err
@@ -111,19 +126,14 @@ func RouteCreate(route Route) (RouteID, error) {
 		}
 	}
 
-	nlroute := netlink.Route{}
-	dst := route.Dst.ToIPNet()
-	nlroute.Dst = &dst
-	nlroute.Gw = route.Gateway
-	l, err := LinkGet(route.Dev)
+	nlroute, err := routeFormat(route)
 	if err != nil {
-		return routeid, NewRouteLinkDeviceNotFoundError(routeid, route.Dev)
+		return routeid, err
 	}
-	nlroute.LinkIndex = int(l.Ifindex)
 
 	err = netlink.RouteAdd(&nlroute)
 	if err != nil {
-		return routeid, mapNetlinkError(err)
+		return routeid, mapNetlinkError(err, route)
 	}
 
 	return routeid, nil

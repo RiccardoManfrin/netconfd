@@ -315,7 +315,7 @@ func isLinkRemovable(link netlink.Link) (bool, string) {
 func LinksDelete() error {
 	links, err := netlink.LinkList()
 	if err != nil {
-		return mapNetlinkError(err)
+		return mapNetlinkError(err, nil)
 	}
 	for _, link := range links {
 		removable, why := isLinkRemovable(link)
@@ -326,7 +326,7 @@ func LinksDelete() error {
 		logger.Log.Warning("Removing link " + link.Attrs().Name)
 		err := netlink.LinkDel(link)
 		if err != nil {
-			return mapNetlinkError(err)
+			return mapNetlinkError(err, nil)
 		}
 	}
 	return nil
@@ -469,7 +469,7 @@ func LinkCreate(link Link) error {
 		linkAddrAdd(ifname, a.Local)
 	}
 
-	return mapNetlinkError(err)
+	return mapNetlinkError(err, nil)
 }
 
 func linkAddrAdd(ifname LinkID, addr CIDRAddr) error {
@@ -483,7 +483,7 @@ func linkAddrAdd(ifname LinkID, addr CIDRAddr) error {
 	return nil
 }
 
-func mapNetlinkError(err error) error {
+func mapNetlinkError(err error, context interface{}) error {
 	if err != nil {
 		switch err.(type) {
 		case syscall.Errno:
@@ -491,6 +491,8 @@ func mapNetlinkError(err error) error {
 				return NewEINVALError()
 			} else if err.(syscall.Errno) == syscall.EPERM {
 				return NewEPERMError()
+			} else if err.(syscall.Errno) == syscall.ENETUNREACH {
+				return NewENETUNREACHError(context.(Route))
 			} else {
 				return NewGenericError()
 			}

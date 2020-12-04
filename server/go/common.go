@@ -26,6 +26,12 @@ func ncRouteFormat(route Route) nc.Route {
 	if route.Prefsrc != nil {
 		ncroute.Prefsrc = *route.Prefsrc
 	}
+	if route.Dev != nil {
+		ncroute.Dev = nc.LinkID(*route.Dev)
+	}
+	if route.Metric != nil {
+		ncroute.Metric = *route.Metric
+	}
 	return ncroute
 }
 
