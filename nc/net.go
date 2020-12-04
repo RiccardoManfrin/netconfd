@@ -14,6 +14,10 @@ func Patch(n Network) error {
 	if err != nil {
 		return err
 	}
+	err = RoutesConfigure(n.Routes)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

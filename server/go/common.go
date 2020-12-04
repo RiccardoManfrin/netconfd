@@ -253,7 +253,10 @@ func ncNetFormat(config Config) nc.Network {
 
 		}
 		if config.HostNetwork.Routes != nil {
-			//TODO
+			network.Routes = make([]nc.Route, len(*config.HostNetwork.Routes))
+			for i, l := range *config.HostNetwork.Routes {
+				network.Routes[i] = ncRouteFormat(l)
+			}
 		}
 	}
 	return network

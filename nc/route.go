@@ -131,6 +131,21 @@ func RouteDelete(routeid RouteID) error {
 	return NewRouteByIDNotFoundError(routeid)
 }
 
+//RoutesConfigure configures the whole set of links to manage in the correct sequential order
+//for example some of the link properties require other links to be established already or
+//to have the link down/up etc..
+//This function tries to wipe out every type of conflicting in place configuration such as
+//existing links whose ifname LinkID collides with the ones being created.
+func RoutesConfigure(routes []Route) error {
+	for _, r := range routes {
+		RouteDelete(RouteIDGet(r))
+		if _, err := RouteCreate(r); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 //RouteCreate create and add a new route
 func RouteCreate(route Route) (RouteID, error) {
 	routeid := RouteIDGet(route)

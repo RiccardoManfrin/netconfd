@@ -493,14 +493,13 @@ func checkBody(t *testing.T, rr *httptest.ResponseRecorder, body string) {
 //Test013 - EC-013 Route Creation + Route Check + Route Exists
 func Test013(t *testing.T) {
 	cset := genSampleConfig(t)
-	lai := []oas.LinkAddrInfo{
-		{
-			Local:     net.IPv4(10, 1, 2, 3),
-			Prefixlen: 24,
-		},
+	lai := oas.LinkAddrInfo{
+		Local:     net.IPv4(10, 1, 2, 3),
+		Prefixlen: 24,
 	}
 
-	(*cset.HostNetwork.Links)[1].AddrInfo = &lai
+	*(*cset.HostNetwork.Links)[1].AddrInfo = append(*(*cset.HostNetwork.Links)[1].AddrInfo, lai)
+
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	rr = runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
@@ -516,18 +515,15 @@ func Test013(t *testing.T) {
 //Test014 - OK-014 Batch Link + Route config
 func Test014(t *testing.T) {
 	cset := genSampleConfig(t)
-	lai := []oas.LinkAddrInfo{
-		{
-			Local:     net.IPv4(10, 1, 2, 3),
-			Prefixlen: 24,
-		},
+	lai := oas.LinkAddrInfo{
+		Local:     net.IPv4(10, 1, 2, 3),
+		Prefixlen: 24,
 	}
 
-	(*cset.HostNetwork.Links)[1].AddrInfo = &lai
+	*(*cset.HostNetwork.Links)[1].AddrInfo = append(*(*cset.HostNetwork.Links)[1].AddrInfo, lai)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	rr = runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
-	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
 	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 	checkBody(t, rr, `"498b44c3999f2edfa715123748696ad8"`)
@@ -549,6 +545,17 @@ func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
 			return false
 		}
 	}
+
+	if (setRoute.Gateway != nil && getRoute.Gateway == nil) ||
+		(setRoute.Gateway == nil && getRoute.Gateway != nil) {
+		return false
+	}
+	//if setRoute.Gateway != nil && getRoute.Gateway != nil {
+	//	if setRoute.Gateway.Equal(*getRoute.Gateway) == false {
+	//		return false
+	//	}
+	//}
+
 	return true
 }
 
