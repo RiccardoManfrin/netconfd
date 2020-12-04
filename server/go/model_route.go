@@ -13,22 +13,24 @@ package openapi
 
 import (
 	"encoding/json"
+
+	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
 // Route IP L3 Ruote entry
 type Route struct {
 	// MD5 identifier based on relevant context (ignored in creation)
-	Id *string `json:"__id,omitempty"`
-	Dst string `json:"dst"`
-	Gateway *Ip `json:"gateway,omitempty"`
-	// Interface name 
+	Id      *string     `json:"__id,omitempty"`
+	Dst     nc.CIDRAddr `json:"dst"`
+	Gateway *Ip         `json:"gateway,omitempty"`
+	// Interface name
 	Dev *string `json:"dev,omitempty"`
-	// Tells the origin of a route.  Refs:   * [Netlink](https://github.com/torvalds/linux/blob/master/include/uapi/linux/rtnetlink.h)   * [Go Unix constants](https://pkg.go.dev/golang.org/x/sys/unix?utm_source=gopls#pkg-constants)  Typical values types:      * `redirect`   * `kernel`   * `boot`   * `static`   * `dhcp`   * `bgp`   * `bird`   * `ospf`   * `rip`   * `zebra` 
+	// Tells the origin of a route.  Refs:   * [Netlink](https://github.com/torvalds/linux/blob/master/include/uapi/linux/rtnetlink.h)   * [Go Unix constants](https://pkg.go.dev/golang.org/x/sys/unix?utm_source=gopls#pkg-constants)  Typical values types:      * `redirect`   * `kernel`   * `boot`   * `static`   * `dhcp`   * `bgp`   * `bird`   * `ospf`   * `rip`   * `zebra`
 	Protocol *string `json:"protocol,omitempty"`
 	// priority of the route
-	Metric *int32 `json:"metric,omitempty"`
-	Scope *Scope `json:"scope,omitempty"`
-	Prefsrc *Ip `json:"prefsrc,omitempty"`
+	Metric  *int32 `json:"metric,omitempty"`
+	Scope   *Scope `json:"scope,omitempty"`
+	Prefsrc *Ip    `json:"prefsrc,omitempty"`
 	// Route flags
 	Flags *[]string `json:"flags,omitempty"`
 }
@@ -37,9 +39,9 @@ type Route struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewRoute(dst string, ) *Route {
+func NewRoute(dst string) *Route {
 	this := Route{}
-	this.Dst = dst
+	this.Dst.ParseCIDRNetStr(dst)
 	return &this
 }
 
@@ -85,26 +87,27 @@ func (o *Route) SetId(v string) {
 
 // GetDst returns the Dst field value
 func (o *Route) GetDst() string {
-	if o == nil  {
+	if o == nil {
 		var ret string
 		return ret
 	}
 
-	return o.Dst
+	return o.Dst.String()
 }
 
 // GetDstOk returns a tuple with the Dst field value
 // and a boolean to check if the value has been set.
 func (o *Route) GetDstOk() (*string, bool) {
-	if o == nil  {
+	if o == nil {
 		return nil, false
 	}
-	return &o.Dst, true
+	str := o.Dst.String()
+	return &str, true
 }
 
 // SetDst sets field value
 func (o *Route) SetDst(v string) {
-	o.Dst = v
+	o.Dst.ParseCIDRNetStr(v)
 }
 
 // GetGateway returns the Gateway field value if set, zero value otherwise.
@@ -206,7 +209,7 @@ func (o *Route) SetProtocol(v string) {
 // GetMetric returns the Metric field value if set, -1 otherwise.
 func (o *Route) GetMetric() int32 {
 	if o == nil || o.Metric == nil {
-		var ret int32 = -1 
+		var ret int32 = -1
 		return ret
 	}
 	return *o.Metric
@@ -398,5 +401,3 @@ func (v *NullableRoute) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

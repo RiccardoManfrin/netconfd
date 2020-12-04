@@ -195,9 +195,11 @@ func (s *NetworkApiService) ConfigNetNSsGet(ctx context.Context) (ImplResponse, 
 // ConfigRouteCreate - Configures a route
 func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) (ImplResponse, error) {
 	ncroute := ncRouteFormat(route)
-	nc.RouteCreate(ncroute)
-	err := errors.New("ConfigRouteCreate method not implemented")
-	return PostErrorResponse(err, nil)
+	routeid, err := nc.RouteCreate(ncroute)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	return PostErrorResponse(err, routeid)
 }
 
 // ConfigRouteDel - Brings down and delete an L3 IP route
