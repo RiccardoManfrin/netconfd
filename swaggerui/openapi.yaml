@@ -328,7 +328,7 @@ paths:
         name: routeid
         required: true
         schema:
-          $ref: '#/components/schemas/ruleid'
+          $ref: '#/components/schemas/routeid'
       responses:
         '200':
           description: Successful delete
