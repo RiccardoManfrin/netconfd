@@ -754,7 +754,7 @@ components:
     routeid:
       description: |2
 
-        MD5 hash based on route relevant context.
+        MD5 hash based on route relevant context (dst, gw, dev)
 
         Ignored in creation (readonly), it is only used to identify a route to get or delete
       example: b0804ec967f48520697662a204f5fe72
@@ -854,7 +854,7 @@ components:
         __id:
           description: |2
 
-            MD5 hash based on route relevant context.
+            MD5 hash based on route relevant context (dst, gw, dev)
 
             Ignored in creation (readonly), it is only used to identify a route to get or delete
           example: b0804ec967f48520697662a204f5fe72
