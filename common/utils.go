@@ -1,7 +1,11 @@
 package comm
 
-import "reflect"
+import (
+	"encoding/json"
+	"reflect"
+)
 
+//ListToMap converts a List into a Map by the provided key
 func ListToMap(slice interface{}, key string) map[string]interface{} {
 	s := reflect.ValueOf(slice)
 	if s.Kind() != reflect.Slice {
@@ -23,4 +27,16 @@ func ListToMap(slice interface{}, key string) map[string]interface{} {
 		mappedList[kval] = l
 	}
 	return mappedList
+}
+
+// JSONBytesEqual compares the JSON in two byte slices.
+func JSONBytesEqual(a, b []byte) (bool, error) {
+	var j, j2 interface{}
+	if err := json.Unmarshal(a, &j); err != nil {
+		return false, err
+	}
+	if err := json.Unmarshal(b, &j2); err != nil {
+		return false, err
+	}
+	return reflect.DeepEqual(j2, j), nil
 }

@@ -7,7 +7,6 @@ import (
 	"net"
 	"net/http"
 	"net/http/httptest"
-	"reflect"
 	"testing"
 
 	comm "gitlab.lan.athonet.com/core/netconfd/common"
@@ -497,20 +496,8 @@ func Test012(t *testing.T) {
 		`Route 498b44c3999f2edfa715123748696ad8 Link Device dummy0 not found`)
 }
 
-// JSONBytesEqual compares the JSON in two byte slices.
-func JSONBytesEqual(a, b []byte) (bool, error) {
-	var j, j2 interface{}
-	if err := json.Unmarshal(a, &j); err != nil {
-		return false, err
-	}
-	if err := json.Unmarshal(b, &j2); err != nil {
-		return false, err
-	}
-	return reflect.DeepEqual(j2, j), nil
-}
-
 func checkBody(t *testing.T, rr *httptest.ResponseRecorder, body string) {
-	res, err := JSONBytesEqual(rr.Body.Bytes(), []byte(body))
+	res, err := comm.JSONBytesEqual(rr.Body.Bytes(), []byte(body))
 	if err != nil {
 		t.Error(err)
 	}
