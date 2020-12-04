@@ -8,6 +8,7 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
+	"net"
 	"net/http"
 	"os"
 	"strconv"
@@ -191,6 +192,12 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		logger.Log.Debug(fmt.Sprintf("HTTP Ok %v: %v", wrw.Status, string(wrw.buf.Bytes())))
 	}
 }
+func checkIP(ipstr string) error {
+	if net.ParseIP(ipstr) == nil {
+		return nc.NewInvalidIPAddressError(ipstr)
+	}
+	return nil
+}
 
 //NewManager creates new manager
 func NewManager() *Manager {
@@ -208,6 +215,7 @@ func NewManager() *Manager {
 	openapi3.DefineIPv4Format()
 	openapi3.DefineIPv6Format()
 	openapi3.DefineStringFormatCallback("cidraddr", nc.CIDRAddrValidate)
+	openapi3.DefineStringFormatCallback("ipaddr", checkIP)
 
 	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
