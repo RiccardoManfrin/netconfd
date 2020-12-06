@@ -93,7 +93,7 @@ func (m *Manager) overrideWithEnv() error {
 
 	if netconfdHostFound {
 		logger.Log.Info("Overriding .global.mgmt.host with " + netconfdHost + " NETCONFD_HOST env var")
-		m.Conf.Global.Mgmt.Host = netconfdHost
+		m.Conf.Global.Mgmt.Host = &netconfdHost
 	}
 	if netconfdPortFound {
 
@@ -107,7 +107,8 @@ func (m *Manager) overrideWithEnv() error {
 			return err
 		}
 		logger.Log.Info("Overriding .global.mgmt.port with " + netconfdPort + " NETCONFD_PORT env var")
-		m.Conf.Global.Mgmt.Port = uint16(overridePort)
+		port := int32(overridePort)
+		m.Conf.Global.Mgmt.Port = &port
 	}
 
 	return nil
@@ -126,19 +127,34 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	if err := json.NewDecoder(js).Decode(&m.Conf); err != nil {
 		fail(-1, "Bad configuration...")
 	}
-
-	logger.LoggerSetLevel(m.Conf)
+	loglev := "INF"
+	if (m.Conf.Global != nil) && (m.Conf.Global.LogLev != nil) {
+		loglev = *m.Conf.Global.LogLev
+	}
+	logger.LoggerSetLevel(*m.Conf.Global.LogLev)
 
 	m.overrideWithEnv()
 
-	res, _ := json.Marshal(m.Conf)
+	res, err := json.Marshal(m.Conf)
+	if err != nil {
+		logger.Fatal(err)
+	}
 	logger.Log.Notice("Config: " + string(res))
 
-	logger.Log.Notice("Starting mgmt service on " + m.Conf.Global.Mgmt.Host + ":" + strconv.FormatInt(int64(m.Conf.Global.Mgmt.Port), 10))
-	logger.Log.Notice("Log level set to " + m.Conf.Global.LogLev)
+	host := "127.0.0.1"
+	port := "6666"
+	if m.Conf.Global.Mgmt.Host != nil {
+		host = *m.Conf.Global.Mgmt.Host
+	}
+	if m.Conf.Global.Mgmt.Port != nil {
+		port = strconv.FormatUint(uint64(*m.Conf.Global.Mgmt.Port), 10)
+	}
+
+	logger.Log.Notice("Starting mgmt service on " + host + ":" + port)
+	logger.Log.Notice("Log level set to " + loglev)
 
 	m.HTTPServer = &http.Server{
-		Addr:           m.Conf.Global.Mgmt.Host + ":" + strconv.FormatUint(uint64(m.Conf.Global.Mgmt.Port), 10),
+		Addr:           host + ":" + port,
 		Handler:        m.ServeMux,
 		ReadTimeout:    5 * time.Second,
 		WriteTimeout:   15 * time.Second,

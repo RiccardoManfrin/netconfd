@@ -5,5 +5,62 @@
 			"host": "0.0.0.0",
 			"port": 9876
 		}
+	},
+	"host_network": {
+		"links": [
+			{
+				"ifname": "bond0",
+				"link_type": "ether",
+				"flags": ["up"],
+				"linkinfo": {
+				"info_kind": "bond",
+				"info_data": {
+					"mode": "active-backup",
+					"downdelay": 800,
+					"updelay" : 400,
+					"miimon" : 200
+				}
+				}
+			},
+			{
+				"ifname": "dummy0",
+				"link_type": "ether",
+				"flags": ["up"],
+				"linkinfo": {
+					"info_kind": "dummy",
+					"info_slave_data": {
+						"state": "BACKUP"
+					}
+				},
+				"addr_info": [
+					{
+						"local": "10.6.7.8",
+						"prefixlen": 24
+					}
+				],
+				"master": "bond0"
+			},
+			{
+				"ifname": "dummy1",
+				"link_type": "ether",
+				"linkinfo": {
+				"info_kind": "dummy",
+				"info_slave_data": {
+					"state": "ACTIVE"
+				}
+				},
+				"master": "bond0"
+			}
+		],
+		"routes": [
+			{
+				"dev": "dummy0",
+				"dst": "10.8.9.0/24",
+				"gateway": "10.6.7.8",
+				"metric": 50,
+				"protocol": "boot",
+				"scope": "universe"
+			}
+		]
 	}
 }
