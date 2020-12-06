@@ -178,7 +178,7 @@ func (c *NetworkApiController) Routes() Routes {
 	}
 }
 
-// ConfigLinkCreate - Configures and brings up a link layer interface 
+// ConfigLinkCreate - Create New Link 
 func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.Request) { 
 	link := &Link{}
 	if err := json.NewDecoder(r.Body).Decode(&link); err != nil {
@@ -197,7 +197,7 @@ func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.R
 	
 }
 
-// ConfigLinkDel - Brings down and delete a link layer interface 
+// ConfigLinkDel - Delete Link 
 func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
 	ifname := params["ifname"]
@@ -212,7 +212,7 @@ func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigLinkGet - Retrieve link layer interface information 
+// ConfigLinkGet - Get Link 
 func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
 	ifname := params["ifname"]
@@ -227,7 +227,7 @@ func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Requ
 	
 }
 
-// ConfigLinksGet - Get all link layer interfaces 
+// ConfigLinksGet - Get All Links 
 func (c *NetworkApiController) ConfigLinksGet(w http.ResponseWriter, r *http.Request) { 
 	result, err := c.service.ConfigLinksGet(r.Context())
 	//If an error occured, encode the error with the status code
@@ -374,7 +374,7 @@ func (c *NetworkApiController) ConfigNetNSsGet(w http.ResponseWriter, r *http.Re
 	
 }
 
-// ConfigRouteCreate - Configures a route 
+// ConfigRouteCreate - Create New Route 
 func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.Request) { 
 	route := &Route{}
 	if err := json.NewDecoder(r.Body).Decode(&route); err != nil {
@@ -393,7 +393,7 @@ func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.
 	
 }
 
-// ConfigRouteDel - Brings down and delete an L3 IP route 
+// ConfigRouteDel - Delete Route 
 func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
 	routeid := params["routeid"]
@@ -408,7 +408,7 @@ func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Req
 	
 }
 
-// ConfigRouteGet - Get a L3 route details 
+// ConfigRouteGet - Get Route 
 func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
 	routeid := params["routeid"]
@@ -423,7 +423,7 @@ func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Req
 	
 }
 
-// ConfigRoutesGet - Get all routing table routes 
+// ConfigRoutesGet - Get All Routes 
 func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Request) { 
 	result, err := c.service.ConfigRoutesGet(r.Context())
 	//If an error occured, encode the error with the status code

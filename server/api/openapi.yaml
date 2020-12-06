@@ -138,7 +138,7 @@ paths:
                 type: array
           description: Sucessful retrieval
       summary: |
-        Get all link layer interfaces
+        Get All Links
       tags:
       - Network
       x-authorization:
@@ -166,7 +166,7 @@ paths:
         "400":
           description: Resource config is semantically or syntactically incorrect
       summary: |
-        Configures and brings up a link layer interface
+        Create New Link
       tags:
       - Network
       x-authorization:
@@ -191,7 +191,7 @@ paths:
         "404":
           description: Not found
       summary: |
-        Brings down and delete a link layer interface
+        Delete Link
       tags:
       - Network
       x-authorization:
@@ -215,7 +215,7 @@ paths:
         "404":
           description: Not found
       summary: |
-        Retrieve link layer interface information
+        Get Link
       tags:
       - Network
       x-authorization:
@@ -237,7 +237,7 @@ paths:
                 type: array
           description: Sucessful retrieval
       summary: |
-        Get all routing table routes
+        Get All Routes
       tags:
       - Network
       x-authorization:
@@ -268,7 +268,7 @@ paths:
         "400":
           description: Resource config is semantically or syntactically incorrect
       summary: |
-        Configures a route
+        Create New Route
       tags:
       - Network
       x-authorization:
@@ -293,7 +293,7 @@ paths:
         "404":
           description: Not found
       summary: |
-        Brings down and delete an L3 IP route
+        Delete Route
       tags:
       - Network
       x-authorization:
@@ -317,7 +317,7 @@ paths:
         "404":
           description: Not found
       summary: |
-        Get a L3 route details
+        Get Route
       tags:
       - Network
       x-authorization:
