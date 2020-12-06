@@ -132,7 +132,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	if (m.Conf.Global != nil) && (m.Conf.Global.LogLev != nil) {
 		loglev = *m.Conf.Global.LogLev
 	}
-	logger.LoggerSetLevel(*m.Conf.Global.LogLev)
+	logger.LoggerSetLevel(loglev)
 
 	m.overrideWithEnv()
 
