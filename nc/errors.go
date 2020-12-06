@@ -3,6 +3,7 @@ package nc
 import (
 	"encoding/json"
 	"fmt"
+	"reflect"
 )
 
 //ErrorCode describes the error type via enumeration
@@ -158,8 +159,12 @@ func NewNonBondMasterLinkTypeError(ifname LinkID) error {
 }
 
 //NewEPERMError returns a missing permissions error
-func NewEPERMError() error {
-	return &ConflictError{Code: CONFLICT, Reason: "Got EPERM error: insufficient permissions to perform action"}
+func NewEPERMError(context interface{}) error {
+	return &ConflictError{
+		Code: CONFLICT,
+		Reason: fmt.Sprintf("Got EPERM error: insufficient permissions to perform action on %v: %v",
+			reflect.TypeOf(context),
+			context)}
 }
 
 //NewRouteExistsConflictError returns a Conflict error on link layer interfaces

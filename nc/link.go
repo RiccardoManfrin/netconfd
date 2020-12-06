@@ -331,7 +331,7 @@ func LinksDelete() error {
 		logger.Log.Warning("Removing link " + link.Attrs().Name)
 		err := netlink.LinkDel(link)
 		if err != nil {
-			return mapNetlinkError(err, nil)
+			return mapNetlinkError(err, link)
 		}
 	}
 	return nil
@@ -346,7 +346,10 @@ func LinksConfigure(links []Link) error {
 	//Recreate all links
 	for _, link := range links {
 		LinkSetDown(link.Ifname)
-		LinkDelete(link.Ifname)
+		if err := LinkDelete(link.Ifname); err != nil {
+			err = mapNetlinkError(err, link)
+			logger.Log.Warning(fmt.Sprintf("Link Delete Error: %v", err))
+		}
 		if err := LinkCreateDown(link); err != nil {
 			return err
 		}
@@ -466,7 +469,9 @@ func LinkCreate(link Link) error {
 		}
 
 		for _, addr := range addrlist {
-			netlink.AddrDel(l, &addr)
+			if err = netlink.AddrDel(l, &addr); err != nil {
+				return mapNetlinkError(err, nil)
+			}
 		}
 	}
 
@@ -495,7 +500,7 @@ func mapNetlinkError(err error, context interface{}) error {
 			if err.(syscall.Errno) == syscall.EINVAL {
 				return NewEINVALError()
 			} else if err.(syscall.Errno) == syscall.EPERM {
-				return NewEPERMError()
+				return NewEPERMError(context)
 			} else if err.(syscall.Errno) == syscall.ENETUNREACH {
 				return NewENETUNREACHError(context.(Route))
 			} else {

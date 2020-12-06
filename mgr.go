@@ -10,6 +10,7 @@ import (
 	"math"
 	"net"
 	"net/http"
+	"net/http/httptest"
 	"os"
 	"strconv"
 	"strings"
@@ -164,6 +165,19 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	return nil
 }
 
+func (m *Manager) PatchInitialConfig() {
+	reqbody, _ := json.Marshal(m.Conf)
+	iobody := bytes.NewReader(reqbody)
+	req, _ := http.NewRequest("PATCH", "/api/1/mgmt/config", iobody)
+	req.Header.Add("Content-Type", "application/json")
+	rr := httptest.NewRecorder()
+	m.ServeHTTP(rr, req)
+	if rr.Code != http.StatusOK {
+		logger.Log.Warning(
+			fmt.Sprintf("Failed to patch-apply initial config. Error %v. Network Not configured!", rr))
+	}
+}
+
 func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
@@ -256,6 +270,7 @@ func NewManager() *Manager {
 //Start activates manager
 func (m *Manager) Start() {
 
+	m.PatchInitialConfig()
 	logger.Log.Notice("Started netConfD manager...")
 
 	go m.HTTPServer.ListenAndServe()
