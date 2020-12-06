@@ -372,7 +372,9 @@ func LinksConfigure(links []Link) error {
 						return err
 					}
 					// Apparently first Link Set becomes master so do it first.
-					LinkSetMaster(activeSlave.Ifname, link.Master)
+					if err = LinkSetMaster(activeSlave.Ifname, link.Master); err != nil {
+						logger.Log.Warning(fmt.Sprintf("Link Set Master Error: %v", err))
+					}
 				}
 			}
 		}
@@ -388,13 +390,17 @@ func LinksConfigure(links []Link) error {
 			if l.Linkinfo.InfoKind == "bond" {
 				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
 					if link.Linkinfo.InfoSlaveData.State == netlink.BondStateBackup.String() {
-						LinkSetBondSlave(link.Ifname, link.Master)
+						if err = LinkSetBondSlave(link.Ifname, link.Master); err != nil {
+							logger.Log.Warning(fmt.Sprintf("Link Set Bond Slave Error: %v", err))
+						}
 					}
 				} else {
 					if link.Linkinfo.InfoSlaveData.State == netlink.BondStateBackup.String() {
 						return NewBackupSlaveIfaceFoundForNonActiveBackupBondError(link.Ifname, link.Master)
 					}
-					LinkSetBondSlave(link.Ifname, link.Master)
+					if err = LinkSetBondSlave(link.Ifname, link.Master); err != nil {
+						logger.Log.Warning(fmt.Sprintf("Link Set Bond Slave Error: %v", err))
+					}
 				}
 			}
 		}
@@ -404,7 +410,9 @@ func LinksConfigure(links []Link) error {
 	//distinction
 	for _, link := range links {
 		if link.Flags.HaveFlag(LinkFlag(net.FlagUp.String())) {
-			LinkSetUp(link.Ifname)
+			if err := LinkSetUp(link.Ifname); err != nil {
+				logger.Log.Warning(fmt.Sprintf("Link Set Up Error: %v", err))
+			}
 		}
 	}
 
@@ -462,7 +470,9 @@ func LinkCreate(link Link) error {
 		if err != nil {
 			return err
 		}
-		err = netlink.LinkAdd(nllink)
+		if err = netlink.LinkAdd(nllink); err != nil {
+			return mapNetlinkError(err, link)
+		}
 	}
 
 	if l != nil {
