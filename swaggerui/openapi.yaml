@@ -1533,10 +1533,12 @@ components:
 
               * `up` - Interface is up
               * `down` - Interface is down
+              * `unknown` - Interface state is not known (driver does not implement the API)
           type: string
           enum:
             - up
             - down
+            - unknown
           example: "down"
         #txqlen:
         #  type: integer
