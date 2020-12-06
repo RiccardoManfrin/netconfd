@@ -348,6 +348,11 @@ func LinksConfigure(links []Link) error {
 		l, _ := netlink.LinkByName(string(link.Ifname))
 		if l != nil {
 			LinkSetDown(link.Ifname)
+			removable, why := isLinkRemovable(l)
+			if !removable {
+				logger.Log.Debug(why)
+				continue
+			}
 			if err := LinkDelete(link.Ifname); err != nil {
 				logger.Log.Warning(fmt.Sprintf("Link Delete Error: %v", err))
 			}
@@ -489,7 +494,9 @@ func LinkCreate(link Link) error {
 	}
 
 	for _, a := range link.AddrInfo {
-		linkAddrAdd(ifname, a.Local)
+		if err := linkAddrAdd(ifname, a.Local); err != nil {
+			return err
+		}
 	}
 
 	return mapNetlinkError(err, nil)
@@ -502,7 +509,9 @@ func linkAddrAdd(ifname LinkID, addr CIDRAddr) error {
 	}
 	net := addr.ToIPNet()
 	nladdr := netlink.Addr{IPNet: &net, Label: string(ifname), Scope: unix.RT_SCOPE_UNIVERSE, Flags: unix.IFA_F_PERMANENT}
-	netlink.AddrAdd(l, &nladdr)
+	if err := netlink.AddrAdd(l, &nladdr); err != nil {
+		return mapNetlinkError(err, linkParse(l))
+	}
 	return nil
 }
 

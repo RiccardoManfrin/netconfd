@@ -144,11 +144,13 @@ func (m *Manager) LoadConfig(conffile *string) error {
 
 	host := "127.0.0.1"
 	port := "6666"
-	if m.Conf.Global.Mgmt.Host != nil {
-		host = *m.Conf.Global.Mgmt.Host
-	}
-	if m.Conf.Global.Mgmt.Port != nil {
-		port = strconv.FormatUint(uint64(*m.Conf.Global.Mgmt.Port), 10)
+	if m.Conf.Global != nil && m.Conf.Global.Mgmt != nil {
+		if m.Conf.Global.Mgmt.Host != nil {
+			host = *m.Conf.Global.Mgmt.Host
+		}
+		if m.Conf.Global.Mgmt.Port != nil {
+			port = strconv.FormatUint(uint64(*m.Conf.Global.Mgmt.Port), 10)
+		}
 	}
 
 	logger.Log.Notice("Starting mgmt service on " + host + ":" + port)
