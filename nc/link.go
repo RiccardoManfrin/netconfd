@@ -345,11 +345,14 @@ func LinksDelete() error {
 func LinksConfigure(links []Link) error {
 	//Recreate all links
 	for _, link := range links {
-		LinkSetDown(link.Ifname)
-		if err := LinkDelete(link.Ifname); err != nil {
-			err = mapNetlinkError(err, link)
-			logger.Log.Warning(fmt.Sprintf("Link Delete Error: %v", err))
+		l, _ := netlink.LinkByName(string(link.Ifname))
+		if l != nil {
+			LinkSetDown(link.Ifname)
+			if err := LinkDelete(link.Ifname); err != nil {
+				logger.Log.Warning(fmt.Sprintf("Link Delete Error: %v", err))
+			}
 		}
+
 		if err := LinkCreateDown(link); err != nil {
 			return err
 		}
@@ -561,9 +564,9 @@ func LinkSetBondSlave(ifname LinkID, masterIfname LinkID) error {
 
 //LinkDelete deletes a link layer interface
 func LinkDelete(ifname LinkID) error {
-	l, _ := netlink.LinkByName(string(ifname))
-	if l == nil {
-		return NewLinkNotFoundError(ifname)
+	l, err := LinkGet(ifname)
+	if err != nil {
+		return err
 	}
 
 	attrs := netlink.NewLinkAttrs()
@@ -572,7 +575,11 @@ func LinkDelete(ifname LinkID) error {
 	nllink := &netlink.Dummy{
 		LinkAttrs: attrs,
 	}
-	return netlink.LinkDel(nllink)
+	err = netlink.LinkDel(nllink)
+	if err != nil {
+		return mapNetlinkError(err, l)
+	}
+	return nil
 }
 
 func linkFlagsParse(flags net.Flags) []LinkFlag {
