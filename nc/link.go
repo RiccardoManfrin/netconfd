@@ -305,10 +305,10 @@ func (flags LinkFlags) HaveFlag(flag LinkFlag) bool {
 
 func isLinkRemovable(link netlink.Link) (bool, string) {
 	if link.Attrs().Index == 1 {
-		return false, fmt.Sprintf("Skipping loopback iface %v removal as per %v", link.Attrs().Name, loopbackUniquenessRef)
+		return false, fmt.Sprintf("Skipping loopback iface %v removal/creation as per %v", link.Attrs().Name, loopbackUniquenessRef)
 	}
 	if _, ok := link.(*netlink.Device); ok {
-		return false, fmt.Sprintf("Skipping physical iface %v removal as per %v", link.Attrs().Name, ethernetNoRemovalRef)
+		return false, fmt.Sprintf("Skipping physical iface %v removal/creation as per %v", link.Attrs().Name, ethernetNoRemovalRef)
 	}
 	return true, ""
 }
@@ -345,6 +345,7 @@ func LinksDelete() error {
 //This function tries to wipe out every type of conflicting in place configuration such as
 //existing links whose ifname LinkID collides with the ones being created.
 func LinksConfigure(links []Link) error {
+
 	//Recreate all links
 	for _, link := range links {
 		l, _ := netlink.LinkByName(string(link.Ifname))
@@ -352,6 +353,11 @@ func LinksConfigure(links []Link) error {
 			LinkSetDown(link.Ifname)
 			removable, why := isLinkRemovable(l)
 			if !removable {
+				//Just set addresses
+				if err := LinkSetAddresses(link); err != nil {
+					return err
+				}
+
 				logger.Log.Debug(why)
 				continue
 			}
@@ -450,6 +456,33 @@ func LinkCreateDown(link Link) error {
 	return err
 }
 
+//LinkSetAddresses assignes all addresses of a link (erase and recreate them)
+func LinkSetAddresses(link Link) error {
+	ifname := link.Ifname
+
+	l, _ := netlink.LinkByName(string(ifname))
+	if l != nil {
+		addrlist, err := netlink.AddrList(l, netlink.FAMILY_ALL)
+		if err != nil {
+			return NewGenericErrorWithReason(fmt.Sprintf("Failed to get address list: error %v", err))
+		}
+
+		for _, addr := range addrlist {
+			if err = netlink.AddrDel(l, &addr); err != nil {
+				return mapNetlinkError(err, nil)
+			}
+		}
+	}
+
+	for _, a := range link.AddrInfo {
+		logger.Log.Debug("Adding addr %v to iface %v", a.Local.String(), ifname)
+		if err := linkAddrAdd(ifname, a.Local); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 // LinkCreate creates a link layer interface
 // Link types (or kind):
 // $> ip link help type
@@ -460,8 +493,11 @@ func LinkCreateDown(link Link) error {
 //	vti | nlmon | team_slave | bond_slave | ipvlan | geneve |
 //	bridge_slave | vrf | macsec }
 func LinkCreate(link Link) error {
+
 	var err error = nil
 	ifname := link.Ifname
+
+	logger.Log.Debug("Creating link %v", ifname)
 	l, _ := netlink.LinkByName(string(ifname))
 
 	removable := true
@@ -482,24 +518,7 @@ func LinkCreate(link Link) error {
 		}
 	}
 
-	if l != nil {
-		addrlist, err := netlink.AddrList(l, netlink.FAMILY_ALL)
-		if err != nil {
-			return NewGenericErrorWithReason(fmt.Sprintf("Failed to get address list: error %v", err))
-		}
-
-		for _, addr := range addrlist {
-			if err = netlink.AddrDel(l, &addr); err != nil {
-				return mapNetlinkError(err, nil)
-			}
-		}
-	}
-
-	for _, a := range link.AddrInfo {
-		if err := linkAddrAdd(ifname, a.Local); err != nil {
-			return err
-		}
-	}
+	err = LinkSetAddresses(link)
 
 	return mapNetlinkError(err, nil)
 }
