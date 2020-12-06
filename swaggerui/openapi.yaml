@@ -145,7 +145,7 @@ paths:
         - Network
       operationId: ConfigLinksGet
       summary: |
-        Get all link layer interfaces
+        Get All Links
       description: |
         Returns the array of the existing link layer interfaces by their ifname id
       responses:
@@ -165,7 +165,7 @@ paths:
         - Network
       operationId: ConfigLinkCreate
       summary: |
-        Configures and brings up a link layer interface
+        Create New Link
       description: |
         Configures and brings up a link layer interface.
         If the link exists return an error
@@ -197,7 +197,7 @@ paths:
         - Network
       operationId: ConfigLinkGet
       summary: |
-        Retrieve link layer interface information
+        Get Link
       description: |
         Retrieve link layer interface information
       parameters:
@@ -219,7 +219,7 @@ paths:
         - Network
       operationId: ConfigLinkDel
       summary: |
-        Brings down and delete a link layer interface
+        Delete Link
       description: |
         Brings down and delete a link layer interface
       parameters:
@@ -243,7 +243,7 @@ paths:
         - Network
       operationId: ConfigRoutesGet
       summary: |
-        Get all routing table routes
+        Get All Routes
       description: |
         Returns the array of the existing routing tables routes ids
       responses:
@@ -263,7 +263,7 @@ paths:
         - Network
       operationId: ConfigRouteCreate
       summary: |
-        Configures a route
+        Create New Route
       description: |
         Configures a L3 route on the main routing table
       requestBody:
@@ -298,7 +298,7 @@ paths:
         - Network
       operationId: ConfigRouteGet
       summary: |
-        Get a L3 route details
+        Get Route
       description: |
         Get a L3 route details
       parameters:
@@ -320,7 +320,7 @@ paths:
         - Network
       operationId: ConfigRouteDel
       summary: |
-        Brings down and delete an L3 IP route
+        Delete Route
       description: |
         Brings down and delete an L3 IP route
       parameters:
