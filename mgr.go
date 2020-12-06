@@ -32,7 +32,7 @@ type RouteHandler func(body interface{}) (interface{}, error)
 
 //Manager of the machine takes HTTP requests, perform actions and give results back [blocking]
 type Manager struct {
-	Conf           Conf
+	Conf           oas.Config
 	HTTPServer     *http.Server
 	ServeMux       *http.ServeMux
 	SyncHTTPServer *http.Server
@@ -127,7 +127,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 		fail(-1, "Bad configuration...")
 	}
 
-	logger.LoggerSetLevel(m.Conf.Global.LogLev)
+	logger.LoggerSetLevel(m.Conf)
 
 	m.overrideWithEnv()
 

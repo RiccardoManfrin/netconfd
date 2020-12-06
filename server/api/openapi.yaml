@@ -742,6 +742,18 @@ paths:
       - monitor
 components:
   schemas:
+    global:
+      description: Application generic global config
+      properties:
+        log_lev:
+          enum:
+          - DBG
+          - INF
+          - WRN
+          type: string
+        mgmt:
+          $ref: '#/components/schemas/global_mgmt'
+      type: object
     ip:
       description: IPv4 or IPv6 address
       example: 10.1.2.3
@@ -799,7 +811,7 @@ components:
     config:
       properties:
         global:
-          type: object
+          $ref: '#/components/schemas/global'
         host_network:
           $ref: '#/components/schemas/network'
       type: object
@@ -1057,6 +1069,18 @@ components:
       required:
       - ifname
       - link_type
+      type: object
+    global_mgmt:
+      description: Management address
+      properties:
+        host:
+          description: IPv4 or IPv6 address
+          example: 10.1.2.3
+          format: ipaddr
+          type: string
+        port:
+          example: 6666
+          type: integer
       type: object
     link_linkinfo_info_slave_data:
       description: Info about slave state/config

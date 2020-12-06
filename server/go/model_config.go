@@ -17,7 +17,7 @@ import (
 
 // Config struct for Config
 type Config struct {
-	Global *map[string]interface{} `json:"global,omitempty"`
+	Global *Global `json:"global,omitempty"`
 	HostNetwork *Network `json:"host_network,omitempty"`
 }
 
@@ -39,9 +39,9 @@ func NewConfigWithDefaults() *Config {
 }
 
 // GetGlobal returns the Global field value if set, zero value otherwise.
-func (o *Config) GetGlobal() map[string]interface{} {
+func (o *Config) GetGlobal() Global {
 	if o == nil || o.Global == nil {
-		var ret map[string]interface{}
+		var ret Global
 		return ret
 	}
 	return *o.Global
@@ -49,7 +49,7 @@ func (o *Config) GetGlobal() map[string]interface{} {
 
 // GetGlobalOk returns a tuple with the Global field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Config) GetGlobalOk() (*map[string]interface{}, bool) {
+func (o *Config) GetGlobalOk() (*Global, bool) {
 	if o == nil || o.Global == nil {
 		return nil, false
 	}
@@ -65,8 +65,8 @@ func (o *Config) HasGlobal() bool {
 	return false
 }
 
-// SetGlobal gets a reference to the given map[string]interface{} and assigns it to the Global field.
-func (o *Config) SetGlobal(v map[string]interface{}) {
+// SetGlobal gets a reference to the given Global and assigns it to the Global field.
+func (o *Config) SetGlobal(v Global) {
 	o.Global = &v
 }
 

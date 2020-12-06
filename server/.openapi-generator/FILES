@@ -12,6 +12,8 @@ go/helpers.go
 go/impl.go
 go/logger.go
 go/model_config.go
+go/model_global.go
+go/model_global_mgmt.go
 go/model_link.go
 go/model_link_addr_info.go
 go/model_link_flag.go

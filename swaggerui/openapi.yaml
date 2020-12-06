@@ -750,6 +750,25 @@ paths:
 
 components:
   schemas:
+    global:
+      type: object
+      description: Application generic global config
+      properties:
+        log_lev:
+          type: string
+          enum:
+            - DBG
+            - INF
+            - WRN
+        mgmt:
+          type: object
+          description: Management address
+          properties:
+            host:
+              $ref: '#/components/schemas/ip'
+            port:
+              type: integer
+              example: 6666
     ip:
       description: IPv4 or IPv6 address
       type: string
@@ -811,11 +830,7 @@ components:
       #  - host_network
       properties:
         global:
-          type: object
-    #    namespaces:
-    #      type: array
-    #      items:
-    #        $ref: '#/components/schemas/namespace'
+          $ref: '#/components/schemas/global'
         host_network:
           $ref: '#/components/schemas/network'
     #namespace:

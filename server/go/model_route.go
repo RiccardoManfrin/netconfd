@@ -20,7 +20,7 @@ import (
 
 // Route IP L3 Ruote entry
 type Route struct {
-	// MD5 identifier based on relevant context (ignored in creation)
+	//  MD5 hash based on route relevant context (dst, gw, dev)  Ignored in creation (readonly), it is only used to identify a route to get or delete
 	Id  *string     `json:"__id,omitempty"`
 	Dst nc.CIDRAddr `json:"dst"`
 	// IPv4 or IPv6 address
