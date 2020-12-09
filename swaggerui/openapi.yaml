@@ -768,7 +768,7 @@ components:
               $ref: '#/components/schemas/ip'
             port:
               type: integer
-              example: 6666
+              example: 8666
     ip:
       description: IPv4 or IPv6 address
       type: string

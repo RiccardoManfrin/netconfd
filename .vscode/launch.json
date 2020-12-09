@@ -13,7 +13,7 @@
             "program": "${workspaceFolder}",
             "env": {
                 "NETCONFD_HOST": "127.0.0.1",
-                "NETCONFD_PORT": 6666
+                "NETCONFD_PORT": 8666
             },
             "args": ["-config", "netconfd.json", "-log", "-"],
             "showLog": true
@@ -29,7 +29,7 @@
             "program": "${workspaceFolder}",
             "env": {
                 "NETCONFD_HOST": "127.0.0.1",
-                "NETCONFD_PORT": 6666
+                "NETCONFD_PORT": 8666
             },
             "args": [],
             "showLog": true

@@ -143,7 +143,7 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	logger.Log.Notice("Config: " + string(res))
 
 	host := "127.0.0.1"
-	port := "6666"
+	port := "8666"
 	if m.Conf.Global != nil && m.Conf.Global.Mgmt != nil {
 		if m.Conf.Global.Mgmt.Host != nil {
 			host = *m.Conf.Global.Mgmt.Host
