@@ -158,6 +158,21 @@ func NewNonBondMasterLinkTypeError(ifname LinkID) error {
 	return &ConflictError{Code: CONFLICT, Reason: "Master link interface " + string(ifname) + " is not a bond"}
 }
 
+//NewCannotStopDHCPError returns an error for DHCP related stop errors
+func NewCannotStopDHCPError(ifname LinkID, scriptReason string) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Failed to stop DHCP for interface" + string(ifname) + ": " + scriptReason}
+}
+
+//NewCannotStartDHCPError returns an error for DHCP related stop errors
+func NewCannotStartDHCPError(ifname LinkID, scriptReason string) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Failed to start DHCP for interface" + string(ifname) + ": " + scriptReason}
+}
+
+//NewCannotStatusDHCPError returns an error for DHCP related status errors
+func NewCannotStatusDHCPError(ifname LinkID, scriptReason string) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Failed to get DHCP status for interface" + string(ifname) + ": " + scriptReason}
+}
+
 //NewEPERMError returns a missing permissions error
 func NewEPERMError(context interface{}) error {
 	return &ConflictError{
