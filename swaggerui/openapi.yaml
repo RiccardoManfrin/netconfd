@@ -843,6 +843,15 @@ components:
     #      nullable: true
     #    network:
     #      $ref: '#/components/schemas/network'
+    dhcp:
+      type: object
+      description: |
+        DHCP link context to enable. When an object of this kind
+        is specified, the DHCP protocol daemon is enabled on the 
+        defined interface if it exists. 
+      properties:
+        ifname:
+          $ref: '#/components/schemas/ifname'
     network:
       type: object
       properties:
@@ -858,6 +867,12 @@ components:
             Namespace routes
           items:
             $ref: '#/components/schemas/route'
+        dhcp:
+          type: array
+          description:
+            DHCP context
+          items:
+            $ref: '#/components/schemas/dhcp'
     rule:
       type: object
       description: IP Rule type

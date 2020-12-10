@@ -815,6 +815,18 @@ components:
         host_network:
           $ref: '#/components/schemas/network'
       type: object
+    dhcp:
+      description: "DHCP link context to enable. When an object of this kind\nis specified,\
+        \ the DHCP protocol daemon is enabled on the \ndefined interface if it exists.\
+        \ \n"
+      properties:
+        ifname:
+          description: |
+            Interface name
+          example: dummy0
+          maxLength: 15
+          type: string
+      type: object
     network:
       properties:
         links:
@@ -826,6 +838,11 @@ components:
           description: Namespace routes
           items:
             $ref: '#/components/schemas/route'
+          type: array
+        dhcp:
+          description: DHCP context
+          items:
+            $ref: '#/components/schemas/dhcp'
           type: array
       type: object
     rule:
@@ -1081,7 +1098,7 @@ components:
           format: ipaddr
           type: string
         port:
-          example: 6666
+          example: 8666
           type: integer
       type: object
     link_linkinfo_info_slave_data:

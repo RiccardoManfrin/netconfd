@@ -21,6 +21,8 @@ type Network struct {
 	Links *[]Link `json:"links,omitempty"`
 	// Namespace routes
 	Routes *[]Route `json:"routes,omitempty"`
+	// DHCP context
+	Dhcp *[]Dhcp `json:"dhcp,omitempty"`
 }
 
 // NewNetwork instantiates a new Network object
@@ -104,6 +106,38 @@ func (o *Network) SetRoutes(v []Route) {
 	o.Routes = &v
 }
 
+// GetDhcp returns the Dhcp field value if set, zero value otherwise.
+func (o *Network) GetDhcp() []Dhcp {
+	if o == nil || o.Dhcp == nil {
+		var ret []Dhcp
+		return ret
+	}
+	return *o.Dhcp
+}
+
+// GetDhcpOk returns a tuple with the Dhcp field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Network) GetDhcpOk() (*[]Dhcp, bool) {
+	if o == nil || o.Dhcp == nil {
+		return nil, false
+	}
+	return o.Dhcp, true
+}
+
+// HasDhcp returns a boolean if a field has been set.
+func (o *Network) HasDhcp() bool {
+	if o != nil && o.Dhcp != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDhcp gets a reference to the given []Dhcp and assigns it to the Dhcp field.
+func (o *Network) SetDhcp(v []Dhcp) {
+	o.Dhcp = &v
+}
+
 func (o Network) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Links != nil {
@@ -111,6 +145,9 @@ func (o Network) MarshalJSON() ([]byte, error) {
 	}
 	if o.Routes != nil {
 		toSerialize["routes"] = o.Routes
+	}
+	if o.Dhcp != nil {
+		toSerialize["dhcp"] = o.Dhcp
 	}
 	return json.Marshal(toSerialize)
 }
