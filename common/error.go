@@ -1,10 +1,7 @@
 package comm
 
 import (
-	"strconv"
 	"strings"
-
-	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
 // ErrorString is an error string
@@ -19,5 +16,5 @@ func (e *ErrorString) Error() string {
 
 // ToJSONString converts error string to json string
 func ToJSONString(e error) string {
-	return "{\"code\":" + strconv.Itoa(nc.RESERVED) + ", \"reason\":\"" + strings.ReplaceAll(e.Error(), "\"", "\\\"") + "\"}"
+	return "{\"code\": 1000, \"reason\":\"" + strings.ReplaceAll(e.Error(), "\"", "\\\"") + "\"}"
 }
