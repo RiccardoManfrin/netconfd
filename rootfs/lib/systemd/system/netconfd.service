@@ -43,7 +43,7 @@ SystemCallErrorNumber=EPERM
 SystemCallFilter=@system-service
 #Type=notify
 RestartKillSignal=SIGUSR2
-User=systemd-network
+User=root
 WatchdogSec=3min
 
 [Install]

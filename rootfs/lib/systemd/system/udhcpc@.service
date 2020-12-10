@@ -44,7 +44,7 @@ SystemCallArchitectures=native
 SystemCallErrorNumber=EPERM
 SystemCallFilter=@system-service
 RestartKillSignal=SIGUSR2
-User=systemd-network
+User=root
 WatchdogSec=3min
 
 [Install]
