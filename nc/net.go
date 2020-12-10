@@ -6,6 +6,8 @@ type Network struct {
 	Links []Link `json:"links,omitempty"`
 	// Namespace routes
 	Routes []Route `json:"routes,omitempty"`
+	// DHCP context
+	Dhcp []Dhcp `json:"dhcp,omitempty"`
 }
 
 //Patch network config
@@ -15,6 +17,10 @@ func Patch(n Network) error {
 		return err
 	}
 	err = RoutesConfigure(n.Routes)
+	if err != nil {
+		return err
+	}
+	err = DHCPsConfigure(n.Dhcp)
 	if err != nil {
 		return err
 	}
