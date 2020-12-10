@@ -148,6 +148,21 @@ func RoutesConfigure(routes []Route) error {
 	return nil
 }
 
+//RoutesDelete deletes all routes
+func RoutesDelete() error {
+	routes, err := RoutesGet()
+	if err != nil {
+		return err
+	}
+	for _, r := range routes {
+		err = RouteDelete(RouteIDGet(r))
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 //RouteCreate create and add a new route
 func RouteCreate(route Route) (RouteID, error) {
 	routeid := RouteIDGet(route)
