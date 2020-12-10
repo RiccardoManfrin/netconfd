@@ -7,7 +7,7 @@ export $(systemctl show --property=ActiveState udhcpc@$ETH)
 if [ $ActiveState == "active" ]; then
     systemctl stop udhcpc@$ETH
     export $(systemctl show --property=ActiveState udhcpc@$ETH)
-    echo "Service stopped; state: $ActiveState"
+    echo -en "Service stopped; state: $ActiveState"
 else
-    echo "Service not running"
+    echo -en "Service not running"
 fi

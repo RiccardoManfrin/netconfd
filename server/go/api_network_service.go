@@ -28,55 +28,35 @@ func NewNetworkApiService() NetworkApiServicer {
 	return &NetworkApiService{}
 }
 
-// ConfigDHCPCreate - Create DHCP 
+// ConfigDHCPCreate - Create DHCP
 func (s *NetworkApiService) ConfigDHCPCreate(ctx context.Context, dhcp Dhcp) (ImplResponse, error) {
-	// TODO - update ConfigDHCPCreate with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
-	//return Response(201, nil),nil
+	ncdhcp := nc.Dhcp{
+		Ifname: nc.LinkID(dhcp.Ifname),
+	}
 
-	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
-	//return Response(409, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	//return Response(400, nil),nil
-
-	err := errors.New("ConfigDHCPCreate method not implemented")
+	err := nc.DHCPCreate(ncdhcp)
 	return PostErrorResponse(err, nil)
 }
 
-// ConfigDHCPDel - Delete DHCP 
+// ConfigDHCPDel - Delete DHCP
 func (s *NetworkApiService) ConfigDHCPDel(ctx context.Context, ifname string) (ImplResponse, error) {
-	// TODO - update ConfigDHCPDel with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	//return Response(404, nil),nil
-
-	err := errors.New("ConfigDHCPDel method not implemented")
+	err := nc.DHCPDelete(nc.LinkID(ifname))
 	return DeleteErrorResponse(err, nil)
 }
 
-// ConfigDHCPGet - Get DHCP 
+// ConfigDHCPGet - Get DHCP
 func (s *NetworkApiService) ConfigDHCPGet(ctx context.Context, ifname string) (ImplResponse, error) {
-	// TODO - update ConfigDHCPGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	ncdhcp, err := nc.DHCPGet(nc.LinkID(ifname))
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
+	dhcp := ncDhcpParse(ncdhcp)
 
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	//return Response(404, nil),nil
-
-	err := errors.New("ConfigDHCPGet method not implemented")
-	return GetErrorResponse(err, nil)
+	return GetErrorResponse(err, dhcp)
 }
 
-// ConfigDHCPsGet - Get All DHCP 
+// ConfigDHCPsGet - Get All DHCP
 func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, error) {
 	// TODO - update ConfigDHCPsGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -88,7 +68,7 @@ func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, e
 	return GetErrorResponse(err, nil)
 }
 
-// ConfigLinkCreate - Create New Link 
+// ConfigLinkCreate - Create New Link
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
 	nclink := ncLinkFormat(link)
 	err := nc.LinkCreateDown(nclink)

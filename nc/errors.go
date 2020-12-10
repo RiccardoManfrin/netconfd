@@ -159,18 +159,23 @@ func NewNonBondMasterLinkTypeError(ifname LinkID) error {
 }
 
 //NewCannotStopDHCPError returns an error for DHCP related stop errors
-func NewCannotStopDHCPError(ifname LinkID, scriptReason string) error {
-	return &ConflictError{Code: CONFLICT, Reason: "Failed to stop DHCP for interface" + string(ifname) + ": " + scriptReason}
+func NewCannotStopDHCPError(ifname LinkID, e error) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to stop DHCP for interface %v: %v", string(ifname), e)}
 }
 
 //NewCannotStartDHCPError returns an error for DHCP related stop errors
-func NewCannotStartDHCPError(ifname LinkID, scriptReason string) error {
-	return &ConflictError{Code: CONFLICT, Reason: "Failed to start DHCP for interface" + string(ifname) + ": " + scriptReason}
+func NewCannotStartDHCPError(ifname LinkID, e error) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to start DHCP for interface %v: %v", string(ifname), e)}
 }
 
 //NewCannotStatusDHCPError returns an error for DHCP related status errors
-func NewCannotStatusDHCPError(ifname LinkID, scriptReason string) error {
-	return &ConflictError{Code: CONFLICT, Reason: "Failed to get DHCP status for interface" + string(ifname) + ": " + scriptReason}
+func NewCannotStatusDHCPError(ifname LinkID, e error) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to get DHCP status for interface %v: %v", string(ifname), e)}
+}
+
+//NewDHCPAlreadyRunningConflictError returns an error for DHCP that is requested for an interface where it's already running
+func NewDHCPAlreadyRunningConflictError(ifname LinkID) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("DHCP is alreay running for interface %v", string(ifname))}
 }
 
 //NewEPERMError returns a missing permissions error
@@ -200,9 +205,14 @@ func NewLinkNotFoundError(linkID LinkID) error {
 	return &NotFoundError{Code: NOT_FOUND, Reason: "Link " + string(linkID) + " not found"}
 }
 
-//NewRouteByIDNotFoundError returns a Conflict error on link layer interfaces
+//NewRouteByIDNotFoundError returns a Not found error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
 	return &NotFoundError{Code: NOT_FOUND, Reason: "Route ID " + string(routeid) + " not found"}
+}
+
+//NewDHCPRunningNotFoundError returns a Not found error on link layer interfaces not managed by DHCP
+func NewDHCPRunningNotFoundError(linkID LinkID) error {
+	return &NotFoundError{Code: NOT_FOUND, Reason: "DHCP for Link ID " + string(linkID) + " not found"}
 }
 
 //UnexpetecdCornerCaseError is fundamentally an implementation error catch exception

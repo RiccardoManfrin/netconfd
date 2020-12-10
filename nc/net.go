@@ -50,7 +50,11 @@ func Del() error {
 	if err != nil {
 		return err
 	}
-	err := RoutesDelete()
+	err = RoutesDelete()
+	if err != nil {
+		return err
+	}
+	err = DHCPsDelete()
 	if err != nil {
 		return err
 	}
@@ -68,9 +72,13 @@ func Get() (Network, error) {
 	if err != nil {
 		return n, err
 	}
-
+	dhcps, err := DHCPsGet()
+	if err != nil {
+		return n, err
+	}
 	n.Links = links
 	n.Routes = routes
+	n.Dhcp = dhcps
 
 	return n, nil
 }

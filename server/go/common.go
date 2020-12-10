@@ -34,7 +34,12 @@ func ncRouteFormat(route Route) nc.Route {
 	}
 	return ncroute
 }
-
+func ncDhcpParse(ncdhcp nc.Dhcp) Dhcp {
+	d := Dhcp{
+		Ifname: string(ncdhcp.Ifname),
+	}
+	return d
+}
 func ncRouteParse(ncroute nc.Route) Route {
 	var route Route
 	id := string(ncroute.ID)
@@ -265,16 +270,21 @@ func ncNetFormat(config Config) nc.Network {
 func ncNetParse(net nc.Network) Config {
 	links := make([]Link, len(net.Links))
 	routes := make([]Route, len(net.Routes))
+	dhcps := make([]Dhcp, len(net.Dhcp))
 	for i, l := range net.Links {
 		links[i] = ncLinkParse(l)
 	}
 	for i, r := range net.Routes {
 		routes[i] = ncRouteParse(r)
 	}
+	for i, d := range net.Dhcp {
+		dhcps[i] = ncDhcpParse(d)
+	}
 	return Config{
 		HostNetwork: &Network{
 			Links:  &links,
 			Routes: &routes,
+			Dhcp:   &dhcps,
 		},
 	}
 }

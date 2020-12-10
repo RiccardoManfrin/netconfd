@@ -4,4 +4,4 @@
 ETH=$1
 export $(systemctl show --property=ActiveState udhcpc@$ETH)
 
-echo $ActiveState
+echo -en $ActiveState
