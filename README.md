@@ -41,3 +41,6 @@ https://dev.to/polarbit/how-docker-container-networking-works-mimic-it-using-lin
 
 # TLDR yet
 Umberto -> https://www.ianlewis.org/en/almighty-pause-container
+
+
+/sbin/udhcpc -i eth0 -f
