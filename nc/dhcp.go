@@ -48,12 +48,17 @@ func DHCPDelete(ifname LinkID) error {
 func DHCPCreate(dhcp Dhcp) error {
 	_, err := DHCPGet(dhcp.Ifname)
 	if err != nil {
-		return err
+		/* The only acceptable error is that you didn't find it. For any other error, abort */
+		if _, ok := err.(*NotFoundError); !ok {
+			return err
+		}
 	}
+
 	out, err := exec.Command(prefixInstallPAth+"dhcp_start.sh", string(dhcp.Ifname)).Output()
 	if err != nil {
 		return NewCannotStartDHCPError(dhcp.Ifname, err)
 	}
+
 	if string(out) == "Service running already" {
 		return NewDHCPAlreadyRunningConflictError(dhcp.Ifname)
 	}
