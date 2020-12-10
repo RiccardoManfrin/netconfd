@@ -32,6 +32,30 @@ func NewNetworkApiController(s NetworkApiServicer) Router {
 func (c *NetworkApiController) Routes() Routes {
 	return Routes{ 
 		{
+			"ConfigDHCPCreate",
+			strings.ToUpper("Post"),
+			"/api/1/dhcp",
+			c.ConfigDHCPCreate,
+		},
+		{
+			"ConfigDHCPDel",
+			strings.ToUpper("Delete"),
+			"/api/1/dhcp/{ifname}",
+			c.ConfigDHCPDel,
+		},
+		{
+			"ConfigDHCPGet",
+			strings.ToUpper("Get"),
+			"/api/1/dhcp/{ifname}",
+			c.ConfigDHCPGet,
+		},
+		{
+			"ConfigDHCPsGet",
+			strings.ToUpper("Get"),
+			"/api/1/dhcp",
+			c.ConfigDHCPsGet,
+		},
+		{
 			"ConfigLinkCreate",
 			strings.ToUpper("Post"),
 			"/api/1/links",
@@ -176,6 +200,68 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigVRFsGet,
 		},
 	}
+}
+
+// ConfigDHCPCreate - Create DHCP 
+func (c *NetworkApiController) ConfigDHCPCreate(w http.ResponseWriter, r *http.Request) { 
+	dhcp := &Dhcp{}
+	if err := json.NewDecoder(r.Body).Decode(&dhcp); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigDHCPCreate(r.Context(), *dhcp)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDHCPDel - Delete DHCP 
+func (c *NetworkApiController) ConfigDHCPDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ifname := params["ifname"]
+	result, err := c.service.ConfigDHCPDel(r.Context(), ifname)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDHCPGet - Get DHCP 
+func (c *NetworkApiController) ConfigDHCPGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ifname := params["ifname"]
+	result, err := c.service.ConfigDHCPGet(r.Context(), ifname)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDHCPsGet - Get All DHCP 
+func (c *NetworkApiController) ConfigDHCPsGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigDHCPsGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
 }
 
 // ConfigLinkCreate - Create New Link 

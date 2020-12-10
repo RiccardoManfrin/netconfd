@@ -324,6 +324,104 @@ paths:
       - support
       - admin
       - monitor
+  /dhcp:
+    get:
+      description: "Returns the array of the existing link layer interfaces \ncontrolled\
+        \ via DHCP and related config/state\n"
+      operationId: ConfigDHCPsGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/dhcp'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get All DHCP
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+      - monitor
+    post:
+      description: |
+        Adds a link interface under DHCP management
+      operationId: ConfigDHCPCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dhcp'
+        description: DHCP Config
+        required: true
+      responses:
+        "201":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Create DHCP
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+  /dhcp/{ifname}:
+    delete:
+      description: "Delete DHCP daemon management control for the \nspecified link\
+        \ layer interface\n"
+      operationId: ConfigDHCPDel
+      parameters:
+      - explode: false
+        in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Delete DHCP
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+    get:
+      description: |
+        Retrieve DHCP info for link layer interface
+      operationId: ConfigDHCPGet
+      parameters:
+      - explode: false
+        in: path
+        name: ifname
+        required: true
+        schema:
+          $ref: '#/components/schemas/ifname'
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get DHCP
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+      - monitor
   /rules:
     get:
       description: |
@@ -819,6 +917,8 @@ components:
       description: "DHCP link context to enable. When an object of this kind\nis specified,\
         \ the DHCP protocol daemon is enabled on the \ndefined interface if it exists.\
         \ \n"
+      example:
+        ifname: dummy0
       properties:
         ifname:
           description: |

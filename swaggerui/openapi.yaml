@@ -334,6 +334,104 @@ paths:
           description: Successful delete
         "404":
           description: Not found
+  /dhcp:
+    get:
+      x-authorization:
+        - support
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigDHCPsGet
+      summary: |
+        Get All DHCP
+      description: |
+        Returns the array of the existing link layer interfaces 
+        controlled via DHCP and related config/state
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/dhcp'
+    post:
+      x-authorization:
+        - support
+        - admin
+      tags:
+        - Network
+      operationId: ConfigDHCPCreate
+      summary: |
+        Create DHCP
+      description: |
+        Adds a link interface under DHCP management
+      requestBody:
+        description: DHCP Config
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dhcp'
+      responses:
+        '201':
+          description: Successful creation
+        '409':
+          description: 
+            Resource already exists, or request is incompatible with
+            current network state
+        "400":
+          description:
+            Resource config is semantically or syntactically incorrect
+  /dhcp/{ifname}:
+    get:
+      x-authorization:
+        - support
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigDHCPGet
+      summary: |
+        Get DHCP
+      description: |
+        Retrieve DHCP info for link layer interface
+      parameters:
+      - in: path
+        name: ifname
+        required: true
+        schema:
+          $ref: '#/components/schemas/ifname'
+      responses:
+        '200':
+          description: Successful get
+        "404":
+          description: Not found
+    delete:
+      x-authorization:
+        - support
+        - admin
+      tags:
+        - Network
+      operationId: ConfigDHCPDel
+      summary: |
+        Delete DHCP
+      description: |
+        Delete DHCP daemon management control for the 
+        specified link layer interface
+      parameters:
+      - in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful delete
+        "404":
+          description: Not found
   /rules:
     get:
       x-authorization:

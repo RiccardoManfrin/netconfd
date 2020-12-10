@@ -21,6 +21,10 @@ import (
 // The NetworkApiRouter implementation should parse necessary information from the http request, 
 // pass the data to a NetworkApiServicer to perform the required actions, then write the service results to the http response.
 type NetworkApiRouter interface { 
+	ConfigDHCPCreate(http.ResponseWriter, *http.Request)
+	ConfigDHCPDel(http.ResponseWriter, *http.Request)
+	ConfigDHCPGet(http.ResponseWriter, *http.Request)
+	ConfigDHCPsGet(http.ResponseWriter, *http.Request)
 	ConfigLinkCreate(http.ResponseWriter, *http.Request)
 	ConfigLinkDel(http.ResponseWriter, *http.Request)
 	ConfigLinkGet(http.ResponseWriter, *http.Request)
@@ -64,6 +68,10 @@ type SystemApiRouter interface {
 // while the service implementation can ignored with the .openapi-generator-ignore file 
 // and updated with the logic required for the API.
 type NetworkApiServicer interface { 
+	ConfigDHCPCreate(context.Context, Dhcp) (ImplResponse, error)
+	ConfigDHCPDel(context.Context, string) (ImplResponse, error)
+	ConfigDHCPGet(context.Context, string) (ImplResponse, error)
+	ConfigDHCPsGet(context.Context) (ImplResponse, error)
 	ConfigLinkCreate(context.Context, Link) (ImplResponse, error)
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
 	ConfigLinkGet(context.Context, string) (ImplResponse, error)
