@@ -3,7 +3,7 @@
 		"log_lev": "DBG",
 		"mgmt": {
 			"host": "0.0.0.0",
-			"port": 9876
+			"port": 8666
 		}
 	},
   "host_network": {
