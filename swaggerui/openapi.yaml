@@ -950,14 +950,6 @@ components:
       properties:
         ifname:
           $ref: '#/components/schemas/ifname'
-        enabled:
-          type: boolean
-          description: |
-            Required to patch config and remove 
-            DHCP control of a link interface 
-            (defaulted to true if not present)
-          default: true
-          example: true
       required:
         - ifname
     network:

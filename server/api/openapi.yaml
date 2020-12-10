@@ -919,7 +919,6 @@ components:
         \ \n"
       example:
         ifname: dummy0
-        enabled: true
       properties:
         ifname:
           description: |
@@ -927,12 +926,6 @@ components:
           example: dummy0
           maxLength: 15
           type: string
-        enabled:
-          default: true
-          description: "Required to patch config and remove \nDHCP control of a link\
-            \ interface \n(defaulted to true if not present)\n"
-          example: true
-          type: boolean
       required:
       - ifname
       type: object

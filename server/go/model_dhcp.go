@@ -19,8 +19,6 @@ import (
 type Dhcp struct {
 	// Interface name 
 	Ifname string `json:"ifname"`
-	// Required to patch config and remove  DHCP control of a link interface  (defaulted to true if not present) 
-	Enabled *bool `json:"enabled,omitempty"`
 }
 
 // NewDhcp instantiates a new Dhcp object
@@ -30,8 +28,6 @@ type Dhcp struct {
 func NewDhcp(ifname string, ) *Dhcp {
 	this := Dhcp{}
 	this.Ifname = ifname
-	var enabled bool = true
-	this.Enabled = &enabled
 	return &this
 }
 
@@ -40,8 +36,6 @@ func NewDhcp(ifname string, ) *Dhcp {
 // but it doesn't guarantee that properties required by API are set
 func NewDhcpWithDefaults() *Dhcp {
 	this := Dhcp{}
-	var enabled bool = true
-	this.Enabled = &enabled
 	return &this
 }
 
@@ -69,45 +63,10 @@ func (o *Dhcp) SetIfname(v string) {
 	o.Ifname = v
 }
 
-// GetEnabled returns the Enabled field value if set, zero value otherwise.
-func (o *Dhcp) GetEnabled() bool {
-	if o == nil || o.Enabled == nil {
-		var ret bool
-		return ret
-	}
-	return *o.Enabled
-}
-
-// GetEnabledOk returns a tuple with the Enabled field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Dhcp) GetEnabledOk() (*bool, bool) {
-	if o == nil || o.Enabled == nil {
-		return nil, false
-	}
-	return o.Enabled, true
-}
-
-// HasEnabled returns a boolean if a field has been set.
-func (o *Dhcp) HasEnabled() bool {
-	if o != nil && o.Enabled != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetEnabled gets a reference to the given bool and assigns it to the Enabled field.
-func (o *Dhcp) SetEnabled(v bool) {
-	o.Enabled = &v
-}
-
 func (o Dhcp) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["ifname"] = o.Ifname
-	}
-	if o.Enabled != nil {
-		toSerialize["enabled"] = o.Enabled
 	}
 	return json.Marshal(toSerialize)
 }
