@@ -29,7 +29,7 @@ func DHCPsDelete() error {
 }
 
 //DHCPDelete stops and delete DHCP controller for link interface
-func DHCPDelete(ifname DHCPID) error {
+func DHCPDelete(ifname LinkID) error {
 	out, err := exec.Command("./dhcp_stop.sh", string(ifname)).Output()
 	if err != nil {
 		return NewCannotStopDHCPError(ifname, string(out))
@@ -39,25 +39,43 @@ func DHCPDelete(ifname DHCPID) error {
 
 //DHCPCreate starts and delete DHCP controller for link interface
 func DHCPCreate(dhcp Dhcp) error {
-	DHCPGet()
-	DHCPDelete(dhcp.Ifname)
+	d, err := DHCPGet(dhcp.Ifname)
+	if err == nil {
+		err = DHCPDelete(d.Ifname)
+		if err != nil {
+			return err
+		}
+	}
 	out, err := exec.Command("./dhcp_start.sh", string(dhcp.Ifname)).Output()
 	if err != nil {
-		return NewCannotStartDHCPError(DHCPIDGet(dhcp), string(out))
+		return NewCannotStartDHCPError(dhcp.Ifname, string(out))
 	}
 	return nil
 }
 
-func DHCPGet(ifname LinkID) (Dhcp, err) {
+//DHCPGet gets DHCP controller info for link interface
+func DHCPGet(ifname LinkID) (Dhcp, error) {
 	d := Dhcp{Ifname: ifname}
 	out, err := exec.Command("./dhcp_status.sh", string(ifname)).Output()
 	if err != nil {
-		return d, NewCannotStatusDHCPError(DHCPIDGet(ifname), string(out))
+		return d, NewCannotStatusDHCPError(ifname, string(out))
 	}
-	return nil
+	return d, nil
 }
 
 //DHCPsGet Get all DHCP interfaces administrated by DHCP and related config/state.
 func DHCPsGet() ([]Dhcp, error) {
-
+	var dhcps []Dhcp
+	links, err := LinksGet()
+	if err != nil {
+		return dhcps, err
+	}
+	for _, l := range links {
+		d, err := DHCPGet(l.Ifname)
+		if err != nil {
+			return dhcps, err
+		}
+		dhcps = append(dhcps, d)
+	}
+	return dhcps, nil
 }
