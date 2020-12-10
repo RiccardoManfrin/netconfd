@@ -31,12 +31,20 @@ func Put(n Network) error {
 	if err != nil {
 		return err
 	}
+	err = RoutesConfigure(n.Routes)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
 //Del delete whole network config
 func Del() error {
 	err := LinksDelete()
+	if err != nil {
+		return err
+	}
+	err := RoutesDelete()
 	if err != nil {
 		return err
 	}
