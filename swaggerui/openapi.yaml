@@ -969,8 +969,16 @@ components:
             $ref: '#/components/schemas/route'
         dhcp:
           type: array
+          summary:
+            List of DHCP enabled interfaces
           description:
-            DHCP context
+            List of DHCP enabled interfaces. 
+
+            Any interface in this list will get its network IP assigned through DHCP protocol.
+            
+            Consequently, any static assignment made to it in the link section will be ignored.
+
+            Warning will be emitted in this case.
           items:
             $ref: '#/components/schemas/dhcp'
     rule:
