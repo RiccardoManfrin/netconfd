@@ -1075,8 +1075,13 @@ body .markdown-body
 <p>Need to translate the config from networkd into mine from here</p>
 <p><a href="https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files">https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files</a></p>
 <h2 id="use-dbus-not-scripts">Use DBUS not scripts<a class="headerlink" href="#use-dbus-not-scripts" title="Permanent link"></a></h2>
-<p><a href="https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go">https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go</a></p>
-<p><a href="https://github.com/godbus/dbus/">https://github.com/godbus/dbus/</a></p>
+<p>Library: <a href="https://github.com/godbus/dbus/">https://github.com/godbus/dbus/</a></p>
+<p>Our code: <a href="https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go">https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go</a></p>
+<p>Autogen constants command</p>
+<div class="codehilite"><pre>busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1
+</pre></div>
+
+
 <h2 id="eth1-gro-e-gso">Eth1 GRO e GSO<a class="headerlink" href="#eth1-gro-e-gso" title="Permanent link"></a></h2>
 <p>Currently networkd writes this file: <a href="https://gitlab.lan.athonet.com:8443/core/meta-athonet/blob/master/recipes-core/systemd/files/20-eth1.link">https://gitlab.lan.athonet.com:8443/core/meta-athonet/blob/master/recipes-core/systemd/files/20-eth1.link</a></p>
 <div class="codehilite"><pre>TCPSegmentationOffload=false 
@@ -1089,10 +1094,11 @@ LargeReceiveOffload=false
 
 <p>Since this appears as a very specific need of the current UPF after a chat with Davide we reasoned that it is probably 
 conevinent to keep this enforcement in the UPF recipe itself for now.</p>
-<h2 id="run-containerized">Run containerized<a class="headerlink" href="#run-containerized" title="Permanent link"></a></h2>
-<p>This is the egg and chicken problem (podman and network bootstrap)</p>
-<h2 id="create-tun-device">Create tun device<a class="headerlink" href="#create-tun-device" title="Permanent link"></a></h2>
+<h2 id="check-tun-device-creation">Check tun device creation<a class="headerlink" href="#check-tun-device-creation" title="Permanent link"></a></h2>
 <p>Tun device tun0 is used by the UPF. I can create it as courtesy, although UPF does create it if it does not find it.</p>
+<h2 id="documentation">Documentation<a class="headerlink" href="#documentation" title="Permanent link"></a></h2>
+<h2 id="unit-tests-automation">Unit tests automation<a class="headerlink" href="#unit-tests-automation" title="Permanent link"></a></h2>
+<p>Spin yocto/alpine machine dedicated to unit tests.</p>
 <h2 id="non-local-bind">non-local-bind ?<a class="headerlink" href="#non-local-bind" title="Permanent link"></a></h2>
 <p><a href="https://www.cyberciti.biz/faq/linux-bind-ip-that-doesnt-exist-with-net-ipv4-ip_nonlocal_bind/">https://www.cyberciti.biz/faq/linux-bind-ip-that-doesnt-exist-with-net-ipv4-ip_nonlocal_bind/</a>
 <a href="https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt">https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</a>

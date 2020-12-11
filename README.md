@@ -35,9 +35,13 @@ https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/s
 
 ## Use DBUS not scripts
 
-https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go
+Library: https://github.com/godbus/dbus/
 
-https://github.com/godbus/dbus/
+Our code: https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go
+
+Autogen constants command
+
+    busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1
 
 ## Eth1 GRO e GSO
 
@@ -52,17 +56,19 @@ Currently networkd writes this file: https://gitlab.lan.athonet.com:8443/core/me
 Since this appears as a very specific need of the current UPF after a chat with Davide we reasoned that it is probably 
 conevinent to keep this enforcement in the UPF recipe itself for now.
 
-## Run containerized 
-
-This is the egg and chicken problem (podman and network bootstrap)
-
 ## Check tun device creation
 
 Tun device tun0 is used by the UPF. I can create it as courtesy, although UPF does create it if it does not find it.
 
+## Documentation
+
 ## Unit tests automation
 
 Spin yocto/alpine machine dedicated to unit tests.
+
+## Run containerized 
+
+This is the egg and chicken problem (podman and network bootstrap)
 
 ## non-local-bind ?
 
