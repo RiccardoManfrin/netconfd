@@ -1055,57 +1055,51 @@ body .markdown-body
 .codehilite .vi{color:teal}
 .codehilite .il{color:#009999}
 .codehilite .gc{color:#999;background-color:#EAF2F5}
-</style><title>README</title></head><body><article class="markdown-body"><h2 id="requirement">Requirement<a class="headerlink" href="#requirement" title="Permanent link"></a></h2>
-<p>Allow cold storage (config) files replication on a cluster of two nodes</p>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link"></a></h2>
-<div class="codehilite"><pre>|    Node 1            |         |  Node 2              |
-|   __________         |         |         __________   |
-|  | MGMT API |        |         |        | MGMT API |  |
-|  |__________|_____   |         |   _____|__________|  |
-|  | entangled|     |  |         |  |     | entangled|  |
-|  |          | M2M |  |         |  | M2M |          |  |
-|  |          | API |&lt;-|---------|-&gt;| API |          |  |
-|  |__________|_____|  |         |  |_____|__________|  |
-|   ____|_____         |         |         ____|_____   |
-|  | inotify  |        |         |        | inotify  |  |
-|  |__________|        |         |        |__________|  |
+</style><title>README</title></head><body><article class="markdown-body"><h2 id="openapi-templates">OpenAPI templates<a class="headerlink" href="#openapi-templates" title="Permanent link"></a></h2>
+<h2 id="developing">Developing<a class="headerlink" href="#developing" title="Permanent link"></a></h2>
+<p>Entrypoint to increment OpenAPI spec is </p>
+<div class="codehilite"><pre>swaggerui/openapi.yaml
 </pre></div>
 
 
-<h2 id="constraintsassumptions">Constraints/Assumptions<a class="headerlink" href="#constraintsassumptions" title="Permanent link"></a></h2>
-<ol>
-<li>The tool only syncs single files (not whole folders). 
-It is designed specifically in this way to avoid misusage (e.g. RDBD replacing).</li>
-<li>If a file is listed to be monitored, when entangled is started it requires the path to that file to exist already.</li>
-<li>If the file to be monitored does not exist, a warning is emitted, and if the other peer requires alignment, the file is created with 644 permissions</li>
-<li>The tool does not resolve a split-brain</li>
-</ol>
-<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link"></a></h2>
-<h4 id="bootstrap">Bootstrap<a class="headerlink" href="#bootstrap" title="Permanent link"></a></h4>
-<p>When entangled is started, it registers all files that need to be monitored and calculates their md5 checksum for future changes recognition.
-If the two nodes files are misaligned, the misalignment is preserved. In other words, the tool does not resolve a split-brain.
-Split-brain resolution is out of scope and delegated to manual procedures.</p>
-<h4 id="fs-file-change">FS file change<a class="headerlink" href="#fs-file-change" title="Permanent link"></a></h4>
-<p>When a FS monitored file is changed, if the new md5 checksum differs from cached one, the sync procedure is issued and the file in the other node is aligned to the
-local changed one.</p>
-<h4 id="get-files-sync-state">Get files sync state<a class="headerlink" href="#get-files-sync-state" title="Permanent link"></a></h4>
-<p>Users can inspect the alignment of files through the offered swagger API</p>
-<div class="codehilite"><pre>curl -s  -X GET http://localhost:9876/api/1/state | jq .
+<p>Extend it and run <code>./gen_templates.sh</code> to regenerate templates. Than manually integrate the relevant parts and discartd the rest :(</p>
+<p>Pushing on git will create an artifact with a docker image embedding the binary.</p>
+<p>Build locally with <code>make</code></p>
+<h2 id="code-coverage">Code coverage<a class="headerlink" href="#code-coverage" title="Permanent link"></a></h2>
+<p><img alt="coverage" src="https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage" /></p>
+<h2 id="todo-list">ToDo list<a class="headerlink" href="#todo-list" title="Permanent link"></a></h2>
+<h2 id="dhcp-static-addr-warning-emit">DHCP static addr Warning emit<a class="headerlink" href="#dhcp-static-addr-warning-emit" title="Permanent link"></a></h2>
+<h2 id="mtu-set">MTU set<a class="headerlink" href="#mtu-set" title="Permanent link"></a></h2>
+<p>This is needed by UPF</p>
+<h2 id="golden-config">Golden config<a class="headerlink" href="#golden-config" title="Permanent link"></a></h2>
+<p>Need to translate the config from networkd into mine from here</p>
+<p><a href="https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files">https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files</a></p>
+<h2 id="use-dbus-not-scripts">Use DBUS not scripts<a class="headerlink" href="#use-dbus-not-scripts" title="Permanent link"></a></h2>
+<p><a href="https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go">https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go</a></p>
+<p><a href="https://github.com/godbus/dbus/">https://github.com/godbus/dbus/</a></p>
+<h2 id="eth1-gro-e-gso">Eth1 GRO e GSO<a class="headerlink" href="#eth1-gro-e-gso" title="Permanent link"></a></h2>
+<p>Currently networkd writes this file: <a href="https://gitlab.lan.athonet.com:8443/core/meta-athonet/blob/master/recipes-core/systemd/files/20-eth1.link">https://gitlab.lan.athonet.com:8443/core/meta-athonet/blob/master/recipes-core/systemd/files/20-eth1.link</a></p>
+<div class="codehilite"><pre>TCPSegmentationOffload=false 
+TCP6SegmentationOffload=false 
+GenericSegmentationOffload=false 
+GenericReceiveOffload=false 
+LargeReceiveOffload=false
 </pre></div>
 
 
-<h4 id="live-split-brain">Live split-brain<a class="headerlink" href="#live-split-brain" title="Permanent link"></a></h4>
-<p>A split-brain can be the result of two different conditions:</p>
-<ol>
-<li>entangled is started <em>after</em> a change in one or more of the monitored files or,</li>
-<li>the nodes of the cluster cannot reach each other through the cluster network and a change in one or more of the monitored files occurs.</li>
-</ol>
-<p>When in this situation, the tool delegates the resolution of the conflict to the operator of the cluster. </p>
-<p>If anyway there are further changes to the file and the two nodes are in reach, the change is propagated and the conflict is automatically resolved.</p>
-<h4 id="force-node-realignment">Force Node realignment<a class="headerlink" href="#force-node-realignment" title="Permanent link"></a></h4>
-<p>Users can force the alignment of one node to another throug the offered swagger API</p>
-<div class="codehilite"><pre>curl -X POST http://localhost:9876/api/1/force
-</pre></div>
-
-
-<p>This can be of help when we need to resolve a split-brain.</p></article></body></html>
+<p>Since this appears as a very specific need of the current UPF after a chat with Davide we reasoned that it is probably 
+conevinent to keep this enforcement in the UPF recipe itself for now.</p>
+<h2 id="run-containerized">Run containerized<a class="headerlink" href="#run-containerized" title="Permanent link"></a></h2>
+<p>This is the egg and chicken problem (podman and network bootstrap)</p>
+<h2 id="create-tun-device">Create tun device<a class="headerlink" href="#create-tun-device" title="Permanent link"></a></h2>
+<p>Tun device tun0 is used by the UPF. I can create it as courtesy, although UPF does create it if it does not find it.</p>
+<h2 id="non-local-bind">non-local-bind ?<a class="headerlink" href="#non-local-bind" title="Permanent link"></a></h2>
+<p><a href="https://www.cyberciti.biz/faq/linux-bind-ip-that-doesnt-exist-with-net-ipv4-ip_nonlocal_bind/">https://www.cyberciti.biz/faq/linux-bind-ip-that-doesnt-exist-with-net-ipv4-ip_nonlocal_bind/</a>
+<a href="https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt">https://www.kernel.org/doc/Documentation/networking/ip-sysctl.txt</a>
+<a href="http://web.mit.edu/rhel-doc/4/RH-DOCS/rhel-rg-it-4/s1-proc-sysctl.html">http://web.mit.edu/rhel-doc/4/RH-DOCS/rhel-rg-it-4/s1-proc-sysctl.html</a></p>
+<h2 id="cni">CNI<a class="headerlink" href="#cni" title="Permanent link"></a></h2>
+<p><a href="https://www.nuagenetworks.net/blog/container-networking-standards/">https://www.nuagenetworks.net/blog/container-networking-standards/</a>
+<a href="https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/">https://kubernetes.io/docs/concepts/extend-kubernetes/compute-storage-net/network-plugins/</a>
+<a href="https://github.com/containers/dnsname/blob/master/README_PODMAN.md">https://github.com/containers/dnsname/blob/master/README_PODMAN.md</a>
+<a href="https://github.com/containers/dnsname/blob/master/plugins/meta/dnsname/main.go">https://github.com/containers/dnsname/blob/master/plugins/meta/dnsname/main.go</a>
+<a href="https://github.com/containernetworking/plugins/blob/master/plugins/sample/main.go">https://github.com/containernetworking/plugins/blob/master/plugins/sample/main.go</a></p></article></body></html>
