@@ -1,5 +1,4 @@
-OpenAPI templates
------------------
+# OpenAPI templates
 
 ## Developing
 
@@ -13,13 +12,11 @@ Pushing on git will create an artifact with a docker image embedding the binary.
 
 Build locally with `make`
 
-Code coverage
--------------
+# Code coverage
 
 ![coverage](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage)
 
-R1 ToDo list
-------------
+# R1 ToDo list
 
 ## DHCP static addr Warning emit
 
@@ -69,8 +66,7 @@ Spin yocto/alpine machine dedicated to unit tests.
 
 This is the egg and chicken problem (podman and network bootstrap)
 
-Long Term Investigation
------------------------
+# Long Term Investigation
 
 ## non-local-bind ?
 
