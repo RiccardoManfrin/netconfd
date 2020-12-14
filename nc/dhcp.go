@@ -15,6 +15,12 @@ type Dhcp struct {
 //DHCPsConfigure configures the DHCP for each link interface of the array.
 func DHCPsConfigure(dhcp []Dhcp) error {
 	for _, d := range dhcp {
+		err := DHCPDelete(d.Ifname)
+		if err != nil {
+			if _, ok := err.(*NotFoundError); ok != true {
+				return err
+			}
+		}
 		if err := DHCPCreate(d); err != nil {
 			return err
 		}
