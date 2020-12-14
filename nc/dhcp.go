@@ -13,7 +13,12 @@ type Dhcp struct {
 }
 
 //DHCPsConfigure configures the DHCP for each link interface of the array.
-func DHCPsConfigure([]Dhcp) error {
+func DHCPsConfigure(dhcp []Dhcp) error {
+	for _, d := range dhcp {
+		if err := DHCPCreate(d); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -89,6 +94,9 @@ func DHCPsGet() ([]Dhcp, error) {
 	for _, l := range links {
 		d, err := DHCPGet(l.Ifname)
 		if err != nil {
+			if _, ok := err.(*NotFoundError); ok == true {
+				continue
+			}
 			return dhcps, err
 		}
 

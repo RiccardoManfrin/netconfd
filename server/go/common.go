@@ -17,6 +17,20 @@ func linksGet() ([]Link, error) {
 	return links, err
 }
 
+func ncDhcpFormat(dhcp Dhcp) nc.Dhcp {
+	d := nc.Dhcp{
+		Ifname: nc.LinkID(dhcp.Ifname),
+	}
+	return d
+}
+
+func ncDhcpParse(ncdhcp nc.Dhcp) Dhcp {
+	d := Dhcp{
+		Ifname: string(ncdhcp.Ifname),
+	}
+	return d
+}
+
 func ncRouteFormat(route Route) nc.Route {
 	ncroute := nc.Route{}
 	ncroute.Dst = route.Dst
@@ -34,12 +48,7 @@ func ncRouteFormat(route Route) nc.Route {
 	}
 	return ncroute
 }
-func ncDhcpParse(ncdhcp nc.Dhcp) Dhcp {
-	d := Dhcp{
-		Ifname: string(ncdhcp.Ifname),
-	}
-	return d
-}
+
 func ncRouteParse(ncroute nc.Route) Route {
 	var route Route
 	id := string(ncroute.ID)
@@ -261,6 +270,12 @@ func ncNetFormat(config Config) nc.Network {
 			network.Routes = make([]nc.Route, len(*config.HostNetwork.Routes))
 			for i, l := range *config.HostNetwork.Routes {
 				network.Routes[i] = ncRouteFormat(l)
+			}
+		}
+		if config.HostNetwork.Dhcp != nil {
+			network.Dhcp = make([]nc.Dhcp, len(*config.HostNetwork.Dhcp))
+			for i, d := range *config.HostNetwork.Dhcp {
+				network.Dhcp[i] = ncDhcpFormat(d)
 			}
 		}
 	}
