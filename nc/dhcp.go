@@ -79,6 +79,11 @@ func DHCPCreate(dhcp Dhcp) error {
 //DHCPGet gets DHCP controller info for link interface
 func DHCPGet(ifname LinkID) (Dhcp, error) {
 	d := Dhcp{}
+	_, err := LinkGet(ifname)
+	if err != nil {
+		return d, err
+	}
+
 	out, err := exec.Command(prefixInstallPAth+"dhcp_status.sh", string(ifname)).Output()
 	if err != nil {
 		return d, NewCannotStatusDHCPError(ifname, err)

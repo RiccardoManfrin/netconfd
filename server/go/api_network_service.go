@@ -58,14 +58,10 @@ func (s *NetworkApiService) ConfigDHCPGet(ctx context.Context, ifname string) (I
 
 // ConfigDHCPsGet - Get All DHCP
 func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, error) {
-	// TODO - update ConfigDHCPsGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	//TODO: Uncomment the next line to return response Response(200, []Dhcp{}) or use other options such as http.Ok ...
-	//return Response(200, []Dhcp{}), nil
+	dhcps, err := dhcpsGet()
 
-	err := errors.New("ConfigDHCPsGet method not implemented")
-	return GetErrorResponse(err, nil)
+	return GetErrorResponse(err, dhcps)
 }
 
 // ConfigLinkCreate - Create New Link
@@ -102,11 +98,6 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 
 // ConfigLinksGet - Get all link layer interfaces
 func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, error) {
-	// TODO - update ConfigLinksGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, []Link{}) or use other options such as http.Ok ...
-	//return Response(200, []Link{}), nil
 	links, err := linksGet()
 
 	return GetErrorResponse(err, links)

@@ -17,6 +17,18 @@ func linksGet() ([]Link, error) {
 	return links, err
 }
 
+func dhcpsGet() ([]Dhcp, error) {
+	var dhcps []Dhcp
+	ncdhcps, err := nc.DHCPsGet()
+	if err == nil {
+		dhcps = make([]Dhcp, len(ncdhcps))
+		for i, d := range ncdhcps {
+			dhcps[i] = ncDhcpParse(d)
+		}
+	}
+	return dhcps, err
+}
+
 func ncDhcpFormat(dhcp Dhcp) nc.Dhcp {
 	d := nc.Dhcp{
 		Ifname: nc.LinkID(dhcp.Ifname),
