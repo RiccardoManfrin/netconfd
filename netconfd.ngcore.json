@@ -7,6 +7,11 @@
 		}
 	},
   "host_network": {
+    "dhcp": [
+      {
+        "ifname": "eth0"
+      }
+    ],
     "links": [
       {
         "addr_info": [
