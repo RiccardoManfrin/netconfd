@@ -18,22 +18,22 @@ Code coverage
 
 ![coverage](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage)
 
-ToDo list
----------
+R1 ToDo list
+------------
 
 ## DHCP static addr Warning emit
 
-## MTU set
+## MTU set [3h]
 
 This is needed by UPF
 
-## Golden config
+## Golden config [3h]
 
 Need to translate the config from networkd into mine from here
 
 https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files
 
-## Use DBUS not scripts
+## Use DBUS not scripts [1d - risk: unknown technology]
 
 Library: https://github.com/godbus/dbus/
 
@@ -43,7 +43,7 @@ Autogen constants command
 
     busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1
 
-## Eth1 GRO e GSO
+## Eth1 GRO e GSO [1d if it goes smoothly - mandatory - unknown requirement]
 
 Currently networkd writes this file: https://gitlab.lan.athonet.com:8443/core/meta-athonet/blob/master/recipes-core/systemd/files/20-eth1.link
 
@@ -53,22 +53,24 @@ Currently networkd writes this file: https://gitlab.lan.athonet.com:8443/core/me
 	GenericReceiveOffload=false 
 	LargeReceiveOffload=false
 
-Since this appears as a very specific need of the current UPF after a chat with Davide we reasoned that it is probably 
-conevinent to keep this enforcement in the UPF recipe itself for now.
+This appears as a very specific need of the current UPF after a chat with Davide: UPF needs it otherwise packets are lost in the kernel. Proposal was to confine the enforcement of the configuration within the UPF. Carlo disagrees. Needs decision
 
-## Check tun device creation
+## Check tun device creation [2h]
 
 Tun device tun0 is used by the UPF. I can create it as courtesy, although UPF does create it if it does not find it.
 
-## Documentation
+## Documentation [2 or 3 days]
 
-## Unit tests automation
+## Unit tests automation [2d]
 
 Spin yocto/alpine machine dedicated to unit tests.
 
-## Run containerized 
+## Run containerized [Needs investigation]
 
 This is the egg and chicken problem (podman and network bootstrap)
+
+Long Term Investigation
+-----------------------
 
 ## non-local-bind ?
 
