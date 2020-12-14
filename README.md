@@ -18,7 +18,7 @@ Build locally with `make`
 
 # R1 ToDo list
 
-## DHCP static addr Warning emit
+## DHCP static addr Warning emit [2h]
 
 ## MTU set [3h]
 
@@ -30,7 +30,7 @@ Need to translate the config from networkd into mine from here
 
 https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files
 
-## Use DBUS not scripts [1d - risk: unknown technology]
+## Use DBUS not scripts [1d - risk]
 
 Library: https://github.com/godbus/dbus/
 
@@ -39,6 +39,8 @@ Our code: https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus
 Autogen constants command
 
     busctl introspect org.freedesktop.systemd1 /org/freedesktop/systemd1
+
+Risk assessment: unknown technology
 
 ## Eth1 GRO e GSO [1d if it goes smoothly - mandatory - unknown requirement]
 
@@ -65,6 +67,12 @@ Spin yocto/alpine machine dedicated to unit tests.
 ## Run containerized [Needs investigation]
 
 This is the egg and chicken problem (podman and network bootstrap)
+
+## Yocto integration [1d - risks]
+
+Needs to write the bb recipe for yocto [containerized or not makes a difference here]
+
+Risk assessment: 1d of work but if it takes 1 day to build I can have multiple iterations to converge
 
 # Long Term Investigation
 
