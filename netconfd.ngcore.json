@@ -92,16 +92,6 @@
     ],
     "routes": [
       {
-        "__id": "cfdb9506e8029fefa5036cb5216fc561",
-        "dev": "eth0",
-        "dst": "0.0.0.0/0",
-        "gateway": "192.168.178.1",
-        "metric": 1024,
-        "prefsrc": "192.168.178.22",
-        "protocol": "dhcp",
-        "scope": "universe"
-      },
-      {
         "__id": "298e096ebd4a0b1e73c632db011fe828",
         "dev": "eth1",
         "dst": "10.1.0.0/16",
@@ -120,43 +110,9 @@
         "scope": "link"
       },
       {
-        "__id": "dbee8c74953250b7d2027f3fe676f3c2",
-        "dev": "eth0",
-        "dst": "192.168.178.0/24",
-        "metric": 0,
-        "prefsrc": "192.168.178.22",
-        "protocol": "kernel",
-        "scope": "link"
-      },
-      {
-        "__id": "8543ffd3b998774cd3595f65a651649d",
-        "dev": "eth0",
-        "dst": "192.168.178.1",
-        "metric": 1024,
-        "prefsrc": "192.168.178.22",
-        "protocol": "dhcp",
-        "scope": "link"
-      },
-      {
         "__id": "7f445917032c60e14010720b794447a2",
         "dev": "lo",
         "dst": "::1",
-        "metric": 256,
-        "protocol": "kernel",
-        "scope": "universe"
-      },
-      {
-        "__id": "bec9266bafacb18cb8f2513b465995f2",
-        "dev": "eth1",
-        "dst": "fe80::/64",
-        "metric": 256,
-        "protocol": "kernel",
-        "scope": "universe"
-      },
-      {
-        "__id": "bec9266bafacb18cb8f2513b465995f2",
-        "dev": "eth0",
-        "dst": "fe80::/64",
         "metric": 256,
         "protocol": "kernel",
         "scope": "universe"
