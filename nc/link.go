@@ -195,7 +195,7 @@ func linkParse(link netlink.Link) Link {
 			vlan := link.(*netlink.Vlan)
 			mkink, err := netlink.LinkByIndex(vlan.Attrs().ParentIndex)
 			if err == nil {
-				logger.Log.Warning(fmt.Sprintf("Virtual vlan link device parent link not found by index %v", vlan.Attrs().ParentIndex))
+				logger.Log.Warning("Virtual vlan link device parent link not found by index", vlan.Attrs().ParentIndex)
 			}
 
 			nclink.Link = LinkID(mkink.Attrs().Name)
@@ -362,7 +362,7 @@ func LinksConfigure(links []Link) error {
 				continue
 			}
 			if err := LinkDelete(link.Ifname); err != nil {
-				logger.Log.Warning(fmt.Sprintf("Link Delete Error: %v", err))
+				logger.Log.Warning("Link Delete Error:", err)
 			}
 		}
 
@@ -386,7 +386,7 @@ func LinksConfigure(links []Link) error {
 					}
 					// Apparently first Link Set becomes master so do it first.
 					if err = LinkSetMaster(activeSlave.Ifname, link.Master); err != nil {
-						logger.Log.Warning(fmt.Sprintf("Link Set Master Error: %v", err))
+						logger.Log.Warning("Link Set Master Error:", err)
 					}
 				}
 			}
@@ -404,7 +404,7 @@ func LinksConfigure(links []Link) error {
 				if l.Linkinfo.InfoData.Mode == netlink.BOND_MODE_ACTIVE_BACKUP.String() {
 					if link.Linkinfo.InfoSlaveData.State == netlink.BondStateBackup.String() {
 						if err = LinkSetBondSlave(link.Ifname, link.Master); err != nil {
-							logger.Log.Warning(fmt.Sprintf("Link Set Bond Slave Error: %v", err))
+							logger.Log.Warning("Link Set Bond Slave Error:", err)
 						}
 					}
 				} else {
@@ -412,7 +412,7 @@ func LinksConfigure(links []Link) error {
 						return NewBackupSlaveIfaceFoundForNonActiveBackupBondError(link.Ifname, link.Master)
 					}
 					if err = LinkSetBondSlave(link.Ifname, link.Master); err != nil {
-						logger.Log.Warning(fmt.Sprintf("Link Set Bond Slave Error: %v", err))
+						logger.Log.Warning("Link Set Bond Slave Error:", err)
 					}
 				}
 			}
@@ -424,7 +424,7 @@ func LinksConfigure(links []Link) error {
 	for _, link := range links {
 		if link.Flags.HaveFlag(LinkFlag(net.FlagUp.String())) {
 			if err := LinkSetUp(link.Ifname); err != nil {
-				logger.Log.Warning(fmt.Sprintf("Link Set Up Error: %v", err))
+				logger.Log.Warning("Link Set Up Error:", err)
 			}
 		}
 	}
@@ -475,7 +475,7 @@ func LinkSetAddresses(link Link) error {
 	}
 
 	for _, a := range link.AddrInfo {
-		logger.Log.Debug("Adding addr %v to iface %v", a.Local.String(), ifname)
+		logger.Log.Debug("Adding addr", a.Local.String(), "to iface", ifname)
 		if err := linkAddrAdd(ifname, a.Local); err != nil {
 			return err
 		}
@@ -497,7 +497,7 @@ func LinkCreate(link Link) error {
 	var err error = nil
 	ifname := link.Ifname
 
-	logger.Log.Debug("Creating link %v", ifname)
+	logger.Log.Debug("Creating link", ifname)
 	l, _ := netlink.LinkByName(string(ifname))
 
 	removable := true

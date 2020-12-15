@@ -176,7 +176,7 @@ func (m *Manager) PatchInitialConfig() {
 	m.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
 		logger.Log.Warning(
-			fmt.Sprintf("Failed to patch-apply initial config. Error %v. Network Not configured!", rr))
+			"Failed to patch-apply initial config - Error", rr, "- Network Not configured!")
 	}
 }
 
@@ -219,9 +219,9 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if (wrw.Status != http.StatusOK) && (wrw.Status != http.StatusCreated) {
-		logger.Log.Warning(fmt.Sprintf("HTTP Error %v: %v", wrw.Status, string(wrw.buf.Bytes())))
+		logger.Log.Warning("HTTP Error", wrw.Status, ":", string(wrw.buf.Bytes()))
 	} else {
-		logger.Log.Debug(fmt.Sprintf("HTTP Ok %v: %v", wrw.Status, string(wrw.buf.Bytes())))
+		logger.Log.Debug("HTTP Ok", wrw.Status, ":", string(wrw.buf.Bytes()))
 	}
 }
 func checkIP(ipstr string) error {
