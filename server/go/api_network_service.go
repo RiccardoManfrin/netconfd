@@ -67,16 +67,30 @@ func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, e
 // ConfigLinkCreate - Create New Link
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
 	nclink := ncLinkFormat(link)
-	err := nc.LinkCreateDown(nclink)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
+	var err error
 	if nclink.Master != "" {
+		//Bond slaves are troublesome they need to be joined to master first
+		//Then be brought up and MTU set
+		err = nc.LinkCreateDown(nclink)
+		if err != nil {
+			return PostErrorResponse(err, nil)
+		}
+
 		nc.LinkSetMaster(nclink.Ifname, nclink.Master)
+
+		if nclink.Flags.HaveFlag(nc.LinkFlag("up")) {
+			nc.LinkSetUp(nclink.Ifname)
+		}
+		if nclink.Mtu > 0 {
+			nc.LinkSetMTU(nclink.Ifname, int(nclink.Mtu))
+		}
+	} else {
+		err = nc.LinkCreate(nclink)
+		if err != nil {
+			return PostErrorResponse(err, nil)
+		}
 	}
-	if nclink.Flags.HaveFlag(nc.LinkFlag("up")) {
-		nc.LinkSetUp(nclink.Ifname)
-	}
+
 	return PostErrorResponse(err, nil)
 }
 

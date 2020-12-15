@@ -563,6 +563,15 @@ func LinkSetUp(ifname LinkID) error {
 	return netlink.LinkSetUp(link)
 }
 
+//LinkSetMTU set a link MTU
+func LinkSetMTU(ifname LinkID, mtu int) error {
+	link, _ := netlink.LinkByName(string(ifname))
+	if link == nil {
+		return NewLinkNotFoundError(ifname)
+	}
+	return netlink.LinkSetMTU(link, mtu)
+}
+
 //LinkSetDown set a link up
 func LinkSetDown(ifname LinkID) error {
 	link, _ := netlink.LinkByName(string(ifname))
@@ -815,6 +824,9 @@ func linkFormat(link Link) (netlink.Link, error) {
 	netFlags, err := linkFlagsFormat(link)
 	if err != nil {
 		return nil, err
+	}
+	if link.Mtu > 0 {
+		nllink.Attrs().MTU = int(link.Mtu)
 	}
 	nllink.Attrs().Flags = netFlags
 	return nllink, err

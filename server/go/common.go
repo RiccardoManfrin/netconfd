@@ -104,6 +104,8 @@ func ncLinkParse(nclink nc.Link) Link {
 		Operstate: &nclink.Operstate,
 	}
 
+	link.Mtu = &nclink.Mtu
+
 	flagsLen := len(nclink.Flags)
 	if flagsLen > 0 {
 		lfs := make([]LinkFlag, flagsLen)

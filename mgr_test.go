@@ -573,3 +573,51 @@ func Test15(t *testing.T) {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
+
+//Test016 - OK-016 MTU Set/Get
+func Test16(t *testing.T) {
+
+	//Cleanup
+	runRequest("DELETE", "/api/1/links/dummy3", "")
+
+	newlink := `{
+			"ifname": "dummy3",
+			"link_type": "ether",
+			"flags": ["up"],
+			"linkinfo": {
+				"info_kind": "dummy",
+				"info_slave_data": {
+					"state": "BACKUP"
+				}
+			},
+			"mtu": 3000,
+			"addr_info": [
+				{
+					"local": "10.6.7.8",
+					"prefixlen": 24
+				}
+			],
+			"master": "bond0"
+		}`
+	rr := runRequest("POST", "/api/1/links", newlink)
+	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
+
+	rr = runRequest("GET", "/api/1/links/dummy3", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	var l oas.Link
+	err := json.Unmarshal(rr.Body.Bytes(), &l)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	if l.Mtu == nil {
+		t.Errorf("MTU was not found in LinkGet")
+	} else {
+		if *l.Mtu != 3000 {
+			t.Errorf("MTU was not properly configured")
+		}
+	}
+
+	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+}
