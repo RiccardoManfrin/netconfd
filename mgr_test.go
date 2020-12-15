@@ -3,6 +3,7 @@ package main
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -224,6 +225,12 @@ func linkMatch(_setLinkData interface{}, _getLinkData interface{}) bool {
 	rli := getLinkData.GetLinkinfo()
 	lid := lli.GetInfoData()
 	rid := rli.GetInfoData()
+	lisd := lli.GetInfoSlaveData()
+	risd := rli.GetInfoSlaveData()
+	if lisd.GetState() != "" && lisd.GetState() != risd.GetState() {
+		return false
+	}
+
 	if lid.GetMode() != rid.GetMode() {
 		return false
 	}
@@ -576,6 +583,9 @@ func Test15(t *testing.T) {
 
 //Test016 - OK-016 MTU Set/Get
 func Test16(t *testing.T) {
+	cset := genSampleConfig(t)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 	//Cleanup
 	runRequest("DELETE", "/api/1/links/dummy3", "")
@@ -599,7 +609,7 @@ func Test16(t *testing.T) {
 			],
 			"master": "bond0"
 		}`
-	rr := runRequest("POST", "/api/1/links", newlink)
+	rr = runRequest("POST", "/api/1/links", newlink)
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 
 	rr = runRequest("GET", "/api/1/links/dummy3", "")
@@ -615,6 +625,55 @@ func Test16(t *testing.T) {
 		if *l.Mtu != 3000 {
 			t.Errorf("MTU was not properly configured")
 		}
+	}
+
+	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+}
+
+//Test017 - OK-017 Checks that single POSTED interface is effectively enslave to bond
+func Test17(t *testing.T) {
+	cset := genSampleConfig(t)
+	rr := runConfigSet(cset)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	//Cleanup
+	runRequest("DELETE", "/api/1/links/dummy3", "")
+
+	newlink := `{
+			"ifname": "dummy3",
+			"link_type": "ether",
+			"flags": ["up"],
+			"linkinfo": {
+				"info_kind": "dummy",
+				"info_slave_data": {
+					"state": "BACKUP"
+				}
+			},
+			"mtu": 3000,
+			"addr_info": [
+				{
+					"local": "10.6.7.8",
+					"prefixlen": 24
+				}
+			],
+			"master": "bond0"
+		}`
+	rr = runRequest("POST", "/api/1/links", newlink)
+	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
+
+	rr = runRequest("GET", "/api/1/links/dummy3", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	var l oas.Link
+	err := json.Unmarshal(rr.Body.Bytes(), &l)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+	if l.Linkinfo.InfoSlaveData.MiiStatus == nil {
+		t.Errorf("Interface is not enslaved (missing slave data)")
+	} else if *l.Linkinfo.InfoSlaveData.MiiStatus != "UP" &&
+		*l.Linkinfo.InfoSlaveData.MiiStatus != "GOING_BACK" {
+		t.Errorf(fmt.Sprintf("Interface Slave MiiStatus is not up/going up: %v", *l.Linkinfo.InfoSlaveData.MiiStatus))
 	}
 
 	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
