@@ -9,3 +9,4 @@
 /__debug_bin
 /server/go.mod
 /server/main.go
+/debug.test
