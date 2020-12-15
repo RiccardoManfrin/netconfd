@@ -365,7 +365,7 @@ func LinksConfigure(links []Link) error {
 				logger.Log.Warning("Link Delete Error:", err)
 			}
 		}
-
+		/* You cannot enslave a link if it is UP */
 		if err := LinkCreateDown(link); err != nil {
 			return err
 		}

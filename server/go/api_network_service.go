@@ -69,8 +69,7 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 	nclink := ncLinkFormat(link)
 	var err error
 	if nclink.Master != "" {
-		//Bond slaves are troublesome they need to be joined to master first
-		//Then be brought up and MTU set
+		/* You cannot enslave a link if it is UP */
 		err = nc.LinkCreateDown(nclink)
 		if err != nil {
 			return PostErrorResponse(err, nil)
