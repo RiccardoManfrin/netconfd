@@ -21,7 +21,7 @@ type Network struct {
 	Links *[]Link `json:"links,omitempty"`
 	// Namespace routes
 	Routes *[]Route `json:"routes,omitempty"`
-	// DHCP context
+	// List of DHCP enabled interfaces. Any interface in this list will get its network IP assigned through DHCP protocol. Consequently, any static assignment made to it in the link section will be ignored. Warning will be emitted in this case.
 	Dhcp *[]Dhcp `json:"dhcp,omitempty"`
 }
 

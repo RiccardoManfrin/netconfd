@@ -942,7 +942,11 @@ components:
             $ref: '#/components/schemas/route'
           type: array
         dhcp:
-          description: DHCP context
+          description: |-
+            List of DHCP enabled interfaces.
+            Any interface in this list will get its network IP assigned through DHCP protocol.
+            Consequently, any static assignment made to it in the link section will be ignored.
+            Warning will be emitted in this case.
           items:
             $ref: '#/components/schemas/dhcp'
           type: array
@@ -1180,6 +1184,7 @@ components:
           - ether
           - loopback
           - ppp
+          - none
           type: string
         address:
           type: string
