@@ -1189,6 +1189,7 @@ components:
                 - macvlan
                 - ipvlan
                 - ppp
+                - tuntap
             info_data:
               type: object
               description: Additional information on the link

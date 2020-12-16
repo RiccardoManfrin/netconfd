@@ -1711,6 +1711,7 @@ components:
           - macvlan
           - ipvlan
           - ppp
+          - tuntap
           type: string
         info_data:
           $ref: '#/components/schemas/link_linkinfo_info_data'
