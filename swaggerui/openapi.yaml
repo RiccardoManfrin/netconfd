@@ -969,8 +969,6 @@ components:
             $ref: '#/components/schemas/route'
         dhcp:
           type: array
-          summary:
-            List of DHCP enabled interfaces
           description:
             List of DHCP enabled interfaces. 
 
