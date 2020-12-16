@@ -684,3 +684,43 @@ func Test17(t *testing.T) {
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 }
+
+//Test018 - OK-018 Check overlapping route does not stop config PATCH
+func Test18(t *testing.T) {
+	cfg := `{
+			"global": {},
+			"host_network": {
+				"links": [
+					{
+						"ifname": "dummy3",
+						"link_type": "ether",
+						"flags": ["up"],
+						"linkinfo": {
+							"info_kind": "dummy"
+						},
+						"mtu": 3000,
+						"addr_info": [
+							{
+								"local": "10.16.7.8",
+								"prefixlen": 24
+							}
+						]
+					}
+				]
+			}
+		}`
+	rr := runRequest("PATCH", "/api/1/mgmt/config", cfg)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	rr = runRequest("GET", "/api/1/links/dummy3", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	var l oas.Link
+	err := json.Unmarshal(rr.Body.Bytes(), &l)
+	if err != nil {
+		t.Errorf(err.Error())
+	}
+
+	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+}
