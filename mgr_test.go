@@ -228,7 +228,11 @@ func linkMatch(_setLinkData interface{}, _getLinkData interface{}) bool {
 	lisd := lli.GetInfoSlaveData()
 	risd := rli.GetInfoSlaveData()
 	if lisd.GetState() != "" && lisd.GetState() != risd.GetState() {
-		return false
+		if lisd.GetState() == "ACTIVE" && risd.GetState() == "BACKUP" {
+			//Accept this, it's just the bond not beeing up (in which case)
+		} else {
+			return false
+		}
 	}
 
 	if lid.GetMode() != rid.GetMode() {
