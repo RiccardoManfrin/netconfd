@@ -6,6 +6,7 @@ import (
 	"net"
 
 	"github.com/riccardomanfrin/netlink"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 // ModelDefault This is equivalent to 0.0.0.0/0 or ::/0
@@ -140,7 +141,12 @@ func RouteDelete(routeid RouteID) error {
 //existing links whose ifname LinkID collides with the ones being created.
 func RoutesConfigure(routes []Route) error {
 	for _, r := range routes {
-		RouteDelete(RouteIDGet(r))
+		err := RouteDelete(RouteIDGet(r))
+		if err != nil {
+			if _, ok := err.(*NotFoundError); ok != true {
+				logger.Log.Warning(err.Error())
+			}
+		}
 		if _, err := RouteCreate(r); err != nil {
 			return err
 		}
