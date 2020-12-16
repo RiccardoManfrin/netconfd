@@ -194,6 +194,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Route:      route,
 	}
 	if err := openapi3filter.ValidateRequest(ctx, requestValidationInput); err != nil {
+		err = &comm.ErrorString{S: fmt.Sprintf("HTTP API validation error: %v", err.Error())}
 		httpError(w, err, http.StatusBadRequest)
 		return
 	}
