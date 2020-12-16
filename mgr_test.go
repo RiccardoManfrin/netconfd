@@ -706,6 +706,23 @@ func Test18(t *testing.T) {
 							}
 						]
 					}
+				],
+				"routes":[
+					{
+						"dev": "dummy3",
+						"dst": "10.16.7.0/24",
+						"metric": 0,
+						"prefsrc": "10.16.7.8",
+						"protocol": "kernel",
+						"scope": "link"
+					},
+					{
+						"dev": "dummy3",
+						"dst": "fe80::/64",
+						"metric": 256,
+						"protocol": "kernel",
+						"scope": "global"
+					}
 				]
 			}
 		}`
