@@ -10,6 +10,7 @@ import (
 	"testing"
 
 	comm "gitlab.lan.athonet.com/core/netconfd/common"
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
 )
@@ -102,7 +103,14 @@ func newConfigGetReq() *http.Request {
 	return req
 }
 
-var m *Manager = NewManager()
+func NewTestManager() *Manager {
+	mgr := NewManager()
+	logger.LoggerInit("-")
+	logger.LoggerSetLevel("WRN")
+	return mgr
+}
+
+var m *Manager = NewTestManager()
 
 func checkResponse(t *testing.T, rr *httptest.ResponseRecorder, httpStatusCode int, ncErrorCode nc.ErrorCode, ncreason string) {
 	if status := rr.Code; status != httpStatusCode {
