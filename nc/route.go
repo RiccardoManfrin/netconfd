@@ -148,7 +148,11 @@ func RoutesConfigure(routes []Route) error {
 			}
 		}
 		if _, err := RouteCreate(r); err != nil {
-			return err
+			/* Some routes just cannot be erased
+			 * so we accept the fact that they are there already */
+			if _, ok := err.(*ConflictError); ok != true {
+				return err
+			}
 		}
 	}
 	return nil
