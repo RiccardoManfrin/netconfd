@@ -1699,8 +1699,9 @@ components:
             \ mac address\n  * `ipvlan` - Direct virtual eth interface connected to\
             \ the physical interface.\n    Physical interface MAC address is reused.\
             \ L2 type directly connects the lan to \n    the host phyisical device.\
-            \ L3 type adds a routing layer in between.\n  * `tuntap` - Link for to\
-            \ kernel-to-userspace packet forward\n  * `ppp` - Point to point [readonly]\n"
+            \ L3 type adds a routing layer in between.\n  * `tun` - Link for to kernel-userspace\
+            \ packet forward\n  * `tap` - Link for kernnel-to-userspace packet evedropping\n\
+            \  * `ppp` - Point to point [readonly]\n"
           enum:
           - device
           - dummy
@@ -1711,7 +1712,8 @@ components:
           - macvlan
           - ipvlan
           - ppp
-          - tuntap
+          - tun
+          - tap
           type: string
         info_data:
           $ref: '#/components/schemas/link_linkinfo_info_data'
