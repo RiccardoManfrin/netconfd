@@ -23,7 +23,7 @@ type LinkAddrInfo struct {
 	Prefixlen int32   `json:"prefixlen"`
 	Broadcast *string `json:"broadcast,omitempty"`
 	// IPv4 or IPv6 address
-	Address *string `json:"address,omitempty"`
+	Address *net.IP `json:"address,omitempty"`
 }
 
 // NewLinkAddrInfo instantiates a new LinkAddrInfo object
@@ -132,7 +132,7 @@ func (o *LinkAddrInfo) GetAddress() string {
 		var ret string
 		return ret
 	}
-	return *o.Address
+	return o.Address.String()
 }
 
 // GetAddressOk returns a tuple with the Address field value if set, nil otherwise
@@ -141,7 +141,8 @@ func (o *LinkAddrInfo) GetAddressOk() (*string, bool) {
 	if o == nil || o.Address == nil {
 		return nil, false
 	}
-	return o.Address, true
+	res := o.Address.String()
+	return &res, true
 }
 
 // HasAddress returns a boolean if a field has been set.
@@ -155,7 +156,9 @@ func (o *LinkAddrInfo) HasAddress() bool {
 
 // SetAddress gets a reference to the given string and assigns it to the Address field.
 func (o *LinkAddrInfo) SetAddress(v string) {
-	o.Address = &v
+	var ip net.IP
+	ip.UnmarshalText([]byte(v))
+	o.Address = &ip
 }
 
 func (o LinkAddrInfo) MarshalJSON() ([]byte, error) {

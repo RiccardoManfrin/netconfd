@@ -120,6 +120,9 @@ func ncLinkParse(nclink nc.Link) Link {
 		for i, a := range nclink.AddrInfo {
 			lai[i].Local = a.Local.ToIPNet().IP
 			lai[i].Prefixlen = int32(a.Local.PrefixLen())
+			if a.Address != nil {
+				lai[i].Address = a.Address
+			}
 		}
 		link.AddrInfo = &lai
 	}
@@ -266,7 +269,8 @@ func ncLinkFormat(link Link) nc.Link {
 			cidrnet.SetIP(addr.Local)
 			cidrnet.SetPrefixLen(int(addr.Prefixlen))
 			lai := nc.LinkAddrInfo{
-				Local: cidrnet,
+				Local:   cidrnet,
+				Address: addr.Address,
 			}
 			nclink.AddrInfo[i] = lai
 		}

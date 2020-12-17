@@ -15,7 +15,7 @@ type LinkAddrInfo struct {
 	Local CIDRAddr `json:"local,omitempty"`
 	//Prefixlen int32    `json:"prefixlen,omitempty"`
 	//Broadcast CIDRAddr `json:"broadcast,omitempty"`
-	Address CIDRAddr `json:"local,omitempty"`
+	Address *net.IP `json:"local,omitempty"`
 }
 
 // LinkLinkinfoInfoSlaveData Info about slave state/config
@@ -154,9 +154,17 @@ func linkParse(link netlink.Link) Link {
 			//nclink.AddrInfo[i].Local.Parse(a.IPNet.String())
 			//ones, bits := a.IPNet.Mask.Size()
 			nclink.AddrInfo[i].Local.SetIP(a.IPNet.IP)
-			ones, _ := a.IPNet.Mask.Size()
+
+			var ones int
+			if a.Peer != nil {
+				nclink.AddrInfo[i].Address = &a.Peer.IP
+				ones, _ = a.Peer.Mask.Size()
+			} else {
+				ones, _ = a.IPNet.Mask.Size()
+			}
+
 			nclink.AddrInfo[i].Local.SetPrefixLen(ones)
-			nclink.AddrInfo[i].Address
+
 		}
 	} else {
 		logger.Log.Warning(err)
@@ -486,7 +494,7 @@ func LinkSetAddresses(link Link) error {
 
 	for _, a := range link.AddrInfo {
 		logger.Log.Debug("Adding addr", a.Local.String(), "to iface", ifname)
-		if err := linkAddrAdd(ifname, a.Local); err != nil {
+		if err := linkAddrAdd(ifname, a.Local, a.Address); err != nil {
 			return err
 		}
 	}
@@ -533,13 +541,29 @@ func LinkCreate(link Link) error {
 	return mapNetlinkError(err, nil)
 }
 
-func linkAddrAdd(ifname LinkID, addr CIDRAddr) error {
+func linkAddrAdd(ifname LinkID, addr CIDRAddr, peer *net.IP) error {
 	l, _ := netlink.LinkByName(string(ifname))
 	if l == nil {
 		return NewLinkNotFoundError(ifname)
 	}
-	net := addr.ToIPNet()
-	nladdr := netlink.Addr{IPNet: &net, Label: string(ifname), Scope: unix.RT_SCOPE_UNIVERSE, Flags: unix.IFA_F_PERMANENT}
+	/* resolves ambiguity on prefixLen. it comes from network address.
+	 * peer is only /32 remote peer endpoint */
+	addrNet := addr.ToIPNet()
+	var peerNet *net.IPNet
+	if peer != nil {
+		_peerNet := net.IPNet{
+			IP:   *peer,
+			Mask: addr.ToIPNet().Mask,
+		}
+		peerNet = &_peerNet
+	}
+
+	nladdr := netlink.Addr{
+		IPNet: &addrNet,
+		Label: string(ifname),
+		Scope: unix.RT_SCOPE_UNIVERSE,
+		Peer:  peerNet,
+		Flags: unix.IFA_F_PERMANENT}
 	if err := netlink.AddrAdd(l, &nladdr); err != nil {
 		return mapNetlinkError(err, linkParse(l))
 	}
