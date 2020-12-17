@@ -536,6 +536,7 @@ func linkAddrAdd(ifname LinkID, addr CIDRAddr) error {
 	return nil
 }
 
+//Can also just NOT be an error!
 func mapNetlinkError(err error, context interface{}) error {
 	if err != nil {
 		switch err.(type) {
@@ -546,10 +547,9 @@ func mapNetlinkError(err error, context interface{}) error {
 				return NewEPERMError(context)
 			} else if err.(syscall.Errno) == syscall.ENETUNREACH {
 				return NewENETUNREACHError(context.(Route))
-			} else {
-				return NewGenericError()
 			}
 		}
+		return NewGenericError(err)
 	}
 	return err
 }
@@ -814,6 +814,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 				nllink = &netlink.Tuntap{
 					LinkAttrs: attrs,
 				}
+
 			}
 		default:
 			return nil, NewUnknownLinkKindError(kind)

@@ -47,8 +47,8 @@ func (e *GenericError) Error() string {
 }
 
 //NewGenericError returns a generic error
-func NewGenericError() error {
-	return &GenericError{Code: UNKNOWN_TYPE, Reason: "Generic uncharted error"}
+func NewGenericError(err error) error {
+	return &GenericError{Code: UNKNOWN_TYPE, Reason: fmt.Sprintf("Generic uncharted error :%v", err.Error())}
 }
 
 //NewGenericErrorWithReason returns a generic semantic error
