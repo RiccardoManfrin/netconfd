@@ -1,11 +1,4 @@
 {
-  "global" : {
-		"log_lev": "DBG",
-		"mgmt": {
-			"host": "0.0.0.0",
-			"port": 8666
-		}
-	},
   "host_network": {
     "dhcp": [
       {
@@ -34,13 +27,19 @@
         "linkinfo": {
           "info_kind": "device",
           "info_slave_data": {}
-        }
+        },
+        "mtu": 65536,
+        "operstate": "unknown"
       },
       {
         "addr_info": [
           {
-            "local": "192.168.178.22",
+            "local": "192.168.178.26",
             "prefixlen": 24
+          },
+          {
+            "local": "fe80::a00:27ff:fedc:e154",
+            "prefixlen": 64
           },
           {
             "local": "fe80::",
@@ -58,7 +57,9 @@
         "linkinfo": {
           "info_kind": "device",
           "info_slave_data": {}
-        }
+        },
+        "mtu": 1500,
+        "operstate": "up"
       },
       {
         "addr_info": [
@@ -69,6 +70,10 @@
           {
             "local": "10.15.0.0",
             "prefixlen": 16
+          },
+          {
+            "local": "fe80::a00:27ff:feb2:7f77",
+            "prefixlen": 64
           },
           {
             "local": "fe80::",
@@ -87,25 +92,105 @@
           "info_kind": "device",
           "info_slave_data": {}
         },
+        "mtu": 1500,
         "operstate": "up"
+      },
+      {
+        "addr_info": [
+          {
+            "address": "100.96.0.1",
+            "local": "100.96.0.65",
+            "prefixlen": 32
+          },
+          {
+            "local": "fe80::58c6:3799:30fd:7961",
+            "prefixlen": 64
+          }
+        ],
+        "flags": [
+          "up",
+          "multicast",
+          "pointtopoint"
+        ],
+        "ifindex": 4,
+        "ifname": "tun0",
+        "link_type": "none",
+        "linkinfo": {
+          "info_kind": "tun",
+          "info_slave_data": {}
+        },
+        "mtu": 1500,
+        "operstate": "unknown"
       }
     ],
     "routes": [
+      {
+        "__id": "cfdb9506e8029fefa5036cb5216fc561",
+        "dev": "eth0",
+        "dst": "0.0.0.0/0",
+        "gateway": "192.168.178.1",
+        "metric": 10,
+        "protocol": "boot",
+        "scope": "universe"
+      },
       {
         "__id": "298e096ebd4a0b1e73c632db011fe828",
         "dev": "eth1",
         "dst": "10.1.0.0/16",
         "metric": 0,
-        "prefsrc": "10.1.1.120",
-        "protocol": "kernel",
-        "scope": "link"
+        "protocol": "boot",
+        "scope": "universe"
       },
       {
         "__id": "6da021c89a76a35e200f439f8406aebc",
         "dev": "eth1",
         "dst": "10.15.0.0/16",
         "metric": 0,
-        "prefsrc": "10.15.3.51",
+        "protocol": "boot",
+        "scope": "universe"
+      },
+      {
+        "__id": "042d5436e6e2f972a7480dc37a3bd185",
+        "dev": "tun0",
+        "dst": "100.80.180.132",
+        "gateway": "100.96.0.1",
+        "metric": 0,
+        "protocol": "boot",
+        "scope": "universe"
+      },
+      {
+        "__id": "066ebda93752405f23e628ce7d8b9abd",
+        "dev": "tun0",
+        "dst": "100.80.192.0/20",
+        "gateway": "100.96.0.1",
+        "metric": 0,
+        "protocol": "boot",
+        "scope": "universe"
+      },
+      {
+        "__id": "32a2382cb9db64b27a537378fd3b1d2b",
+        "dev": "tun0",
+        "dst": "100.81.0.1",
+        "gateway": "100.96.0.1",
+        "metric": 0,
+        "protocol": "boot",
+        "scope": "universe"
+      },
+      {
+        "__id": "a1d2d51fd6ab32d6d9a0a6a45b32d40f",
+        "dev": "tun0",
+        "dst": "100.96.0.1",
+        "metric": 0,
+        "prefsrc": "100.96.0.65",
+        "protocol": "kernel",
+        "scope": "link"
+      },
+      {
+        "__id": "dbee8c74953250b7d2027f3fe676f3c2",
+        "dev": "eth0",
+        "dst": "192.168.178.0/24",
+        "metric": 0,
+        "prefsrc": "192.168.178.26",
         "protocol": "kernel",
         "scope": "link"
       },
@@ -113,6 +198,22 @@
         "__id": "7f445917032c60e14010720b794447a2",
         "dev": "lo",
         "dst": "::1",
+        "metric": 256,
+        "protocol": "boot",
+        "scope": "universe"
+      },
+      {
+        "__id": "bec9266bafacb18cb8f2513b465995f2",
+        "dev": "eth1",
+        "dst": "fe80::/64",
+        "metric": 256,
+        "protocol": "kernel",
+        "scope": "universe"
+      },
+      {
+        "__id": "bec9266bafacb18cb8f2513b465995f2",
+        "dev": "eth0",
+        "dst": "fe80::/64",
         "metric": 256,
         "protocol": "kernel",
         "scope": "universe"
