@@ -15,6 +15,7 @@ type LinkAddrInfo struct {
 	Local CIDRAddr `json:"local,omitempty"`
 	//Prefixlen int32    `json:"prefixlen,omitempty"`
 	//Broadcast CIDRAddr `json:"broadcast,omitempty"`
+	Address CIDRAddr `json:"local,omitempty"`
 }
 
 // LinkLinkinfoInfoSlaveData Info about slave state/config
@@ -155,6 +156,7 @@ func linkParse(link netlink.Link) Link {
 			nclink.AddrInfo[i].Local.SetIP(a.IPNet.IP)
 			ones, _ := a.IPNet.Mask.Size()
 			nclink.AddrInfo[i].Local.SetPrefixLen(ones)
+			nclink.AddrInfo[i].Address
 		}
 	} else {
 		logger.Log.Warning(err)
