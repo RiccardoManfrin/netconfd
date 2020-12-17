@@ -817,8 +817,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 					LinkAttrs: attrs,
 				}
 			}
-		case "tun":
-		case "tap":
+		case "tun", "tap":
 			{
 				nllink = &netlink.Tuntap{
 					LinkAttrs: attrs,
