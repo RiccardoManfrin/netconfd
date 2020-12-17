@@ -72,6 +72,11 @@ This is the egg and chicken problem (podman and network bootstrap)
 
 Needs to write the bb recipe for yocto [containerized or not makes a difference here]
 
+### Enablement of VPN
+
+    sed -i -e 's/dev\ tun/dev\ tunvpn0/g' /etc/openvpn/ovpn.conf
+    echo -en "ipchange '/bin/sh -c \"ip link del tunvpn0\"'" >> /etc/openvpn/ovpn.conf
+
 Risk assessment: 1d of work but if it takes 1 day to build I can have multiple iterations to converge
 
 # Long Term Investigation
