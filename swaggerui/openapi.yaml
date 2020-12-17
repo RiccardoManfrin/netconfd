@@ -1698,6 +1698,8 @@ components:
               broadcast:
                 type: string
                 example: "10.1.2.255"
+              address:
+                $ref: '#/components/schemas/ip'
               #scope:
               #  $ref: '#/components/schemas/scope'
               #dynamic:

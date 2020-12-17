@@ -22,6 +22,8 @@ type LinkAddrInfo struct {
 	Local     net.IP  `json:"local"`
 	Prefixlen int32   `json:"prefixlen"`
 	Broadcast *string `json:"broadcast,omitempty"`
+	// IPv4 or IPv6 address
+	Address *string `json:"address,omitempty"`
 }
 
 // NewLinkAddrInfo instantiates a new LinkAddrInfo object
@@ -124,6 +126,38 @@ func (o *LinkAddrInfo) SetBroadcast(v string) {
 	o.Broadcast = &v
 }
 
+// GetAddress returns the Address field value if set, zero value otherwise.
+func (o *LinkAddrInfo) GetAddress() string {
+	if o == nil || o.Address == nil {
+		var ret string
+		return ret
+	}
+	return *o.Address
+}
+
+// GetAddressOk returns a tuple with the Address field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkAddrInfo) GetAddressOk() (*string, bool) {
+	if o == nil || o.Address == nil {
+		return nil, false
+	}
+	return o.Address, true
+}
+
+// HasAddress returns a boolean if a field has been set.
+func (o *LinkAddrInfo) HasAddress() bool {
+	if o != nil && o.Address != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetAddress gets a reference to the given string and assigns it to the Address field.
+func (o *LinkAddrInfo) SetAddress(v string) {
+	o.Address = &v
+}
+
 func (o LinkAddrInfo) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
@@ -134,6 +168,9 @@ func (o LinkAddrInfo) MarshalJSON() ([]byte, error) {
 	}
 	if o.Broadcast != nil {
 		toSerialize["broadcast"] = o.Broadcast
+	}
+	if o.Address != nil {
+		toSerialize["address"] = o.Address
 	}
 	return json.Marshal(toSerialize)
 }

@@ -1074,9 +1074,11 @@ components:
         operstate: down
         addr_info:
         - broadcast: 10.1.2.255
+          address: 10.1.2.3
           prefixlen: 24
           local: 10.1.2.3
         - broadcast: 10.1.2.255
+          address: 10.1.2.3
           prefixlen: 24
           local: 10.1.2.3
         linkinfo:
@@ -1721,6 +1723,7 @@ components:
     link_addr_info:
       example:
         broadcast: 10.1.2.255
+        address: 10.1.2.3
         prefixlen: 24
         local: 10.1.2.3
       properties:
@@ -1734,6 +1737,11 @@ components:
           type: integer
         broadcast:
           example: 10.1.2.255
+          type: string
+        address:
+          description: IPv4 or IPv6 address
+          example: 10.1.2.3
+          format: ipaddr
           type: string
       required:
       - local
