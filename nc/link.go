@@ -202,6 +202,14 @@ func linkParse(link netlink.Link) Link {
 			id.Protocol = vlan.VlanProtocol.String()
 			id.Id = int32(vlan.VlanId)
 		}
+	case "tuntap":
+		{
+			nctuntap, ok := link.(*netlink.Tuntap)
+			if !ok {
+				logger.Log.Warning("Unmatched tuntap info kind vs link typecast")
+			}
+			nclink.Linkinfo.InfoKind = nctuntap.Mode.String()
+		}
 	case "ppp":
 	default:
 		{
@@ -809,12 +817,13 @@ func linkFormat(link Link) (netlink.Link, error) {
 					LinkAttrs: attrs,
 				}
 			}
-		case "tuntap":
+		case "tun":
+		case "tap":
 			{
 				nllink = &netlink.Tuntap{
 					LinkAttrs: attrs,
+					Mode:      netlink.StringToTuntapModeMap[kind],
 				}
-
 			}
 		default:
 			return nil, NewUnknownLinkKindError(kind)
