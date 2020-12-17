@@ -178,9 +178,13 @@ func ncLinkParse(nclink nc.Link) Link {
 	case "bridge":
 	case "dummy":
 	case "ppp":
+	case "tun":
+	case "tap":
+		{
+		}
 	default:
 		{
-			logger.Log.Warning("Unknown Link Kind")
+			logger.Log.Warning("Unknown Link Kind : %v", nclink.Linkinfo.InfoKind)
 		}
 	}
 	if nclink.Master != "" {
