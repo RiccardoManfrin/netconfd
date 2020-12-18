@@ -128,6 +128,10 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	if err := json.NewDecoder(js).Decode(&m.Conf); err != nil {
 		fail(-1, "Bad configuration...")
 	}
+	if m.Conf.Global != nil {
+		m.Conf.Global.CfgPath = conffile
+	}
+
 	loglev := "INF"
 	if (m.Conf.Global != nil) && (m.Conf.Global.LogLev != nil) {
 		loglev = *m.Conf.Global.LogLev

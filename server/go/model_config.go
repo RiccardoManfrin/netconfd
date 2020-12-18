@@ -13,6 +13,7 @@ package openapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 
 	logger "gitlab.lan.athonet.com/core/netconfd/logger"
@@ -153,12 +154,15 @@ func (v *NullableConfig) UnmarshalJSON(src []byte) error {
 }
 
 func (c *Config) Persist() error {
+	cfgPath := *c.Global.CfgPath
+	c.Global.CfgPath = nil
 	res, err := json.Marshal(c)
 	if err != nil {
 		return err
 	}
-	logger.Log.Notice("Persisting config to path %v: %v", *c.Global.CfgPath, string(res))
-	err = ioutil.WriteFile(*c.Global.CfgPath, res, 0644)
+	logger.Log.Notice(fmt.Sprintf("Persisting config to path %v: %v", cfgPath, string(res)))
+	err = ioutil.WriteFile(cfgPath, res, 0644)
+	c.Global.CfgPath = &cfgPath
 	if err != nil {
 		return err
 	}
