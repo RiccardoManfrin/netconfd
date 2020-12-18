@@ -30,15 +30,19 @@ func NewSystemApiService() SystemApiServicer {
 	return &SystemApiService{}
 }
 
-// ConfigGet - Get current live configuration
-func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) {
+func readLiveConfig(s *SystemApiService) error {
 	network, err := nc.Get()
 	if err != nil {
-		return GetErrorResponse(err, nil)
+		return err
 	}
-	host_network := ncNetParse(network)
-	s.Conf.HostNetwork = &host_network
-	return GetErrorResponse(nil, s.Conf)
+	hostNetwork := ncNetParse(network)
+	s.Conf.HostNetwork = &hostNetwork
+	return nil
+}
+
+// ConfigGet - Get current live configuration
+func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) {
+	return GetErrorResponse(readLiveConfig(s), s.Conf)
 }
 
 // ConfigPatch - Patch existing configuration with new one
@@ -65,7 +69,11 @@ func delayedConfigSet(network nc.Network) error {
 
 // PersistConfig - Persist live configuration
 func (s *SystemApiService) PersistConfig(ctx context.Context) (ImplResponse, error) {
-	err := s.Conf.Persist()
+	err := readLiveConfig(s)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	err = s.Conf.Persist()
 	return PostErrorResponse(err, nil)
 }
 
