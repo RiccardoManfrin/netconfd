@@ -44,7 +44,6 @@ SystemCallFilter=@system-service
 #Type=notify
 RestartKillSignal=SIGUSR2
 User=root
-WatchdogSec=3min
 
 [Install]
 WantedBy=multi-user.target
