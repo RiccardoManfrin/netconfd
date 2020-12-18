@@ -41,8 +41,6 @@ RuntimeDirectoryPreserve=yes
 SystemCallArchitectures=native
 SystemCallErrorNumber=EPERM
 SystemCallFilter=@system-service
-#Type=notify
-RestartKillSignal=SIGUSR2
 User=root
 
 [Install]
