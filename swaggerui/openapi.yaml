@@ -864,8 +864,7 @@ components:
           description: Management address
           properties:
             host:
-              allOf:
-                - $ref: '#/components/schemas/ip'
+              type: string
               default: "127.0.0.1"
             port:
               type: integer

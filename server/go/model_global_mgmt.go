@@ -27,6 +27,8 @@ type GlobalMgmt struct {
 // will change when the set of required properties is changed
 func NewGlobalMgmt() *GlobalMgmt {
 	this := GlobalMgmt{}
+	var host string = "127.0.0.1"
+	this.Host = &host
 	var port int32 = 8666
 	this.Port = &port
 	return &this
@@ -37,6 +39,8 @@ func NewGlobalMgmt() *GlobalMgmt {
 // but it doesn't guarantee that properties required by API are set
 func NewGlobalMgmtWithDefaults() *GlobalMgmt {
 	this := GlobalMgmt{}
+	var host string = "127.0.0.1"
+	this.Host = &host
 	var port int32 = 8666
 	this.Port = &port
 	return &this

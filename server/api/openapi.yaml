@@ -1206,8 +1206,8 @@ components:
       description: Management address
       properties:
         host:
-          allOf:
-          - $ref: '#/components/schemas/ip'
+          default: 127.0.0.1
+          type: string
         port:
           default: 8666
           type: integer
