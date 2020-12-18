@@ -13,11 +13,13 @@ package openapi
 
 import (
 	"encoding/json"
+
+	logger "gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 // Config struct for Config
 type Config struct {
-	Global *Global `json:"global,omitempty"`
+	Global      *Global  `json:"global,omitempty"`
 	HostNetwork *Network `json:"host_network,omitempty"`
 }
 
@@ -149,4 +151,7 @@ func (v *NullableConfig) UnmarshalJSON(src []byte) error {
 	return json.Unmarshal(src, &v.value)
 }
 
-
+func (c *Config) Persist() error {
+	logger.Log.Warning("Persisting config")
+	return nil
+}

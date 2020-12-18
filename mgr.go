@@ -33,7 +33,7 @@ type RouteHandler func(body interface{}) (interface{}, error)
 
 //Manager of the machine takes HTTP requests, perform actions and give results back [blocking]
 type Manager struct {
-	Conf           oas.Config
+	Conf           *oas.Config
 	HTTPServer     *http.Server
 	ServeMux       *http.ServeMux
 	SyncHTTPServer *http.Server
@@ -264,6 +264,8 @@ func NewManager() *Manager {
 		ServeMux:      serveMux,
 		routeHandlers: oas.NewRouter(networkApiController, systemAPIController),
 	}
+	sysApiService, _ := systemApiService.(*oas.SystemApiService)
+	m.Conf = &sysApiService.Conf
 	serveMux.Handle("/", m)
 	serveMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
