@@ -74,8 +74,14 @@ Needs to write the bb recipe for yocto [containerized or not makes a difference 
 
 ### Enablement of VPN
 
-    sed -i -e 's/dev\ tun/dev\ tunvpn0/g' /etc/openvpn/ovpn.conf
-    echo -en "ipchange '/bin/sh -c \"ip link del tunvpn0\"'" >> /etc/openvpn/ovpn.conf
+    sed -i -e 's/dev\ tun/dev\ tunvpn/g' /etc/openvpn/ovpn.conf
+    
+Other hacks:
+
+	#echo -en "ipchange '/bin/sh -c \"ip link del tunvpn\"'" >> /etc/openvpn/ovpn.conf
+	#sed -i -e 's/After\(.*\)/After\1\ sys-devices-virtual-net-tunvpn.device/g' /lib/systemd/system/openvpn\@.service
+	#echo -en 'ExecStartPre=/bin/sh -c "ip link del tunvpn"' >> /etc/systemd/system/openvpn@.service.d/pre.conf
+
 
 Risk assessment: 1d of work but if it takes 1 day to build I can have multiple iterations to converge
 
