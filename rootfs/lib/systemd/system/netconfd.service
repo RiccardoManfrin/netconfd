@@ -21,7 +21,7 @@ Wants=network.target
 AmbientCapabilities=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_BROADCAST CAP_NET_RAW
 CapabilityBoundingSet=CAP_NET_ADMIN CAP_NET_BIND_SERVICE CAP_NET_BROADCAST CAP_NET_RAW
 DeviceAllow=char-* rw
-ExecStart=/bin/sh -c "/opt/netconfd/netconfd -log - -config /opt/netconfd/netconfd.json -skipbootconfig `if [ $(systemctl show --property=ActiveExitTimestampMonotonic netconfd.service | sed 's/ActiveExitTimestampMonotonic=\(.*\)/\1/g') -gt 0 ]; then echo true; else echo false; fi;`"
+ExecStart=/bin/sh -c "/opt/netconfd/netconfd -log - -config /opt/netconfd/netconfd.json `if [ $(systemctl show --property=ActiveExitTimestampMonotonic netconfd.service | sed 's/ActiveExitTimestampMonotonic=\(.*\)/\1/g') -gt 0 ]; then echo -skipbootconfig; fi;`"
 LockPersonality=yes
 MemoryDenyWriteExecute=yes
 NoNewPrivileges=yes
