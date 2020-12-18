@@ -275,7 +275,9 @@ func NewManager() *Manager {
 //Start activates manager
 func (m *Manager) Start() {
 
-	m.PatchInitialConfig()
+	if *skipbootconfig == false {
+		m.PatchInitialConfig()
+	}
 	logger.Log.Notice("Started netConfD manager...")
 
 	go m.HTTPServer.ListenAndServe()
