@@ -36,8 +36,9 @@ func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) 
 	if err != nil {
 		return GetErrorResponse(err, nil)
 	}
-
-	return GetErrorResponse(nil, ncNetParse(network))
+	host_network := ncNetParse(network)
+	s.Conf.HostNetwork = &host_network
+	return GetErrorResponse(nil, s.Conf)
 }
 
 // ConfigPatch - Patch existing configuration with new one

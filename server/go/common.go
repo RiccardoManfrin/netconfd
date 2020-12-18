@@ -304,7 +304,7 @@ func ncNetFormat(config Config) nc.Network {
 	return network
 }
 
-func ncNetParse(net nc.Network) Config {
+func ncNetParse(net nc.Network) Network {
 	links := make([]Link, len(net.Links))
 	routes := make([]Route, len(net.Routes))
 	dhcps := make([]Dhcp, len(net.Dhcp))
@@ -317,11 +317,9 @@ func ncNetParse(net nc.Network) Config {
 	for i, d := range net.Dhcp {
 		dhcps[i] = ncDhcpParse(d)
 	}
-	return Config{
-		HostNetwork: &Network{
-			Links:  &links,
-			Routes: &routes,
-			Dhcp:   &dhcps,
-		},
+	return Network{
+		Links:  &links,
+		Routes: &routes,
+		Dhcp:   &dhcps,
 	}
 }
