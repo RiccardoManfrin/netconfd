@@ -844,6 +844,7 @@ components:
       description: Application generic global config
       properties:
         log_lev:
+          default: INF
           enum:
           - DBG
           - INF
@@ -851,6 +852,9 @@ components:
           type: string
         mgmt:
           $ref: '#/components/schemas/global_mgmt'
+        cfg_path:
+          default: /opt/netconfd/netconf.json
+          type: string
       type: object
     ip:
       description: IPv4 or IPv6 address
@@ -1202,12 +1206,10 @@ components:
       description: Management address
       properties:
         host:
-          description: IPv4 or IPv6 address
-          example: 10.1.2.3
-          format: ipaddr
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/ip'
         port:
-          example: 8666
+          default: 8666
           type: integer
       type: object
     link_linkinfo_info_slave_data:

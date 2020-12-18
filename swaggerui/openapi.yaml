@@ -854,6 +854,7 @@ components:
       properties:
         log_lev:
           type: string
+          default: INF
           enum:
             - DBG
             - INF
@@ -863,10 +864,15 @@ components:
           description: Management address
           properties:
             host:
-              $ref: '#/components/schemas/ip'
+              allOf:
+                - $ref: '#/components/schemas/ip'
+              default: "127.0.0.1"
             port:
               type: integer
-              example: 8666
+              default: 8666
+        cfg_path:
+          type: string
+          default: "/opt/netconfd/netconf.json"
     ip:
       description: IPv4 or IPv6 address
       type: string

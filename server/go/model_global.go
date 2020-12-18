@@ -19,6 +19,7 @@ import (
 type Global struct {
 	LogLev *string `json:"log_lev,omitempty"`
 	Mgmt *GlobalMgmt `json:"mgmt,omitempty"`
+	CfgPath *string `json:"cfg_path,omitempty"`
 }
 
 // NewGlobal instantiates a new Global object
@@ -27,6 +28,10 @@ type Global struct {
 // will change when the set of required properties is changed
 func NewGlobal() *Global {
 	this := Global{}
+	var logLev string = "INF"
+	this.LogLev = &logLev
+	var cfgPath string = "/opt/netconfd/netconf.json"
+	this.CfgPath = &cfgPath
 	return &this
 }
 
@@ -35,6 +40,10 @@ func NewGlobal() *Global {
 // but it doesn't guarantee that properties required by API are set
 func NewGlobalWithDefaults() *Global {
 	this := Global{}
+	var logLev string = "INF"
+	this.LogLev = &logLev
+	var cfgPath string = "/opt/netconfd/netconf.json"
+	this.CfgPath = &cfgPath
 	return &this
 }
 
@@ -102,6 +111,38 @@ func (o *Global) SetMgmt(v GlobalMgmt) {
 	o.Mgmt = &v
 }
 
+// GetCfgPath returns the CfgPath field value if set, zero value otherwise.
+func (o *Global) GetCfgPath() string {
+	if o == nil || o.CfgPath == nil {
+		var ret string
+		return ret
+	}
+	return *o.CfgPath
+}
+
+// GetCfgPathOk returns a tuple with the CfgPath field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Global) GetCfgPathOk() (*string, bool) {
+	if o == nil || o.CfgPath == nil {
+		return nil, false
+	}
+	return o.CfgPath, true
+}
+
+// HasCfgPath returns a boolean if a field has been set.
+func (o *Global) HasCfgPath() bool {
+	if o != nil && o.CfgPath != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetCfgPath gets a reference to the given string and assigns it to the CfgPath field.
+func (o *Global) SetCfgPath(v string) {
+	o.CfgPath = &v
+}
+
 func (o Global) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.LogLev != nil {
@@ -109,6 +150,9 @@ func (o Global) MarshalJSON() ([]byte, error) {
 	}
 	if o.Mgmt != nil {
 		toSerialize["mgmt"] = o.Mgmt
+	}
+	if o.CfgPath != nil {
+		toSerialize["cfg_path"] = o.CfgPath
 	}
 	return json.Marshal(toSerialize)
 }
