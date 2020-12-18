@@ -156,7 +156,7 @@ func (v *NullableConfig) UnmarshalJSON(src []byte) error {
 func (c *Config) Persist() error {
 	cfgPath := *c.Global.CfgPath
 	c.Global.CfgPath = nil
-	res, err := json.Marshal(c)
+	res, err := json.MarshalIndent(c, "", "  ")
 	if err != nil {
 		return err
 	}
