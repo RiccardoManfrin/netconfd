@@ -87,27 +87,27 @@ func httpOk(w http.ResponseWriter) {
 
 func (m *Manager) overrideWithEnv() error {
 
-	logger.Log.Info("Looking up NETCONFD_HOST from env")
-	netconfdHost, netconfdHostFound := os.LookupEnv("NETCONFD_HOST")
-	logger.Log.Info("Looking up NETCONFD_PORT from env")
-	netconfdPort, netconfdPortFound := os.LookupEnv("NETCONFD_PORT")
+	logger.Log.Info("Looking up APP_HTTP_API_ADDR from env")
+	netconfdHost, netconfdHostFound := os.LookupEnv("APP_HTTP_API_ADDR")
+	logger.Log.Info("Looking up APP_HTTP_API_PORT from env")
+	netconfdPort, netconfdPortFound := os.LookupEnv("APP_HTTP_API_PORT")
 
 	if netconfdHostFound {
-		logger.Log.Info("Overriding .global.mgmt.host with " + netconfdHost + " NETCONFD_HOST env var")
+		logger.Log.Info("Overriding .global.mgmt.host with " + netconfdHost + " APP_HTTP_API_ADDR env var")
 		m.Conf.Global.Mgmt.Host = &netconfdHost
 	}
 	if netconfdPortFound {
 
 		overridePort, err := strconv.Atoi(netconfdPort)
 		if err != nil {
-			logger.Log.Info("Env NETCONFD_PORT " + netconfdPort + " is not a number")
+			logger.Log.Info("Env APP_HTTP_API_PORT " + netconfdPort + " is not a number")
 			return err
 		}
 		if overridePort > int(math.Exp2(16))-1 {
-			logger.Log.Info("Env NETCONFD_PORT " + netconfdPort + " is too high")
+			logger.Log.Info("Env APP_HTTP_API_PORT " + netconfdPort + " is too high")
 			return err
 		}
-		logger.Log.Info("Overriding .global.mgmt.port with " + netconfdPort + " NETCONFD_PORT env var")
+		logger.Log.Info("Overriding .global.mgmt.port with " + netconfdPort + " APP_HTTP_API_PORT env var")
 		port := int32(overridePort)
 		m.Conf.Global.Mgmt.Port = &port
 	}
@@ -133,12 +133,14 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	}
 
 	loglev := "INF"
+
+	m.overrideWithEnv()
+
 	if (m.Conf.Global != nil) && (m.Conf.Global.LogLev != nil) {
 		loglev = *m.Conf.Global.LogLev
 	}
-	logger.LoggerSetLevel(loglev)
 
-	m.overrideWithEnv()
+	logger.LoggerSetLevel(loglev)
 
 	res, err := json.Marshal(m.Conf)
 	if err != nil {
