@@ -883,6 +883,7 @@ components:
       example: "10.1.2.3/24"
     routeid:
       type: string
+      readOnly: true
       example: b0804ec967f48520697662a204f5fe72
       description: | 
 
