@@ -21,8 +21,8 @@ import (
 
 // Config struct for Config
 type Config struct {
-	Global      *Global  `json:"global,omitempty"`
-	HostNetwork *Network `json:"host_network,omitempty"`
+	Global *Global `json:"global,omitempty"`
+	Network *Network `json:"network,omitempty"`
 }
 
 // NewConfig instantiates a new Config object
@@ -74,36 +74,36 @@ func (o *Config) SetGlobal(v Global) {
 	o.Global = &v
 }
 
-// GetHostNetwork returns the HostNetwork field value if set, zero value otherwise.
-func (o *Config) GetHostNetwork() Network {
-	if o == nil || o.HostNetwork == nil {
+// GetNetwork returns the Network field value if set, zero value otherwise.
+func (o *Config) GetNetwork() Network {
+	if o == nil || o.Network == nil {
 		var ret Network
 		return ret
 	}
-	return *o.HostNetwork
+	return *o.Network
 }
 
-// GetHostNetworkOk returns a tuple with the HostNetwork field value if set, nil otherwise
+// GetNetworkOk returns a tuple with the Network field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Config) GetHostNetworkOk() (*Network, bool) {
-	if o == nil || o.HostNetwork == nil {
+func (o *Config) GetNetworkOk() (*Network, bool) {
+	if o == nil || o.Network == nil {
 		return nil, false
 	}
-	return o.HostNetwork, true
+	return o.Network, true
 }
 
-// HasHostNetwork returns a boolean if a field has been set.
-func (o *Config) HasHostNetwork() bool {
-	if o != nil && o.HostNetwork != nil {
+// HasNetwork returns a boolean if a field has been set.
+func (o *Config) HasNetwork() bool {
+	if o != nil && o.Network != nil {
 		return true
 	}
 
 	return false
 }
 
-// SetHostNetwork gets a reference to the given Network and assigns it to the HostNetwork field.
-func (o *Config) SetHostNetwork(v Network) {
-	o.HostNetwork = &v
+// SetNetwork gets a reference to the given Network and assigns it to the Network field.
+func (o *Config) SetNetwork(v Network) {
+	o.Network = &v
 }
 
 func (o Config) MarshalJSON() ([]byte, error) {
@@ -111,8 +111,8 @@ func (o Config) MarshalJSON() ([]byte, error) {
 	if o.Global != nil {
 		toSerialize["global"] = o.Global
 	}
-	if o.HostNetwork != nil {
-		toSerialize["host_network"] = o.HostNetwork
+	if o.Network != nil {
+		toSerialize["network"] = o.Network
 	}
 	return json.Marshal(toSerialize)
 }

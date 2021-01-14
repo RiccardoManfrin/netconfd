@@ -29,26 +29,10 @@ type NetworkApiRouter interface {
 	ConfigLinkDel(http.ResponseWriter, *http.Request)
 	ConfigLinkGet(http.ResponseWriter, *http.Request)
 	ConfigLinksGet(http.ResponseWriter, *http.Request)
-	ConfigNFTableCreate(http.ResponseWriter, *http.Request)
-	ConfigNFTableDel(http.ResponseWriter, *http.Request)
-	ConfigNFTableGet(http.ResponseWriter, *http.Request)
-	ConfigNFTablesGet(http.ResponseWriter, *http.Request)
-	ConfigNetNSCreate(http.ResponseWriter, *http.Request)
-	ConfigNetNSDel(http.ResponseWriter, *http.Request)
-	ConfigNetNSGet(http.ResponseWriter, *http.Request)
-	ConfigNetNSsGet(http.ResponseWriter, *http.Request)
 	ConfigRouteCreate(http.ResponseWriter, *http.Request)
 	ConfigRouteDel(http.ResponseWriter, *http.Request)
 	ConfigRouteGet(http.ResponseWriter, *http.Request)
 	ConfigRoutesGet(http.ResponseWriter, *http.Request)
-	ConfigRuleCreate(http.ResponseWriter, *http.Request)
-	ConfigRuleDel(http.ResponseWriter, *http.Request)
-	ConfigRuleGet(http.ResponseWriter, *http.Request)
-	ConfigRulesGet(http.ResponseWriter, *http.Request)
-	ConfigVRFCreate(http.ResponseWriter, *http.Request)
-	ConfigVRFDel(http.ResponseWriter, *http.Request)
-	ConfigVRFGet(http.ResponseWriter, *http.Request)
-	ConfigVRFsGet(http.ResponseWriter, *http.Request)
 }
 // SystemApiRouter defines the required methods for binding the api requests to a responses for the SystemApi
 // The SystemApiRouter implementation should parse necessary information from the http request, 
@@ -59,7 +43,6 @@ type SystemApiRouter interface {
 	ConfigSet(http.ResponseWriter, *http.Request)
 	PersistConfig(http.ResponseWriter, *http.Request)
 	ResetConfig(http.ResponseWriter, *http.Request)
-	RunDiagnostics(http.ResponseWriter, *http.Request)
 }
 
 
@@ -76,26 +59,10 @@ type NetworkApiServicer interface {
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
 	ConfigLinkGet(context.Context, string) (ImplResponse, error)
 	ConfigLinksGet(context.Context) (ImplResponse, error)
-	ConfigNFTableCreate(context.Context, map[string]interface{}) (ImplResponse, error)
-	ConfigNFTableDel(context.Context, int32) (ImplResponse, error)
-	ConfigNFTableGet(context.Context, int32) (ImplResponse, error)
-	ConfigNFTablesGet(context.Context) (ImplResponse, error)
-	ConfigNetNSCreate(context.Context, Netns) (ImplResponse, error)
-	ConfigNetNSDel(context.Context, string) (ImplResponse, error)
-	ConfigNetNSGet(context.Context, string) (ImplResponse, error)
-	ConfigNetNSsGet(context.Context) (ImplResponse, error)
 	ConfigRouteCreate(context.Context, Route) (ImplResponse, error)
 	ConfigRouteDel(context.Context, string) (ImplResponse, error)
 	ConfigRouteGet(context.Context, string) (ImplResponse, error)
 	ConfigRoutesGet(context.Context) (ImplResponse, error)
-	ConfigRuleCreate(context.Context, map[string]interface{}) (ImplResponse, error)
-	ConfigRuleDel(context.Context, int32) (ImplResponse, error)
-	ConfigRuleGet(context.Context, int32) (ImplResponse, error)
-	ConfigRulesGet(context.Context) (ImplResponse, error)
-	ConfigVRFCreate(context.Context, map[string]interface{}) (ImplResponse, error)
-	ConfigVRFDel(context.Context, int32) (ImplResponse, error)
-	ConfigVRFGet(context.Context, int32) (ImplResponse, error)
-	ConfigVRFsGet(context.Context) (ImplResponse, error)
 }
 
 
@@ -109,5 +76,4 @@ type SystemApiServicer interface {
 	ConfigSet(context.Context, Config) (ImplResponse, error)
 	PersistConfig(context.Context) (ImplResponse, error)
 	ResetConfig(context.Context) (ImplResponse, error)
-	RunDiagnostics(context.Context) (ImplResponse, error)
 }
