@@ -13,21 +13,21 @@ tags:
   - name: Network
     description: Network config APIs
 paths:
-  /mgmt/diagnostic:
-    post:
-      x-authorization:
-        - admin
-        - support
-      tags:
-        - System
-      operationId: RunDiagnostics
-      summary: Run a diagnostic session
-      description: |
-        Validates the environment by running a set of unit tests on the
-        below system.
-      responses:
-        '200':
-          description: Diagnostics completed
+#  /mgmt/diagnostic:
+#    post:
+#      x-authorization:
+#        - admin
+#        - support
+#      tags:
+#        - System
+#      operationId: RunDiagnostics
+#      summary: Run a diagnostic session
+#      description: |
+#        Validates the environment by running a set of unit tests on the
+#        below system.
+#      responses:
+#        '200':
+#          description: Diagnostics completed
   /mgmt/config/persist:
     post:
       x-authorization:
@@ -135,7 +135,7 @@ paths:
       responses:
         '200':
           description: Successful alignment
-  /links:
+  /network/links:
     get:
       x-authorization:
         - support
@@ -187,7 +187,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /links/{ifname}:
+  /network/links/{ifname}:
     get:
       x-authorization:
         - support
@@ -233,7 +233,7 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /routes:
+  /network/routes:
     get:
       x-authorization:
         - support
@@ -288,7 +288,7 @@ paths:
           description:
             Resource config is semantically or syntactically incorrect
           
-  /routes/{routeid}:
+  /network/routes/{routeid}:
     get:
       x-authorization:
         - support
@@ -334,7 +334,7 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /dhcp:
+  /network/dhcp:
     get:
       x-authorization:
         - support
@@ -385,7 +385,7 @@ paths:
         "400":
           description:
             Resource config is semantically or syntactically incorrect
-  /dhcp/{ifname}:
+  /network/dhcp/{ifname}:
     get:
       x-authorization:
         - support
@@ -432,420 +432,420 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-  /rules:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigRulesGet
-      summary: |
-        Get all ip rules list
-      description: |
-        Get all ip rules list
-      responses:
-        '200':
-          description: Sucessful retrieval
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ruleid'
-    post:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigRuleCreate
-      summary: |
-        Configures an IP rule
-      description: |
-        Configures a L3 IP rule on the main routing table
-      requestBody:
-        description: Rule Config
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/rule'
-      responses:
-        '201':
-          description: Successful creation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ruleid'
-        '409':
-          description: 
-            Resource already exists, or request is incompatible with
-            current network state
-        "400":
-          description:
-            Resource config is semantically or syntactically incorrect
-          
-  /rules/{ruleid}:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigRuleGet
-      summary: |
-        Get an IP rule details
-      description: |
-        Get an IP rule details
-      parameters:
-      - in: path
-        name: ruleid
-        required: true
-        schema:
-          $ref: '#/components/schemas/ruleid'
-      responses:
-        '200':
-          description: Successful get
-        "404":
-          description: Not found
-    delete:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigRuleDel
-      summary: |
-        Removes an IP Rule
-      description: |
-        Removes an IP Rule
-      parameters:
-      - in: path
-        name: ruleid
-        required: true
-        schema:
-          $ref: '#/components/schemas/ruleid'
-      responses:
-        '200':
-          description: Successful delete
-        "404":
-          description: Not found
-  /netns:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigNetNSsGet
-      summary: |
-        Get the list all network namespaces
-      description: |
-        Get the list all network namespaces
-      responses:
-        '200':
-          description: Sucessful retrieval
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/netnsid'
-    post:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigNetNSCreate
-      summary: |
-        Configures an new Network Namespace
-      description: |
-        Configures an new Network Namespace
-      requestBody:
-        description: Network Namespace Config
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/netns'
-      responses:
-        '201':
-          description: Successful creation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/netnsid'
-        '409':
-          description: 
-            Resource already exists, or request is incompatible with
-            current network state
-        "400":
-          description:
-            Resource config is semantically or syntactically incorrect
-          
-  /netns/{netnsid}:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigNetNSGet
-      summary: |
-        Get a network namespace
-      description: |
-        Get a network namespace
-      parameters:
-      - in: path
-        name: netnsid
-        required: true
-        schema:
-          $ref: '#/components/schemas/netnsid'
-      responses:
-        '200':
-          description: Successful get
-        "404":
-          description: Not found
-    delete:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigNetNSDel
-      summary: |
-        Removes an IP Rule
-      description: |
-        Removes an IP Rule
-      parameters:
-      - in: path
-        name: netnsid
-        required: true
-        schema:
-          $ref: '#/components/schemas/netnsid'
-      responses:
-        '200':
-          description: Successful delete
-        "404":
-          description: Not found
-  /vrfs:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigVRFsGet
-      summary: |
-        Get the list all VRFs
-      description: |
-        Get the list all VRFs
-      responses:
-        '200':
-          description: Sucessful retrieval
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/vrfid'
-    post:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigVRFCreate
-      summary: |
-        Configures an new VRF
-      description: |
-        Configures an new VRF
-      requestBody:
-        description: VRF Config
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/vrf'
-      responses:
-        '201':
-          description: Successful creation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/vrfid'
-        '409':
-          description: 
-            Resource already exists, or request is incompatible with
-            current network state
-        "400":
-          description:
-            Resource config is semantically or syntactically incorrect
-          
-  /vrfs/{vrfid}:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigVRFGet
-      summary: |
-        Get a VRF
-      description: |
-        Get a VRF
-      parameters:
-      - in: path
-        name: vrfid
-        required: true
-        schema:
-          $ref: '#/components/schemas/vrfid'
-      responses:
-        '200':
-          description: Successful get
-        "404":
-          description: Not found
-    delete:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigVRFDel
-      summary: |
-        Removes a VRF
-      description: |
-        Removes a VRF
-      parameters:
-      - in: path
-        name: vrfid
-        required: true
-        schema:
-          $ref: '#/components/schemas/vrfid'
-      responses:
-        '200':
-          description: Successful delete
-        "404":
-          description: Not found
-
-  /nftables:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigNFTablesGet
-      summary: |
-        Get the list all NFTables
-      description: |
-        Get the list all NFTables
-      responses:
-        '200':
-          description: Sucessful retrieval
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/nftableid'
-    post:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigNFTableCreate
-      summary: |
-        Configures an new NFTable
-      description: |
-        Configures an new NFTable
-      requestBody:
-        description: NFTable Config
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/nftable'
-      responses:
-        '201':
-          description: Successful creation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/nftableid'
-        '409':
-          description: 
-            Resource already exists, or request is incompatible with
-            current network state
-        "400":
-          description:
-            Resource config is semantically or syntactically incorrect
-          
-  /ntables/{nftableid}:
-    get:
-      x-authorization:
-        - support
-        - admin
-        - monitor
-      tags:
-        - Network
-      operationId: ConfigNFTableGet
-      summary: |
-        Get a NFTable
-      description: |
-        Get a NFTable
-      parameters:
-      - in: path
-        name: nftableid
-        required: true
-        schema:
-          $ref: '#/components/schemas/nftableid'
-      responses:
-        '200':
-          description: Successful get
-        "404":
-          description: Not found
-    delete:
-      x-authorization:
-        - support
-        - admin
-      tags:
-        - Network
-      operationId: ConfigNFTableDel
-      summary: |
-        Removes a NFTable
-      description: |
-        Removes a NFTable
-      parameters:
-      - in: path
-        name: nftableid
-        required: true
-        schema:
-          $ref: '#/components/schemas/nftableid'
-      responses:
-        '200':
-          description: Successful delete
-        "404":
-          description: Not found
-
+#  /rules:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigRulesGet
+#      summary: |
+#        Get all ip rules list
+#      description: |
+#        Get all ip rules list
+#      responses:
+#        '200':
+#          description: Sucessful retrieval
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/ruleid'
+#    post:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigRuleCreate
+#      summary: |
+#        Configures an IP rule
+#      description: |
+#        Configures a L3 IP rule on the main routing table
+#      requestBody:
+#        description: Rule Config
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/rule'
+#      responses:
+#        '201':
+#          description: Successful creation
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/ruleid'
+#        '409':
+#          description: 
+#            Resource already exists, or request is incompatible with
+#            current network state
+#        "400":
+#          description:
+#            Resource config is semantically or syntactically incorrect
+#          
+#  /network/rules/{ruleid}:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigRuleGet
+#      summary: |
+#        Get an IP rule details
+#      description: |
+#        Get an IP rule details
+#      parameters:
+#      - in: path
+#        name: ruleid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/ruleid'
+#      responses:
+#        '200':
+#          description: Successful get
+#        "404":
+#          description: Not found
+#    delete:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigRuleDel
+#      summary: |
+#        Removes an IP Rule
+#      description: |
+#        Removes an IP Rule
+#      parameters:
+#      - in: path
+#        name: ruleid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/ruleid'
+#      responses:
+#        '200':
+#          description: Successful delete
+#        "404":
+#          description: Not found
+#  /network/netns:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigNetNSsGet
+#      summary: |
+#        Get the list all network namespaces
+#      description: |
+#        Get the list all network namespaces
+#      responses:
+#        '200':
+#          description: Sucessful retrieval
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/netnsid'
+#    post:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigNetNSCreate
+#      summary: |
+#        Configures an new Network Namespace
+#      description: |
+#        Configures an new Network Namespace
+#      requestBody:
+#        description: Network Namespace Config
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/netns'
+#      responses:
+#        '201':
+#          description: Successful creation
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/netnsid'
+#        '409':
+#          description: 
+#            Resource already exists, or request is incompatible with
+#            current network state
+#        "400":
+#          description:
+#            Resource config is semantically or syntactically incorrect
+#          
+#  /network/netns/{netnsid}:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigNetNSGet
+#      summary: |
+#        Get a network namespace
+#      description: |
+#        Get a network namespace
+#      parameters:
+#      - in: path
+#        name: netnsid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/netnsid'
+#      responses:
+#        '200':
+#          description: Successful get
+#        "404":
+#          description: Not found
+#    delete:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigNetNSDel
+#      summary: |
+#        Removes an IP Rule
+#      description: |
+#        Removes an IP Rule
+#      parameters:
+#      - in: path
+#        name: netnsid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/netnsid'
+#      responses:
+#        '200':
+#          description: Successful delete
+#        "404":
+#          description: Not found
+#  /network/vrfs:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigVRFsGet
+#      summary: |
+#        Get the list all VRFs
+#      description: |
+#        Get the list all VRFs
+#      responses:
+#        '200':
+#          description: Sucessful retrieval
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/vrfid'
+#    post:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigVRFCreate
+#      summary: |
+#        Configures an new VRF
+#      description: |
+#        Configures an new VRF
+#      requestBody:
+#        description: VRF Config
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/vrf'
+#      responses:
+#        '201':
+#          description: Successful creation
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/vrfid'
+#        '409':
+#          description: 
+#            Resource already exists, or request is incompatible with
+#            current network state
+#        "400":
+#          description:
+#            Resource config is semantically or syntactically incorrect
+#          
+#  /network/vrfs/{vrfid}:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigVRFGet
+#      summary: |
+#        Get a VRF
+#      description: |
+#        Get a VRF
+#      parameters:
+#      - in: path
+#        name: vrfid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/vrfid'
+#      responses:
+#        '200':
+#          description: Successful get
+#        "404":
+#          description: Not found
+#    delete:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigVRFDel
+#      summary: |
+#        Removes a VRF
+#      description: |
+#        Removes a VRF
+#      parameters:
+#      - in: path
+#        name: vrfid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/vrfid'
+#      responses:
+#        '200':
+#          description: Successful delete
+#        "404":
+#          description: Not found
+#
+#  /network/nftables:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigNFTablesGet
+#      summary: |
+#        Get the list all NFTables
+#      description: |
+#        Get the list all NFTables
+#      responses:
+#        '200':
+#          description: Sucessful retrieval
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/nftableid'
+#    post:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigNFTableCreate
+#      summary: |
+#        Configures an new NFTable
+#      description: |
+#        Configures an new NFTable
+#      requestBody:
+#        description: NFTable Config
+#        required: true
+#        content:
+#          application/json:
+#            schema:
+#              $ref: '#/components/schemas/nftable'
+#      responses:
+#        '201':
+#          description: Successful creation
+#          content:
+#            application/json:
+#              schema:
+#                type: array
+#                items:
+#                  $ref: '#/components/schemas/nftableid'
+#        '409':
+#          description: 
+#            Resource already exists, or request is incompatible with
+#            current network state
+#        "400":
+#          description:
+#            Resource config is semantically or syntactically incorrect
+#          
+#  /network/ntables/{nftableid}:
+#    get:
+#      x-authorization:
+#        - support
+#        - admin
+#        - monitor
+#      tags:
+#        - Network
+#      operationId: ConfigNFTableGet
+#      summary: |
+#        Get a NFTable
+#      description: |
+#        Get a NFTable
+#      parameters:
+#      - in: path
+#        name: nftableid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/nftableid'
+#      responses:
+#        '200':
+#          description: Successful get
+#        "404":
+#          description: Not found
+#    delete:
+#      x-authorization:
+#        - support
+#        - admin
+#      tags:
+#        - Network
+#      operationId: ConfigNFTableDel
+#      summary: |
+#        Removes a NFTable
+#      description: |
+#        Removes a NFTable
+#      parameters:
+#      - in: path
+#        name: nftableid
+#        required: true
+#        schema:
+#          $ref: '#/components/schemas/nftableid'
+#      responses:
+#        '200':
+#          description: Successful delete
+#        "404":
+#          description: Not found
+#
 components:
   schemas:
     global:
@@ -930,11 +930,11 @@ components:
       type: object
       #required:
       #  - global
-      #  - host_network
+      #  - network
       properties:
         global:
           $ref: '#/components/schemas/global'
-        host_network:
+        network:
           $ref: '#/components/schemas/network'
     #namespace:
     #  type: object
