@@ -280,23 +280,23 @@ func ncLinkFormat(link Link) nc.Link {
 
 func ncNetFormat(config Config) nc.Network {
 	network := nc.Network{}
-	if config.HostNetwork != nil {
-		if config.HostNetwork.Links != nil {
-			network.Links = make([]nc.Link, len(*config.HostNetwork.Links))
-			for i, l := range *config.HostNetwork.Links {
+	if config.Network != nil {
+		if config.Network.Links != nil {
+			network.Links = make([]nc.Link, len(*config.Network.Links))
+			for i, l := range *config.Network.Links {
 				network.Links[i] = ncLinkFormat(l)
 			}
 
 		}
-		if config.HostNetwork.Routes != nil {
-			network.Routes = make([]nc.Route, len(*config.HostNetwork.Routes))
-			for i, l := range *config.HostNetwork.Routes {
+		if config.Network.Routes != nil {
+			network.Routes = make([]nc.Route, len(*config.Network.Routes))
+			for i, l := range *config.Network.Routes {
 				network.Routes[i] = ncRouteFormat(l)
 			}
 		}
-		if config.HostNetwork.Dhcp != nil {
-			network.Dhcp = make([]nc.Dhcp, len(*config.HostNetwork.Dhcp))
-			for i, d := range *config.HostNetwork.Dhcp {
+		if config.Network.Dhcp != nil {
+			network.Dhcp = make([]nc.Dhcp, len(*config.Network.Dhcp))
+			for i, d := range *config.Network.Dhcp {
 				network.Dhcp[i] = ncDhcpFormat(d)
 			}
 		}

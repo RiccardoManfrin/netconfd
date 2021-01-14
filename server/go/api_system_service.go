@@ -36,7 +36,7 @@ func readLiveConfig(s *SystemApiService) error {
 		return err
 	}
 	hostNetwork := ncNetParse(network)
-	s.Conf.HostNetwork = &hostNetwork
+	s.Conf.Network = &hostNetwork
 	return nil
 }
 
@@ -88,4 +88,3 @@ func (s *SystemApiService) ResetConfig(ctx context.Context) (ImplResponse, error
 	err := errors.New("ResetConfig method not implemented")
 	return PostErrorResponse(err, nil)
 }
-
