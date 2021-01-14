@@ -89,14 +89,3 @@ func (s *SystemApiService) ResetConfig(ctx context.Context) (ImplResponse, error
 	return PostErrorResponse(err, nil)
 }
 
-// RunDiagnostics - Run a diagnostic session
-func (s *SystemApiService) RunDiagnostics(ctx context.Context) (ImplResponse, error) {
-	// TODO - update RunDiagnostics with the required logic for this service method.
-	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	err := errors.New("RunDiagnostics method not implemented")
-	return PostErrorResponse(err, nil)
-}
