@@ -18,6 +18,11 @@ Build locally with `make`
 
 # R1 ToDo list
 
+## Move code into nc
+
+    func (s *NetworkApiService) ConfigLinkCreate
+	
+
 ## DHCP static addr Warning emit [2h]
 
 ## MTU set [3h]
