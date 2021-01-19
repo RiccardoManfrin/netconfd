@@ -6,7 +6,7 @@
 			"port": 8666
 		}
 	},
-	"host_network": {
+	"network": {
 		"links": [
 			{
 				"ifname": "bond0",
