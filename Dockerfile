@@ -27,6 +27,6 @@ ENV SRCPATH $GOPATH/src/gitlab.lan.athonet.com/$CI_PROJECT_PATH
 RUN mkdir /app/
 COPY --from=builder $SRCPATH/$CI_PROJECT_NAME /app/$CI_PROJECT_NAME
 RUN mkdir /conf/
-COPY --from=builder $SRCPATH/$CI_PROJECT_NAME.json /conf/
+COPY --from=builder $SRCPATH/$CI_PROJECT_NAME.json /conf/$CI_PROJECT_NAME.json.golden
 WORKDIR /app/
 ENTRYPOINT ./$CI_PROJECT_NAME --config /conf/$CI_PROJECT_NAME.json
