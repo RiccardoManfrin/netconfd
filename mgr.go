@@ -186,6 +186,10 @@ func (m *Manager) PatchInitialConfig() {
 	}
 }
 
+func passThrough(c context.Context, input *openapi3filter.AuthenticationInput) error {
+	return nil
+}
+
 func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	ctx := context.Background()
@@ -198,6 +202,9 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		Request:    r,
 		PathParams: pathParams,
 		Route:      route,
+		Options: &openapi3filter.Options{
+			AuthenticationFunc: passThrough,
+		},
 	}
 	if err := openapi3filter.ValidateRequest(ctx, requestValidationInput); err != nil {
 		err = &comm.ErrorString{S: fmt.Sprintf("HTTP API validation error: %v", err.Error())}
