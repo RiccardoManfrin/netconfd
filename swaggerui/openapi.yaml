@@ -6,7 +6,14 @@ info:
   contact:
     email: support@athonet.com
 servers:
-  - url: /api/1
+  - url: https://{server}/{uuid}/api/1
+    variables:
+      server:
+        default: 10.1.2.3
+        description: Server IP / Hostname
+      uuid:
+        default: '123e4567-e89b-12d3-a456-426614174000'
+        description: Service UUID from catalog
 tags:
   - name: System
     description: System level APIs (e.g. logging, etc..)
