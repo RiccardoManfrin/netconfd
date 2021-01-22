@@ -79,9 +79,10 @@ type RouteID string
 
 func RouteIDGet(route Route) RouteID {
 	md := md5.New()
-	md.Sum([]byte(route.Gateway.String()))
-	md.Sum([]byte(route.Dev))
-	data := md.Sum([]byte(route.Dst.String()))
+	md.Write([]byte(route.Gateway.String()))
+	md.Write([]byte(route.Dev))
+	md.Write([]byte(route.Dst.String()))
+	data := md.Sum(nil)
 	return RouteID(fmt.Sprintf("%x", md5.Sum(data)))
 }
 
