@@ -6,13 +6,22 @@ info:
   contact:
     email: support@athonet.com
 servers:
-  - url: https://{server}/{uuid}/api/1
+  - url: /api/1
+    description: devmode
+  - url: '{protocol}://{server}/{uuid}/api/1'
+    description: production
     variables:
+      protocol:
+        enum:
+          - 'http'
+          - 'https'
+        default: 'https'
+        description: Protocol (http/https)
       server:
-        default: 10.1.2.3
+        default: ngcore
         description: Server IP / Hostname
       uuid:
-        default: '123e4567-e89b-12d3-a456-426614174000'
+        default: ''
         description: Service UUID from catalog
 tags:
   - name: System
