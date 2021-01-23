@@ -525,6 +525,9 @@ func LinkCreate(link Link) error {
 	if removable && (l != nil) {
 		return NewLinkExistsConflictError(ifname)
 	}
+	if (l == nil) && link.Linkinfo.InfoKind == "device" {
+		return NewLinkDeviceDoesNotExistError(ifname)
+	}
 
 	if removable {
 		nllink, err := linkFormat(link)

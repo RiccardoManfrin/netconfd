@@ -153,6 +153,11 @@ func NewLinkExistsConflictError(linkID LinkID) error {
 	return &ConflictError{Code: CONFLICT, Reason: "Link " + string(linkID) + " exists"}
 }
 
+//NewLinkDeviceDoesNotExistError returns a Conflict error on link layer interfaces
+func NewLinkDeviceDoesNotExistError(linkID LinkID) error {
+	return &ConflictError{Code: CONFLICT, Reason: "Link device " + string(linkID) + " does not exist"}
+}
+
 //NewNonBondMasterLinkTypeError returns an error for non bond master link type
 func NewNonBondMasterLinkTypeError(ifname LinkID) error {
 	return &ConflictError{Code: CONFLICT, Reason: "Master link interface " + string(ifname) + " is not a bond"}
