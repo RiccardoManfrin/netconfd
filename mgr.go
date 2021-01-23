@@ -173,17 +173,44 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	return nil
 }
 
-func (m *Manager) PatchInitialConfig() {
-	reqbody, _ := json.Marshal(m.Conf)
+func (m *Manager) patchConfig(reqbody []byte) error {
 	iobody := bytes.NewReader(reqbody)
 	req, _ := http.NewRequest("PATCH", "/api/1/mgmt/config", iobody)
 	req.Header.Add("Content-Type", "application/json")
 	rr := httptest.NewRecorder()
 	m.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
-		logger.Log.Warning(
-			"Failed to patch-apply initial config - Error", rr, "- Network Not configured!")
+		return fmt.Errorf("Failed to patch-apply initial config - Error %v - Network Not configured", rr)
 	}
+	return nil
+}
+func (m *Manager) patchInitialConfig() error {
+	reqbody, _ := json.Marshal(m.Conf)
+	return m.patchConfig(reqbody)
+}
+
+func (m *Manager) patchFailSafeConfig() error {
+	failSafeConfig := `
+	{
+	  "network": {
+		"links": [
+			{
+				"flags": [
+					"up"
+				],
+				"ifindex": 1,
+				"ifname": "lo",
+				"link_type": "loopback"
+			}
+		],
+	    "dhcp": [
+	      {
+	        "ifname": "eth0"
+	      }
+	    ]
+	  }
+	}`
+	return m.patchConfig([]byte(failSafeConfig))
 }
 
 func passThrough(c context.Context, input *openapi3filter.AuthenticationInput) error {
@@ -285,15 +312,27 @@ func NewManager() *Manager {
 	return m
 }
 
+//ListenAndServe activates HTTP server
+func (m *Manager) ListenAndServe() {
+	err := m.HTTPServer.ListenAndServe()
+	logger.Fatal(err)
+}
+
 //Start activates manager
 func (m *Manager) Start() {
 
 	if *skipbootconfig == false {
-		m.PatchInitialConfig()
+		if err := m.patchInitialConfig(); err != nil {
+			logger.Log.Warning(err.Error())
+			logger.Log.Info("Patching with failsafe config...")
+			if err := m.patchFailSafeConfig(); err != nil {
+				logger.Log.Warning(err.Error())
+			}
+		}
 	}
 	logger.Log.Notice("Started netConfD manager...")
 
-	go m.HTTPServer.ListenAndServe()
+	go m.ListenAndServe()
 }
 
 type wrapperResponseWriter struct {
