@@ -210,7 +210,13 @@ func (m *Manager) patchFailSafeConfig() error {
 	    ]
 	  }
 	}`
-	return m.patchConfig([]byte(failSafeConfig))
+	if err := m.patchConfig([]byte(failSafeConfig)); err != nil {
+		return err
+	}
+	if err := json.Unmarshal([]byte(failSafeConfig), m.Conf.Network); err != nil {
+		return err
+	}
+	return nil
 }
 
 func passThrough(c context.Context, input *openapi3filter.AuthenticationInput) error {
