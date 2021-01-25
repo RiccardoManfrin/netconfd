@@ -939,7 +939,8 @@ components:
         - "nowhere"
     route_flags:
       type: string
-      description: Additonal route info (readonly)
+      description: Additonal route info
+      readOnly: true
       example: "linkdown"
     route_dst:
       $ref: '#/components/schemas/cidraddr'
@@ -1681,6 +1682,7 @@ components:
               * `down` - Interface is down
               * `unknown` - Interface state is not known (driver does not implement the API)
           type: string
+          readOnly: true
           enum:
             - up
             - down
