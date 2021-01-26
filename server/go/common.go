@@ -110,10 +110,10 @@ func routesGet() ([]Route, error) {
 
 func ncDnsParse(ncdns nc.Dns) Dns {
 	ns := ncdns.Nameserver.String()
-	prio := int32(ncdns.Priority)
+	prio := Dnsid(ncdns.Id)
 	return Dns{
 		Nameserver: &ns,
-		Priority:   &prio,
+		Id:         &prio,
 	}
 }
 

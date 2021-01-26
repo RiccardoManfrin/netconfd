@@ -11,12 +11,28 @@ import (
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
+type DnsID string
+
+const (
+	DnsPrimary   DnsID = "primary"
+	DnsSecondary       = "secondary"
+)
+
+var dnsIDToString = map[int]DnsID{
+	1: DnsPrimary,
+	2: DnsSecondary,
+}
+var dnsStringToID = map[DnsID]int{
+	DnsPrimary:   1,
+	DnsSecondary: 2,
+}
+
 // Dns Name server for DNS resolution
 type Dns struct {
 	// The DNS server ip address to send DNS queries to
 	Nameserver net.IP `json:"nameserver,omitempty"`
 	// Evaluated priority (lower value indicates higher priority)
-	Priority int `json:"priority,omitempty"`
+	Id DnsID `json:"__id,omitempty"`
 }
 
 //ResolvConf path prefix
@@ -56,10 +72,13 @@ func loadResolv() []Dns {
 			ns = strings.ReplaceAll(ns, "\n", "")
 			dns := Dns{
 				Nameserver: net.ParseIP(ns),
-				Priority:   prio,
+				Id:         dnsIDToString[prio],
 			}
 			prio++
 			dnss = append(dnss, dns)
+			if prio > 2 {
+				break
+			}
 		}
 	}
 	return dnss
