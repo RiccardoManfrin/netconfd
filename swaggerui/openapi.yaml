@@ -1118,6 +1118,9 @@ components:
             DNS configuration is ignored if any of the interfaces is set in DHCP.
           items:
             $ref: '#/components/schemas/dns'
+          minItems: 0
+          maxItems: 2
+          uniqueItems: true
     dns:
       type: object
       description: Name server for DNS resolution
