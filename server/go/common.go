@@ -1,6 +1,8 @@
 package openapi
 
 import (
+	"net"
+
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
@@ -115,6 +117,14 @@ func ncDnsParse(ncdns nc.Dns) Dns {
 		Nameserver: &ns,
 		Id:         &prio,
 	}
+}
+
+func ncDnsFormat(dns Dns) nc.Dns {
+	d := nc.Dns{
+		Nameserver: net.ParseIP(dns.GetNameserver()),
+		Id:         nc.DnsID(dns.GetId()),
+	}
+	return d
 }
 
 func ncLinkParse(nclink nc.Link) Link {

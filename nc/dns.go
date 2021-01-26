@@ -83,8 +83,55 @@ func loadResolv() []Dns {
 	}
 	return dnss
 }
-func dumpResolv(dnss []Dns) {
+func dumpResolv(dnss []Dns) error {
+	if len(dnss) > 2 {
+		return NewTooManyDNSServersError()
+	}
+	return nil
+}
 
+func DNSCreate(dns Dns) error {
+
+}
+
+//DNSsConfigure configures/overwrites the whole set of dnss
+func DNSsConfigure(dnss []Dns) error {
+	return dumpResolv(dnss)
+}
+
+func DNSDelete(dnsid DnsID) error {
+	dnss, err := DNSsGet()
+	if err != nil {
+		return err
+	}
+	var resultDNSs []Dns
+	/* we use knowledge on positional order */
+	switch dnsid {
+	case DnsPrimary:
+		{
+			resultDNSs = dnss[1:]
+		}
+	case DnsSecondary:
+		{
+			resultDNSs = dnss[:1]
+		}
+	default:
+
+	}
+	return dumpResolv(resultDNSs)
+}
+
+func DnsGet(dnsid DnsID) (Dns, error) {
+	dnss, err := DNSsGet()
+	if err != nil {
+		return Dns{}, err
+	}
+	for _, dns := range dnss {
+		if dns.Id == dnsid {
+			return dns, nil
+		}
+	}
+	return Dns{}, NewDNSServerNotFoundError(dnsid)
 }
 
 //DNSsGet Get all DNS interfaces administrated by DNS and related config/state.

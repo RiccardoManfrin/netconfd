@@ -114,6 +114,11 @@ func NewENETUNREACHError(r Route) error {
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r)}
 }
 
+//NewTooManyDNSServersError describes a link device not found for a route to create
+func NewTooManyDNSServersError() error {
+	return &SemanticError{Code: SEMANTIC, Reason: "More than two entries found in DNS servers config"}
+}
+
 //SyntaxError is a logical error on the content of the operation requested to be performed
 type SyntaxError GenericError
 
@@ -218,6 +223,11 @@ func NewRouteByIDNotFoundError(routeid RouteID) error {
 //NewDHCPRunningNotFoundError returns a Not found error on link layer interfaces not managed by DHCP
 func NewDHCPRunningNotFoundError(linkID LinkID) error {
 	return &NotFoundError{Code: NOT_FOUND, Reason: "DHCP for Link ID " + string(linkID) + " not found"}
+}
+
+//NewDNSServerNotFoundError returns a Not found error on link layer interfaces not managed by DHCP
+func NewDNSServerNotFoundError(dnsID DnsID) error {
+	return &NotFoundError{Code: NOT_FOUND, Reason: "DNS ID " + string(dnsID) + " not found"}
 }
 
 //UnexpetecdCornerCaseError is fundamentally an implementation error catch exception
