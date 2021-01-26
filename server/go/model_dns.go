@@ -17,10 +17,9 @@ import (
 
 // Dns Name server for DNS resolution
 type Dns struct {
+	Id *Dnsid `json:"__id,omitempty"`
 	// The DNS server ip address to send DNS queries to
 	Nameserver *string `json:"nameserver,omitempty"`
-	// Evaluated priority (lower value indicates higher priority)
-	Priority *int32 `json:"priority,omitempty"`
 }
 
 // NewDns instantiates a new Dns object
@@ -29,6 +28,8 @@ type Dns struct {
 // will change when the set of required properties is changed
 func NewDns() *Dns {
 	this := Dns{}
+	var id Dnsid = "primary"
+	this.Id = &id
 	return &this
 }
 
@@ -37,7 +38,41 @@ func NewDns() *Dns {
 // but it doesn't guarantee that properties required by API are set
 func NewDnsWithDefaults() *Dns {
 	this := Dns{}
+	var id Dnsid = "primary"
+	this.Id = &id
 	return &this
+}
+
+// GetId returns the Id field value if set, zero value otherwise.
+func (o *Dns) GetId() Dnsid {
+	if o == nil || o.Id == nil {
+		var ret Dnsid
+		return ret
+	}
+	return *o.Id
+}
+
+// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Dns) GetIdOk() (*Dnsid, bool) {
+	if o == nil || o.Id == nil {
+		return nil, false
+	}
+	return o.Id, true
+}
+
+// HasId returns a boolean if a field has been set.
+func (o *Dns) HasId() bool {
+	if o != nil && o.Id != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetId gets a reference to the given Dnsid and assigns it to the Id field.
+func (o *Dns) SetId(v Dnsid) {
+	o.Id = &v
 }
 
 // GetNameserver returns the Nameserver field value if set, zero value otherwise.
@@ -72,45 +107,13 @@ func (o *Dns) SetNameserver(v string) {
 	o.Nameserver = &v
 }
 
-// GetPriority returns the Priority field value if set, -1 otherwise.
-func (o *Dns) GetPriority() int32 {
-	if o == nil || o.Priority == nil {
-		var ret int32 = -1 
-		return ret
-	}
-	return *o.Priority
-}
-
-// GetPriorityOk returns a tuple with the Priority field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *Dns) GetPriorityOk() (*int32, bool) {
-	if o == nil || o.Priority == nil {
-		return nil, false
-	}
-	return o.Priority, true
-}
-
-// HasPriority returns a boolean if a field has been set.
-func (o *Dns) HasPriority() bool {
-	if o != nil && o.Priority != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetPriority gets a reference to the given int32 and assigns it to the Priority field.
-func (o *Dns) SetPriority(v int32) {
-	o.Priority = &v
-}
-
 func (o Dns) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
+	if o.Id != nil {
+		toSerialize["__id"] = o.Id
+	}
 	if o.Nameserver != nil {
 		toSerialize["nameserver"] = o.Nameserver
-	}
-	if o.Priority != nil {
-		toSerialize["priority"] = o.Priority
 	}
 	return json.Marshal(toSerialize)
 }

@@ -472,7 +472,7 @@ paths:
       x-authorization:
       - support
       - admin
-  /network/dns/{ifname}:
+  /network/dns/{dnsid}:
     delete:
       description: "Delete DNS daemon management control for the \nspecified link\
         \ layer interface\n"
@@ -480,10 +480,10 @@ paths:
       parameters:
       - explode: false
         in: path
-        name: ifname
+        name: dnsid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/dnsid'
         style: simple
       responses:
         "200":
@@ -504,10 +504,10 @@ paths:
       parameters:
       - explode: false
         in: path
-        name: ifname
+        name: dnsid
         required: true
         schema:
-          $ref: '#/components/schemas/ifname'
+          $ref: '#/components/schemas/dnsid'
         style: simple
       responses:
         "200":
@@ -548,6 +548,15 @@ components:
     cidraddr:
       example: 10.1.2.3/24
       format: cidraddr
+      type: string
+    dnsid:
+      default: primary
+      description: |
+        ID of the DNS servers, defining their priority
+      enum:
+      - primary
+      - secondary
+      example: primary
       type: string
     routeid:
       description: |2
@@ -651,16 +660,15 @@ components:
     dns:
       description: Name server for DNS resolution
       example:
+        __id: primary
         nameserver: nameserver
-        priority: 0
       properties:
+        __id:
+          $ref: '#/components/schemas/dnsid'
         nameserver:
           description: The DNS server ip address to send DNS queries to
           format: ipaddr
           type: string
-        priority:
-          description: Evaluated priority (lower value indicates higher priority)
-          type: integer
       type: object
     rule:
       description: IP Rule type

@@ -64,13 +64,13 @@ func (c *NetworkApiController) Routes() Routes {
 		{
 			"ConfigDNSDel",
 			strings.ToUpper("Delete"),
-			"/api/1/network/dns/{ifname}",
+			"/api/1/network/dns/{dnsid}",
 			c.ConfigDNSDel,
 		},
 		{
 			"ConfigDNSGet",
 			strings.ToUpper("Get"),
-			"/api/1/network/dns/{ifname}",
+			"/api/1/network/dns/{dnsid}",
 			c.ConfigDNSGet,
 		},
 		{
@@ -214,8 +214,8 @@ func (c *NetworkApiController) ConfigDNSCreate(w http.ResponseWriter, r *http.Re
 // ConfigDNSDel - Delete DNS 
 func (c *NetworkApiController) ConfigDNSDel(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	ifname := params["ifname"]
-	result, err := c.service.ConfigDNSDel(r.Context(), ifname)
+	dnsid := params["dnsid"]
+	result, err := c.service.ConfigDNSDel(r.Context(), dnsid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err, &result.Code, w)
@@ -229,8 +229,8 @@ func (c *NetworkApiController) ConfigDNSDel(w http.ResponseWriter, r *http.Reque
 // ConfigDNSGet - Get DNS 
 func (c *NetworkApiController) ConfigDNSGet(w http.ResponseWriter, r *http.Request) { 
 	params := mux.Vars(r)
-	ifname := params["ifname"]
-	result, err := c.service.ConfigDNSGet(r.Context(), ifname)
+	dnsid := params["dnsid"]
+	result, err := c.service.ConfigDNSGet(r.Context(), dnsid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err, &result.Code, w)

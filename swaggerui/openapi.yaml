@@ -498,7 +498,7 @@ paths:
         "400":
           description:
             Resource config is semantically or syntactically incorrect
-  /network/dns/{ifname}:
+  /network/dns/{dnsid}:
     get:
       x-authorization:
         - support
@@ -513,10 +513,10 @@ paths:
         Retrieve DNS info for link layer interface
       parameters:
       - in: path
-        name: ifname
+        name: dnsid
         required: true
         schema:
-          $ref: '#/components/schemas/ifname'
+          $ref: '#/components/schemas/dnsid'
       responses:
         '200':
           description: Successful get
@@ -536,10 +536,10 @@ paths:
         specified link layer interface
       parameters:
       - in: path
-        name: ifname
+        name: dnsid
         required: true
         schema:
-          type: string
+          $ref: '#/components/schemas/dnsid'
       responses:
         '200':
           description: Successful delete
@@ -996,6 +996,15 @@ components:
       type: string
       format: cidraddr
       example: "10.1.2.3/24"
+    dnsid:
+      type: string
+      enum:
+        - primary
+        - secondary
+      default: primary
+      example: primary
+      description: | 
+        ID of the DNS servers, defining their priority
     routeid:
       type: string
       readOnly: true
@@ -1113,13 +1122,12 @@ components:
       type: object
       description: Name server for DNS resolution
       properties:
+        __id:
+          $ref: '#/components/schemas/dnsid'
         nameserver:
           type: string
           format: ipaddr
           description: The DNS server ip address to send DNS queries to
-        priority:
-          type: integer
-          description: Evaluated priority (lower value indicates higher priority)
     rule:
       type: object
       description: IP Rule type
