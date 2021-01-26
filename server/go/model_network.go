@@ -23,6 +23,8 @@ type Network struct {
 	Routes *[]Route `json:"routes,omitempty"`
 	// List of DHCP enabled interfaces. Any interface in this list will get its network IP assigned through DHCP protocol. Consequently, any static assignment made to it in the link section will be ignored. Warning will be emitted in this case.
 	Dhcp *[]Dhcp `json:"dhcp,omitempty"`
+	// List of nameservers and related priorities (lower value indicates higher priority). DNS configuration is ignored if any of the interfaces is set in DHCP.
+	Dns *[]Dns `json:"dns,omitempty"`
 }
 
 // NewNetwork instantiates a new Network object
@@ -138,6 +140,38 @@ func (o *Network) SetDhcp(v []Dhcp) {
 	o.Dhcp = &v
 }
 
+// GetDns returns the Dns field value if set, zero value otherwise.
+func (o *Network) GetDns() []Dns {
+	if o == nil || o.Dns == nil {
+		var ret []Dns
+		return ret
+	}
+	return *o.Dns
+}
+
+// GetDnsOk returns a tuple with the Dns field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Network) GetDnsOk() (*[]Dns, bool) {
+	if o == nil || o.Dns == nil {
+		return nil, false
+	}
+	return o.Dns, true
+}
+
+// HasDns returns a boolean if a field has been set.
+func (o *Network) HasDns() bool {
+	if o != nil && o.Dns != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDns gets a reference to the given []Dns and assigns it to the Dns field.
+func (o *Network) SetDns(v []Dns) {
+	o.Dns = &v
+}
+
 func (o Network) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Links != nil {
@@ -148,6 +182,9 @@ func (o Network) MarshalJSON() ([]byte, error) {
 	}
 	if o.Dhcp != nil {
 		toSerialize["dhcp"] = o.Dhcp
+	}
+	if o.Dns != nil {
+		toSerialize["dns"] = o.Dns
 	}
 	return json.Marshal(toSerialize)
 }

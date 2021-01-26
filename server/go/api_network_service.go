@@ -12,6 +12,7 @@ package openapi
 
 import (
 	"context"
+	"errors"
 
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
@@ -61,6 +62,61 @@ func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, e
 	dhcps, err := dhcpsGet()
 
 	return GetErrorResponse(err, dhcps)
+}
+
+// ConfigDNSCreate - Create DNS
+func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplResponse, error) {
+	// TODO - update ConfigDNSCreate with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	err := errors.New("ConfigDNSCreate method not implemented")
+	return PostErrorResponse(err, nil)
+}
+
+// ConfigDNSDel - Delete DNS
+func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, ifname string) (ImplResponse, error) {
+	// TODO - update ConfigDNSDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	err := errors.New("ConfigDNSDel method not implemented")
+	return DeleteErrorResponse(err, nil)
+}
+
+// ConfigDNSGet - Get DNS
+func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, ifname string) (ImplResponse, error) {
+	// TODO - update ConfigDNSGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	err := errors.New("ConfigDNSGet method not implemented")
+	return GetErrorResponse(err, nil)
+}
+
+// ConfigDNSsGet - Get All DNS config
+func (s *NetworkApiService) ConfigDNSsGet(ctx context.Context) (ImplResponse, error) {
+	dnss, err := dnssGet()
+
+	return GetErrorResponse(err, dnss)
 }
 
 // ConfigLinkCreate - Create New Link

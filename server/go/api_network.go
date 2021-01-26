@@ -56,6 +56,30 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigDHCPsGet,
 		},
 		{
+			"ConfigDNSCreate",
+			strings.ToUpper("Post"),
+			"/api/1/network/dns",
+			c.ConfigDNSCreate,
+		},
+		{
+			"ConfigDNSDel",
+			strings.ToUpper("Delete"),
+			"/api/1/network/dns/{ifname}",
+			c.ConfigDNSDel,
+		},
+		{
+			"ConfigDNSGet",
+			strings.ToUpper("Get"),
+			"/api/1/network/dns/{ifname}",
+			c.ConfigDNSGet,
+		},
+		{
+			"ConfigDNSsGet",
+			strings.ToUpper("Get"),
+			"/api/1/network/dns",
+			c.ConfigDNSsGet,
+		},
+		{
 			"ConfigLinkCreate",
 			strings.ToUpper("Post"),
 			"/api/1/network/links",
@@ -158,6 +182,68 @@ func (c *NetworkApiController) ConfigDHCPGet(w http.ResponseWriter, r *http.Requ
 // ConfigDHCPsGet - Get All DHCP 
 func (c *NetworkApiController) ConfigDHCPsGet(w http.ResponseWriter, r *http.Request) { 
 	result, err := c.service.ConfigDHCPsGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDNSCreate - Create DNS 
+func (c *NetworkApiController) ConfigDNSCreate(w http.ResponseWriter, r *http.Request) { 
+	dns := &Dns{}
+	if err := json.NewDecoder(r.Body).Decode(&dns); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigDNSCreate(r.Context(), *dns)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDNSDel - Delete DNS 
+func (c *NetworkApiController) ConfigDNSDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ifname := params["ifname"]
+	result, err := c.service.ConfigDNSDel(r.Context(), ifname)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDNSGet - Get DNS 
+func (c *NetworkApiController) ConfigDNSGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ifname := params["ifname"]
+	result, err := c.service.ConfigDNSGet(r.Context(), ifname)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigDNSsGet - Get All DNS config 
+func (c *NetworkApiController) ConfigDNSsGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigDNSsGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err, &result.Code, w)

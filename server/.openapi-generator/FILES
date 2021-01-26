@@ -13,6 +13,7 @@ go/impl.go
 go/logger.go
 go/model_config.go
 go/model_dhcp.go
+go/model_dns.go
 go/model_global.go
 go/model_global_mgmt.go
 go/model_link.go

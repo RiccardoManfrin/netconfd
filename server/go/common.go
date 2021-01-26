@@ -5,6 +5,18 @@ import (
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
+func dnssGet() ([]Dns, error) {
+	var dnss []Dns
+	ncdnss, err := nc.DNSsGet()
+	if err == nil {
+		dnss = make([]Dns, len(ncdnss))
+		for i, l := range ncdnss {
+			dnss[i] = ncDnsParse(l)
+		}
+	}
+	return dnss, err
+}
+
 func linksGet() ([]Link, error) {
 	var links []Link
 	nclinks, err := nc.LinksGet()
@@ -94,6 +106,15 @@ func routesGet() ([]Route, error) {
 		}
 	}
 	return routes, err
+}
+
+func ncDnsParse(ncdns nc.Dns) Dns {
+	ns := ncdns.Nameserver.String()
+	prio := int32(ncdns.Priority)
+	return Dns{
+		Nameserver: &ns,
+		Priority:   &prio,
+	}
 }
 
 func ncLinkParse(nclink nc.Link) Link {

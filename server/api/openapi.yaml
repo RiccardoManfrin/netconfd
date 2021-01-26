@@ -6,7 +6,24 @@ info:
   title: netConfD API
   version: 0.1.0
 servers:
-- url: /api/1
+- description: devmode
+  url: /api/1
+- description: production
+  url: '{protocol}://{server}/{uuid}/api/1'
+  variables:
+    protocol:
+      default: https
+      description: Protocol (http/https)
+      enum:
+      - http
+      - https
+    server:
+      default: ngcore
+      description: Server IP / Hostname
+    uuid:
+      description: Service UUID from catalog
+security:
+- bearerAuth: []
 tags:
 - description: System level APIs (e.g. logging, etc..)
   name: System
@@ -407,6 +424,104 @@ paths:
       - support
       - admin
       - monitor
+  /network/dns:
+    get:
+      description: |
+        Returns the array of the existing nameservers for DNS queries.
+      operationId: ConfigDNSsGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/dns'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get All DNS config
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+      - monitor
+    post:
+      description: |
+        Adds a nameserver entry
+      operationId: ConfigDNSCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/dns'
+        description: DNS Config
+        required: true
+      responses:
+        "201":
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Create DNS
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+  /network/dns/{ifname}:
+    delete:
+      description: "Delete DNS daemon management control for the \nspecified link\
+        \ layer interface\n"
+      operationId: ConfigDNSDel
+      parameters:
+      - explode: false
+        in: path
+        name: ifname
+        required: true
+        schema:
+          type: string
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Delete DNS
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+    get:
+      description: |
+        Retrieve DNS info for link layer interface
+      operationId: ConfigDNSGet
+      parameters:
+      - explode: false
+        in: path
+        name: ifname
+        required: true
+        schema:
+          $ref: '#/components/schemas/ifname'
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get DNS
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+      - monitor
 components:
   schemas:
     global:
@@ -441,6 +556,7 @@ components:
 
         Ignored in creation (readonly), it is only used to identify a route to get or delete
       example: b0804ec967f48520697662a204f5fe72
+      readOnly: true
       type: string
     ruleid:
       description: Incremental rule identifier
@@ -474,8 +590,9 @@ components:
       - nowhere
       type: string
     route_flags:
-      description: Additonal route info (readonly)
+      description: Additonal route info
       example: linkdown
+      readOnly: true
       type: string
     route_dst:
       $ref: '#/components/schemas/cidraddr'
@@ -523,6 +640,27 @@ components:
           items:
             $ref: '#/components/schemas/dhcp'
           type: array
+        dns:
+          description: |-
+            List of nameservers and related priorities (lower value indicates higher priority).
+            DNS configuration is ignored if any of the interfaces is set in DHCP.
+          items:
+            $ref: '#/components/schemas/dns'
+          type: array
+      type: object
+    dns:
+      description: Name server for DNS resolution
+      example:
+        nameserver: nameserver
+        priority: 0
+      properties:
+        nameserver:
+          description: The DNS server ip address to send DNS queries to
+          format: ipaddr
+          type: string
+        priority:
+          description: Evaluated priority (lower value indicates higher priority)
+          type: integer
       type: object
     rule:
       description: IP Rule type
@@ -566,6 +704,7 @@ components:
 
             Ignored in creation (readonly), it is only used to identify a route to get or delete
           example: b0804ec967f48520697662a204f5fe72
+          readOnly: true
           type: string
         dst:
           example: 10.1.2.3/24
@@ -747,6 +886,7 @@ components:
           - down
           - unknown
           example: down
+          readOnly: true
           type: string
         linkmode:
           example: DEFAULT
@@ -1318,3 +1458,8 @@ components:
       - local
       - prefixlen
       type: object
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
