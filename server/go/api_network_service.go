@@ -83,7 +83,7 @@ func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplR
 }
 
 // ConfigDNSDel - Delete DNS
-func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, ifname string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	// TODO - update ConfigDNSDel with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
@@ -98,7 +98,7 @@ func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, ifname string) (Im
 }
 
 // ConfigDNSGet - Get DNS
-func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, ifname string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	// TODO - update ConfigDNSGet with the required logic for this service method.
 	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
