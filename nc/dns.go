@@ -156,6 +156,13 @@ func DNSsConfigure(dnss []Dns) error {
 	return dumpResolv(dnss)
 }
 
+//DNSsDelete deletes all DNS context
+func DNSsDelete() error {
+	dnss := make([]Dns, 0)
+	return dumpResolv(dnss)
+}
+
+//DNSDelete delete a DNS entry in resolv.conf
 func DNSDelete(dnsid DnsID) error {
 	dnss, err := DNSsGet()
 	if err != nil {

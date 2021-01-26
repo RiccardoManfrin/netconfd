@@ -339,6 +339,7 @@ func ncNetParse(net nc.Network) Network {
 	links := make([]Link, len(net.Links))
 	routes := make([]Route, len(net.Routes))
 	dhcps := make([]Dhcp, len(net.Dhcp))
+	dnss := make([]Dns, len(net.Dnss))
 	for i, l := range net.Links {
 		links[i] = ncLinkParse(l)
 	}
@@ -348,9 +349,13 @@ func ncNetParse(net nc.Network) Network {
 	for i, d := range net.Dhcp {
 		dhcps[i] = ncDhcpParse(d)
 	}
+	for i, s := range net.Dnss {
+		dnss[i] = ncDnsParse(s)
+	}
 	return Network{
 		Links:  &links,
 		Routes: &routes,
 		Dhcp:   &dhcps,
+		Dns:    &dnss,
 	}
 }

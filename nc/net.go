@@ -8,6 +8,8 @@ type Network struct {
 	Routes []Route `json:"routes,omitempty"`
 	// DHCP context
 	Dhcp []Dhcp `json:"dhcp,omitempty"`
+	// DNS context
+	Dnss []Dns
 }
 
 //Patch network config
@@ -21,6 +23,10 @@ func Patch(n Network) error {
 		return err
 	}
 	err = DHCPsConfigure(n.Dhcp)
+	if err != nil {
+		return err
+	}
+	err = DNSsConfigure(n.Dnss)
 	if err != nil {
 		return err
 	}
@@ -41,6 +47,14 @@ func Put(n Network) error {
 	if err != nil {
 		return err
 	}
+	err = DHCPsConfigure(n.Dhcp)
+	if err != nil {
+		return err
+	}
+	err = DNSsConfigure(n.Dnss)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -55,6 +69,10 @@ func Del() error {
 		return err
 	}
 	err = DHCPsDelete()
+	if err != nil {
+		return err
+	}
+	err = DNSsDelete()
 	if err != nil {
 		return err
 	}
@@ -76,9 +94,13 @@ func Get() (Network, error) {
 	if err != nil {
 		return n, err
 	}
+	dnss, err := DNSsGet()
+	if err != nil {
+		return n, err
+	}
 	n.Links = links
 	n.Routes = routes
 	n.Dhcp = dhcps
-
+	n.Dnss = dnss
 	return n, nil
 }
