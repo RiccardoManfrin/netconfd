@@ -210,12 +210,19 @@ func (m *Manager) patchFailSafeConfig() error {
 	    ]
 	  }
 	}`
-	if err := m.patchConfig([]byte(failSafeConfig)); err != nil {
-		return err
-	}
 	if err := json.Unmarshal([]byte(failSafeConfig), m.Conf.Network); err != nil {
 		return err
 	}
+	res, err := json.Marshal(m.Conf)
+	if err != nil {
+		logger.Fatal(err)
+	}
+	logger.Log.Notice("Config: " + string(res))
+
+	if err := m.patchConfig([]byte(failSafeConfig)); err != nil {
+		return err
+	}
+
 	return nil
 }
 

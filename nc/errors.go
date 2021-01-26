@@ -114,9 +114,19 @@ func NewENETUNREACHError(r Route) error {
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r)}
 }
 
-//NewTooManyDNSServersError describes a link device not found for a route to create
+//NewTooManyDNSServersError describes an error on the number of requested DNS servers
 func NewTooManyDNSServersError() error {
 	return &SemanticError{Code: SEMANTIC, Reason: "More than two entries found in DNS servers config"}
+}
+
+//NewDuplicateDNSServersIDsError describes a config error on the DNS serves IDs
+func NewDuplicateDNSServersIDsError(dnsid1 DnsID, dnsid2 DnsID) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Duplicate DNS server IDs %v, %v config", string(dnsid1), string(dnsid2))}
+}
+
+//NewUnknownUnsupportedDNSServersIDsError describes a config error on the DNS serves IDs
+func NewUnknownUnsupportedDNSServersIDsError(dnsid1 DnsID) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Unknown/Unsupported DNS server IDs %v", string(dnsid1))}
 }
 
 //SyntaxError is a logical error on the content of the operation requested to be performed
@@ -186,6 +196,11 @@ func NewCannotStatusDHCPError(ifname LinkID, e error) error {
 //NewDHCPAlreadyRunningConflictError returns an error for DHCP that is requested for an interface where it's already running
 func NewDHCPAlreadyRunningConflictError(ifname LinkID) error {
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("DHCP is alreay running for interface %v", string(ifname))}
+}
+
+//NewDNSServerExistsConflictError returns an error for DHCP that is requested for an interface where it's already running
+func NewDNSServerExistsConflictError(dnsid DnsID) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("DNS server %v already exists", string(dnsid))}
 }
 
 //NewEPERMError returns a missing permissions error

@@ -2,7 +2,9 @@ package nc
 
 import (
 	"bufio"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net"
 	"os"
 	"regexp"
@@ -87,11 +89,66 @@ func dumpResolv(dnss []Dns) error {
 	if len(dnss) > 2 {
 		return NewTooManyDNSServersError()
 	}
-	return nil
+	resolvConf := ""
+	var pri *Dns = nil
+	var sec *Dns = nil
+
+	if len(dnss) > 0 {
+		if dnss[0].Id == DnsPrimary {
+			pri = &dnss[0]
+		} else if dnss[0].Id == DnsSecondary {
+			sec = &dnss[0]
+		} else {
+			return NewUnknownUnsupportedDNSServersIDsError(dnss[0].Id)
+		}
+
+		if len(dnss) == 2 {
+			if dnss[1].Id == DnsPrimary {
+				if pri != nil {
+					return NewDuplicateDNSServersIDsError(dnss[0].Id, dnss[1].Id)
+				}
+				pri = &dnss[1]
+			} else if dnss[1].Id == DnsSecondary {
+				if sec != nil {
+					return NewDuplicateDNSServersIDsError(dnss[0].Id, dnss[1].Id)
+				}
+				sec = &dnss[1]
+			} else {
+				return NewUnknownUnsupportedDNSServersIDsError(dnss[1].Id)
+			}
+		}
+		if pri != nil {
+			resolvConf = fmt.Sprintf(
+				"%vnameserver %v\n",
+				resolvConf,
+				pri.Nameserver.String())
+		}
+		if sec != nil {
+			resolvConf = fmt.Sprintf(
+				"%vnameserver %v\n",
+				resolvConf,
+				sec.Nameserver.String())
+		}
+	}
+	return ioutil.WriteFile(
+		ResolvConf,
+		[]byte(resolvConf), 777)
 }
 
 func DNSCreate(dns Dns) error {
-
+	_, err := DnsGet(dns.Id)
+	if err == nil {
+		return NewDNSServerExistsConflictError(dns.Id)
+	}
+	if _, ok := err.(*NotFoundError); ok != true {
+		return err
+	}
+	dnss, err := DNSsGet()
+	if err != nil {
+		return err
+	}
+	dnss = append(dnss, dns)
+	return dumpResolv(dnss)
 }
 
 //DNSsConfigure configures/overwrites the whole set of dnss
@@ -116,7 +173,7 @@ func DNSDelete(dnsid DnsID) error {
 			resultDNSs = dnss[:1]
 		}
 	default:
-
+		return NewUnknownUnsupportedDNSServersIDsError(dnsid)
 	}
 	return dumpResolv(resultDNSs)
 }
