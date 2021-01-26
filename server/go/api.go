@@ -15,12 +15,10 @@ import (
 	"net/http"
 )
 
-
-
 // NetworkApiRouter defines the required methods for binding the api requests to a responses for the NetworkApi
-// The NetworkApiRouter implementation should parse necessary information from the http request, 
+// The NetworkApiRouter implementation should parse necessary information from the http request,
 // pass the data to a NetworkApiServicer to perform the required actions, then write the service results to the http response.
-type NetworkApiRouter interface { 
+type NetworkApiRouter interface {
 	ConfigDHCPCreate(http.ResponseWriter, *http.Request)
 	ConfigDHCPDel(http.ResponseWriter, *http.Request)
 	ConfigDHCPGet(http.ResponseWriter, *http.Request)
@@ -38,10 +36,11 @@ type NetworkApiRouter interface {
 	ConfigRouteGet(http.ResponseWriter, *http.Request)
 	ConfigRoutesGet(http.ResponseWriter, *http.Request)
 }
+
 // SystemApiRouter defines the required methods for binding the api requests to a responses for the SystemApi
-// The SystemApiRouter implementation should parse necessary information from the http request, 
+// The SystemApiRouter implementation should parse necessary information from the http request,
 // pass the data to a SystemApiServicer to perform the required actions, then write the service results to the http response.
-type SystemApiRouter interface { 
+type SystemApiRouter interface {
 	ConfigGet(http.ResponseWriter, *http.Request)
 	ConfigPatch(http.ResponseWriter, *http.Request)
 	ConfigSet(http.ResponseWriter, *http.Request)
@@ -49,19 +48,18 @@ type SystemApiRouter interface {
 	ResetConfig(http.ResponseWriter, *http.Request)
 }
 
-
 // NetworkApiServicer defines the api actions for the NetworkApi service
-// This interface intended to stay up to date with the openapi yaml used to generate it, 
-// while the service implementation can ignored with the .openapi-generator-ignore file 
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can ignored with the .openapi-generator-ignore file
 // and updated with the logic required for the API.
-type NetworkApiServicer interface { 
+type NetworkApiServicer interface {
 	ConfigDHCPCreate(context.Context, Dhcp) (ImplResponse, error)
 	ConfigDHCPDel(context.Context, string) (ImplResponse, error)
 	ConfigDHCPGet(context.Context, string) (ImplResponse, error)
 	ConfigDHCPsGet(context.Context) (ImplResponse, error)
 	ConfigDNSCreate(context.Context, Dns) (ImplResponse, error)
-	ConfigDNSDel(context.Context, Dnsid) (ImplResponse, error)
-	ConfigDNSGet(context.Context, Dnsid) (ImplResponse, error)
+	ConfigDNSDel(context.Context, string) (ImplResponse, error)
+	ConfigDNSGet(context.Context, string) (ImplResponse, error)
 	ConfigDNSsGet(context.Context) (ImplResponse, error)
 	ConfigLinkCreate(context.Context, Link) (ImplResponse, error)
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
@@ -73,12 +71,11 @@ type NetworkApiServicer interface {
 	ConfigRoutesGet(context.Context) (ImplResponse, error)
 }
 
-
 // SystemApiServicer defines the api actions for the SystemApi service
-// This interface intended to stay up to date with the openapi yaml used to generate it, 
-// while the service implementation can ignored with the .openapi-generator-ignore file 
+// This interface intended to stay up to date with the openapi yaml used to generate it,
+// while the service implementation can ignored with the .openapi-generator-ignore file
 // and updated with the logic required for the API.
-type SystemApiServicer interface { 
+type SystemApiServicer interface {
 	ConfigGet(context.Context) (ImplResponse, error)
 	ConfigPatch(context.Context, Config) (ImplResponse, error)
 	ConfigSet(context.Context, Config) (ImplResponse, error)
