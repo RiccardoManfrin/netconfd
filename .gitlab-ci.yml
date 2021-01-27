@@ -38,7 +38,8 @@ uploadspec:
   - apk add --no-cache git openssh-client curl
   script:
   - tar cvzf archive.tar.gz  -C swaggerui/ openapi.yaml
-  - curl -X PUT -F 'bundle=@archive.tar.gz' http://srv-buildrepo.lan.athonet.com/api/v1/products/5g/components/netconfd/openapi/0.1.0
+  - export OPENAPI_VER=`cat swaggerui/openapi.yaml | grep  "version:" |awk '{print $2}'`
+  - curl -X PUT -F 'bundle=@archive.tar.gz' http://srv-buildrepo.lan.athonet.com/api/v1/products/5g/components/netconfd/openapi/$OPENAPI_VER
 
 
 scan_push:
