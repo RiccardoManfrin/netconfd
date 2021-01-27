@@ -331,6 +331,12 @@ func ncNetFormat(config Config) nc.Network {
 				network.Dhcp[i] = ncDhcpFormat(d)
 			}
 		}
+		if config.Network.Dns != nil {
+			network.Dnss = make([]nc.Dns, len(*config.Network.Dns))
+			for i, s := range *config.Network.Dns {
+				network.Dnss[i] = ncDnsFormat(s)
+			}
+		}
 	}
 	return network
 }
