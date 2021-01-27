@@ -13,7 +13,6 @@ package openapi
 import (
 	"context"
 	"errors"
-	"time"
 
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
@@ -59,7 +58,7 @@ func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplRe
 }
 
 func delayedConfigSet(network nc.Network) error {
-	time.Sleep(1 * time.Second)
+	//time.Sleep(1 * time.Second)
 	err := nc.Put(network)
 	if err != nil {
 		return err
