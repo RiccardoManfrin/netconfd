@@ -4,7 +4,7 @@ info:
     email: support@athonet.com
   description: Network Configurator service
   title: netConfD API
-  version: 0.1.0
+  version: 0.2.0
 servers:
 - description: devmode
   url: /api/1
@@ -655,7 +655,10 @@ components:
             DNS configuration is ignored if any of the interfaces is set in DHCP.
           items:
             $ref: '#/components/schemas/dns'
+          maxItems: 2
+          minItems: 0
           type: array
+          uniqueItems: true
       type: object
     dns:
       description: Name server for DNS resolution
