@@ -20,8 +20,8 @@ servers:
     server:
       default: ngcore
       description: Server IP / Hostname
-    uuid:
-      description: Service UUID from catalog
+    prefix:
+      description: Service platform prefix
 security:
 - bearerAuth: []
 tags:

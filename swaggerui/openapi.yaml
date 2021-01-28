@@ -20,9 +20,9 @@ servers:
       server:
         default: ngcore
         description: Server IP / Hostname
-      uuid:
+      prefix:
         default: ''
-        description: Service UUID from catalog
+        description: Service platform prefix
 tags:
   - name: System
     description: System level APIs (e.g. logging, etc..)
