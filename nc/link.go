@@ -447,6 +447,15 @@ func LinksConfigure(links []Link) error {
 		}
 	}
 
+	for _, link := range links {
+		if link.Mtu > 0 {
+			err := LinkSetMTU(link.Ifname, int(link.Mtu))
+			if err != nil {
+				logger.Log.Warning("Link Set MTU Error:", err)
+			}
+		}
+	}
+
 	return nil
 }
 
