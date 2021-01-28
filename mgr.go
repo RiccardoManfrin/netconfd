@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
-	"math"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -22,7 +21,7 @@ import (
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
-	comm "gitlab.lan.athonet.com/core/netconfd/common"
+	"gitlab.lan.athonet.com/core/netconfd/comm"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 	"gitlab.lan.athonet.com/core/netconfd/swaggerui"
@@ -82,59 +81,19 @@ func httpError(w http.ResponseWriter, e error, code int) {
 
 func httpOk(w http.ResponseWriter) {
 	w.WriteHeader(200)
-
-}
-
-func (m *Manager) overrideWithEnv() error {
-
-	logger.Log.Info("Looking up APP_HTTP_API_ADDR from env")
-	netconfdHost, netconfdHostFound := os.LookupEnv("APP_HTTP_API_ADDR")
-	logger.Log.Info("Looking up APP_HTTP_API_PORT from env")
-	netconfdPort, netconfdPortFound := os.LookupEnv("APP_HTTP_API_PORT")
-
-	if netconfdHostFound {
-		logger.Log.Info("Overriding .global.mgmt.host with " + netconfdHost + " APP_HTTP_API_ADDR env var")
-		m.Conf.Global.Mgmt.Host = &netconfdHost
-	}
-	if netconfdPortFound {
-
-		overridePort, err := strconv.Atoi(netconfdPort)
-		if err != nil {
-			logger.Log.Info("Env APP_HTTP_API_PORT " + netconfdPort + " is not a number")
-			return err
-		}
-		if overridePort > int(math.Exp2(16))-1 {
-			logger.Log.Info("Env APP_HTTP_API_PORT " + netconfdPort + " is too high")
-			return err
-		}
-		logger.Log.Info("Overriding .global.mgmt.port with " + netconfdPort + " APP_HTTP_API_PORT env var")
-		port := int32(overridePort)
-		m.Conf.Global.Mgmt.Port = &port
-	}
-
-	return nil
 }
 
 //LoadConfig loads the configuration
 func (m *Manager) LoadConfig(conffile *string) error {
 
-	logger.Log.Info("Loading config from " + *conffile)
-	js, err := os.Open(*conffile)
+	c := oas.Config{}
+	err := c.LoadConfig(conffile)
 	if err != nil {
-		fail(-1, fmt.Sprintf("Config File %v access error [%v]: your network will not be configured. Aborting...", *conffile, err.Error()))
+		return err
 	}
-	defer js.Close()
-
-	if err := json.NewDecoder(js).Decode(&m.Conf); err != nil {
-		fail(-1, "Bad configuration...")
-	}
-	if m.Conf.Global != nil {
-		m.Conf.Global.CfgPath = conffile
-	}
+	m.Conf = &c
 
 	loglev := "INF"
-
-	m.overrideWithEnv()
 
 	if (m.Conf.Global != nil) && (m.Conf.Global.LogLev != nil) {
 		loglev = *m.Conf.Global.LogLev
