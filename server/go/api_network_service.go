@@ -98,15 +98,27 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 		nc.LinkSetMaster(nclink.Ifname, nclink.Master)
 
 		if nclink.Flags.HaveFlag(nc.LinkFlag("up")) {
-			nc.LinkSetUp(nclink.Ifname)
+			err = nc.LinkSetUp(nclink.Ifname)
+			if err != nil {
+				return PostErrorResponse(err, nil)
+			}
 		}
 		if nclink.Mtu > 0 {
-			nc.LinkSetMTU(nclink.Ifname, int(nclink.Mtu))
+			err = nc.LinkSetMTU(nclink.Ifname, int(nclink.Mtu))
+			if err != nil {
+				return PostErrorResponse(err, nil)
+			}
 		}
 	} else {
 		err = nc.LinkCreate(nclink)
 		if err != nil {
 			return PostErrorResponse(err, nil)
+		}
+		if nclink.Mtu > 0 {
+			err = nc.LinkSetMTU(nclink.Ifname, int(nclink.Mtu))
+			if err != nil {
+				return PostErrorResponse(err, nil)
+			}
 		}
 	}
 
