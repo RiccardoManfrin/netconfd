@@ -37,7 +37,11 @@ func loadResolv() []Dns {
 	return dnss
 }
 func dumpResolv(dnss []Dns) error {
-
+	/*
+	* Example:
+	* resolvectl dns eth0 192.168.178.1 8.8.8.8
+	* root@ngcore:~# resolvectl dns eth0
+	 */
 	return nil
 }
 
