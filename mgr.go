@@ -85,13 +85,10 @@ func httpOk(w http.ResponseWriter) {
 
 //LoadConfig loads the configuration
 func (m *Manager) LoadConfig(conffile *string) error {
-
-	c := oas.Config{}
-	err := c.LoadConfig(conffile)
+	err := m.Conf.LoadConfig(conffile)
 	if err != nil {
 		return err
 	}
-	m.Conf = &c
 
 	loglev := "INF"
 
