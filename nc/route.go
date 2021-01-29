@@ -37,6 +37,11 @@ type Route struct {
 	Flags *[]string `json:"flags,omitempty"`
 }
 
+//Print implements route print
+func (r *Route) Print() string {
+	return fmt.Sprintf("%v", r)
+}
+
 func routeParse(route netlink.Route) (Route, error) {
 	ncroute := Route{}
 	if route.Dst == nil {
@@ -199,7 +204,7 @@ func RouteCreate(route Route) (RouteID, error) {
 		if err.(syscall.Errno) == syscall.EEXIST {
 			logger.Log.Warning(fmt.Sprintf("Skipping route %v creation: route exists", routeid))
 		} else {
-			return routeid, mapNetlinkError(err, route)
+			return routeid, mapNetlinkError(err, &route)
 		}
 	}
 

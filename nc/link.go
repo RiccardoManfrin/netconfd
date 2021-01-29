@@ -3,7 +3,6 @@ package nc
 import (
 	"fmt"
 	"net"
-	"syscall"
 
 	"github.com/riccardomanfrin/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
@@ -136,6 +135,11 @@ type Link struct {
 	Flags    LinkFlags      `json:"flags,omitempty"`
 	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config
 	Operstate string `json:"operstate,omitempty"`
+}
+
+//Print implements route print
+func (r *Link) Print() string {
+	return fmt.Sprintf("%v", r)
 }
 
 func linkParse(link netlink.Link) Link {
@@ -351,7 +355,8 @@ func LinksDelete() error {
 		logger.Log.Warning("Removing link " + link.Attrs().Name)
 		err := netlink.LinkDel(link)
 		if err != nil {
-			return mapNetlinkError(err, link)
+			l := linkParse(link)
+			return mapNetlinkError(err, &l)
 		}
 	}
 	return nil
@@ -544,7 +549,7 @@ func LinkCreate(link Link) error {
 			return err
 		}
 		if err = netlink.LinkAdd(nllink); err != nil {
-			return mapNetlinkError(err, link)
+			return mapNetlinkError(err, &link)
 		}
 	}
 
@@ -577,27 +582,10 @@ func linkAddrAdd(ifname LinkID, addr CIDRAddr, peer *net.IP) error {
 		Peer:  peerNet,
 		Flags: unix.IFA_F_PERMANENT}
 	if err := netlink.AddrAdd(l, &nladdr); err != nil {
-		return mapNetlinkError(err, linkParse(l))
+		link := linkParse(l)
+		return mapNetlinkError(err, &link)
 	}
 	return nil
-}
-
-//Can also just NOT be an error!
-func mapNetlinkError(err error, context interface{}) error {
-	if err != nil {
-		switch err.(type) {
-		case syscall.Errno:
-			if err.(syscall.Errno) == syscall.EINVAL {
-				return NewEINVALError()
-			} else if err.(syscall.Errno) == syscall.EPERM {
-				return NewEPERMError(context)
-			} else if err.(syscall.Errno) == syscall.ENETUNREACH {
-				return NewENETUNREACHError(context.(Route))
-			}
-		}
-		return NewGenericError(err)
-	}
-	return err
 }
 
 //LinkSetUp set a link up
@@ -672,7 +660,7 @@ func LinkDelete(ifname LinkID) error {
 	}
 	err = netlink.LinkDel(nllink)
 	if err != nil {
-		return mapNetlinkError(err, l)
+		return mapNetlinkError(err, &l)
 	}
 	return nil
 }

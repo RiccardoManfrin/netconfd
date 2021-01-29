@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"reflect"
+	"runtime/debug"
+	"syscall"
 )
 
 //ErrorCode describes the error type via enumeration
@@ -33,6 +35,27 @@ var errorCodeToString = map[ErrorCode]string{
 	UNKNOWN_TYPE: "UnknownType Error",
 }
 
+//Can also just NOT be an error!
+func mapNetlinkError(err error, r Resource) error {
+	if err != nil {
+		switch err.(type) {
+		case syscall.Errno:
+			if err.(syscall.Errno) == syscall.EINVAL {
+				return NewEINVALError()
+			} else if err.(syscall.Errno) == syscall.EPERM {
+				return NewEPERMError(r)
+			} else if err.(syscall.Errno) == syscall.ENETUNREACH {
+				return NewENETUNREACHError(r)
+			} else if err.(syscall.Errno) == syscall.EEXIST {
+				return NewEEXISTError(r)
+			}
+		}
+		debug.PrintStack()
+		return NewGenericError(err)
+	}
+	return err
+}
+
 //GenericError describes a generic error of the library
 type GenericError struct {
 	//code error type
@@ -48,7 +71,7 @@ func (e *GenericError) Error() string {
 
 //NewGenericError returns a generic error
 func NewGenericError(err error) error {
-	return &GenericError{Code: UNKNOWN_TYPE, Reason: fmt.Sprintf("Generic uncharted error :%v", err.Error())}
+	return &GenericError{Code: UNKNOWN_TYPE, Reason: fmt.Sprintf("Generic uncharted error: %v", err.Error())}
 }
 
 //NewGenericErrorWithReason returns a generic semantic error
@@ -110,8 +133,13 @@ func NewRouteLinkDeviceNotFoundError(routeID RouteID, linkID LinkID) error {
 }
 
 //NewENETUNREACHError returns a network unreachable error
-func NewENETUNREACHError(r Route) error {
-	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r)}
+func NewENETUNREACHError(r Resource) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r.Print())}
+}
+
+//NewEEXISTError returns a network unreachable error
+func NewEEXISTError(r Resource) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got EEXIST error: route exists %v", r.Print())}
 }
 
 //NewTooManyDNSServersError describes an error on the number of requested DNS servers
@@ -204,12 +232,12 @@ func NewDNSServerExistsConflictError(dnsid DnsID) error {
 }
 
 //NewEPERMError returns a missing permissions error
-func NewEPERMError(context interface{}) error {
+func NewEPERMError(r Resource) error {
 	return &ConflictError{
 		Code: CONFLICT,
 		Reason: fmt.Sprintf("Got EPERM error: insufficient permissions to perform action on %v: %v",
-			reflect.TypeOf(context),
-			context)}
+			reflect.TypeOf(r),
+			r.Print())}
 }
 
 //NewRouteExistsConflictError returns a Conflict error on link layer interfaces
