@@ -4,6 +4,7 @@ import (
 	"crypto/md5"
 	"fmt"
 	"net"
+	"syscall"
 
 	"github.com/riccardomanfrin/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
@@ -195,7 +196,11 @@ func RouteCreate(route Route) (RouteID, error) {
 
 	err = netlink.RouteAdd(&nlroute)
 	if err != nil {
-		return routeid, mapNetlinkError(err, route)
+		if err.(syscall.Errno) == syscall.EEXIST {
+			logger.Log.Warning(fmt.Sprintf("Skipping route %v creation: route exists", routeid))
+		} else {
+			return routeid, mapNetlinkError(err, route)
+		}
 	}
 
 	return routeid, nil
