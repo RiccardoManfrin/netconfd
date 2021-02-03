@@ -52,8 +52,18 @@ func (a *CIDRAddr) SetNet(ipnet net.IPNet) {
 }
 
 //SetPrefixLen translates an IP network prefix length into a CIDRAddr mask
-func (a *CIDRAddr) SetPrefixLen(len int) {
+func (a *CIDRAddr) SetPrefixLen(len int) error {
+	if a.IsV4() {
+		if len > 32 || len < 0 {
+			return NewInvalidPrefixLenForIPv4AddrError(len)
+		}
+	} else {
+		if len > 128 || len < 0 {
+			return NewInvalidPrefixLenForIPv6AddrError(len)
+		}
+	}
 	a.mask = len
+	return nil
 }
 
 //ParseIPNet translates an IP network into a CIDRAddr

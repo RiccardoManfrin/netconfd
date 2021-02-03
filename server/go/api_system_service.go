@@ -45,13 +45,19 @@ func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) 
 
 // ConfigPatch - Patch existing configuration with new one
 func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (ImplResponse, error) {
-	network := ncNetFormat(config)
+	network, err := ncNetFormat(config)
+	if err != nil {
+		return PatchErrorResponse(err, nil)
+	}
 	return PatchErrorResponse(nc.Patch(network), nil)
 }
 
 // ConfigSet - Replace existing configuration with new one
 func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
-	network := ncNetFormat(config)
+	network, err := ncNetFormat(config)
+	if err != nil {
+		return PatchErrorResponse(err, nil)
+	}
 	//go delayedConfigSet(network)
 	return PutErrorResponse(delayedConfigSet(network), nil)
 }
@@ -81,6 +87,9 @@ func (s *SystemApiService) ResetConfig(ctx context.Context) (ImplResponse, error
 	if err != nil {
 		return PutErrorResponse(err, nil)
 	}
-	network := ncNetFormat(s.Conf)
+	network, err := ncNetFormat(s.Conf)
+	if err != nil {
+		return PatchErrorResponse(err, nil)
+	}
 	return PutErrorResponse(delayedConfigSet(network), nil)
 }

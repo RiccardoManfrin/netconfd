@@ -29,7 +29,11 @@ func NewNetworkApiService() NetworkApiServicer {
 
 // ConfigDHCPCreate - Create DHCP
 func (s *NetworkApiService) ConfigDHCPCreate(ctx context.Context, dhcp Dhcp) (ImplResponse, error) {
-	err := nc.DHCPCreate(ncDhcpFormat(dhcp))
+	ncdhcp, err := ncDhcpFormat(dhcp)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	err = nc.DHCPCreate(ncdhcp)
 	return PostErrorResponse(err, nil)
 }
 
@@ -57,7 +61,11 @@ func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, e
 
 // ConfigDNSCreate - Create DNS
 func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplResponse, error) {
-	err := nc.DNSCreate(ncDnsFormat(dns))
+	ncdns, err := ncDnsFormat(dns)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	err = nc.DNSCreate(ncdns)
 	return PostErrorResponse(err, nil)
 }
 
@@ -80,14 +88,15 @@ func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid string) (Imp
 // ConfigDNSsGet - Get All DNS config
 func (s *NetworkApiService) ConfigDNSsGet(ctx context.Context) (ImplResponse, error) {
 	dnss, err := dnssGet()
-
 	return GetErrorResponse(err, dnss)
 }
 
 // ConfigLinkCreate - Create New Link
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
-	nclink := ncLinkFormat(link)
-	var err error
+	nclink, err := ncLinkFormat(link)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
 	if nclink.Master != "" {
 		/* You cannot enslave a link if it is UP */
 		err = nc.LinkCreateDown(nclink)
@@ -150,7 +159,10 @@ func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, e
 
 // ConfigRouteCreate - Configures a route
 func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) (ImplResponse, error) {
-	ncroute := ncRouteFormat(route)
+	ncroute, err := ncRouteFormat(route)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
 	routeid, err := nc.RouteCreate(ncroute)
 	if err != nil {
 		return PostErrorResponse(err, nil)

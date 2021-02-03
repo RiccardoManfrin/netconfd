@@ -43,11 +43,11 @@ func dhcpsGet() ([]Dhcp, error) {
 	return dhcps, err
 }
 
-func ncDhcpFormat(dhcp Dhcp) nc.Dhcp {
+func ncDhcpFormat(dhcp Dhcp) (nc.Dhcp, error) {
 	d := nc.Dhcp{
 		Ifname: nc.LinkID(dhcp.Ifname),
 	}
-	return d
+	return d, nil
 }
 
 func ncDhcpParse(ncdhcp nc.Dhcp) Dhcp {
@@ -57,7 +57,7 @@ func ncDhcpParse(ncdhcp nc.Dhcp) Dhcp {
 	return d
 }
 
-func ncRouteFormat(route Route) nc.Route {
+func ncRouteFormat(route Route) (nc.Route, error) {
 	ncroute := nc.Route{}
 	ncroute.Dst = route.Dst
 	if route.Gateway != nil {
@@ -72,7 +72,7 @@ func ncRouteFormat(route Route) nc.Route {
 	if route.Metric != nil {
 		ncroute.Metric = *route.Metric
 	}
-	return ncroute
+	return ncroute, nil
 }
 
 func ncRouteParse(ncroute nc.Route) Route {
@@ -119,12 +119,12 @@ func ncDnsParse(ncdns nc.Dns) Dns {
 	}
 }
 
-func ncDnsFormat(dns Dns) nc.Dns {
+func ncDnsFormat(dns Dns) (nc.Dns, error) {
 	d := nc.Dns{
 		Nameserver: net.ParseIP(dns.GetNameserver()),
 		Id:         nc.DnsID(dns.GetId()),
 	}
-	return d
+	return d, nil
 }
 
 func ncLinkParse(nclink nc.Link) Link {
@@ -233,7 +233,7 @@ func ncLinkParse(nclink nc.Link) Link {
 	return link
 }
 
-func ncLinkFormat(link Link) nc.Link {
+func ncLinkFormat(link Link) (nc.Link, error) {
 
 	nclink := nc.Link{
 		Ifname:   nc.LinkID(link.GetIfname()),
@@ -298,7 +298,10 @@ func ncLinkFormat(link Link) nc.Link {
 		for i, addr := range *link.AddrInfo {
 			var cidrnet nc.CIDRAddr
 			cidrnet.SetIP(addr.Local)
-			cidrnet.SetPrefixLen(int(addr.Prefixlen))
+			err := cidrnet.SetPrefixLen(int(addr.Prefixlen))
+			if err != nil {
+				return nclink, err
+			}
 			lai := nc.LinkAddrInfo{
 				Local:   cidrnet,
 				Address: addr.Address,
@@ -306,39 +309,43 @@ func ncLinkFormat(link Link) nc.Link {
 			nclink.AddrInfo[i] = lai
 		}
 	}
-	return nclink
+	return nclink, nil
 }
 
-func ncNetFormat(config Config) nc.Network {
+func ncNetFormat(config Config) (nc.Network, error) {
 	network := nc.Network{}
 	if config.Network != nil {
 		if config.Network.Links != nil {
 			network.Links = make([]nc.Link, len(*config.Network.Links))
 			for i, l := range *config.Network.Links {
-				network.Links[i] = ncLinkFormat(l)
+				var err error
+				network.Links[i], err = ncLinkFormat(l)
+				if err != nil {
+					return network, err
+				}
 			}
 
 		}
 		if config.Network.Routes != nil {
 			network.Routes = make([]nc.Route, len(*config.Network.Routes))
 			for i, l := range *config.Network.Routes {
-				network.Routes[i] = ncRouteFormat(l)
+				network.Routes[i], _ = ncRouteFormat(l)
 			}
 		}
 		if config.Network.Dhcp != nil {
 			network.Dhcp = make([]nc.Dhcp, len(*config.Network.Dhcp))
 			for i, d := range *config.Network.Dhcp {
-				network.Dhcp[i] = ncDhcpFormat(d)
+				network.Dhcp[i], _ = ncDhcpFormat(d)
 			}
 		}
 		if config.Network.Dns != nil {
 			network.Dnss = make([]nc.Dns, len(*config.Network.Dns))
 			for i, s := range *config.Network.Dns {
-				network.Dnss[i] = ncDnsFormat(s)
+				network.Dnss[i], _ = ncDnsFormat(s)
 			}
 		}
 	}
-	return network
+	return network, nil
 }
 
 func ncNetParse(net nc.Network) Network {

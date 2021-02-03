@@ -102,6 +102,16 @@ func NewBadAddressError(c CIDRAddr) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Bad IP address " + c.String()}
 }
 
+//NewInvalidPrefixLenForIPv4AddrError returns a bad address error on link layer interfaces
+func NewInvalidPrefixLenForIPv4AddrError(len int) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid network Prefix length %v for IPv4 address", len)}
+}
+
+//NewInvalidPrefixLenForIPv6AddrError returns a bad address error on link layer interfaces
+func NewInvalidPrefixLenForIPv6AddrError(len int) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid network Prefix length %v for IPv6 address", len)}
+}
+
 //NewEINVALError returns a bad address error on link layer interfaces
 func NewEINVALError() error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Syscall EINVAL error (check dmesg)"}
