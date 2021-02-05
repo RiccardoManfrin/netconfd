@@ -1,6 +1,8 @@
 package nc
 
 import (
+	"io/ioutil"
+	"os"
 	"os/exec"
 )
 
@@ -55,6 +57,25 @@ func DHCPDelete(ifname LinkID) error {
 	return nil
 }
 
+//DHCPStaticAddressesManage manages arrangements to also bring up static addresses
+func DHCPStaticAddressesManage(ifname LinkID) error {
+	file := "/opt/netconfd/version/etc/" + string(ifname)
+	l, err := LinkGet(ifname)
+	if err != nil {
+		return err
+	}
+	if l.AddrInfo == nil || len(l.AddrInfo) == 0 {
+		err = os.Remove(file)
+		return err
+	}
+	addresses := ""
+	for _, a := range l.AddrInfo {
+		addresses += a.Local.String() + "\n"
+	}
+	err = ioutil.WriteFile(file, []byte(addresses), 0644)
+	return err
+}
+
 //DHCPCreate starts and delete DHCP controller for link interface
 func DHCPCreate(dhcp Dhcp) error {
 	_, err := DHCPGet(dhcp.Ifname)
@@ -63,6 +84,11 @@ func DHCPCreate(dhcp Dhcp) error {
 		if _, ok := err.(*NotFoundError); !ok {
 			return err
 		}
+	}
+
+	err = DHCPStaticAddressesManage(dhcp.Ifname)
+	if err != nil {
+		return err
 	}
 
 	out, err := exec.Command(prefixInstallPAth+"dhcp_start.sh", string(dhcp.Ifname)).Output()
