@@ -456,7 +456,7 @@ func Test010(t *testing.T) {
 
 var sampleRouteConfig string = `
 {
-  "__id": "498b44c3999f2edfa715123748696ad8",
+  "__id": "2a55be074624feeff6d31afb4eca2b68",
   "dev": "dummy0",
   "dst": "10.1.2.0/24",
   "gateway": "10.1.2.3",
@@ -480,9 +480,9 @@ func Test011(t *testing.T) {
 	cset := genSampleConfig(t)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	rr = runRequest("POST", "/api/1/network/routes", sampleRouteConfig)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC,
-		`Got ENETUNREACH error: network is not reachable for route {498b44c3999f2edfa715123748696ad8 {[10 1 2 0] 24} 10.1.2.3 dummy0  50  <nil> <nil>}`)
+		`Got ENETUNREACH error: network is not reachable for route &{610338e91a970a507b9dd810626f7920 {[10 1 2 0] 24} 10.1.2.3 dummy0  50  <nil> <nil>}`)
 }
 
 //Test012 - EC-012 Link not found for route to create
@@ -490,11 +490,11 @@ func Test012(t *testing.T) {
 	cset := genSampleConfig(t)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	rr = runRequest("DELETE", "/api/1/links/dummy0", "")
+	rr = runRequest("DELETE", "/api/1/network/links/dummy0", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	rr = runRequest("POST", "/api/1/network/routes", sampleRouteConfig)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC,
-		`Route 498b44c3999f2edfa715123748696ad8 Link Device dummy0 not found`)
+		`Route 610338e91a970a507b9dd810626f7920 Link Device dummy0 not found`)
 }
 
 func checkBody(t *testing.T, rr *httptest.ResponseRecorder, body string) {
@@ -521,14 +521,14 @@ func Test013(t *testing.T) {
 
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	rr = runRequest("DELETE", "/api/1/routes/498b44c3999f2edfa715123748696ad8", "")
+	rr = runRequest("DELETE", "/api/1/network/routes/2a55be074624feeff6d31afb4eca2b68", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
-	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	rr = runRequest("POST", "/api/1/network/routes", sampleRouteConfig)
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
-	checkBody(t, rr, `"498b44c3999f2edfa715123748696ad8"`)
-	rr = runRequest("POST", "/api/1/routes", sampleRouteConfig)
+	checkBody(t, rr, `"610338e91a970a507b9dd810626f7920"`)
+	rr = runRequest("POST", "/api/1/network/routes", sampleRouteConfig)
 	checkResponse(t, rr, http.StatusConflict, nc.CONFLICT,
-		`Route 498b44c3999f2edfa715123748696ad8 exists`)
+		`Route 610338e91a970a507b9dd810626f7920 exists`)
 }
 
 func routeMatch(_setRoute interface{}, _getRoute interface{}) bool {
@@ -581,7 +581,7 @@ func Test15(t *testing.T) {
 	"gateway": "10.6.7.8",
 	"metric": 50
 }`
-	rr = runRequest("POST", "/api/1/routes", newroute)
+	rr = runRequest("POST", "/api/1/network/routes", newroute)
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 	cget := runConfigGet(t)
 
@@ -600,7 +600,7 @@ func Test16(t *testing.T) {
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 	//Cleanup
-	runRequest("DELETE", "/api/1/links/dummy3", "")
+	runRequest("DELETE", "/api/1/network/links/dummy3", "")
 
 	newlink := `{
 			"ifname": "dummy3",
@@ -621,10 +621,10 @@ func Test16(t *testing.T) {
 			],
 			"master": "bond0"
 		}`
-	rr = runRequest("POST", "/api/1/links", newlink)
+	rr = runRequest("POST", "/api/1/network/links", newlink)
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 
-	rr = runRequest("GET", "/api/1/links/dummy3", "")
+	rr = runRequest("GET", "/api/1/network/links/dummy3", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	var l oas.Link
 	err := json.Unmarshal(rr.Body.Bytes(), &l)
@@ -639,7 +639,7 @@ func Test16(t *testing.T) {
 		}
 	}
 
-	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
+	rr = runRequest("DELETE", "/api/1/network/links/dummy3", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 }
 
@@ -650,7 +650,7 @@ func Test17(t *testing.T) {
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 	//Cleanup
-	runRequest("DELETE", "/api/1/links/dummy3", "")
+	runRequest("DELETE", "/api/1/network/links/dummy3", "")
 
 	newlink := `{
 			"ifname": "dummy3",
@@ -671,10 +671,10 @@ func Test17(t *testing.T) {
 			],
 			"master": "bond0"
 		}`
-	rr = runRequest("POST", "/api/1/links", newlink)
+	rr = runRequest("POST", "/api/1/network/links", newlink)
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 
-	rr = runRequest("GET", "/api/1/links/dummy3", "")
+	rr = runRequest("GET", "/api/1/network/links/dummy3", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	var l oas.Link
 	err := json.Unmarshal(rr.Body.Bytes(), &l)
@@ -688,7 +688,7 @@ func Test17(t *testing.T) {
 		t.Errorf(fmt.Sprintf("Interface Slave MiiStatus is not up/going up: %v", *l.Linkinfo.InfoSlaveData.MiiStatus))
 	}
 
-	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
+	rr = runRequest("DELETE", "/api/1/network/links/dummy3", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 }
@@ -737,7 +737,7 @@ func Test18(t *testing.T) {
 	rr := runRequest("PATCH", "/api/1/mgmt/config", cfg)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
-	rr = runRequest("GET", "/api/1/links/dummy3", "")
+	rr = runRequest("GET", "/api/1/network/links/dummy3", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	var l oas.Link
 	err := json.Unmarshal(rr.Body.Bytes(), &l)
@@ -745,7 +745,56 @@ func Test18(t *testing.T) {
 		t.Errorf(err.Error())
 	}
 
-	rr = runRequest("DELETE", "/api/1/links/dummy3", "")
+	rr = runRequest("DELETE", "/api/1/network/links/dummy3", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
+}
+
+//Test019 - OK-019 DNSs
+func Test19(t *testing.T) {
+	cfg := `{
+			"network": {
+				"dns": [
+					{
+						"__id": "primary",
+						"nameserver": "8.8.8.8"
+					},
+					{
+						"__id": "secondary",
+						"nameserver": "8.8.8.7"
+					}
+				]
+			}
+		}`
+	rr := runRequest("PATCH", "/api/1/mgmt/config", cfg)
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	rr = runRequest("GET", "/api/1/network/dns", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	checkBody(t, rr, `[{"__id":"primary","nameserver":"8.8.8.8"},{"__id":"secondary","nameserver":"8.8.8.7"}]`)
+
+	rr = runRequest("DELETE", "/api/1/network/dns/primary", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	rr = runRequest("GET", "/api/1/network/dns", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	checkBody(t, rr, `[{"__id":"primary","nameserver":"8.8.8.7"}]`)
+
+	adns := `{
+		"__id": "primary",
+		"nameserver": "8.8.8.8"
+	}`
+	rr = runRequest("POST", "/api/1/network/dns", adns)
+	checkResponse(t, rr, http.StatusConflict, nc.RESERVED, "")
+
+	adns = `{
+		"__id": "secondary",
+		"nameserver": "8.8.8.8"
+	}`
+	rr = runRequest("POST", "/api/1/network/dns", adns)
+	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
+
+	rr = runRequest("GET", "/api/1/network/dns", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+	checkBody(t, rr, `[{"__id":"primary","nameserver":"8.8.8.7"},{"__id":"secondary","nameserver":"8.8.8.8"}]`)
 }
