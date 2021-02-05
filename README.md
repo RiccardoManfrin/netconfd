@@ -23,18 +23,6 @@ Build locally with `make`
     func (s *NetworkApiService) ConfigLinkCreate
 	
 
-## DHCP static addr Warning emit [2h]
-
-## MTU set [3h]
-
-This is needed by UPF
-
-## Golden config [3h]
-
-Need to translate the config from networkd into mine from here
-
-https://gitlab.lan.athonet.com:8443/core/meta-athonet/tree/master/recipes-core/systemd/files
-
 ## Use DBUS not scripts [1d - risk]
 
 Library: https://github.com/godbus/dbus/
@@ -47,22 +35,6 @@ Autogen constants command
 
 Risk assessment: unknown technology
 
-## Eth1 GRO e GSO [1d if it goes smoothly - mandatory - unknown requirement]
-
-Currently networkd writes this file: https://gitlab.lan.athonet.com:8443/core/meta-athonet/blob/master/recipes-core/systemd/files/20-eth1.link
-
-	TCPSegmentationOffload=false 
-	TCP6SegmentationOffload=false 
-	GenericSegmentationOffload=false 
-	GenericReceiveOffload=false 
-	LargeReceiveOffload=false
-
-This appears as a very specific need of the current UPF after a chat with Davide: UPF needs it otherwise packets are lost in the kernel. Proposal was to confine the enforcement of the configuration within the UPF. Carlo disagrees. Needs decision
-
-## Check tun device creation [2h]
-
-Tun device tun0 is used by the UPF. I can create it as courtesy, although UPF does create it if it does not find it.
-
 ## Documentation [2 or 3 days]
 
 ## Unit tests automation [2d]
@@ -72,23 +44,6 @@ Spin yocto/alpine machine dedicated to unit tests.
 ## Run containerized [Needs investigation]
 
 This is the egg and chicken problem (podman and network bootstrap)
-
-## Yocto integration [1d - risks]
-
-Needs to write the bb recipe for yocto [containerized or not makes a difference here]
-
-### Enablement of VPN
-
-    sed -i -e 's/dev\ tun/dev\ tunvpn/g' /etc/openvpn/ovpn.conf
-    
-Other hacks:
-
-	#echo -en "ipchange '/bin/sh -c \"ip link del tunvpn\"'" >> /etc/openvpn/ovpn.conf
-	#sed -i -e 's/After\(.*\)/After\1\ sys-devices-virtual-net-tunvpn.device/g' /lib/systemd/system/openvpn\@.service
-	#echo -en 'ExecStartPre=-/bin/sh -c "ip link del tunvpn"' >> /etc/systemd/system/openvpn@.service.d/pre.conf
-
-
-Risk assessment: 1d of work but if it takes 1 day to build I can have multiple iterations to converge
 
 # Long Term Investigation
 
