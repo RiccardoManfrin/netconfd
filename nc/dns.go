@@ -1,7 +1,12 @@
 package nc
 
 import (
+	"fmt"
 	"net"
+	"os/exec"
+	"regexp"
+
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 type DnsID string
@@ -24,17 +29,46 @@ var dnsStringToID = map[DnsID]int{
 type Dns struct {
 	// The DNS server ip address to send DNS queries to
 	Nameserver net.IP `json:"nameserver,omitempty"`
-	// Evaluated priority (lower value indicates higher priority)
+	// Evaluated priority
 	Id DnsID `json:"__id,omitempty"`
 }
 
 //ResolvConf path prefix
 const ResolvConf string = "/etc/resolv.conf"
 
-func loadResolv() []Dns {
+func loadResolv() ([]Dns, error) {
 	dnss := make([]Dns, 0)
+	links, err := LinksGet()
+	if err != nil {
+		return dnss, err
+	}
+	//Credits to https://regex101.com/
+	re := regexp.MustCompile(`^.*:\ ([^ \n]*)\ ?([^ \n]*).*`)
 
-	return dnss
+	for _, l := range links {
+		if l.Ifindex == 1 {
+			logger.Log.Debug("Skipping lo interface DNS nameserver config")
+			continue
+		}
+		out, err := exec.Command("resolvectl", "dns", string(l.Ifname)).Output()
+		if err != nil {
+			return dnss, err
+		}
+		matches := re.FindStringSubmatch(string(out))
+		if len(matches) == 3 {
+			ip := net.ParseIP(matches[1])
+			if ip != nil {
+				dnss = append(dnss, Dns{Nameserver: ip, Id: DnsPrimary})
+			}
+			ip = net.ParseIP(matches[2])
+			if ip != nil {
+				dnss = append(dnss, Dns{Nameserver: ip, Id: DnsSecondary})
+			}
+		}
+		//do it once only
+		break
+	}
+	return dnss, nil
 }
 func dumpResolv(dnss []Dns) error {
 	/*
@@ -42,6 +76,49 @@ func dumpResolv(dnss []Dns) error {
 	* resolvectl dns eth0 192.168.178.1 8.8.8.8
 	* root@ngcore:~# resolvectl dns eth0
 	 */
+	links, err := LinksGet()
+	if err != nil {
+		return err
+	}
+	command := "dns"
+	dnssCount := len(dnss)
+	if dnssCount == 0 {
+		command = "revert"
+	}
+
+	primary := ""
+	secondary := ""
+	for _, d := range dnss {
+		if d.Id == DnsPrimary {
+			primary = d.Nameserver.String()
+		}
+		if d.Id == DnsSecondary {
+			secondary = d.Nameserver.String()
+		}
+	}
+	if primary == "" {
+		primary = secondary
+		secondary = ""
+	}
+
+	for _, l := range links {
+		if l.Ifindex == 1 {
+			logger.Log.Debug("Skipping lo interface DNS nameserver config")
+			continue
+		}
+		logger.Log.Info(fmt.Sprintf("Command: resolvectl %v %v %v %v", command, string(l.Ifname), primary, secondary))
+		if secondary != "" {
+			_, err := exec.Command("resolvectl", command, string(l.Ifname), primary, secondary).Output()
+			if err != nil {
+				return err
+			}
+		} else {
+			_, err := exec.Command("resolvectl", command, string(l.Ifname), primary).Output()
+			if err != nil {
+				return err
+			}
+		}
+	}
 	return nil
 }
 
@@ -110,5 +187,5 @@ func DnsGet(dnsid DnsID) (Dns, error) {
 
 //DNSsGet Get all DNS interfaces administrated by DNS and related config/state.
 func DNSsGet() ([]Dns, error) {
-	return loadResolv(), nil
+	return loadResolv()
 }
