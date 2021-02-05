@@ -81,6 +81,9 @@ func dumpResolv(dnss []Dns) error {
 		return err
 	}
 	command := "dns"
+	if dnss == nil {
+		return nil
+	}
 	dnssCount := len(dnss)
 	if dnssCount == 0 {
 		command = "revert"
