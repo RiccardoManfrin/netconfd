@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	comm "gitlab.lan.athonet.com/core/netconfd/common"
+	"gitlab.lan.athonet.com/core/netconfd/comm"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
@@ -27,7 +27,7 @@ func parseSampleConfig(t *testing.T, sampleConfig string) oas.Config {
 var sampleConfig string = `
 {
 "global": {},
-"host_network": {
+"network": {
 	"links": [
 		{
 			"ifname": "bond0",
@@ -163,7 +163,7 @@ func runConfigGet(t *testing.T) oas.Config {
 //Test001 - EC-001 Active-Backup Bond Without ActiveSlave
 func Test001(t *testing.T) {
 	c := genSampleConfig(t)
-	*(*c.HostNetwork.Links)[2].Linkinfo.InfoSlaveData.State = "BACKUP"
+	*(*c.Network.Links)[2].Linkinfo.InfoSlaveData.State = "BACKUP"
 	rr := runConfigSet(c)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Active Slave Iface not found for Active-Backup type bond bond0")
 }
@@ -171,7 +171,7 @@ func Test001(t *testing.T) {
 //Test002 - EC-002 Active-Backup Bond With Multiple Active Slaves
 func Test002(t *testing.T) {
 	c := genSampleConfig(t)
-	*(*c.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.State = "ACTIVE"
+	*(*c.Network.Links)[1].Linkinfo.InfoSlaveData.State = "ACTIVE"
 	rr := runConfigSet(c)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Multiple Active Slave Ifaces found for Active-Backup type bond bond0")
 }
@@ -179,7 +179,7 @@ func Test002(t *testing.T) {
 //Test003 - EC-003 Non Active-Backup Bond With Backup Slave
 func Test003(t *testing.T) {
 	c := genSampleConfig(t)
-	*(*c.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
+	*(*c.Network.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
 	rr := runConfigSet(c)
 	checkResponse(t, rr, http.StatusBadRequest, nc.SEMANTIC, "Backup Slave Iface dummy0 found for non Active-Backup type bond bond0")
 }
@@ -301,7 +301,7 @@ func Test004(t *testing.T) {
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 
@@ -310,13 +310,13 @@ func Test004(t *testing.T) {
 //Test005 - OK-005 Bond Balance-RR Xmit Hash Policy params check
 func Test005(t *testing.T) {
 	cset := genSampleConfig(t)
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
-	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
+	*(*cset.Network.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.Network.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -324,28 +324,28 @@ func Test005(t *testing.T) {
 //Test006 - OK-006 Bond 802.3ad mix
 func Test006(t *testing.T) {
 	cset := genSampleConfig(t)
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
-	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
+	*(*cset.Network.Links)[0].Linkinfo.InfoData.Mode = "802.3ad"
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetFailOverMac()
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
+	(*cset.Network.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -353,28 +353,28 @@ func Test006(t *testing.T) {
 //Test007 - OK-007 Bond Balance-RR Mix
 func Test007(t *testing.T) {
 	cset := genSampleConfig(t)
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
-	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
+	*(*cset.Network.Links)[0].Linkinfo.InfoData.Mode = "balance-rr"
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetFailOverMac()
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
+	(*cset.Network.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -382,31 +382,31 @@ func Test007(t *testing.T) {
 //Test008 - OK-008 Bond Balance-TLB
 func Test008(t *testing.T) {
 	cset := genSampleConfig(t)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "balance-tlb"
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(0)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
-	(*cset.HostNetwork.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
+	*(*cset.Network.Links)[0].Linkinfo.InfoData.Mode = "balance-tlb"
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetFailOverMac()
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(0)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
+	(*cset.Network.Links)[1].Linkinfo.InfoSlaveData.SetState("ACTIVE")
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -414,30 +414,30 @@ func Test008(t *testing.T) {
 //Test009 - OK-009 Bond Active-Backup mix
 func Test009(t *testing.T) {
 	cset := genSampleConfig(t)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
-	*(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.Mode = "active-backup"
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetFailOverMac()
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
-	//(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
-	(*cset.HostNetwork.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetMiimon(-1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetUpdelay(-1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetDowndelay(-1)
+	*(*cset.Network.Links)[0].Linkinfo.InfoData.Mode = "active-backup"
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdLacpRate("fast")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPeerNotifyDelay(2000)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetUseCarrier(0)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpInterval(500)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpValidate("backup")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetLpInterval(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetArpAllTargets("all")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetPacketsPerSlave(2)
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetFailOverMac()
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetXmitHashPolicy("layer2+3")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetResendIgmp(3)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetMinLinks(2)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetPrimaryReselect("better")
+	//(*cset.Network.Links)[0].Linkinfo.InfoData.SetTlbDynamicLb(1)
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAdSelect("bandwidth")
+	(*cset.Network.Links)[0].Linkinfo.InfoData.SetAllSlavesActive(1)
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -445,11 +445,11 @@ func Test009(t *testing.T) {
 //Test010 - OK-010 Up/Down flag and operstate
 func Test010(t *testing.T) {
 	cset := genSampleConfig(t)
-	(*cset.HostNetwork.Links)[0].Flags = nil
+	(*cset.Network.Links)[0].Flags = nil
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -517,7 +517,7 @@ func Test013(t *testing.T) {
 		Prefixlen: 24,
 	}
 
-	*(*cset.HostNetwork.Links)[1].AddrInfo = append(*(*cset.HostNetwork.Links)[1].AddrInfo, lai)
+	*(*cset.Network.Links)[1].AddrInfo = append(*(*cset.Network.Links)[1].AddrInfo, lai)
 
 	rr := runConfigSet(cset)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
@@ -561,10 +561,10 @@ func Test14(t *testing.T) {
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	cget := runConfigGet(t)
 
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
-	if delta := comm.ListCompare(*cset.HostNetwork.Routes, *cget.HostNetwork.Routes, routeMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Routes, *cget.Network.Routes, routeMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -585,10 +585,10 @@ func Test15(t *testing.T) {
 	checkResponse(t, rr, http.StatusCreated, nc.RESERVED, "")
 	cget := runConfigGet(t)
 
-	if delta := comm.ListCompare(*cset.HostNetwork.Links, *cget.HostNetwork.Links, linkMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Links, *cget.Network.Links, linkMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
-	if delta := comm.ListCompare(*cset.HostNetwork.Routes, *cget.HostNetwork.Routes, routeMatch); delta != nil {
+	if delta := comm.ListCompare(*cset.Network.Routes, *cget.Network.Routes, routeMatch); delta != nil {
 		t.Errorf("Mismatch on %v", delta)
 	}
 }
@@ -697,7 +697,7 @@ func Test17(t *testing.T) {
 func Test18(t *testing.T) {
 	cfg := `{
 			"global": {},
-			"host_network": {
+			"network": {
 				"links": [
 					{
 						"ifname": "dummy3",
