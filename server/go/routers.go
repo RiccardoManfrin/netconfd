@@ -64,7 +64,9 @@ func EncodeJSONResponse(i interface{}, status *int, w http.ResponseWriter) error
 		w.WriteHeader(http.StatusOK)
 	}
 
-	return json.NewEncoder(w).Encode(i)
+	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(false)
+	return enc.Encode(i)
 }
 
 // ReadFormFileToTempFile reads file data from a request form and writes it to a temporary file
