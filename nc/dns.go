@@ -1,7 +1,6 @@
 package nc
 
 import (
-	"fmt"
 	"net"
 	"os/exec"
 	"regexp"
@@ -80,13 +79,8 @@ func dumpResolv(dnss []Dns) error {
 	if err != nil {
 		return err
 	}
-	command := "dns"
 	if dnss == nil {
 		return nil
-	}
-	dnssCount := len(dnss)
-	if dnssCount == 0 {
-		command = "revert"
 	}
 
 	primary := ""
@@ -109,19 +103,20 @@ func dumpResolv(dnss []Dns) error {
 			logger.Log.Debug("Skipping lo interface DNS nameserver config")
 			continue
 		}
-		logger.Log.Info(fmt.Sprintf("Command: resolvectl %v %v %v %v", command, string(l.Ifname), primary, secondary))
-		if secondary != "" {
-			_, err := exec.Command("resolvectl", command, string(l.Ifname), primary, secondary).Output()
-			if err != nil {
-				return err
-			}
-		} else {
-			_, err := exec.Command("resolvectl", command, string(l.Ifname), primary).Output()
-			if err != nil {
-				return err
-			}
+		if err := dnsCommand(l.Ifname, primary, secondary); err != nil {
+			return err
 		}
+
 	}
+	return nil
+}
+
+func dnsCommand(ifname LinkID, primary string, secondary string) error {
+	out, err := exec.Command(prefixInstallPAth+"dns_configure.sh", string(ifname), primary, secondary).Output()
+	if err != nil {
+		return err
+	}
+	logger.Log.Debug(out)
 	return nil
 }
 
