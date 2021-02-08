@@ -49,7 +49,7 @@ func loadResolv() ([]Dns, error) {
 			logger.Log.Debug("Skipping lo interface DNS nameserver config")
 			continue
 		}
-		out, err := exec.Command("resolvectl", "dns", string(l.Ifname)).Output()
+		out, err := exec.Command(prefixInstallPAth + "dns_status.sh").Output()
 		if err != nil {
 			return dnss, err
 		}
@@ -69,6 +69,7 @@ func loadResolv() ([]Dns, error) {
 	}
 	return dnss, nil
 }
+
 func dumpResolv(dnss []Dns) error {
 	/*
 	* Example:
@@ -103,7 +104,7 @@ func dumpResolv(dnss []Dns) error {
 			logger.Log.Debug("Skipping lo interface DNS nameserver config")
 			continue
 		}
-		if err := dnsCommand(l.Ifname, primary, secondary); err != nil {
+		if err := dnsConfigure(l.Ifname, primary, secondary); err != nil {
 			return err
 		}
 
@@ -111,7 +112,7 @@ func dumpResolv(dnss []Dns) error {
 	return nil
 }
 
-func dnsCommand(ifname LinkID, primary string, secondary string) error {
+func dnsConfigure(ifname LinkID, primary string, secondary string) error {
 	out, err := exec.Command(prefixInstallPAth+"dns_configure.sh", string(ifname), primary, secondary).Output()
 	if err != nil {
 		return err
