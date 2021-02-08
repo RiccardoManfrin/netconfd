@@ -148,7 +148,6 @@ func (m *Manager) patchInitialConfig() error {
 func (m *Manager) patchFailSafeConfig() error {
 	failSafeConfig := `
 	{
-	  "network": {
 		"links": [
 			{
 				"flags": [
@@ -159,16 +158,17 @@ func (m *Manager) patchFailSafeConfig() error {
 				"link_type": "loopback"
 			}
 		],
-	    "dhcp": [
-	      {
-	        "ifname": "eth0"
-	      }
-	    ]
-	  }
+		"dhcp": [
+			{
+			"ifname": "eth0"
+			}
+		]
 	}`
-	if err := json.Unmarshal([]byte(failSafeConfig), m.Conf.Network); err != nil {
+	network := oas.Network{}
+	if err := json.Unmarshal([]byte(failSafeConfig), &network); err != nil {
 		return err
 	}
+	m.Conf.Network = &network
 	res, err := json.Marshal(m.Conf)
 	if err != nil {
 		logger.Fatal(err)
