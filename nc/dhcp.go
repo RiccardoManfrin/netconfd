@@ -65,8 +65,10 @@ func DHCPStaticAddressesManage(ifname LinkID) error {
 		return err
 	}
 	if l.AddrInfo == nil || len(l.AddrInfo) == 0 {
-		err = os.Remove(file)
-		return err
+		err = os.RemoveAll(file)
+		if err != nil {
+			return err
+		}
 	}
 	addresses := ""
 	for _, a := range l.AddrInfo {
