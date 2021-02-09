@@ -287,8 +287,15 @@ func (m *Manager) ListenAndServe() {
 	logger.Fatal(err)
 }
 
+func (m *Manager) ifaceResolve() error {
+	return nc.LinksRename()
+}
+
 //Start activates manager
 func (m *Manager) Start() {
+	if err := m.ifaceResolve(); err != nil {
+		logger.Log.Warning(err.Error())
+	}
 
 	if *skipbootconfig == false {
 		if err := m.patchInitialConfig(); err != nil {

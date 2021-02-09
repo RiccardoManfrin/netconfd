@@ -241,6 +241,11 @@ func NewDNSServerExistsConflictError(dnsid DnsID) error {
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("DNS server %v already exists", string(dnsid))}
 }
 
+//NewUnknownLinkDeviceLabel
+func NewUnknownLinkDeviceLabel(label string) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Unknown Link Device Label %v in renaming procedure", label)}
+}
+
 //NewEPERMError returns a missing permissions error
 func NewEPERMError(r Resource) error {
 	return &ConflictError{

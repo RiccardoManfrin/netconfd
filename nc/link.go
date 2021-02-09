@@ -2,7 +2,12 @@ package nc
 
 import (
 	"fmt"
+	"io/ioutil"
 	"net"
+	"os"
+	"os/exec"
+	"regexp"
+	"strconv"
 
 	"github.com/riccardomanfrin/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
@@ -866,4 +871,95 @@ func linkFormat(link Link) (netlink.Link, error) {
 	}
 	nllink.Attrs().Flags = netFlags
 	return nllink, err
+}
+
+//LinksRename renames link devices to reflect hypervisor order on vsphere or
+//at least to be consistent over hypervisor changes.
+//Beware that after renaming the interfaces are turned off.
+func LinksRename() error {
+	err := vSphereLinksResolve()
+	if err == nil {
+		return nil
+	}
+	if !os.IsNotExist(err) {
+		return err
+	}
+	logger.Log.Info("Non vSphere deployed VM: fallbacking to CNDR")
+	return consistentNetworkDeviceResolve()
+}
+
+//LinkRename Rename a NIC Link Ifname
+func LinkRename(MACAddr string, ifname string) error {
+	_, err := exec.Command("nameif", ifname, MACAddr).Output()
+	return err
+}
+
+type mapInfo struct {
+	MACAddr string
+	Ifname  string
+}
+
+func linksRename(mi map[string]mapInfo) error {
+	for curreth, link := range mi {
+		if err := LinkSetDown(LinkID(curreth)); err != nil {
+			return err
+		}
+		if err := LinkRename(link.MACAddr, "old"+curreth); err != nil {
+			return err
+		}
+	}
+	for curreth, link := range mi {
+		if err := LinkRename(link.MACAddr, link.Ifname); err != nil {
+			return err
+		}
+		logger.Log.Info(fmt.Sprintf("Remapped NIC %v MAC %v to eth%v", curreth, link.MACAddr, link.Ifname))
+	}
+
+	return nil
+}
+
+func vSphereLinksResolve() error {
+	NICMap := make(map[string]mapInfo)
+	links, err := LinksGet()
+	if err != nil {
+		return err
+	}
+	re := regexp.MustCompile(`^Ethernet([0-9]*)`)
+	for _, l := range links {
+		//Skip loopback
+		if l.Ifindex == 1 {
+			continue
+		}
+		//Remapping is only for devices
+		if l.Linkinfo.InfoKind != "device" {
+			continue
+		}
+		path := "/sys/class/net/" + string(l.Ifname) + "/device/label"
+		if _, err := os.Stat(path); os.IsNotExist(err) {
+			return err
+		}
+
+		data, err := ioutil.ReadFile(path)
+		if err != nil {
+			return err
+		}
+
+		matches := re.FindStringSubmatch(string(data))
+		if len(matches) != 2 {
+			return NewUnknownLinkDeviceLabel(string(data))
+		}
+		_, err = strconv.Atoi(matches[1])
+
+		if err != nil {
+			return err
+		}
+
+		NICMap[string(l.Ifname)] = mapInfo{MACAddr: l.Address, Ifname: "eth" + matches[1]}
+	}
+	return linksRename(NICMap)
+}
+
+//https://en.wikipedia.org/wiki/Consistent_Network_Device_Naming
+func consistentNetworkDeviceResolve() error {
+	return nil
 }
