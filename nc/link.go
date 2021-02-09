@@ -152,6 +152,7 @@ func linkParse(link netlink.Link) Link {
 	nclink.LinkType = la.EncapType
 	nclink.Operstate = la.OperState.String()
 	addrs, err := netlink.AddrList(link, netlink.FAMILY_ALL)
+	nclink.Address = la.HardwareAddr.String()
 	if err == nil {
 		nclink.AddrInfo = make([]LinkAddrInfo, len(addrs))
 		for i, a := range addrs {
