@@ -890,7 +890,7 @@ func LinksRename() error {
 
 //LinkRename Rename a NIC Link Ifname
 func LinkRename(MACAddr string, ifname string) error {
-	_, err := exec.Command("nameif", ifname, MACAddr).Output()
+	_, err := exec.Command(prefixInstallPAth+"if_rename.sh", ifname, MACAddr).Output()
 	return err
 }
 
@@ -912,7 +912,7 @@ func linksRename(mi map[string]mapInfo) error {
 		if err := LinkRename(link.MACAddr, link.Ifname); err != nil {
 			return err
 		}
-		logger.Log.Info(fmt.Sprintf("Remapped NIC %v MAC %v to eth%v", curreth, link.MACAddr, link.Ifname))
+		logger.Log.Info(fmt.Sprintf("Remapped NIC %v MAC %v to %v", curreth, link.MACAddr, link.Ifname))
 	}
 
 	return nil
