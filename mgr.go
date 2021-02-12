@@ -287,14 +287,14 @@ func (m *Manager) ListenAndServe() {
 	logger.Fatal(err)
 }
 
-func (m *Manager) ifaceResolve() error {
-	return nc.LinksRename()
+func (m *Manager) ifaceRorder() error {
+	return nc.LinksVMReorder()
 }
 
 //Start activates manager
 func (m *Manager) Start() {
-	if err := m.ifaceResolve(); err != nil {
-		logger.Log.Warning(err.Error())
+	if err := m.ifaceRorder(); err != nil {
+		logger.Log.Warning(fmt.Sprintf("Failed to reorder interfaces: %v", err.Error()))
 	}
 
 	if *skipbootconfig == false {

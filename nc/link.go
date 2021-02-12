@@ -5,7 +5,6 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
-	"os/exec"
 	"regexp"
 	"strconv"
 
@@ -731,6 +730,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 	kind := link.Linkinfo.InfoKind
 	attrs := netlink.NewLinkAttrs()
 	attrs.Name = string(ifname)
+	attrs.Index = int(link.Ifindex)
 	var err error
 	var nllink netlink.Link = nil
 	if kind != "" {
@@ -856,11 +856,20 @@ func linkFormat(link Link) (netlink.Link, error) {
 					Mode:      netlink.StringToTuntapModeMap[kind],
 				}
 			}
+		case "device":
+			{
+				nllink = &netlink.Device{
+					LinkAttrs: attrs,
+				}
+			}
 		default:
 			return nil, NewUnknownLinkKindError(kind)
 		}
 	} else {
-		nllink = &netlink.Device{}
+		logger.Log.Warning("Unspecified link kind: assuming device link")
+		nllink = &netlink.Device{
+			LinkAttrs: attrs,
+		}
 	}
 	netFlags, err := linkFlagsFormat(link)
 	if err != nil {
@@ -873,65 +882,117 @@ func linkFormat(link Link) (netlink.Link, error) {
 	return nllink, err
 }
 
-//LinksRename renames link devices to reflect hypervisor order on vsphere or
+//LinksVMReorder renames link devices to reflect hypervisor order on vmware or
 //at least to be consistent over hypervisor changes.
 //Beware that after renaming the interfaces are turned off.
-func LinksRename() error {
-	err := vSphereLinksResolve()
+func LinksVMReorder() error {
+	err := vmwareLinksReorder()
 	if err == nil {
 		return nil
 	}
 	if !os.IsNotExist(err) {
 		return err
 	}
-	logger.Log.Info("Non vSphere deployed VM: fallbacking to CNDR")
-	return consistentNetworkDeviceResolve()
+	logger.Log.Info("Non vmware/KVM deployed Virtual Appliance: reordering skipped")
+	// Consider as a fallback plan to at least preserve order over changes,
+	// although this would initially be unpredictable
+	// Some literature:
+	//
+	// https://en.wikipedia.org/wiki/Consistent_Network_Device_Naming
+	// https://wiki.debian.org/NetworkInterfaceNames#predictable
+	// https://www.debian.org/releases/buster/amd64/release-notes/ch-information.en.html#migrate-interface-names
+	// https://libvirt.org/pci-hotplug.html
+	// https://www.freedesktop.org/wiki/Software/systemd/PredictableNetworkInterfaceNames/
+	// https://github.com/systemd/systemd/blob/main/src/udev/udev-builtin-net_id.c#L20
+	//
+	// Aparently for a device named enpXsY
+	// X is the PCI "path" (bus?)
+	// Y is the PCI "slot"
+	// X and Y assigned to a NIC do not change over time/reboots/network modification,
+	// but at the same time they are in general not predictable (cannot be guessed a priori).
+	//
+	// As fallback plan, in case no matching (label based) can be used (e.g. Virtualbox),
+	// a more generalized approach could be to start all NICs in DHCP (one will get the address),
+	// so that reachability is granted, than delegate the ordering to the user via first
+	// configuration:
+	//
+	//"network": {
+	//	"devmap" : [
+	//		{
+	//			"mac" : "00:11:22:33:44:55",
+	//			"ifname": "eth0"
+	//		}
+	//	]
+	//}
+
+	return nil
 }
 
 //LinkRename Rename a NIC Link Ifname
-func LinkRename(MACAddr string, ifname string) error {
-	_, err := exec.Command(prefixInstallPAth+"if_rename.sh", ifname, MACAddr).Output()
+func LinkRename(currNICIface LinkID, remappedNICIface LinkID) error {
+	//ip link set $link name $name
+
+	l, err := LinkGet(currNICIface)
+	if err != nil {
+		logger.Log.Warning("Could not find iface %v by Ifname", currNICIface)
+		return err
+	}
+	nclink, err := linkFormat(l)
+	if err != nil {
+		return err
+	}
+	err = netlink.LinkSetName(nclink, string(remappedNICIface))
+	if err != nil {
+		logger.Log.Warning(fmt.Sprintf("Failed to rename Link %+v to Link %v", nclink, remappedNICIface))
+	}
 	return err
 }
 
-type mapInfo struct {
+type nICInfo struct {
 	MACAddr string
-	Ifname  string
+	Ifname  LinkID
 }
 
-func linksRename(mi map[string]mapInfo) error {
-	for curreth, link := range mi {
-		if err := LinkSetDown(LinkID(curreth)); err != nil {
+func linksRename(mis map[LinkID]nICInfo) error {
+	for _, mi := range mis {
+		if err := LinkSetDown(mi.Ifname); err != nil {
 			return err
 		}
-		if err := LinkRename(link.MACAddr, "old"+curreth); err != nil {
+		if err := LinkRename(mi.Ifname, LinkID("old"+mi.Ifname)); err != nil {
 			return err
 		}
 	}
-	for curreth, link := range mi {
-		if err := LinkRename(link.MACAddr, link.Ifname); err != nil {
+	for remappedEthName, mi := range mis {
+		if err := LinkRename(LinkID("old"+mi.Ifname), remappedEthName); err != nil {
 			return err
 		}
-		logger.Log.Info(fmt.Sprintf("Remapped NIC %v MAC %v to %v", curreth, link.MACAddr, link.Ifname))
+		logger.Log.Info(fmt.Sprintf("Remapped NIC %v MAC %v to %v", mi.Ifname, mi.MACAddr, remappedEthName))
 	}
 
 	return nil
 }
 
-func vSphereLinksResolve() error {
-	NICMap := make(map[string]mapInfo)
+func vmwareLinksReorder() error {
+	VNICMap := make(map[int]nICInfo)
+	DNICMap := make(map[int]nICInfo)
+
 	links, err := LinksGet()
 	if err != nil {
 		return err
 	}
-	re := regexp.MustCompile(`^Ethernet([0-9]*)`)
+
+	reVNIC := regexp.MustCompile(`^Ethernet([0-9]+)$`)
+	reDNIC := regexp.MustCompile(`^pciPassthru([0-9]+)$`)
+
 	for _, l := range links {
 		//Skip loopback
 		if l.Ifindex == 1 {
+			logger.Log.Info("Skipping loopback reordering")
 			continue
 		}
 		//Remapping is only for devices
 		if l.Linkinfo.InfoKind != "device" {
+			logger.Log.Info("Skipping virtual network device %v reordering", string(l.Ifname))
 			continue
 		}
 		path := "/sys/class/net/" + string(l.Ifname) + "/device/label"
@@ -943,23 +1004,47 @@ func vSphereLinksResolve() error {
 		if err != nil {
 			return err
 		}
-
-		matches := re.FindStringSubmatch(string(data))
+		virtual := true
+		matches := reVNIC.FindStringSubmatch(string(data))
 		if len(matches) != 2 {
-			return NewUnknownLinkDeviceLabel(string(data))
+			matches := reDNIC.FindStringSubmatch(string(data))
+			if len(matches) != 2 {
+				return NewUnknownLinkDeviceLabel(string(data))
+			}
+			virtual = false
 		}
-		_, err = strconv.Atoi(matches[1])
-
+		ethIndex, err := strconv.Atoi(matches[1])
 		if err != nil {
 			return err
 		}
-
-		NICMap[string(l.Ifname)] = mapInfo{MACAddr: l.Address, Ifname: "eth" + matches[1]}
+		if virtual {
+			VNICMap[ethIndex] = nICInfo{
+				MACAddr: l.Address,
+				Ifname:  l.Ifname,
+			}
+		} else {
+			DNICMap[ethIndex] = nICInfo{
+				MACAddr: l.Address,
+				Ifname:  l.Ifname,
+			}
+		}
 	}
-	return linksRename(NICMap)
-}
+	NICReMap := make(map[LinkID]nICInfo)
 
-//https://en.wikipedia.org/wiki/Consistent_Network_Device_Naming
-func consistentNetworkDeviceResolve() error {
-	return nil
+	for i, nicinfo := range VNICMap {
+		remappedEthName := "eth" + strconv.Itoa(i)
+		NICReMap[LinkID(remappedEthName)] = nICInfo{
+			MACAddr: nicinfo.MACAddr,
+			Ifname:  nicinfo.Ifname,
+		}
+	}
+	for i, nicinfo := range DNICMap {
+		remappedEthName := "eth" + strconv.Itoa(i+len(VNICMap))
+		NICReMap[LinkID(remappedEthName)] = nICInfo{
+			MACAddr: nicinfo.MACAddr,
+			Ifname:  nicinfo.Ifname,
+		}
+	}
+
+	return linksRename(NICReMap)
 }
