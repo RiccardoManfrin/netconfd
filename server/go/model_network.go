@@ -25,6 +25,8 @@ type Network struct {
 	Dhcp *[]Dhcp `json:"dhcp,omitempty"`
 	// List of nameservers and related priorities (lower value indicates higher priority). DNS configuration is ignored if any of the interfaces is set in DHCP.
 	Dns *[]Dns `json:"dns,omitempty"`
+	// List of unmanaged Network resorces
+	Unmanaged *[]Unmanaged `json:"unmanaged,omitempty"`
 }
 
 // NewNetwork instantiates a new Network object
@@ -172,6 +174,38 @@ func (o *Network) SetDns(v []Dns) {
 	o.Dns = &v
 }
 
+// GetUnmanaged returns the Unmanaged field value if set, zero value otherwise.
+func (o *Network) GetUnmanaged() []Unmanaged {
+	if o == nil || o.Unmanaged == nil {
+		var ret []Unmanaged
+		return ret
+	}
+	return *o.Unmanaged
+}
+
+// GetUnmanagedOk returns a tuple with the Unmanaged field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Network) GetUnmanagedOk() (*[]Unmanaged, bool) {
+	if o == nil || o.Unmanaged == nil {
+		return nil, false
+	}
+	return o.Unmanaged, true
+}
+
+// HasUnmanaged returns a boolean if a field has been set.
+func (o *Network) HasUnmanaged() bool {
+	if o != nil && o.Unmanaged != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetUnmanaged gets a reference to the given []Unmanaged and assigns it to the Unmanaged field.
+func (o *Network) SetUnmanaged(v []Unmanaged) {
+	o.Unmanaged = &v
+}
+
 func (o Network) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Links != nil {
@@ -185,6 +219,9 @@ func (o Network) MarshalJSON() ([]byte, error) {
 	}
 	if o.Dns != nil {
 		toSerialize["dns"] = o.Dns
+	}
+	if o.Unmanaged != nil {
+		toSerialize["unmanaged"] = o.Unmanaged
 	}
 	return json.Marshal(toSerialize)
 }

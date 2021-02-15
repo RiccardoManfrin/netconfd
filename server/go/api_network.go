@@ -127,6 +127,30 @@ func (c *NetworkApiController) Routes() Routes {
 			"/api/1/network/routes",
 			c.ConfigRoutesGet,
 		},
+		{
+			"ConfigUnmanagedCreate",
+			strings.ToUpper("Post"),
+			"/api/1/network/unmanaged",
+			c.ConfigUnmanagedCreate,
+		},
+		{
+			"ConfigUnmanagedDel",
+			strings.ToUpper("Delete"),
+			"/api/1/network/unmanaged/{id}",
+			c.ConfigUnmanagedDel,
+		},
+		{
+			"ConfigUnmanagedGet",
+			strings.ToUpper("Get"),
+			"/api/1/network/unmanaged/{id}",
+			c.ConfigUnmanagedGet,
+		},
+		{
+			"ConfigUnmanagedListGet",
+			strings.ToUpper("Get"),
+			"/api/1/network/unmanaged",
+			c.ConfigUnmanagedListGet,
+		},
 	}
 }
 
@@ -368,6 +392,68 @@ func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Req
 // ConfigRoutesGet - Get All Routes 
 func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Request) { 
 	result, err := c.service.ConfigRoutesGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigUnmanagedCreate - Create Unmanaged 
+func (c *NetworkApiController) ConfigUnmanagedCreate(w http.ResponseWriter, r *http.Request) { 
+	unmanaged := &Unmanaged{}
+	if err := json.NewDecoder(r.Body).Decode(&unmanaged); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigUnmanagedCreate(r.Context(), *unmanaged)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigUnmanagedDel - Delete Unmanaged 
+func (c *NetworkApiController) ConfigUnmanagedDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	id := params["id"]
+	result, err := c.service.ConfigUnmanagedDel(r.Context(), id)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigUnmanagedGet - Get Unmanaged 
+func (c *NetworkApiController) ConfigUnmanagedGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	id := params["id"]
+	result, err := c.service.ConfigUnmanagedGet(r.Context(), id)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigUnmanagedListGet - Get All Unmanaged 
+func (c *NetworkApiController) ConfigUnmanagedListGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigUnmanagedListGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err, &result.Code, w)

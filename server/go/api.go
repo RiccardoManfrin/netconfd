@@ -69,7 +69,12 @@ type NetworkApiServicer interface {
 	ConfigRouteDel(context.Context, string) (ImplResponse, error)
 	ConfigRouteGet(context.Context, string) (ImplResponse, error)
 	ConfigRoutesGet(context.Context) (ImplResponse, error)
+	ConfigUnmanagedCreate(context.Context, Unmanaged) (ImplResponse, error)
+	ConfigUnmanagedDel(context.Context, string) (ImplResponse, error)
+	ConfigUnmanagedGet(context.Context, string) (ImplResponse, error)
+	ConfigUnmanagedListGet(context.Context) (ImplResponse, error)
 }
+
 
 // SystemApiServicer defines the api actions for the SystemApi service
 // This interface intended to stay up to date with the openapi yaml used to generate it,

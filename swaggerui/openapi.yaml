@@ -545,7 +545,103 @@ paths:
           description: Successful delete
         "404":
           description: Not found
-
+  /network/unmanaged:
+    get:
+      x-authorization:
+        - support
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigUnmanagedListGet
+      summary: |
+        Get All Unmanaged
+      description: |
+        Returns the array of the resources that are not administrated by netconfd
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/unmanaged'
+    post:
+      x-authorization:
+        - support
+        - admin
+      tags:
+        - Network
+      operationId: ConfigUnmanagedCreate
+      summary: |
+        Create Unmanaged
+      description: |
+        Adds an Unmanaged resource. When config is applied, these resources
+        and related context are excluded from the applied configuration.
+      requestBody:
+        description: Unmanaged Config
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/unmanaged'
+      responses:
+        '201':
+          description: Successful creation
+        '409':
+          description: 
+            Resource already exists, or request is incompatible with
+            current network state
+        "400":
+          description:
+            Resource config is semantically or syntactically incorrect
+  /network/unmanaged/{id}:
+    get:
+      x-authorization:
+        - support
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigUnmanagedGet
+      summary: |
+        Get Unmanaged
+      description: |
+        Retrieve an Unmanaged resource config
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful get
+        "404":
+          description: Not found
+    delete:
+      x-authorization:
+        - support
+        - admin
+      tags:
+        - Network
+      operationId: ConfigUnmanagedDel
+      summary: |
+        Delete Unmanaged
+      description: |
+        Delete Unmanaged resource
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Successful delete
+        "404":
+          description: Not found
 
 #  /rules:
 #    get:
@@ -1121,6 +1217,12 @@ components:
           minItems: 0
           maxItems: 2
           uniqueItems: true
+        unmanaged:
+          type: array
+          description:
+            List of unmanaged Network resorces
+          items:
+            $ref: '#/components/schemas/unmanaged'
     dns:
       type: object
       description: Name server for DNS resolution
@@ -1131,6 +1233,24 @@ components:
           type: string
           format: ip
           description: The DNS server ip address to send DNS queries to
+    unmanaged:
+      type: object
+      description: 
+        Unmanaged Resource
+        
+        For link type resources, the related context 
+        (routes or DHCP) are also unmanaged
+      properties:
+        type:
+          type: string
+          description: Resource type
+          enum:
+            - link
+          example: link
+        id:
+          type: string
+          description: ID of the resource to ignore
+          example: "tunvpn0"
     rule:
       type: object
       description: IP Rule type
