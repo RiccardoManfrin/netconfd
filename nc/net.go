@@ -10,11 +10,17 @@ type Network struct {
 	Dhcp []Dhcp `json:"dhcp,omitempty"`
 	// DNS context
 	Dnss []Dns
+	//Unmanaged context
+	Unmanaged []Unmanaged
 }
 
 //Patch network config
 func Patch(n Network) error {
-	err := LinksConfigure(n.Links)
+	err := UnamanagedListConfigure(n.Unmanaged)
+	if err != nil {
+		return err
+	}
+	err = LinksConfigure(n.Links)
 	if err != nil {
 		return err
 	}
@@ -36,6 +42,10 @@ func Patch(n Network) error {
 //Put network config (wipe out and redeploy)
 func Put(n Network) error {
 	err := Del()
+	if err != nil {
+		return err
+	}
+	err = UnamanagedListConfigure(n.Unmanaged)
 	if err != nil {
 		return err
 	}
@@ -76,6 +86,10 @@ func Del() error {
 	if err != nil {
 		return err
 	}
+	err = UnmanagedListDelete()
+	if err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -98,9 +112,14 @@ func Get() (Network, error) {
 	if err != nil {
 		return n, err
 	}
+	umgmts, err := UnmanagedListGet()
+	if err != nil {
+		return n, err
+	}
 	n.Links = links
 	n.Routes = routes
 	n.Dhcp = dhcps
 	n.Dnss = dnss
+	n.Unmanaged = umgmts
 	return n, nil
 }

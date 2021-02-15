@@ -43,6 +43,33 @@ func dhcpsGet() ([]Dhcp, error) {
 	return dhcps, err
 }
 
+func unmanagedListGet() ([]Unmanaged, error) {
+	var umgmts []Unmanaged
+	ncumgmts, err := nc.UnmanagedListGet()
+	if err == nil {
+		umgmts = make([]Unmanaged, len(ncumgmts))
+		for i, u := range ncumgmts {
+			umgmts[i] = ncUnmanagedParse(u)
+		}
+	}
+	return umgmts, err
+}
+
+func ncUnmanagedFormat(u Unmanaged) (nc.Unmanaged, error) {
+	d := nc.Unmanaged{
+		Type: nc.Type(u.GetType()),
+		ID:   nc.UnmanagedID(u.GetId()),
+	}
+	return d, nil
+}
+
+func ncUnmanagedParse(ncunmanaged nc.Unmanaged) Unmanaged {
+	d := Unmanaged{}
+	d.SetId(string(ncunmanaged.ID))
+	d.SetType(string(ncunmanaged.Type))
+	return d
+}
+
 func ncDhcpFormat(dhcp Dhcp) (nc.Dhcp, error) {
 	d := nc.Dhcp{
 		Ifname: nc.LinkID(dhcp.Ifname),
@@ -344,6 +371,12 @@ func ncNetFormat(config Config) (nc.Network, error) {
 				network.Dnss[i], _ = ncDnsFormat(s)
 			}
 		}
+		if config.Network.Unmanaged != nil {
+			network.Unmanaged = make([]nc.Unmanaged, len(*config.Network.Unmanaged))
+			for i, s := range *config.Network.Unmanaged {
+				network.Unmanaged[i], _ = ncUnmanagedFormat(s)
+			}
+		}
 	}
 	return network, nil
 }
@@ -353,6 +386,7 @@ func ncNetParse(net nc.Network) Network {
 	routes := make([]Route, len(net.Routes))
 	dhcps := make([]Dhcp, len(net.Dhcp))
 	dnss := make([]Dns, len(net.Dnss))
+	unmanaged := make([]Unmanaged, len(net.Unmanaged))
 	for i, l := range net.Links {
 		links[i] = ncLinkParse(l)
 	}
@@ -365,10 +399,14 @@ func ncNetParse(net nc.Network) Network {
 	for i, s := range net.Dnss {
 		dnss[i] = ncDnsParse(s)
 	}
+	for i, s := range net.Unmanaged {
+		unmanaged[i] = ncUnmanagedParse(s)
+	}
 	return Network{
-		Links:  &links,
-		Routes: &routes,
-		Dhcp:   &dhcps,
-		Dns:    &dnss,
+		Links:     &links,
+		Routes:    &routes,
+		Dhcp:      &dhcps,
+		Dns:       &dnss,
+		Unmanaged: &unmanaged,
 	}
 }

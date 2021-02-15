@@ -352,6 +352,10 @@ func LinksDelete() error {
 		return mapNetlinkError(err, nil)
 	}
 	for _, link := range links {
+		if isUnmanaged(UnmanagedID(link.Attrs().Name), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v removal", link.Attrs().Name))
+			continue
+		}
 		removable, why := isLinkRemovable(link)
 		if !removable {
 			logger.Log.Debug(why)
@@ -373,9 +377,12 @@ func LinksDelete() error {
 //This function tries to wipe out every type of conflicting in place configuration such as
 //existing links whose ifname LinkID collides with the ones being created.
 func LinksConfigure(links []Link) error {
-
 	//Recreate all links
 	for _, link := range links {
+		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v configuration", link.Ifname))
+			continue
+		}
 		l, _ := netlink.LinkByName(string(link.Ifname))
 		if l != nil {
 			LinkSetDown(link.Ifname)
@@ -484,6 +491,10 @@ func LinkGet(ifname LinkID) (Link, error) {
 
 //LinkCreateDown Creates a link interface but does not bring it up
 func LinkCreateDown(link Link) error {
+	if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v configuration", link.Ifname))
+		return nil
+	}
 	isFlagUp := link.Flags.HaveFlag(LinkFlag(net.FlagUp.String()))
 	link.Flags = link.Flags.ClearFlag(LinkFlag(net.FlagUp.String()))
 	err := LinkCreate(link)
@@ -533,6 +544,11 @@ func LinkCreate(link Link) error {
 
 	var err error = nil
 	ifname := link.Ifname
+
+	if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v configuration", link.Ifname))
+		return nil
+	}
 
 	logger.Log.Debug("Creating link", ifname)
 	l, _ := netlink.LinkByName(string(ifname))
@@ -655,6 +671,10 @@ func LinkDelete(ifname LinkID) error {
 	l, err := LinkGet(ifname)
 	if err != nil {
 		return err
+	}
+	if isUnmanaged(UnmanagedID(ifname), LINKTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v removal", l.Ifname))
+		return nil
 	}
 
 	attrs := netlink.NewLinkAttrs()

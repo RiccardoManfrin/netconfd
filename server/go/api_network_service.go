@@ -12,7 +12,6 @@ package openapi
 
 import (
 	"context"
-	"errors"
 
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
@@ -194,60 +193,33 @@ func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, 
 
 // ConfigUnmanagedCreate - Create Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedCreate(ctx context.Context, unmanaged Unmanaged) (ImplResponse, error) {
-	// TODO - update ConfigUnmanagedCreate with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
-	//return Response(201, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
-	//return Response(409, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
-	//return Response(400, nil),nil
-
-	err := errors.New("ConfigUnmanagedCreate method not implemented")
+	ncunmanaged, err := ncUnmanagedFormat(unmanaged)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	err = nc.UnmanagedCreate(ncunmanaged)
 	return PostErrorResponse(err, nil)
 }
 
 // ConfigUnmanagedDel - Delete Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedDel(ctx context.Context, id string) (ImplResponse, error) {
-	// TODO - update ConfigUnmanagedDel with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
-
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	//return Response(404, nil),nil
-
-	err := errors.New("ConfigUnmanagedDel method not implemented")
+	err := nc.UnmanagedDelete(nc.UnmanagedID(id))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigUnmanagedGet - Get Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedGet(ctx context.Context, id string) (ImplResponse, error) {
-	// TODO - update ConfigUnmanagedGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	ncunmanaged, err := nc.UnmanagedGet(nc.UnmanagedID(id))
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
 
-	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
-	//return Response(200, nil),nil
-
-	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
-	//return Response(404, nil),nil
-
-	err := errors.New("ConfigUnmanagedGet method not implemented")
-	return GetErrorResponse(err, nil)
+	return GetErrorResponse(err, ncUnmanagedParse(ncunmanaged))
 }
 
 // ConfigUnmanagedListGet - Get All Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedListGet(ctx context.Context) (ImplResponse, error) {
-	// TODO - update ConfigUnmanagedListGet with the required logic for this service method.
-	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+	links, err := unmanagedListGet()
 
-	//TODO: Uncomment the next line to return response Response(200, []Unmanaged{}) or use other options such as http.Ok ...
-	//return Response(200, []Unmanaged{}), nil
-
-	err := errors.New("ConfigUnmanagedListGet method not implemented")
-	return GetErrorResponse(err, nil)
+	return GetErrorResponse(err, links)
 }

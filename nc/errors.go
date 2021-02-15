@@ -112,6 +112,11 @@ func NewInvalidPrefixLenForIPv6AddrError(len int) error {
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid network Prefix length %v for IPv6 address", len)}
 }
 
+//NewInvalidUnmanagedResourceTypeError returns a bad address error on link layer interfaces
+func NewInvalidUnmanagedResourceTypeError(t Type) error {
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid unmanaged resource type %v", t)}
+}
+
 //NewEINVALError returns a bad address error on link layer interfaces
 func NewEINVALError() error {
 	return &SemanticError{Code: SEMANTIC, Reason: "Syscall EINVAL error (check dmesg)"}
@@ -283,9 +288,14 @@ func NewDHCPRunningNotFoundError(linkID LinkID) error {
 	return &NotFoundError{Code: NOT_FOUND, Reason: "DHCP for Link ID " + string(linkID) + " not found"}
 }
 
-//NewDNSServerNotFoundError returns a Not found error on link layer interfaces not managed by DHCP
+//NewDNSServerNotFoundError returns a Not found error on DNS not found by ID
 func NewDNSServerNotFoundError(dnsID DnsID) error {
 	return &NotFoundError{Code: NOT_FOUND, Reason: "DNS ID " + string(dnsID) + " not found"}
+}
+
+//NewUnmanagedResourceNotFoundError returns a Not found error on unmanaged resource not found
+func NewUnmanagedResourceNotFoundError(id UnmanagedID) error {
+	return &NotFoundError{Code: NOT_FOUND, Reason: "Unmanaged Resource ID " + string(id) + " not found"}
 }
 
 //UnexpetecdCornerCaseError is fundamentally an implementation error catch exception
