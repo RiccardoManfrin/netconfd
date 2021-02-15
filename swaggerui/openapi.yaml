@@ -991,10 +991,10 @@ components:
       description: IPv4 or IPv6 address
       type: string
       example: "10.1.2.3"
-      format: ipaddr
+      format: ip
     cidraddr:
       type: string
-      format: cidraddr
+      format: cidr
       example: "10.1.2.3/24"
     dnsid:
       type: string
@@ -1129,7 +1129,7 @@ components:
           $ref: '#/components/schemas/dnsid'
         nameserver:
           type: string
-          format: ipaddr
+          format: ip
           description: The DNS server ip address to send DNS queries to
     rule:
       type: object

@@ -543,11 +543,11 @@ components:
     ip:
       description: IPv4 or IPv6 address
       example: 10.1.2.3
-      format: ipaddr
+      format: ip
       type: string
     cidraddr:
       example: 10.1.2.3/24
-      format: cidraddr
+      format: cidr
       type: string
     dnsid:
       default: primary
@@ -670,7 +670,7 @@ components:
           $ref: '#/components/schemas/dnsid'
         nameserver:
           description: The DNS server ip address to send DNS queries to
-          format: ipaddr
+          format: ip
           type: string
       type: object
     rule:
@@ -719,12 +719,12 @@ components:
           type: string
         dst:
           example: 10.1.2.3/24
-          format: cidraddr
+          format: cidr
           type: string
         gateway:
           description: IPv4 or IPv6 address
           example: 10.1.2.3
-          format: ipaddr
+          format: ip
           type: string
         dev:
           description: |
@@ -748,7 +748,7 @@ components:
         prefsrc:
           description: IPv4 or IPv6 address
           example: 10.1.2.3
-          format: ipaddr
+          format: ip
           type: string
         flags:
           description: Route flags
@@ -1452,7 +1452,7 @@ components:
         local:
           description: IPv4 or IPv6 address
           example: 10.1.2.3
-          format: ipaddr
+          format: ip
           type: string
         prefixlen:
           example: 24
@@ -1463,7 +1463,7 @@ components:
         address:
           description: IPv4 or IPv6 address
           example: 10.1.2.3
-          format: ipaddr
+          format: ip
           type: string
       required:
       - local

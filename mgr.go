@@ -256,8 +256,8 @@ func NewManager() *Manager {
 	//Opt in IPv4 and IPv6 validation
 	openapi3.DefineIPv4Format()
 	openapi3.DefineIPv6Format()
-	openapi3.DefineStringFormatCallback("cidraddr", nc.CIDRAddrValidate)
-	openapi3.DefineStringFormatCallback("ipaddr", checkIP)
+	openapi3.DefineStringFormatCallback("cidr", nc.CIDRAddrValidate)
+	openapi3.DefineStringFormatCallback("ip", checkIP)
 
 	router := openapi3filter.NewRouter().WithSwagger(openapi)
 
