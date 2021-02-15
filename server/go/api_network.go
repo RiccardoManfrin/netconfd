@@ -25,12 +25,12 @@ type NetworkApiController struct {
 
 // NewNetworkApiController creates a default api controller
 func NewNetworkApiController(s NetworkApiServicer) Router {
-	return &NetworkApiController{ service: s }
+	return &NetworkApiController{service: s}
 }
 
 // Routes returns all of the api route for the NetworkApiController
 func (c *NetworkApiController) Routes() Routes {
-	return Routes{ 
+	return Routes{
 		{
 			"ConfigDHCPCreate",
 			strings.ToUpper("Post"),
@@ -154,14 +154,14 @@ func (c *NetworkApiController) Routes() Routes {
 	}
 }
 
-// ConfigDHCPCreate - Create DHCP 
-func (c *NetworkApiController) ConfigDHCPCreate(w http.ResponseWriter, r *http.Request) { 
+// ConfigDHCPCreate - Create DHCP
+func (c *NetworkApiController) ConfigDHCPCreate(w http.ResponseWriter, r *http.Request) {
 	dhcp := &Dhcp{}
 	if err := json.NewDecoder(r.Body).Decode(&dhcp); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.ConfigDHCPCreate(r.Context(), *dhcp)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -170,11 +170,11 @@ func (c *NetworkApiController) ConfigDHCPCreate(w http.ResponseWriter, r *http.R
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDHCPDel - Delete DHCP 
-func (c *NetworkApiController) ConfigDHCPDel(w http.ResponseWriter, r *http.Request) { 
+// ConfigDHCPDel - Delete DHCP
+func (c *NetworkApiController) ConfigDHCPDel(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	ifname := params["ifname"]
 	result, err := c.service.ConfigDHCPDel(r.Context(), ifname)
@@ -185,11 +185,11 @@ func (c *NetworkApiController) ConfigDHCPDel(w http.ResponseWriter, r *http.Requ
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDHCPGet - Get DHCP 
-func (c *NetworkApiController) ConfigDHCPGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigDHCPGet - Get DHCP
+func (c *NetworkApiController) ConfigDHCPGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	ifname := params["ifname"]
 	result, err := c.service.ConfigDHCPGet(r.Context(), ifname)
@@ -200,11 +200,11 @@ func (c *NetworkApiController) ConfigDHCPGet(w http.ResponseWriter, r *http.Requ
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDHCPsGet - Get All DHCP 
-func (c *NetworkApiController) ConfigDHCPsGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigDHCPsGet - Get All DHCP
+func (c *NetworkApiController) ConfigDHCPsGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ConfigDHCPsGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -213,17 +213,17 @@ func (c *NetworkApiController) ConfigDHCPsGet(w http.ResponseWriter, r *http.Req
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDNSCreate - Create DNS 
-func (c *NetworkApiController) ConfigDNSCreate(w http.ResponseWriter, r *http.Request) { 
+// ConfigDNSCreate - Create DNS
+func (c *NetworkApiController) ConfigDNSCreate(w http.ResponseWriter, r *http.Request) {
 	dns := &Dns{}
 	if err := json.NewDecoder(r.Body).Decode(&dns); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.ConfigDNSCreate(r.Context(), *dns)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -232,13 +232,13 @@ func (c *NetworkApiController) ConfigDNSCreate(w http.ResponseWriter, r *http.Re
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDNSDel - Delete DNS 
-func (c *NetworkApiController) ConfigDNSDel(w http.ResponseWriter, r *http.Request) { 
+// ConfigDNSDel - Delete DNS
+func (c *NetworkApiController) ConfigDNSDel(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	dnsid := params["dnsid"]
+	dnsid := Dnsid(params["dnsid"])
 	result, err := c.service.ConfigDNSDel(r.Context(), dnsid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -247,13 +247,13 @@ func (c *NetworkApiController) ConfigDNSDel(w http.ResponseWriter, r *http.Reque
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDNSGet - Get DNS 
-func (c *NetworkApiController) ConfigDNSGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigDNSGet - Get DNS
+func (c *NetworkApiController) ConfigDNSGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	dnsid := params["dnsid"]
+	dnsid := Dnsid(params["dnsid"])
 	result, err := c.service.ConfigDNSGet(r.Context(), dnsid)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -262,11 +262,11 @@ func (c *NetworkApiController) ConfigDNSGet(w http.ResponseWriter, r *http.Reque
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigDNSsGet - Get All DNS config 
-func (c *NetworkApiController) ConfigDNSsGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigDNSsGet - Get All DNS config
+func (c *NetworkApiController) ConfigDNSsGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ConfigDNSsGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -275,17 +275,17 @@ func (c *NetworkApiController) ConfigDNSsGet(w http.ResponseWriter, r *http.Requ
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigLinkCreate - Create New Link 
-func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.Request) { 
+// ConfigLinkCreate - Create New Link
+func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.Request) {
 	link := &Link{}
 	if err := json.NewDecoder(r.Body).Decode(&link); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.ConfigLinkCreate(r.Context(), *link)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -294,11 +294,11 @@ func (c *NetworkApiController) ConfigLinkCreate(w http.ResponseWriter, r *http.R
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigLinkDel - Delete Link 
-func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Request) { 
+// ConfigLinkDel - Delete Link
+func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	ifname := params["ifname"]
 	result, err := c.service.ConfigLinkDel(r.Context(), ifname)
@@ -309,11 +309,11 @@ func (c *NetworkApiController) ConfigLinkDel(w http.ResponseWriter, r *http.Requ
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigLinkGet - Get Link 
-func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigLinkGet - Get Link
+func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	ifname := params["ifname"]
 	result, err := c.service.ConfigLinkGet(r.Context(), ifname)
@@ -324,11 +324,11 @@ func (c *NetworkApiController) ConfigLinkGet(w http.ResponseWriter, r *http.Requ
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigLinksGet - Get All Links 
-func (c *NetworkApiController) ConfigLinksGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigLinksGet - Get All Links
+func (c *NetworkApiController) ConfigLinksGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ConfigLinksGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -337,17 +337,17 @@ func (c *NetworkApiController) ConfigLinksGet(w http.ResponseWriter, r *http.Req
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigRouteCreate - Create New Route 
-func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.Request) { 
+// ConfigRouteCreate - Create New Route
+func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.Request) {
 	route := &Route{}
 	if err := json.NewDecoder(r.Body).Decode(&route); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.ConfigRouteCreate(r.Context(), *route)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -356,11 +356,11 @@ func (c *NetworkApiController) ConfigRouteCreate(w http.ResponseWriter, r *http.
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigRouteDel - Delete Route 
-func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) { 
+// ConfigRouteDel - Delete Route
+func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	routeid := params["routeid"]
 	result, err := c.service.ConfigRouteDel(r.Context(), routeid)
@@ -371,11 +371,11 @@ func (c *NetworkApiController) ConfigRouteDel(w http.ResponseWriter, r *http.Req
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigRouteGet - Get Route 
-func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigRouteGet - Get Route
+func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	routeid := params["routeid"]
 	result, err := c.service.ConfigRouteGet(r.Context(), routeid)
@@ -386,11 +386,11 @@ func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Req
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigRoutesGet - Get All Routes 
-func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigRoutesGet - Get All Routes
+func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ConfigRoutesGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -399,17 +399,17 @@ func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Re
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigUnmanagedCreate - Create Unmanaged 
-func (c *NetworkApiController) ConfigUnmanagedCreate(w http.ResponseWriter, r *http.Request) { 
+// ConfigUnmanagedCreate - Create Unmanaged
+func (c *NetworkApiController) ConfigUnmanagedCreate(w http.ResponseWriter, r *http.Request) {
 	unmanaged := &Unmanaged{}
 	if err := json.NewDecoder(r.Body).Decode(&unmanaged); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.ConfigUnmanagedCreate(r.Context(), *unmanaged)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -418,11 +418,11 @@ func (c *NetworkApiController) ConfigUnmanagedCreate(w http.ResponseWriter, r *h
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigUnmanagedDel - Delete Unmanaged 
-func (c *NetworkApiController) ConfigUnmanagedDel(w http.ResponseWriter, r *http.Request) { 
+// ConfigUnmanagedDel - Delete Unmanaged
+func (c *NetworkApiController) ConfigUnmanagedDel(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 	result, err := c.service.ConfigUnmanagedDel(r.Context(), id)
@@ -433,11 +433,11 @@ func (c *NetworkApiController) ConfigUnmanagedDel(w http.ResponseWriter, r *http
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigUnmanagedGet - Get Unmanaged 
-func (c *NetworkApiController) ConfigUnmanagedGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigUnmanagedGet - Get Unmanaged
+func (c *NetworkApiController) ConfigUnmanagedGet(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
 	id := params["id"]
 	result, err := c.service.ConfigUnmanagedGet(r.Context(), id)
@@ -448,11 +448,11 @@ func (c *NetworkApiController) ConfigUnmanagedGet(w http.ResponseWriter, r *http
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigUnmanagedListGet - Get All Unmanaged 
-func (c *NetworkApiController) ConfigUnmanagedListGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigUnmanagedListGet - Get All Unmanaged
+func (c *NetworkApiController) ConfigUnmanagedListGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ConfigUnmanagedListGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -461,5 +461,5 @@ func (c *NetworkApiController) ConfigUnmanagedListGet(w http.ResponseWriter, r *
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }

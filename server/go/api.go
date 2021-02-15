@@ -58,8 +58,8 @@ type NetworkApiServicer interface {
 	ConfigDHCPGet(context.Context, string) (ImplResponse, error)
 	ConfigDHCPsGet(context.Context) (ImplResponse, error)
 	ConfigDNSCreate(context.Context, Dns) (ImplResponse, error)
-	ConfigDNSDel(context.Context, string) (ImplResponse, error)
-	ConfigDNSGet(context.Context, string) (ImplResponse, error)
+	ConfigDNSDel(context.Context, Dnsid) (ImplResponse, error)
+	ConfigDNSGet(context.Context, Dnsid) (ImplResponse, error)
 	ConfigDNSsGet(context.Context) (ImplResponse, error)
 	ConfigLinkCreate(context.Context, Link) (ImplResponse, error)
 	ConfigLinkDel(context.Context, string) (ImplResponse, error)
@@ -74,7 +74,6 @@ type NetworkApiServicer interface {
 	ConfigUnmanagedGet(context.Context, string) (ImplResponse, error)
 	ConfigUnmanagedListGet(context.Context) (ImplResponse, error)
 }
-
 
 // SystemApiServicer defines the api actions for the SystemApi service
 // This interface intended to stay up to date with the openapi yaml used to generate it,

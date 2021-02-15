@@ -71,13 +71,13 @@ func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplR
 }
 
 // ConfigDNSDel - Delete DNS
-func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, dnsid string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	err := nc.DNSDelete(nc.DnsID(dnsid))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigDNSGet - Get DNS
-func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	nclink, err := nc.DnsGet(nc.DnsID(dnsid))
 	if err != nil {
 		return GetErrorResponse(err, nil)
