@@ -134,6 +134,9 @@ func RouteDelete(routeid RouteID) error {
 		if err != nil {
 			return mapNetlinkError(err, nil)
 		}
+		if isUnmanaged(UnmanagedID(route.Dev), LINKTYPE) {
+			return NewUnmanagedLinkRouteCannotBeModifiedError(route)
+		}
 		if routeid == RouteIDGet(route) {
 			return mapNetlinkError(netlink.RouteDel(&r), nil)
 		}
@@ -148,6 +151,10 @@ func RouteDelete(routeid RouteID) error {
 //existing links whose ifname LinkID collides with the ones being created.
 func RoutesConfigure(routes []Route) error {
 	for _, r := range routes {
+		if isUnmanaged(UnmanagedID(r.Dev), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v route configuration", r.Dev))
+			continue
+		}
 		err := RouteDelete(RouteIDGet(r))
 		if err != nil {
 			if _, ok := err.(*NotFoundError); ok != true {
@@ -172,6 +179,10 @@ func RoutesDelete() error {
 		return err
 	}
 	for _, r := range routes {
+		if isUnmanaged(UnmanagedID(r.Dev), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v route removal", r.Dev))
+			continue
+		}
 		err = RouteDelete(RouteIDGet(r))
 		if err != nil {
 			return err
@@ -183,6 +194,10 @@ func RoutesDelete() error {
 //RouteCreate create and add a new route
 func RouteCreate(route Route) (RouteID, error) {
 	routeid := RouteIDGet(route)
+	if isUnmanaged(UnmanagedID(route.Dev), LINKTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v route configuration", route.Dev))
+		return routeid, NewUnmanagedLinkRouteCannotBeModifiedError(route)
+	}
 	route.ID = routeid
 	routes, err := RoutesGet()
 	if err != nil {

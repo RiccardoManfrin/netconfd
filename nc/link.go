@@ -547,7 +547,7 @@ func LinkCreate(link Link) error {
 
 	if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
 		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v configuration", link.Ifname))
-		return nil
+		return NewUnmanagedLinkCannotBeModifiedError(ifname)
 	}
 
 	logger.Log.Debug("Creating link", ifname)
@@ -673,8 +673,7 @@ func LinkDelete(ifname LinkID) error {
 		return err
 	}
 	if isUnmanaged(UnmanagedID(ifname), LINKTYPE) {
-		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v removal", l.Ifname))
-		return nil
+		return NewUnmanagedLinkCannotBeModifiedError(ifname)
 	}
 
 	attrs := netlink.NewLinkAttrs()

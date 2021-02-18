@@ -1,9 +1,12 @@
 package nc
 
 import (
+	"fmt"
 	"io/ioutil"
 	"os"
 	"os/exec"
+
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 const prefixInstallPAth string = "/opt/netconfd/"
@@ -17,6 +20,10 @@ type Dhcp struct {
 //DHCPsConfigure configures the DHCP for each link interface of the array.
 func DHCPsConfigure(dhcp []Dhcp) error {
 	for _, d := range dhcp {
+		if isUnmanaged(UnmanagedID(d.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v DHCP configuration", d.Ifname))
+			continue
+		}
 		err := DHCPDelete(d.Ifname)
 		if err != nil {
 			if _, ok := err.(*NotFoundError); ok != true {
@@ -37,6 +44,10 @@ func DHCPsDelete() error {
 		return err
 	}
 	for _, d := range dhcps {
+		if isUnmanaged(UnmanagedID(d.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v DHCP configuration", d.Ifname))
+			continue
+		}
 		err = DHCPDelete(d.Ifname)
 		if err != nil {
 			return err
@@ -47,6 +58,9 @@ func DHCPsDelete() error {
 
 //DHCPDelete stops and delete DHCP controller for link interface
 func DHCPDelete(ifname LinkID) error {
+	if isUnmanaged(UnmanagedID(ifname), LINKTYPE) {
+		return NewUnmanagedLinkDHCPCannotBeModifiedError(ifname)
+	}
 	out, err := exec.Command(prefixInstallPAth+"dhcp_stop.sh", string(ifname)).Output()
 	if err != nil {
 		return NewCannotStopDHCPError(ifname, err)
@@ -80,6 +94,9 @@ func DHCPStaticAddressesManage(ifname LinkID) error {
 
 //DHCPCreate starts and delete DHCP controller for link interface
 func DHCPCreate(dhcp Dhcp) error {
+	if isUnmanaged(UnmanagedID(dhcp.Ifname), LINKTYPE) {
+		return NewUnmanagedLinkDHCPCannotBeModifiedError(dhcp.Ifname)
+	}
 	_, err := DHCPGet(dhcp.Ifname)
 	if err != nil {
 		/* The only acceptable error is that you didn't find it. For any other error, abort */

@@ -226,6 +226,21 @@ func NewCannotStopDHCPError(ifname LinkID, e error) error {
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to stop DHCP for interface %v: %v", string(ifname), e)}
 }
 
+//NewUnmanagedLinkCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
+func NewUnmanagedLinkCannotBeModifiedError(ifname LinkID) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged interface %v", string(ifname))}
+}
+
+//NewUnmanagedLinkRouteCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
+func NewUnmanagedLinkRouteCannotBeModifiedError(r Route) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged link %v route %v", r.Dev, r.Print())}
+}
+
+//NewUnmanagedLinkDHCPCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
+func NewUnmanagedLinkDHCPCannotBeModifiedError(ifname LinkID) error {
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged link %v DHCP config")}
+}
+
 //NewCannotStartDHCPError returns an error for DHCP related stop errors
 func NewCannotStartDHCPError(ifname LinkID, e error) error {
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to start DHCP for interface %v: %v", string(ifname), e)}
