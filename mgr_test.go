@@ -797,4 +797,10 @@ func Test19(t *testing.T) {
 	rr = runRequest("GET", "/api/1/network/dns", "")
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 	checkBody(t, rr, `[{"__id":"primary","nameserver":"8.8.8.7"},{"__id":"secondary","nameserver":"8.8.8.8"}]`)
+
+	rr = runRequest("DELETE", "/api/1/network/dns/primary", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	rr = runRequest("DELETE", "/api/1/network/dns/primary", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 }
