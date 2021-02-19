@@ -74,13 +74,6 @@ func UnmanagedCreate(u Unmanaged) error {
 	switch u.Type {
 	case LINKTYPE:
 		{
-			lid := LinkID(u.ID)
-			_, err := LinkGet(lid)
-			if err != nil {
-				if _, ok := err.(*NotFoundError); ok == false {
-					return NewLinkDeviceDoesNotExistError(lid)
-				}
-			}
 			unmanaged[u.ID] = u
 		}
 	default:
