@@ -20,6 +20,7 @@ type Type string
 // List of scope
 const (
 	LINKTYPE Type = "link"
+	DNSTYPE  Type = "dns"
 )
 
 //Print implements route print
@@ -73,6 +74,7 @@ func UnmanagedListGet() ([]Unmanaged, error) {
 func UnmanagedCreate(u Unmanaged) error {
 	switch u.Type {
 	case LINKTYPE:
+	case DNSTYPE:
 		{
 			unmanaged[u.ID] = u
 		}
