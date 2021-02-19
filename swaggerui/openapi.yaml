@@ -1246,6 +1246,7 @@ components:
           description: Resource type
           enum:
             - link
+            - dns
           example: link
         id:
           type: string
