@@ -385,10 +385,12 @@ func LinksConfigure(links []Link) error {
 		}
 		l, _ := netlink.LinkByName(string(link.Ifname))
 		if l != nil {
+			logger.Log.Debug("Setting link %v down", link.Ifname)
 			LinkSetDown(link.Ifname)
 			removable, why := isLinkRemovable(l)
 			if !removable {
 				//Just set addresses
+				logger.Log.Debug("Setting link %v addresses", link.Ifname)
 				if err := LinkSetAddresses(link); err != nil {
 					return err
 				}
@@ -396,11 +398,13 @@ func LinksConfigure(links []Link) error {
 				logger.Log.Debug(why)
 				continue
 			}
+			logger.Log.Debug("Deleting link %v", link.Ifname)
 			if err := LinkDelete(link.Ifname); err != nil {
 				logger.Log.Warning("Link Delete Error:", err)
 			}
 		}
 		/* You cannot enslave a link if it is UP */
+		logger.Log.Debug("Deleting link %v", link.Ifname)
 		if err := LinkCreateDown(link); err != nil {
 			return err
 		}
@@ -408,6 +412,7 @@ func LinksConfigure(links []Link) error {
 
 	//Set active-backup bond links active slaves (apparently you need to do this before setting the backups)
 	for _, link := range links {
+		logger.Log.Debug("Setting slave active/backup properties for link %v", link.Ifname)
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
 			if err != nil {
@@ -430,6 +435,7 @@ func LinksConfigure(links []Link) error {
 
 	//Set all links cross properties (e.g. being slave of some master link interface)
 	for _, link := range links {
+		logger.Log.Debug("Setting master/slave cross properties for link %v", link.Ifname)
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
 			if err != nil {
@@ -458,6 +464,7 @@ func LinksConfigure(links []Link) error {
 	//distinction
 	for _, link := range links {
 		if link.Flags.HaveFlag(LinkFlag(net.FlagUp.String())) {
+			logger.Log.Debug("Setting link %v up", link.Ifname)
 			if err := LinkSetUp(link.Ifname); err != nil {
 				logger.Log.Warning("Link Set Up Error:", err)
 			}

@@ -174,6 +174,7 @@ func (m *Manager) patchFailSafeConfig() error {
 			}
 		]
 	}`
+	logger.LoggerSetLevel("DBG")
 	network := oas.Network{}
 	if err := json.Unmarshal([]byte(failSafeConfig), &network); err != nil {
 		return err
