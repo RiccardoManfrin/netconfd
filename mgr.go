@@ -98,12 +98,6 @@ func (m *Manager) LoadConfig(conffile *string) error {
 
 	logger.LoggerSetLevel(loglev)
 
-	res, err := json.Marshal(m.Conf)
-	if err != nil {
-		logger.Fatal(err)
-	}
-	logger.Log.Notice("Config: " + string(res))
-
 	host := "127.0.0.1"
 	port := "8666"
 	if m.Conf.Global != nil && m.Conf.Global.Mgmt != nil {
@@ -129,7 +123,12 @@ func (m *Manager) LoadConfig(conffile *string) error {
 	return nil
 }
 
-func (m *Manager) patchConfig(reqbody []byte) error {
+func (m *Manager) patchConfig(Conf *oas.Config) error {
+	reqbody, err := json.Marshal(Conf)
+	if err != nil {
+		return err
+	}
+	logger.Log.Notice(fmt.Sprintf("Config: %v", string(reqbody)))
 	iobody := bytes.NewReader(reqbody)
 	req, _ := http.NewRequest("PATCH", "/api/1/mgmt/config", iobody)
 	req.Header.Add("Content-Type", "application/json")
@@ -141,11 +140,12 @@ func (m *Manager) patchConfig(reqbody []byte) error {
 	return nil
 }
 func (m *Manager) patchInitialConfig() error {
-	reqbody, _ := json.Marshal(m.Conf)
-	return m.patchConfig(reqbody)
+	logger.Log.Info("Patching with persisted initial config...")
+	return m.patchConfig(m.Conf)
 }
 
 func (m *Manager) patchFailSafeConfig() error {
+	logger.Log.Info("Patching with failsafe config...")
 	failSafeConfig := `
 	{
 		"links": [
@@ -179,13 +179,7 @@ func (m *Manager) patchFailSafeConfig() error {
 		return err
 	}
 	m.Conf.Network = &network
-	res, err := json.Marshal(m.Conf)
-	if err != nil {
-		logger.Fatal(err)
-	}
-	logger.Log.Notice("Config: " + string(res))
-
-	if err := m.patchConfig([]byte(failSafeConfig)); err != nil {
+	if err := m.patchConfig(m.Conf); err != nil {
 		return err
 	}
 
@@ -310,7 +304,6 @@ func (m *Manager) Start() {
 	if *skipbootconfig == false {
 		if err := m.patchInitialConfig(); err != nil {
 			logger.Log.Warning(err.Error())
-			logger.Log.Info("Patching with failsafe config...")
 			if err := m.patchFailSafeConfig(); err != nil {
 				logger.Log.Warning(err.Error())
 			}
