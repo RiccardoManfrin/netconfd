@@ -156,11 +156,21 @@ func (m *Manager) patchFailSafeConfig() error {
 				"ifindex": 1,
 				"ifname": "lo",
 				"link_type": "loopback"
+			},
+			{
+				"flags": [
+					"up"
+				],
+				"ifname": "eth0",
+				"link_type": "ether",
+				"linkinfo": {
+					"info_kind": "device"
+				}
 			}
 		],
 		"dhcp": [
 			{
-			"ifname": "eth0"
+				"ifname": "eth0"
 			}
 		]
 	}`
