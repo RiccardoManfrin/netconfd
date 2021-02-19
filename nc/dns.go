@@ -89,20 +89,28 @@ func dumpResolv(dnss []Dns) error {
 	secondary := ""
 	for _, d := range dnss {
 		if d.Id == DnsPrimary {
-			if isUnmanaged(UnmanagedID(DnsPrimary), DNSTYPE) {
-				logger.Log.Info(fmt.Sprintf("Skipping Unmanaged DNS %v configuration", DnsPrimary))
-				continue
-			}
 			primary = d.Nameserver.String()
 		}
 		if d.Id == DnsSecondary {
-			if isUnmanaged(UnmanagedID(DnsSecondary), DNSTYPE) {
-				logger.Log.Info(fmt.Sprintf("Skipping Unmanaged DNS %v configuration", DnsSecondary))
-				continue
-			}
 			secondary = d.Nameserver.String()
 		}
 	}
+
+	if isUnmanaged(UnmanagedID(DnsPrimary), DNSTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged DNS %v configuration", DnsPrimary))
+		if secondary == "" {
+			return nil
+		}
+		primary = ""
+	}
+	if isUnmanaged(UnmanagedID(DnsSecondary), DNSTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged DNS %v configuration", DnsSecondary))
+		if primary == "" {
+			return nil
+		}
+		secondary = ""
+	}
+
 	if primary == "" {
 		primary = secondary
 		secondary = ""
@@ -122,6 +130,7 @@ func dumpResolv(dnss []Dns) error {
 }
 
 func dnsConfigure(ifname LinkID, primary string, secondary string) error {
+	logger.Log.Debug(fmt.Sprintf("Configuring DNS servers %s, %s for link %s", ifname, primary, secondary))
 	out, err := exec.Command(prefixInstallPAth+"dns_configure.sh", string(ifname), primary, secondary).Output()
 	if err != nil {
 		return err
