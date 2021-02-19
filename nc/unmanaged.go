@@ -60,7 +60,13 @@ func UnmanagedListDelete() error {
 
 //UnmanagedListGet returns list of unmanaged objects
 func UnmanagedListGet() ([]Unmanaged, error) {
-	return nil, nil
+	var u = make([]Unmanaged, len(unmanaged))
+	i := 0
+	for _, v := range unmanaged {
+		u[i] = v
+		i++
+	}
+	return u, nil
 }
 
 // UnmanagedCreate adds a new unmanaged network resource object
