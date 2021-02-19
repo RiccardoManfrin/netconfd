@@ -405,6 +405,7 @@ func LinksConfigure(links []Link) error {
 		}
 		/* You cannot enslave a link if it is UP */
 		logger.Log.Debug("Deleting link %v", link.Ifname)
+		//Adresses are assigned in here
 		if err := LinkCreateDown(link); err != nil {
 			return err
 		}
