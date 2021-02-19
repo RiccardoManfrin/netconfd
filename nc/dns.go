@@ -1,6 +1,7 @@
 package nc
 
 import (
+	"fmt"
 	"net"
 	"os/exec"
 	"regexp"
@@ -88,9 +89,17 @@ func dumpResolv(dnss []Dns) error {
 	secondary := ""
 	for _, d := range dnss {
 		if d.Id == DnsPrimary {
+			if isUnmanaged(UnmanagedID(DnsPrimary), DNSTYPE) {
+				logger.Log.Info(fmt.Sprintf("Skipping Unmanaged DNS %v configuration", DnsPrimary))
+				continue
+			}
 			primary = d.Nameserver.String()
 		}
 		if d.Id == DnsSecondary {
+			if isUnmanaged(UnmanagedID(DnsSecondary), DNSTYPE) {
+				logger.Log.Info(fmt.Sprintf("Skipping Unmanaged DNS %v configuration", DnsSecondary))
+				continue
+			}
 			secondary = d.Nameserver.String()
 		}
 	}

@@ -118,6 +118,9 @@ func UnmanagedGet(id UnmanagedID) (Unmanaged, error) {
 }
 
 func isUnmanaged(id UnmanagedID, t Type) bool {
-	_, ok := unmanaged[id]
+	u, ok := unmanaged[id]
+	if ok {
+		ok = u.Type == t
+	}
 	return ok
 }
