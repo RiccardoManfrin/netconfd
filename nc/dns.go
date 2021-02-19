@@ -117,7 +117,7 @@ func dnsConfigure(ifname LinkID, primary string, secondary string) error {
 	if err != nil {
 		return err
 	}
-	logger.Log.Debug(out)
+	logger.Log.Debug(string(out))
 	return nil
 }
 
