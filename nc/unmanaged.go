@@ -71,10 +71,9 @@ func UnmanagedCreate(u Unmanaged) error {
 			lid := LinkID(u.ID)
 			_, err := LinkGet(lid)
 			if err != nil {
-				if _, ok := err.(*NotFoundError); ok == true {
+				if _, ok := err.(*NotFoundError); ok == false {
 					return NewLinkDeviceDoesNotExistError(lid)
 				}
-				return err
 			}
 			unmanaged[u.ID] = u
 		}
