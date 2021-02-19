@@ -23,7 +23,7 @@ const (
 	DNSTYPE  Type = "dns"
 )
 
-//Print implements route print
+//Print implements unmanaged resource print
 func (u *Unmanaged) Print() string {
 	return fmt.Sprintf("%v", u)
 }
@@ -74,8 +74,21 @@ func UnmanagedListGet() ([]Unmanaged, error) {
 func UnmanagedCreate(u Unmanaged) error {
 	switch u.Type {
 	case LINKTYPE:
+		{
+			lid := LinkID(u.ID)
+			_, err := LinkGet(lid)
+			if err != nil {
+				if _, ok := err.(*NotFoundError); ok == false {
+					return mapNetlinkError(err, &u)
+				}
+			}
+			unmanaged[u.ID] = u
+		}
 	case DNSTYPE:
 		{
+			if DnsID(u.ID) != DnsPrimary && DnsID(u.ID) != DnsSecondary {
+				return NewUnknownUnsupportedDNSServersIDsError(DnsID(u.ID))
+			}
 			unmanaged[u.ID] = u
 		}
 	default:
