@@ -412,6 +412,10 @@ func LinksConfigure(links []Link) error {
 
 	//Set active-backup bond links active slaves (apparently you need to do this before setting the backups)
 	for _, link := range links {
+		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v slave active/backup configuration", link.Ifname))
+			continue
+		}
 		logger.Log.Debug("Setting slave active/backup properties for link %v", link.Ifname)
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
@@ -435,6 +439,10 @@ func LinksConfigure(links []Link) error {
 
 	//Set all links cross properties (e.g. being slave of some master link interface)
 	for _, link := range links {
+		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v master/slave cross properties configuration", link.Ifname))
+			continue
+		}
 		logger.Log.Debug("Setting master/slave cross properties for link %v", link.Ifname)
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
@@ -463,6 +471,10 @@ func LinksConfigure(links []Link) error {
 	//we just set all links with LinkCreateDown and then set them up at the end with no
 	//distinction
 	for _, link := range links {
+		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v up/down state configuration", link.Ifname))
+			continue
+		}
 		if link.Flags.HaveFlag(LinkFlag(net.FlagUp.String())) {
 			logger.Log.Debug("Setting link %v up", link.Ifname)
 			if err := LinkSetUp(link.Ifname); err != nil {
@@ -472,6 +484,10 @@ func LinksConfigure(links []Link) error {
 	}
 
 	for _, link := range links {
+		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v MTU configuration", link.Ifname))
+			continue
+		}
 		if link.Mtu > 0 {
 			err := LinkSetMTU(link.Ifname, int(link.Mtu))
 			if err != nil {
