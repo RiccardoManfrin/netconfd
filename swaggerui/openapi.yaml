@@ -1959,6 +1959,7 @@ components:
         #  type: string
         addr_info:
           type: array
+          description: "IP addresses assigned to the link interface"
           items:
             type: object
             properties:
