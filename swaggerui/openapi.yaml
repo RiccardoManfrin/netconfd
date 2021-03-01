@@ -1233,6 +1233,9 @@ components:
           type: string
           format: ip
           description: The DNS server ip address to send DNS queries to
+      required:
+        - __id
+        - nameserver
     unmanaged:
       type: object
       description: 
