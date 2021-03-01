@@ -35,8 +35,9 @@ uploadspec:
   tags:
   - docker
   before_script:
-  - apk add --no-cache git openssh-client curl
+  - apk add --no-cache git openssh-client curl patch
   script:
+  - patch -p0 < nms_cidraddr.patch
   - tar cvzf archive.tar.gz  -C swaggerui/ openapi.yaml
   - export OPENAPI_VER=`cat swaggerui/openapi.yaml | grep  "version:" |awk '{print $2}'`
   - curl -X PUT -F 'bundle=@archive.tar.gz' http://srv-buildrepo.lan.athonet.com/api/v1/products/5g/components/netconfd/openapi/$OPENAPI_VER

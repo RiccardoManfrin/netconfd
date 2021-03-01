@@ -1,0 +1,19 @@
+--- swaggerui/openapi.yaml	2021-03-01 19:07:51.748243378 +0100
++++ swaggerui/openapi.yaml_nms	2021-03-01 19:08:52.934094086 +0100
+@@ -1089,9 +1089,13 @@
+       example: "10.1.2.3"
+       format: ip
+     cidraddr:
+-      type: string
+-      format: cidr
+-      example: "10.1.2.3/24"
++      oneOf:
++      - type: string
++        format: cidr
++        example: "10.1.2.3/24"
++      - type: string
++        format: ip
++        example: "10.1.2.3"
+     dnsid:
+       type: string
+       enum:
