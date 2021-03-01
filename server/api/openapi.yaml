@@ -776,6 +776,9 @@ components:
           description: The DNS server ip address to send DNS queries to
           format: ip
           type: string
+      required:
+      - __id
+      - nameserver
       type: object
     unmanaged:
       description: |-
@@ -907,7 +910,7 @@ components:
         * [Links Operstate](https://www.kernel.org/doc/Documentation/networking/operstates.txt)\n"
       example:
         ifindex: 0
-        address: address
+        address: ""
         linkmode: DEFAULT
         link: eth0
         flags:
@@ -1037,8 +1040,11 @@ components:
           - none
           type: string
         address:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/macaddr'
+          - readOnly: true
         addr_info:
+          description: IP addresses assigned to the link interface
           items:
             $ref: '#/components/schemas/link_addr_info'
           type: array

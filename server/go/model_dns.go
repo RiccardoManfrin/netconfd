@@ -17,19 +17,19 @@ import (
 
 // Dns Name server for DNS resolution
 type Dns struct {
-	Id *Dnsid `json:"__id,omitempty"`
+	Id Dnsid `json:"__id"`
 	// The DNS server ip address to send DNS queries to
-	Nameserver *string `json:"nameserver,omitempty"`
+	Nameserver string `json:"nameserver"`
 }
 
 // NewDns instantiates a new Dns object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDns() *Dns {
+func NewDns(id Dnsid, nameserver string, ) *Dns {
 	this := Dns{}
-	var id Dnsid = "primary"
-	this.Id = &id
+	this.Id = id
+	this.Nameserver = nameserver
 	return &this
 }
 
@@ -39,80 +39,64 @@ func NewDns() *Dns {
 func NewDnsWithDefaults() *Dns {
 	this := Dns{}
 	var id Dnsid = "primary"
-	this.Id = &id
+	this.Id = id
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *Dns) GetId() Dnsid {
-	if o == nil || o.Id == nil {
+	if o == nil  {
 		var ret Dnsid
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *Dns) GetIdOk() (*Dnsid, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *Dns) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given Dnsid and assigns it to the Id field.
+// SetId sets field value
 func (o *Dns) SetId(v Dnsid) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetNameserver returns the Nameserver field value if set, zero value otherwise.
+// GetNameserver returns the Nameserver field value
 func (o *Dns) GetNameserver() string {
-	if o == nil || o.Nameserver == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.Nameserver
+
+	return o.Nameserver
 }
 
-// GetNameserverOk returns a tuple with the Nameserver field value if set, nil otherwise
+// GetNameserverOk returns a tuple with the Nameserver field value
 // and a boolean to check if the value has been set.
 func (o *Dns) GetNameserverOk() (*string, bool) {
-	if o == nil || o.Nameserver == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Nameserver, true
+	return &o.Nameserver, true
 }
 
-// HasNameserver returns a boolean if a field has been set.
-func (o *Dns) HasNameserver() bool {
-	if o != nil && o.Nameserver != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetNameserver gets a reference to the given string and assigns it to the Nameserver field.
+// SetNameserver sets field value
 func (o *Dns) SetNameserver(v string) {
-	o.Nameserver = &v
+	o.Nameserver = v
 }
 
 func (o Dns) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Id != nil {
+	if true {
 		toSerialize["__id"] = o.Id
 	}
-	if o.Nameserver != nil {
+	if true {
 		toSerialize["nameserver"] = o.Nameserver
 	}
 	return json.Marshal(toSerialize)

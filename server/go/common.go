@@ -141,8 +141,8 @@ func ncDnsParse(ncdns nc.Dns) Dns {
 	ns := ncdns.Nameserver.String()
 	prio := Dnsid(ncdns.Id)
 	return Dns{
-		Nameserver: &ns,
-		Id:         &prio,
+		Nameserver: ns,
+		Id:         prio,
 	}
 }
 

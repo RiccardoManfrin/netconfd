@@ -32,13 +32,14 @@ type Link struct {
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to.
 	Master   *string       `json:"master,omitempty"`
 	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
-	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down
-	Operstate *string         `json:"operstate,omitempty"`
-	Linkmode  *string         `json:"linkmode,omitempty"`
-	Group     *string         `json:"group,omitempty"`
-	LinkType  string          `json:"link_type"`
-	Address   *string         `json:"address,omitempty"`
-	AddrInfo  *[]LinkAddrInfo `json:"addr_info,omitempty"`
+	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down   * `unknown` - Interface state is not known (driver does not implement the API) 
+	Operstate *string `json:"operstate,omitempty"`
+	Linkmode *string `json:"linkmode,omitempty"`
+	Group *string `json:"group,omitempty"`
+	LinkType string `json:"link_type"`
+	Address *string `json:"address,omitempty"`
+	// IP addresses assigned to the link interface
+	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
 }
 
 // NewLink instantiates a new Link object
