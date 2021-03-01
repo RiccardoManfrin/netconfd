@@ -541,7 +541,7 @@ func LinkSetAddresses(link Link) error {
 
 		for _, addr := range addrlist {
 			if err = netlink.AddrDel(l, &addr); err != nil {
-				return mapNetlinkError(err, nil)
+				return mapNetlinkError(err, &link)
 			}
 		}
 	}
