@@ -1957,7 +1957,9 @@ components:
             - ppp
             - none
         address:
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/macaddr'
+          - readOnly: true
         #broadcast:
         #  type: string
         addr_info:
