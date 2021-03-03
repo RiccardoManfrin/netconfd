@@ -135,9 +135,19 @@ func (m *Manager) patchConfig(Conf *oas.Config) error {
 	rr := httptest.NewRecorder()
 	m.ServeHTTP(rr, req)
 	if rr.Code != http.StatusOK {
-		return fmt.Errorf("Failed to patch-apply initial config - Error %v - Network Not configured", rr)
+		return fmt.Errorf("Failed to patch-apply config - Error %v - Network Not configured", rr)
 	}
 	return nil
+}
+
+func (m *Manager) enforceUnmanaged() error {
+	logger.Log.Info("Loading Unmanaged resources config")
+	c := oas.Config{
+		Network: &oas.Network{
+			Unmanaged: m.Conf.Network.Unmanaged,
+		},
+	}
+	return m.patchConfig(&c)
 }
 func (m *Manager) patchInitialConfig() error {
 	logger.Log.Info("Patching with persisted initial config...")
@@ -308,6 +318,10 @@ func (m *Manager) Start() {
 			if err := m.patchFailSafeConfig(); err != nil {
 				logger.Log.Warning(err.Error())
 			}
+		}
+	} else {
+		if err := m.enforceUnmanaged(); err != nil {
+			logger.Log.Warning(fmt.Sprintf("Failed to load Unmanaged resources: %v", err.Error()))
 		}
 	}
 	logger.Log.Notice("Started netConfD manager...")
