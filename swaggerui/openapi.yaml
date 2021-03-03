@@ -238,6 +238,9 @@ paths:
         Delete Link
       description: |
         Brings down and delete a link layer interface
+
+        Only virtual interfaces can be deleted; physical (`eth*`) interfaces
+        exist throughout the whole runtime of the system and cannot be deleted.
       parameters:
       - in: path
         name: ifname

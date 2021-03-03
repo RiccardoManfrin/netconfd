@@ -178,6 +178,9 @@ paths:
     delete:
       description: |
         Brings down and delete a link layer interface
+
+        Only virtual interfaces can be deleted; physical (`eth*`) interfaces
+        exist throughout the whole runtime of the system and cannot be deleted.
       operationId: ConfigLinkDel
       parameters:
       - explode: false
