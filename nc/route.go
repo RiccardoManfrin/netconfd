@@ -134,10 +134,10 @@ func RouteDelete(routeid RouteID) error {
 		if err != nil {
 			return mapNetlinkError(err, nil)
 		}
-		if isUnmanaged(UnmanagedID(route.Dev), LINKTYPE) {
-			return NewUnmanagedLinkRouteCannotBeModifiedError(route)
-		}
 		if routeid == RouteIDGet(route) {
+			if isUnmanaged(UnmanagedID(route.Dev), LINKTYPE) {
+				return NewUnmanagedLinkRouteCannotBeModifiedError(route)
+			}
 			return mapNetlinkError(netlink.RouteDel(&r), nil)
 		}
 	}
@@ -183,8 +183,10 @@ func RoutesDelete() error {
 			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v route %v removal", r.Dev, r.Print()))
 			continue
 		}
-		err = RouteDelete(RouteIDGet(r))
+		logger.Log.Info(fmt.Sprintf("Deleting route %v", r.Print()))
+		err = RouteDelete(r.ID)
 		if err != nil {
+			logger.Log.Info(fmt.Sprintf("Got an error %v", err.Error()))
 			return err
 		}
 	}
