@@ -61,6 +61,12 @@
 				"protocol": "boot",
 				"scope": "universe"
 			}
+		],
+		"unmanaged": [
+			{
+				"type": "link",
+				"id": "uplane0"
+			}
 		]
 	}
 }
