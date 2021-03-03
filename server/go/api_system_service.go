@@ -13,6 +13,7 @@ package openapi
 import (
 	"context"
 
+	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
@@ -49,7 +50,7 @@ func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (Impl
 	if err != nil {
 		return PatchErrorResponse(err, nil)
 	}
-	return PatchErrorResponse(nc.Patch(network), nil)
+	return PatchErrorResponse(restorableConfigPatch(network), nil)
 }
 
 // ConfigSet - Replace existing configuration with new one
@@ -58,14 +59,34 @@ func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplRe
 	if err != nil {
 		return PatchErrorResponse(err, nil)
 	}
-	//go delayedConfigSet(network)
-	return PutErrorResponse(delayedConfigSet(network), nil)
+	return PutErrorResponse(restorableConfigSet(network), nil)
 }
 
-func delayedConfigSet(network nc.Network) error {
-	//time.Sleep(1 * time.Second)
-	err := nc.Put(network)
+func restorableConfigPatch(network nc.Network) error {
+	existing, err := nc.Get()
 	if err != nil {
+		return err
+	}
+	//time.Sleep(1 * time.Second)
+	err = nc.Patch(network)
+	if err != nil {
+		logger.Log.Warning("Logical error patching the config: restoring to pre-existing config")
+		nc.Put(existing)
+		return err
+	}
+	return nil
+}
+
+func restorableConfigSet(network nc.Network) error {
+	existing, err := nc.Get()
+	if err != nil {
+		return err
+	}
+	//time.Sleep(1 * time.Second)
+	err = nc.Put(network)
+	if err != nil {
+		logger.Log.Warning("Logical error setting the config: restoring to pre-existing config")
+		nc.Put(existing)
 		return err
 	}
 	return nil
@@ -91,5 +112,5 @@ func (s *SystemApiService) ResetConfig(ctx context.Context) (ImplResponse, error
 	if err != nil {
 		return PatchErrorResponse(err, nil)
 	}
-	return PutErrorResponse(delayedConfigSet(network), nil)
+	return PutErrorResponse(restorableConfigSet(network), nil)
 }
