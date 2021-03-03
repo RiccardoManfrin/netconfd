@@ -41,7 +41,11 @@ func Patch(n Network) error {
 
 //Put network config (wipe out and redeploy)
 func Put(n Network) error {
-	err := Del()
+	/* FIRST WE update the unmanaged resources, than we
+	 * apply the config so we can always add unmanaged
+	 * resources and use them in the same PUT/PATCH api
+	 */
+	err := UnmanagedListDelete()
 	if err != nil {
 		return err
 	}
@@ -49,6 +53,12 @@ func Put(n Network) error {
 	if err != nil {
 		return err
 	}
+
+	err = Del()
+	if err != nil {
+		return err
+	}
+
 	err = LinksConfigure(n.Links)
 	if err != nil {
 		return err
@@ -83,10 +93,6 @@ func Del() error {
 		return err
 	}
 	err = DNSsDelete()
-	if err != nil {
-		return err
-	}
-	err = UnmanagedListDelete()
 	if err != nil {
 		return err
 	}
