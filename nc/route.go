@@ -180,7 +180,7 @@ func RoutesDelete() error {
 	}
 	for _, r := range routes {
 		if isUnmanaged(UnmanagedID(r.Dev), LINKTYPE) {
-			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v route removal", r.Dev))
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v route %v removal", r.Dev, r.Print()))
 			continue
 		}
 		err = RouteDelete(RouteIDGet(r))
