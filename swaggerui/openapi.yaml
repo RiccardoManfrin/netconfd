@@ -1459,6 +1459,7 @@ components:
                   * `tun` - Link for to kernel-userspace packet forward
                   * `tap` - Link for kernnel-to-userspace packet evedropping
                   * `ppp` - Point to point [readonly]
+                  * `gre` - GRE Tunnelling device
               enum:
                 - device
                 - dummy
@@ -1471,6 +1472,7 @@ components:
                 - ppp
                 - tun
                 - tap
+                - gre
             info_data:
               type: object
               description: Additional information on the link
@@ -1922,6 +1924,14 @@ components:
 
                     The default value is "1" that enables flow shuffling while value "0"
                     disables it. This option was added in bonding driver 3.7.1
+                local:
+                  allOf:
+                  - $ref: '#/components/schemas/ip'
+                  description: Local IP Address on which the GRE is built
+                remote:
+                  allOf:
+                  - $ref: '#/components/schemas/ip'
+                  description: Remote IP Address endpoint of a GRE tunnel
         #qdisc:
         #  type: string
         operstate:
@@ -1958,6 +1968,7 @@ components:
             - ether
             - loopback
             - ppp
+            - gre
             - none
         address:
           type: string

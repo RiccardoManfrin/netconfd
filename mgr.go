@@ -293,6 +293,7 @@ func NewManager() *Manager {
 	serveMux.Handle("/", m)
 	serveMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
+	nc.InitErrorsLogsTracing()
 	return m
 }
 

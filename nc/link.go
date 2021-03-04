@@ -83,6 +83,10 @@ type LinkLinkinfoInfoData struct {
 	Id int32 `json:"id,omitempty"`
 	// Flags of the virtual device
 	Flags []string `json:"flags,omitempty"`
+	// Local IP Address on which the GRE is built
+	Local net.IP `json:"local,omitempty"`
+	// Remote IP Address endpoint of a GRE tunnel
+	Remote net.IP `json:"remote,omitempty"`
 }
 
 //LinkLinkinfo definition
@@ -228,6 +232,15 @@ func linkParse(link netlink.Link) Link {
 				logger.Log.Warning("Unmatched tuntap info kind vs link typecast")
 			}
 			nclink.Linkinfo.InfoKind = nctuntap.Mode.String()
+		}
+	case "gre":
+		{
+			ncgretun, ok := link.(*netlink.Gretun)
+			if !ok {
+				logger.Log.Warning("Unmatched gre info kind vs link typecast")
+			}
+			nclink.Linkinfo.InfoData.Local = ncgretun.Local
+			nclink.Linkinfo.InfoData.Remote = ncgretun.Remote
 		}
 	case "ppp":
 	default:
@@ -897,6 +910,15 @@ func linkFormat(link Link) (netlink.Link, error) {
 				nllink = &netlink.Tuntap{
 					LinkAttrs: attrs,
 					Mode:      netlink.StringToTuntapModeMap[kind],
+				}
+			}
+		case "gre":
+			{
+				id := &link.Linkinfo.InfoData
+				nllink = &netlink.Gretun{
+					LinkAttrs: attrs,
+					Local:     id.Local,
+					Remote:    id.Remote,
 				}
 			}
 		case "device":

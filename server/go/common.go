@@ -207,6 +207,13 @@ func ncLinkParse(nclink nc.Link) Link {
 			parentLink := string(nclink.Link)
 			link.Link = &parentLink
 		}
+	case "gre":
+		{
+			id := LinkLinkinfoInfoData{}
+			lli.InfoData = &id
+			lli.InfoData.SetLocal(nclink.Linkinfo.InfoData.Local.String())
+			lli.InfoData.SetRemote(nclink.Linkinfo.InfoData.Remote.String())
+		}
 	case "bond":
 		{
 			id := LinkLinkinfoInfoData{}
@@ -310,6 +317,8 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 			AllSlavesActive: li.InfoData.GetAllSlavesActive(),
 			Protocol:        li.InfoData.GetProtocol(),
 			Id:              li.InfoData.GetId(),
+			Local:           *li.InfoData.Local,
+			Remote:          *li.InfoData.Remote,
 		}
 
 	}

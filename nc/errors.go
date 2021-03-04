@@ -3,6 +3,7 @@ package nc
 import (
 	"encoding/json"
 	"fmt"
+	"os"
 	"reflect"
 	"runtime/debug"
 	"syscall"
@@ -33,6 +34,18 @@ var errorCodeToString = map[ErrorCode]string{
 	SEMANTIC:     "Semantic Error",
 	SYNTAX:       "Syntax Error",
 	UNKNOWN_TYPE: "UnknownType Error",
+}
+var netconfdDebugTrace = false
+
+//InitErrorsLogsTracing Initializes error logs with tracing
+func InitErrorsLogsTracing() {
+	netconfdDebugTraceStr, netconfdDebugTraceFound := os.LookupEnv("APP_DEBUG_TRACE")
+	if !netconfdDebugTraceFound {
+		netconfdDebugTrace = false
+	}
+	if netconfdDebugTraceStr == "true" {
+		netconfdDebugTrace = true
+	}
 }
 
 //Can also just NOT be an error!

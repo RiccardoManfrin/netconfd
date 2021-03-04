@@ -913,7 +913,7 @@ components:
         * [Links Operstate](https://www.kernel.org/doc/Documentation/networking/operstates.txt)\n"
       example:
         ifindex: 0
-        address: ""
+        address: 08:00:27:b2:9a:ce
         linkmode: DEFAULT
         link: eth0
         flags:
@@ -946,29 +946,31 @@ components:
           info_data:
             updelay: 0
             arp_validate: none
-            lp_interval: 1
             arp_all_targets: any
-            packets_per_slave: 1
-            fail_over_mac: none
             xmit_hash_policy: layer2
-            miimon: 100
-            resend_igmp: 1
-            min_links: 0
             flags:
             - REORDER_HDR
             - REORDER_HDR
-            downdelay: 0
             arp_interval: 0
-            primary_reselect: always
             tlb_dynamic_lb: 1
             peer_notify_delay: 0
             ad_select: stable
-            ad_lacp_rate: slow
+            remote: ""
+            local: ""
             mode: active-backup
             all_slaves_active: 0
             protocol: 802.1q
             id: 100
             use_carrier: 1
+            lp_interval: 1
+            packets_per_slave: 1
+            fail_over_mac: none
+            miimon: 100
+            resend_igmp: 1
+            min_links: 0
+            downdelay: 0
+            primary_reselect: always
+            ad_lacp_rate: slow
         group: default
       properties:
         ifindex:
@@ -1040,12 +1042,16 @@ components:
           - ether
           - loopback
           - ppp
+          - gre
           - none
           type: string
         address:
-          allOf:
-          - $ref: '#/components/schemas/macaddr'
-          - readOnly: true
+          description: "Address on which the link IP layer is based.\n\nThis is usually\
+            \ a MAC address, but for some protocols link types\n(e.g. gre tunnels)\
+            \ it can also be an IP address of the tunnel. \n"
+          example: 08:00:27:b2:9a:ce
+          readOnly: true
+          type: string
         addr_info:
           description: IP addresses assigned to the link interface
           items:
@@ -1111,29 +1117,31 @@ components:
       example:
         updelay: 0
         arp_validate: none
-        lp_interval: 1
         arp_all_targets: any
-        packets_per_slave: 1
-        fail_over_mac: none
         xmit_hash_policy: layer2
-        miimon: 100
-        resend_igmp: 1
-        min_links: 0
         flags:
         - REORDER_HDR
         - REORDER_HDR
-        downdelay: 0
         arp_interval: 0
-        primary_reselect: always
         tlb_dynamic_lb: 1
         peer_notify_delay: 0
         ad_select: stable
-        ad_lacp_rate: slow
+        remote: ""
+        local: ""
         mode: active-backup
         all_slaves_active: 0
         protocol: 802.1q
         id: 100
         use_carrier: 1
+        lp_interval: 1
+        packets_per_slave: 1
+        fail_over_mac: none
+        miimon: 100
+        resend_igmp: 1
+        min_links: 0
+        downdelay: 0
+        primary_reselect: always
+        ad_lacp_rate: slow
       properties:
         protocol:
           description: |
@@ -1492,6 +1500,14 @@ components:
             disables it. This option was added in bonding driver 3.7.1
           example: 1
           type: integer
+        local:
+          allOf:
+          - $ref: '#/components/schemas/ip'
+          description: Local IP Address on which the GRE is built
+        remote:
+          allOf:
+          - $ref: '#/components/schemas/ip'
+          description: Remote IP Address endpoint of a GRE tunnel
       type: object
     link_linkinfo:
       description: |
@@ -1508,29 +1524,31 @@ components:
         info_data:
           updelay: 0
           arp_validate: none
-          lp_interval: 1
           arp_all_targets: any
-          packets_per_slave: 1
-          fail_over_mac: none
           xmit_hash_policy: layer2
-          miimon: 100
-          resend_igmp: 1
-          min_links: 0
           flags:
           - REORDER_HDR
           - REORDER_HDR
-          downdelay: 0
           arp_interval: 0
-          primary_reselect: always
           tlb_dynamic_lb: 1
           peer_notify_delay: 0
           ad_select: stable
-          ad_lacp_rate: slow
+          remote: ""
+          local: ""
           mode: active-backup
           all_slaves_active: 0
           protocol: 802.1q
           id: 100
           use_carrier: 1
+          lp_interval: 1
+          packets_per_slave: 1
+          fail_over_mac: none
+          miimon: 100
+          resend_igmp: 1
+          min_links: 0
+          downdelay: 0
+          primary_reselect: always
+          ad_lacp_rate: slow
       properties:
         info_slave_kind:
           description: |
@@ -1558,7 +1576,7 @@ components:
             \ L2 type directly connects the lan to \n    the host phyisical device.\
             \ L3 type adds a routing layer in between.\n  * `tun` - Link for to kernel-userspace\
             \ packet forward\n  * `tap` - Link for kernnel-to-userspace packet evedropping\n\
-            \  * `ppp` - Point to point [readonly]\n"
+            \  * `ppp` - Point to point [readonly]\n  * `gre` - GRE Tunnelling device\n"
           enum:
           - device
           - dummy
@@ -1571,6 +1589,7 @@ components:
           - ppp
           - tun
           - tap
+          - gre
           type: string
         info_data:
           $ref: '#/components/schemas/link_linkinfo_info_data'

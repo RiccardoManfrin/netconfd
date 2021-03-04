@@ -35,17 +35,14 @@ Autogen constants command
 
 Risk assessment: unknown technology
 
-## Documentation [2 or 3 days]
-
 ## Unit tests automation [2d]
 
 Spin yocto/alpine machine dedicated to unit tests.
 
-## Run containerized [Needs investigation]
+## GRE
 
-This is the egg and chicken problem (podman and network bootstrap)
-
-# Long Term Investigation
+https://tldp.org/HOWTO/Adv-Routing-HOWTO/lartc.tunnel.gre.html
+https://github.com/vishvananda/netlink/search?q=gre
 
 ## non-local-bind ?
 
