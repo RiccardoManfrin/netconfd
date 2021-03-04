@@ -1960,9 +1960,15 @@ components:
             - ppp
             - none
         address:
-          allOf:
-          - $ref: '#/components/schemas/macaddr'
-          - readOnly: true
+          type: string
+          description: |
+            Address on which the link IP layer is based.
+            
+            This is usually a MAC address, but for some protocols link types
+            (e.g. gre tunnels) it can also be an IP address of the tunnel. 
+          readOnly: true
+          example: 08:00:27:b2:9a:ce
+
         #broadcast:
         #  type: string
         addr_info:
