@@ -71,11 +71,17 @@ func (e *GenericError) Error() string {
 
 //NewGenericError returns a generic error
 func NewGenericError(err error) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &GenericError{Code: UNKNOWN_TYPE, Reason: fmt.Sprintf("Generic uncharted error: %v", err.Error())}
 }
 
 //NewGenericErrorWithReason returns a generic semantic error
 func NewGenericErrorWithReason(reason string) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &GenericError{Code: UNKNOWN_TYPE, Reason: reason}
 }
 
@@ -89,86 +95,137 @@ func (e *SemanticError) Error() string {
 
 //NewGenericSemanticError returns a generic semantic error
 func NewGenericSemanticError() error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Generic Semantic Error"}
 }
 
 //NewUnknownLinkKindError returns a SemanticError error on link layer type interfaces
 func NewUnknownLinkKindError(linkKind string) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "LinkKind " + string(linkKind) + " not known"}
 }
 
 //NewBadAddressError returns a bad address error on link layer interfaces
 func NewBadAddressError(c CIDRAddr) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Bad IP address " + c.String()}
 }
 
 //NewInvalidPrefixLenForIPv4AddrError returns a bad address error on link layer interfaces
 func NewInvalidPrefixLenForIPv4AddrError(len int) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid network Prefix length %v for IPv4 address", len)}
 }
 
 //NewInvalidPrefixLenForIPv6AddrError returns a bad address error on link layer interfaces
 func NewInvalidPrefixLenForIPv6AddrError(len int) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid network Prefix length %v for IPv6 address", len)}
 }
 
 //NewInvalidUnmanagedResourceTypeError returns a bad address error on link layer interfaces
 func NewInvalidUnmanagedResourceTypeError(t Type) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Invalid unmanaged resource type %v", t)}
 }
 
 //NewEINVALError returns a bad address error on link layer interfaces
 func NewEINVALError() error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Syscall EINVAL error (check dmesg)"}
 }
 
 //NewActiveSlaveIfaceNotFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
 func NewActiveSlaveIfaceNotFoundForActiveBackupBondError(bondIfname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Active Slave Iface not found for Active-Backup type bond " + string(bondIfname)}
 }
 
 //NewParentLinkNotFoundForVlan returns a Not found error on link layer interfaces
 func NewParentLinkNotFoundForVlan(ifname LinkID, parentIfname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Parent Link " + string(parentIfname) + " not found for Vlan Link " + string(ifname)}
 }
 
 //NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
 func NewMultipleActiveSlaveIfacesFoundForActiveBackupBondError(bondIfname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Multiple Active Slave Ifaces found for Active-Backup type bond " + string(bondIfname)}
 }
 
 //NewBackupSlaveIfaceFoundForNonActiveBackupBondError Returns an error if a backup interface is found for a non Active-Backup type bond
 func NewBackupSlaveIfaceFoundForNonActiveBackupBondError(backupIfname LinkID, bondIfname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Backup Slave Iface " + string(backupIfname) + " found for non Active-Backup type bond " + string(bondIfname)}
 }
 
 //NewRouteLinkDeviceNotFoundError describes a link device not found for a route to create
 func NewRouteLinkDeviceNotFoundError(routeID RouteID, linkID LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "Route " + string(routeID) + " Link Device " + string(linkID) + " not found"}
 }
 
 //NewENETUNREACHError returns a network unreachable error
 func NewENETUNREACHError(r Resource) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r.Print())}
 }
 
 //NewEEXISTError returns a network unreachable error
 func NewEEXISTError(r Resource) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got EEXIST error: route exists %v", r.Print())}
 }
 
 //NewTooManyDNSServersError describes an error on the number of requested DNS servers
 func NewTooManyDNSServersError() error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: "More than two entries found in DNS servers config"}
 }
 
 //NewDuplicateDNSServersIDsError describes a config error on the DNS serves IDs
 func NewDuplicateDNSServersIDsError(dnsid1 DnsID, dnsid2 DnsID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Duplicate DNS server IDs %v, %v config", string(dnsid1), string(dnsid2))}
 }
 
 //NewUnknownUnsupportedDNSServersIDsError describes a config error on the DNS serves IDs
 func NewUnknownUnsupportedDNSServersIDsError(dnsid1 DnsID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Unknown/Unsupported DNS server IDs %v", string(dnsid1))}
 }
 
@@ -182,6 +239,9 @@ func (e *SyntaxError) Error() string {
 
 //NewInvalidIPAddressError Returns an error if a backup interface is found for a non Active-Backup type bond
 func NewInvalidIPAddressError(addr string) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &SyntaxError{Code: SYNTAX, Reason: "Invalid IP Address/Network  " + addr}
 }
 
@@ -195,6 +255,9 @@ func (e *UnknownTypeError) Error() string {
 
 //NewLinkUnknownFlagTypeError returns a Conflict error on link layer interfaces
 func NewLinkUnknownFlagTypeError(flag LinkFlag) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &UnknownTypeError{Code: UNKNOWN_TYPE, Reason: "Link Flag Type" + string(flag) + " unknown/unsupported"}
 }
 
@@ -208,66 +271,105 @@ func (e *ConflictError) Error() string {
 
 //NewLinkExistsConflictError returns a Conflict error on link layer interfaces
 func NewLinkExistsConflictError(linkID LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: "Link " + string(linkID) + " exists"}
 }
 
 //NewLinkDeviceDoesNotExistError returns a Conflict error on link layer interfaces
 func NewLinkDeviceDoesNotExistError(linkID LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: "Link device " + string(linkID) + " does not exist"}
 }
 
 //NewNonBondMasterLinkTypeError returns an error for non bond master link type
 func NewNonBondMasterLinkTypeError(ifname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: "Master link interface " + string(ifname) + " is not a bond"}
 }
 
 //NewCannotStopDHCPError returns an error for DHCP related stop errors
 func NewCannotStopDHCPError(ifname LinkID, e error) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to stop DHCP for interface %v: %v", string(ifname), e)}
 }
 
 //NewUnmanagedLinkCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
 func NewUnmanagedLinkCannotBeModifiedError(ifname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged interface %v", string(ifname))}
 }
 
 //NewUnmanagedLinkRouteCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
 func NewUnmanagedLinkRouteCannotBeModifiedError(r Route) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged link %v route %v", r.Dev, r.Print())}
 }
 
 //NewUnmanagedLinkDHCPCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
 func NewUnmanagedLinkDHCPCannotBeModifiedError(ifname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged link %v DHCP config")}
 }
 
 //NewCannotStartDHCPError returns an error for DHCP related stop errors
 func NewCannotStartDHCPError(ifname LinkID, e error) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to start DHCP for interface %v: %v", string(ifname), e)}
 }
 
 //NewCannotStatusDHCPError returns an error for DHCP related status errors
 func NewCannotStatusDHCPError(ifname LinkID, e error) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Failed to get DHCP status for interface %v: %v", string(ifname), e)}
 }
 
 //NewDHCPAlreadyRunningConflictError returns an error for DHCP that is requested for an interface where it's already running
 func NewDHCPAlreadyRunningConflictError(ifname LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("DHCP is alreay running for interface %v", string(ifname))}
 }
 
 //NewDNSServerExistsConflictError returns an error for DHCP that is requested for an interface where it's already running
 func NewDNSServerExistsConflictError(dnsid DnsID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("DNS server %v already exists", string(dnsid))}
 }
 
 //NewUnknownLinkDeviceLabel
 func NewUnknownLinkDeviceLabel(label string) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Unknown Link Device Label %v in renaming procedure", label)}
 }
 
 //NewEPERMError returns a missing permissions error
 func NewEPERMError(r Resource) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{
 		Code: CONFLICT,
 		Reason: fmt.Sprintf("Got EPERM error: insufficient permissions to perform action on %v: %v",
@@ -277,6 +379,9 @@ func NewEPERMError(r Resource) error {
 
 //NewRouteExistsConflictError returns a Conflict error on link layer interfaces
 func NewRouteExistsConflictError(routeID RouteID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &ConflictError{Code: CONFLICT, Reason: "Route " + string(routeID) + " exists"}
 }
 
@@ -290,26 +395,41 @@ func (e *NotFoundError) Error() string {
 
 //NewLinkNotFoundError returns a Not found error on link layer interfaces
 func NewLinkNotFoundError(linkID LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &NotFoundError{Code: NOT_FOUND, Reason: "Link " + string(linkID) + " not found"}
 }
 
 //NewRouteByIDNotFoundError returns a Not found error on link layer interfaces
 func NewRouteByIDNotFoundError(routeid RouteID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &NotFoundError{Code: NOT_FOUND, Reason: "Route ID " + string(routeid) + " not found"}
 }
 
 //NewDHCPRunningNotFoundError returns a Not found error on link layer interfaces not managed by DHCP
 func NewDHCPRunningNotFoundError(linkID LinkID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &NotFoundError{Code: NOT_FOUND, Reason: "DHCP for Link ID " + string(linkID) + " not found"}
 }
 
 //NewDNSServerNotFoundError returns a Not found error on DNS not found by ID
 func NewDNSServerNotFoundError(dnsID DnsID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &NotFoundError{Code: NOT_FOUND, Reason: "DNS ID " + string(dnsID) + " not found"}
 }
 
 //NewUnmanagedResourceNotFoundError returns a Not found error on unmanaged resource not found
 func NewUnmanagedResourceNotFoundError(id UnmanagedID) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &NotFoundError{Code: NOT_FOUND, Reason: "Unmanaged Resource ID " + string(id) + " not found"}
 }
 
@@ -324,5 +444,8 @@ func (e *UnexpetecdCornerCaseError) Error() string {
 
 //NewUnexpectedCornerCaseError returns a Conflict error on link layer interfaces
 func NewUnexpectedCornerCaseError(reason string) error {
+	if netconfdDebugTrace {
+		debug.PrintStack()
+	}
 	return &UnexpetecdCornerCaseError{Code: UNEXPECTED_CORNER_CASE, Reason: reason}
 }
