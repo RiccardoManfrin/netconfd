@@ -37,6 +37,7 @@ type Link struct {
 	Linkmode *string `json:"linkmode,omitempty"`
 	Group *string `json:"group,omitempty"`
 	LinkType string `json:"link_type"`
+	// Address on which the link IP layer is based.  This is usually a MAC address, but for some tunnelling protocols virtual link interface types (e.g. GRE tunnels) it can also be an IP address of the tunnel.  
 	Address *string `json:"address,omitempty"`
 	// IP addresses assigned to the link interface
 	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
