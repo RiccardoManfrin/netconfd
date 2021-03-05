@@ -87,7 +87,13 @@ func httpOk(w http.ResponseWriter) {
 func (m *Manager) LoadConfig(conffile *string) error {
 	err := m.Conf.LoadConfig(conffile)
 	if err != nil {
-		return err
+		logger.Log.Warning(err.Error())
+		logger.Log.Info("Trying to apply a failsafe config...")
+		m.Conf.Global = oas.NewGlobal()
+		m.Conf.Global.Mgmt = oas.NewGlobalMgmtWithDefaults()
+		if err = m.patchFailSafeConfig(); err != nil {
+			logger.Log.Warning(err.Error())
+		}
 	}
 
 	loglev := "INF"

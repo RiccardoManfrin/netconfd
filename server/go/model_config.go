@@ -209,7 +209,7 @@ func (c *Config) LoadConfig(conffile *string) error {
 	js, err := os.Open(*conffile)
 	if err != nil {
 		return fmt.Errorf(
-			"Config File %v access error [%v]: your network will not be configured. Aborting...",
+			"Config File %v access error [%v]: your network will not be properly configured",
 			*conffile,
 			err.Error())
 	}
