@@ -1358,6 +1358,7 @@ components:
           description: |
             Inteface index ID
           type: integer
+          readOnly: true
         ifname:
           $ref: '#/components/schemas/ifname'
         link:
@@ -1975,10 +1976,10 @@ components:
           description: |
             Address on which the link IP layer is based.
             
-            This is usually a MAC address, but for some protocols link types
-            (e.g. gre tunnels) it can also be an IP address of the tunnel. 
+            This is usually a MAC address, but for some tunnelling protocols virtual
+            link interface types (e.g. GRE tunnels) it can also be an IP address of the tunnel. 
           readOnly: true
-          example: 08:00:27:b2:9a:ce
+          example: "08:00:27:b2:9a:ce"
 
         #broadcast:
         #  type: string
@@ -1991,15 +1992,22 @@ components:
               #family:
               #  type: string
               local:
-                $ref: '#/components/schemas/ip'
+                allOf:
+                - $ref: '#/components/schemas/ip'
+                description: IP address assigned to the link interface
               prefixlen:
                 type: integer
+                description: Network prefix (0-32 for IPv4, 0-128 for IPv6)
+                minimum: 0
+                maximum: 128
                 example: 24
               broadcast:
                 type: string
                 example: "10.1.2.255"
               address:
-                $ref: '#/components/schemas/ip'
+                allOf:
+                - $ref: '#/components/schemas/ip'
+                description: The terminating remote peer for point-to-point kind virtual devices
               #scope:
               #  $ref: '#/components/schemas/scope'
               #dynamic:

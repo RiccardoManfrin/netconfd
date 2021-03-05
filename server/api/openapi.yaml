@@ -927,13 +927,13 @@ components:
         operstate: down
         addr_info:
         - broadcast: 10.1.2.255
-          address: 10.1.2.3
+          address: ""
           prefixlen: 24
-          local: 10.1.2.3
+          local: ""
         - broadcast: 10.1.2.255
-          address: 10.1.2.3
+          address: ""
           prefixlen: 24
-          local: 10.1.2.3
+          local: ""
         linkinfo:
           info_kind: device
           info_slave_kind: bond
@@ -976,6 +976,7 @@ components:
         ifindex:
           description: |
             Inteface index ID
+          readOnly: true
           type: integer
         ifname:
           description: |
@@ -1047,8 +1048,9 @@ components:
           type: string
         address:
           description: "Address on which the link IP layer is based.\n\nThis is usually\
-            \ a MAC address, but for some protocols link types\n(e.g. gre tunnels)\
-            \ it can also be an IP address of the tunnel. \n"
+            \ a MAC address, but for some tunnelling protocols virtual\nlink interface\
+            \ types (e.g. GRE tunnels) it can also be an IP address of the tunnel.\
+            \ \n"
           example: 08:00:27:b2:9a:ce
           readOnly: true
           type: string
@@ -1597,26 +1599,28 @@ components:
     link_addr_info:
       example:
         broadcast: 10.1.2.255
-        address: 10.1.2.3
+        address: ""
         prefixlen: 24
-        local: 10.1.2.3
+        local: ""
       properties:
         local:
-          description: IPv4 or IPv6 address
-          example: 10.1.2.3
-          format: ip
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/ip'
+          description: IP address assigned to the link interface
         prefixlen:
+          description: Network prefix (0-32 for IPv4, 0-128 for IPv6)
           example: 24
+          maximum: 128
+          minimum: 0
           type: integer
         broadcast:
           example: 10.1.2.255
           type: string
         address:
-          description: IPv4 or IPv6 address
-          example: 10.1.2.3
-          format: ip
-          type: string
+          allOf:
+          - $ref: '#/components/schemas/ip'
+          description: The terminating remote peer for point-to-point kind virtual
+            devices
       required:
       - local
       - prefixlen
