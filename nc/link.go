@@ -1057,7 +1057,7 @@ func vmwareLinksReorder() error {
 		}
 		//Remapping is only for devices
 		if l.Linkinfo.InfoKind != "device" {
-			logger.Log.Info("Skipping virtual network device %v reordering", string(l.Ifname))
+			logger.Log.Info(fmt.Sprintf("Skipping virtual network device %v reordering", string(l.Ifname)))
 			continue
 		}
 		path := "/sys/class/net/" + string(l.Ifname) + "/device/label"
