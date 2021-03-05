@@ -1046,8 +1046,8 @@ func vmwareLinksReorder() error {
 		return err
 	}
 
-	reVNIC := regexp.MustCompile(`^Ethernet([0-9]+)$`)
-	reDNIC := regexp.MustCompile(`^pciPassthru([0-9]+)$`)
+	reVNIC := regexp.MustCompile(`^Ethernet([0-9]+).*`)
+	reDNIC := regexp.MustCompile(`^pciPassthru([0-9]+).*`)
 
 	for _, l := range links {
 		//Skip loopback
