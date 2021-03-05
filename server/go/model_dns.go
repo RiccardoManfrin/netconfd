@@ -38,7 +38,7 @@ func NewDns(id Dnsid, nameserver string, ) *Dns {
 // but it doesn't guarantee that properties required by API are set
 func NewDnsWithDefaults() *Dns {
 	this := Dns{}
-	var id Dnsid = "primary"
+	var id Dnsid = PRIMARY
 	this.Id = id
 	return &this
 }
