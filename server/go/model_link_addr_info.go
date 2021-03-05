@@ -18,11 +18,12 @@ import (
 
 // LinkAddrInfo struct for LinkAddrInfo
 type LinkAddrInfo struct {
-	// IPv4 or IPv6 address
-	Local     net.IP  `json:"local"`
+	// IP address assigned to the link interface
+	Local net.IP `json:"local"`
+	// Network prefix (0-32 for IPv4, 0-128 for IPv6)
 	Prefixlen int32   `json:"prefixlen"`
 	Broadcast *string `json:"broadcast,omitempty"`
-	// IPv4 or IPv6 address
+	// The terminating remote peer for point-to-point kind virtual devices
 	Address *net.IP `json:"address,omitempty"`
 }
 
