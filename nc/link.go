@@ -1019,7 +1019,10 @@ type nICInfo struct {
 }
 
 func linksRename(mis map[LinkID]nICInfo) error {
-	for _, mi := range mis {
+	for remappedEthName, mi := range mis {
+		if remappedEthName == mi.Ifname {
+			continue
+		}
 		if err := LinkSetDown(mi.Ifname); err != nil {
 			return err
 		}
@@ -1028,6 +1031,10 @@ func linksRename(mis map[LinkID]nICInfo) error {
 		}
 	}
 	for remappedEthName, mi := range mis {
+		if remappedEthName == mi.Ifname {
+			logger.Log.Info(fmt.Sprintf("Skipped remapping NIC %v MAC %v to %v (order matches)", mi.Ifname, mi.MACAddr, remappedEthName))
+			continue
+		}
 		if err := LinkRename(LinkID("old"+mi.Ifname), remappedEthName); err != nil {
 			return err
 		}

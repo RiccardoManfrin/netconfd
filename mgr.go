@@ -315,11 +315,10 @@ func (m *Manager) ifaceRorder() error {
 
 //Start activates manager
 func (m *Manager) Start() {
-	if err := m.ifaceRorder(); err != nil {
-		logger.Log.Warning(fmt.Sprintf("Failed to reorder interfaces: %v", err.Error()))
-	}
-
 	if *skipbootconfig == false {
+		if err := m.ifaceRorder(); err != nil {
+			logger.Log.Warning(fmt.Sprintf("Failed to reorder interfaces: %v", err.Error()))
+		}
 		if err := m.patchInitialConfig(); err != nil {
 			logger.Log.Warning(err.Error())
 			if err := m.patchFailSafeConfig(); err != nil {
@@ -327,6 +326,7 @@ func (m *Manager) Start() {
 			}
 		}
 	} else {
+		logger.Log.Info("Skipped boot configuration enforcement")
 		if err := m.enforceUnmanaged(); err != nil {
 			logger.Log.Warning(fmt.Sprintf("Failed to load Unmanaged resources: %v", err.Error()))
 		}
