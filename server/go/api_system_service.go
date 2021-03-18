@@ -12,6 +12,9 @@ package openapi
 
 import (
 	"context"
+	"flag"
+	"fmt"
+	"runtime/debug"
 
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
@@ -62,6 +65,8 @@ func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplRe
 	return PutErrorResponse(restorableConfigSet(network), nil)
 }
 
+var norollbackonfailure = flag.Bool("norollbackonfailure", false, "Prevents rollback on failure (for debug purposes)")
+
 func restorableConfigPatch(network nc.Network) error {
 	existing, err := nc.Get()
 	if err != nil {
@@ -71,7 +76,9 @@ func restorableConfigPatch(network nc.Network) error {
 	err = nc.Patch(network)
 	if err != nil {
 		logger.Log.Warning("Logical error patching the config: restoring to pre-existing config")
-		nc.Put(existing)
+		if !*norollbackonfailure {
+			nc.Put(existing)
+		}
 		return err
 	}
 	return nil
@@ -85,8 +92,12 @@ func restorableConfigSet(network nc.Network) error {
 	//time.Sleep(1 * time.Second)
 	err = nc.Put(network)
 	if err != nil {
+		logger.Log.Warning(fmt.Sprintf("Error: %v", err.Error()))
 		logger.Log.Warning("Logical error setting the config: restoring to pre-existing config")
-		nc.Put(existing)
+		debug.PrintStack()
+		if !*norollbackonfailure {
+			nc.Put(existing)
+		}
 		return err
 	}
 	return nil
