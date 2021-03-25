@@ -639,7 +639,7 @@ components:
         mgmt:
           $ref: '#/components/schemas/global_mgmt'
         cfg_path:
-          default: /opt/netconfd/netconf.json
+          default: /opt/netconfd/version/etc/netconf.json
           type: string
       type: object
     ip:

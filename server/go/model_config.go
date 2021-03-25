@@ -13,13 +13,6 @@ package openapi
 
 import (
 	"encoding/json"
-	"fmt"
-	"io/ioutil"
-	"math"
-	"os"
-	"strconv"
-
-	logger "gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 // Config struct for Config
@@ -154,76 +147,4 @@ func (v NullableConfig) MarshalJSON() ([]byte, error) {
 func (v *NullableConfig) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
-}
-
-func (c *Config) Persist() error {
-	cfgPath := *c.Global.CfgPath
-	c.Global.CfgPath = nil
-	res, err := json.MarshalIndent(c, "", "  ")
-	if err != nil {
-		return err
-	}
-	logger.Log.Notice(fmt.Sprintf("Persisting config to path %v: %v", cfgPath, string(res)))
-	err = ioutil.WriteFile(cfgPath, res, 0644)
-	c.Global.CfgPath = &cfgPath
-	if err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (c *Config) overrideWithEnv() error {
-
-	logger.Log.Info("Looking up APP_HTTP_API_ADDR from env")
-	netconfdHost, netconfdHostFound := os.LookupEnv("APP_HTTP_API_ADDR")
-	logger.Log.Info("Looking up APP_HTTP_API_PORT from env")
-	netconfdPort, netconfdPortFound := os.LookupEnv("APP_HTTP_API_PORT")
-
-	if netconfdHostFound {
-		logger.Log.Info("Overriding .global.mgmt.host with " + netconfdHost + " APP_HTTP_API_ADDR env var")
-		c.Global.Mgmt.Host = &netconfdHost
-	}
-	if netconfdPortFound {
-
-		overridePort, err := strconv.Atoi(netconfdPort)
-		if err != nil {
-			logger.Log.Info("Env APP_HTTP_API_PORT " + netconfdPort + " is not a number")
-			return err
-		}
-		if overridePort > int(math.Exp2(16))-1 {
-			logger.Log.Info("Env APP_HTTP_API_PORT " + netconfdPort + " is too high")
-			return err
-		}
-		logger.Log.Info("Overriding .global.mgmt.port with " + netconfdPort + " APP_HTTP_API_PORT env var")
-		port := int32(overridePort)
-		c.Global.Mgmt.Port = &port
-	}
-
-	return nil
-}
-
-//LoadConfig loads configs.
-func (c *Config) LoadConfig(conffile *string) error {
-	logger.Log.Info("Loading config from " + *conffile)
-	js, err := os.Open(*conffile)
-	if err != nil {
-		return fmt.Errorf(
-			"Config File %v access error [%v]: your network will not be properly configured",
-			*conffile,
-			err.Error())
-	}
-	defer js.Close()
-
-	if err := json.NewDecoder(js).Decode(&c); err != nil {
-		return fmt.Errorf("Invalid JSON in configuration")
-	}
-
-	if c.Global != nil {
-		c.Global.CfgPath = conffile
-	}
-
-	c.overrideWithEnv()
-
-	return nil
 }
