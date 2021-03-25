@@ -35,7 +35,6 @@ func (s *{{classname}}Service) {{nickname}}(ctx context.Context{{#allParams}}, {
 
 {{/dataType}}
 {{/responses}}
-	err := errors.New("{{nickname}} method not implemented")
-	return {{httpMethod}}ErrorResponse(err, nil)
+	return {{nickname}}_Impl(ctx{{#allParams}}, {{paramName}}{{/allParams}})
 }{{/operation}}{{/operations}}
 

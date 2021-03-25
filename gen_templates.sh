@@ -34,7 +34,7 @@ docker run \
 
 cp server/go-client/model_*.go server/go/
 cp server/go-client/utils.go server/go/
-cp templates/static/* server/go/
+cp -r templates/static/* server/go/
 rm server/go-client -rf
 rm server/main.go
 rm server/go.mod
