@@ -23,7 +23,7 @@ type NetworkApiService struct {
 }
 
 // ConfigDHCPCreate - Create DHCP
-func (s *NetworkApiService) ConfigDHCPCreate(ctx context.Context, dhcp Dhcp) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDHCPCreate_Impl(ctx context.Context, dhcp Dhcp) (ImplResponse, error) {
 	ncdhcp, err := ncDhcpFormat(dhcp)
 	if err != nil {
 		return PostErrorResponse(err, nil)
@@ -33,13 +33,13 @@ func (s *NetworkApiService) ConfigDHCPCreate(ctx context.Context, dhcp Dhcp) (Im
 }
 
 // ConfigDHCPDel - Delete DHCP
-func (s *NetworkApiService) ConfigDHCPDel(ctx context.Context, ifname string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDHCPDel_Impl(ctx context.Context, ifname string) (ImplResponse, error) {
 	err := nc.DHCPDelete(nc.LinkID(ifname))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigDHCPGet - Get DHCP
-func (s *NetworkApiService) ConfigDHCPGet(ctx context.Context, ifname string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDHCPGet_Impl(ctx context.Context, ifname string) (ImplResponse, error) {
 	ncdhcp, err := nc.DHCPGet(nc.LinkID(ifname))
 	if err != nil {
 		return GetErrorResponse(err, nil)
@@ -49,13 +49,13 @@ func (s *NetworkApiService) ConfigDHCPGet(ctx context.Context, ifname string) (I
 }
 
 // ConfigDHCPsGet - Get All DHCP
-func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDHCPsGet_Impl(ctx context.Context) (ImplResponse, error) {
 	dhcps, err := dhcpsGet()
 	return GetErrorResponse(err, dhcps)
 }
 
 // ConfigDNSCreate - Create DNS
-func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSCreate_Impl(ctx context.Context, dns Dns) (ImplResponse, error) {
 	ncdns, err := ncDnsFormat(dns)
 	if err != nil {
 		return PostErrorResponse(err, nil)
@@ -65,13 +65,13 @@ func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplR
 }
 
 // ConfigDNSDel - Delete DNS
-func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSDel_Impl(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	err := nc.DNSDelete(nc.DnsID(dnsid))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigDNSGet - Get DNS
-func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSGet_Impl(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	nclink, err := nc.DnsGet(nc.DnsID(dnsid))
 	if err != nil {
 		return GetErrorResponse(err, nil)
@@ -81,13 +81,13 @@ func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid Dnsid) (Impl
 }
 
 // ConfigDNSsGet - Get All DNS config
-func (s *NetworkApiService) ConfigDNSsGet(ctx context.Context) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigDNSsGet_Impl(ctx context.Context) (ImplResponse, error) {
 	dnss, err := dnssGet()
 	return GetErrorResponse(err, dnss)
 }
 
 // ConfigLinkCreate - Create New Link
-func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigLinkCreate_Impl(ctx context.Context, link Link) (ImplResponse, error) {
 	nclink, err := ncLinkFormat(link)
 	if err != nil {
 		return PostErrorResponse(err, nil)
@@ -130,13 +130,13 @@ func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (Im
 }
 
 // ConfigLinkDel - Brings down and delete a link layer interface
-func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigLinkDel_Impl(ctx context.Context, ifname string) (ImplResponse, error) {
 	err := nc.LinkDelete(nc.LinkID(ifname))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigLinkGet - Retrieve link layer interface information
-func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigLinkGet_Impl(ctx context.Context, ifname string) (ImplResponse, error) {
 	nclink, err := nc.LinkGet(nc.LinkID(ifname))
 	if err != nil {
 		return GetErrorResponse(err, nil)
@@ -146,14 +146,14 @@ func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (I
 }
 
 // ConfigLinksGet - Get all link layer interfaces
-func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigLinksGet_Impl(ctx context.Context) (ImplResponse, error) {
 	links, err := linksGet()
 
 	return GetErrorResponse(err, links)
 }
 
 // ConfigRouteCreate - Configures a route
-func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigRouteCreate_Impl(ctx context.Context, route Route) (ImplResponse, error) {
 	ncroute, err := ncRouteFormat(route)
 	if err != nil {
 		return PostErrorResponse(err, nil)
@@ -166,13 +166,13 @@ func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) 
 }
 
 // ConfigRouteDel - Brings down and delete an L3 IP route
-func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigRouteDel_Impl(ctx context.Context, routeid string) (ImplResponse, error) {
 	err := nc.RouteDelete(nc.RouteID(routeid))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigRouteGet - Get a L3 route details
-func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigRouteGet_Impl(ctx context.Context, routeid string) (ImplResponse, error) {
 	ncroute, err := nc.RouteGet(nc.RouteID(routeid))
 	if err != nil {
 		return GetErrorResponse(err, nil)
@@ -181,13 +181,13 @@ func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) 
 }
 
 // ConfigRoutesGet - Get all routing table routes
-func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigRoutesGet_Impl(ctx context.Context) (ImplResponse, error) {
 	routes, err := routesGet()
 	return GetErrorResponse(err, routes)
 }
 
 // ConfigUnmanagedCreate - Create Unmanaged
-func (s *NetworkApiService) ConfigUnmanagedCreate(ctx context.Context, unmanaged Unmanaged) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigUnmanagedCreate_Impl(ctx context.Context, unmanaged Unmanaged) (ImplResponse, error) {
 	ncunmanaged, err := ncUnmanagedFormat(unmanaged)
 	if err != nil {
 		return PostErrorResponse(err, nil)
@@ -197,13 +197,13 @@ func (s *NetworkApiService) ConfigUnmanagedCreate(ctx context.Context, unmanaged
 }
 
 // ConfigUnmanagedDel - Delete Unmanaged
-func (s *NetworkApiService) ConfigUnmanagedDel(ctx context.Context, id string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigUnmanagedDel_Impl(ctx context.Context, id string) (ImplResponse, error) {
 	err := nc.UnmanagedDelete(nc.UnmanagedID(id))
 	return DeleteErrorResponse(err, nil)
 }
 
 // ConfigUnmanagedGet - Get Unmanaged
-func (s *NetworkApiService) ConfigUnmanagedGet(ctx context.Context, id string) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigUnmanagedGet_Impl(ctx context.Context, id string) (ImplResponse, error) {
 	ncunmanaged, err := nc.UnmanagedGet(nc.UnmanagedID(id))
 	if err != nil {
 		return GetErrorResponse(err, nil)
@@ -213,7 +213,7 @@ func (s *NetworkApiService) ConfigUnmanagedGet(ctx context.Context, id string) (
 }
 
 // ConfigUnmanagedListGet - Get All Unmanaged
-func (s *NetworkApiService) ConfigUnmanagedListGet(ctx context.Context) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigUnmanagedListGet_Impl(ctx context.Context) (ImplResponse, error) {
 	links, err := unmanagedListGet()
 
 	return GetErrorResponse(err, links)
