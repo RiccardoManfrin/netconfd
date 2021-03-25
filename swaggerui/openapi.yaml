@@ -1085,7 +1085,7 @@ components:
               default: 8666
         cfg_path:
           type: string
-          default: "/opt/netconfd/netconf.json"
+          default: "/opt/netconfd/version/etc/netconf.json"
     ip:
       description: IPv4 or IPv6 address
       type: string

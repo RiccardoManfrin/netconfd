@@ -42,7 +42,7 @@ func NewGlobalWithDefaults() *Global {
 	this := Global{}
 	var logLev string = "INF"
 	this.LogLev = &logLev
-	var cfgPath string = "/opt/netconfd/netconf.json"
+	var cfgPath string = "/opt/netconfd/version/etc/netconf.json"
 	this.CfgPath = &cfgPath
 	return &this
 }
