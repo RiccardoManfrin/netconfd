@@ -13,213 +13,290 @@ package openapi
 import (
 	"context"
 
-	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
-
-// NetworkApiService is a service that implents the logic for the NetworkApiServicer
-// This service should implement the business logic for every endpoint for the NetworkApi API.
-// Include any external packages or services that will be required by this service.
-type NetworkApiService struct {
-}
 
 // NewNetworkApiService creates a default api service
 func NewNetworkApiService() NetworkApiServicer {
 	return &NetworkApiService{}
 }
 
-// ConfigDHCPCreate - Create DHCP
+// ConfigDHCPCreate - Create DHCP 
 func (s *NetworkApiService) ConfigDHCPCreate(ctx context.Context, dhcp Dhcp) (ImplResponse, error) {
-	ncdhcp, err := ncDhcpFormat(dhcp)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	err = nc.DHCPCreate(ncdhcp)
-	return PostErrorResponse(err, nil)
+	// TODO - update ConfigDHCPCreate with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return s.ConfigDHCPCreate_Impl(ctx, dhcp)
 }
 
-// ConfigDHCPDel - Delete DHCP
+// ConfigDHCPDel - Delete DHCP 
 func (s *NetworkApiService) ConfigDHCPDel(ctx context.Context, ifname string) (ImplResponse, error) {
-	err := nc.DHCPDelete(nc.LinkID(ifname))
-	return DeleteErrorResponse(err, nil)
+	// TODO - update ConfigDHCPDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigDHCPDel_Impl(ctx, ifname)
 }
 
-// ConfigDHCPGet - Get DHCP
+// ConfigDHCPGet - Get DHCP 
 func (s *NetworkApiService) ConfigDHCPGet(ctx context.Context, ifname string) (ImplResponse, error) {
-	ncdhcp, err := nc.DHCPGet(nc.LinkID(ifname))
-	if err != nil {
-		return GetErrorResponse(err, nil)
-	}
-	dhcp := ncDhcpParse(ncdhcp)
-	return GetErrorResponse(err, dhcp)
+	// TODO - update ConfigDHCPGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigDHCPGet_Impl(ctx, ifname)
 }
 
-// ConfigDHCPsGet - Get All DHCP
+// ConfigDHCPsGet - Get All DHCP 
 func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, error) {
-	dhcps, err := dhcpsGet()
-	return GetErrorResponse(err, dhcps)
+	// TODO - update ConfigDHCPsGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, []Dhcp{}) or use other options such as http.Ok ...
+	//return Response(200, []Dhcp{}), nil
+
+	return s.ConfigDHCPsGet_Impl(ctx)
 }
 
-// ConfigDNSCreate - Create DNS
+// ConfigDNSCreate - Create DNS 
 func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplResponse, error) {
-	ncdns, err := ncDnsFormat(dns)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	err = nc.DNSCreate(ncdns)
-	return PostErrorResponse(err, nil)
+	// TODO - update ConfigDNSCreate with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return s.ConfigDNSCreate_Impl(ctx, dns)
 }
 
-// ConfigDNSDel - Delete DNS
+// ConfigDNSDel - Delete DNS 
 func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
-	err := nc.DNSDelete(nc.DnsID(dnsid))
-	return DeleteErrorResponse(err, nil)
+	// TODO - update ConfigDNSDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigDNSDel_Impl(ctx, dnsid)
 }
 
-// ConfigDNSGet - Get DNS
+// ConfigDNSGet - Get DNS 
 func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
-	nclink, err := nc.DnsGet(nc.DnsID(dnsid))
-	if err != nil {
-		return GetErrorResponse(err, nil)
-	}
+	// TODO - update ConfigDNSGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	return GetErrorResponse(err, ncDnsParse(nclink))
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigDNSGet_Impl(ctx, dnsid)
 }
 
-// ConfigDNSsGet - Get All DNS config
+// ConfigDNSsGet - Get All DNS config 
 func (s *NetworkApiService) ConfigDNSsGet(ctx context.Context) (ImplResponse, error) {
-	dnss, err := dnssGet()
-	return GetErrorResponse(err, dnss)
+	// TODO - update ConfigDNSsGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, []Dns{}) or use other options such as http.Ok ...
+	//return Response(200, []Dns{}), nil
+
+	return s.ConfigDNSsGet_Impl(ctx)
 }
 
-// ConfigLinkCreate - Create New Link
+// ConfigLinkCreate - Create New Link 
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
-	nclink, err := ncLinkFormat(link)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	if nclink.Master != "" {
-		/* You cannot enslave a link if it is UP */
-		err = nc.LinkCreateDown(nclink)
-		if err != nil {
-			return PostErrorResponse(err, nil)
-		}
+	// TODO - update ConfigLinkCreate with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-		nc.LinkSetMaster(nclink.Ifname, nclink.Master)
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
 
-		if nclink.Flags.HaveFlag(nc.LinkFlag("up")) {
-			err = nc.LinkSetUp(nclink.Ifname)
-			if err != nil {
-				return PostErrorResponse(err, nil)
-			}
-		}
-		if nclink.Mtu > 0 {
-			err = nc.LinkSetMTU(nclink.Ifname, int(nclink.Mtu))
-			if err != nil {
-				return PostErrorResponse(err, nil)
-			}
-		}
-	} else {
-		err = nc.LinkCreate(nclink)
-		if err != nil {
-			return PostErrorResponse(err, nil)
-		}
-		if nclink.Mtu > 0 {
-			err = nc.LinkSetMTU(nclink.Ifname, int(nclink.Mtu))
-			if err != nil {
-				return PostErrorResponse(err, nil)
-			}
-		}
-	}
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
 
-	return PostErrorResponse(err, nil)
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return s.ConfigLinkCreate_Impl(ctx, link)
 }
 
-// ConfigLinkDel - Brings down and delete a link layer interface
+// ConfigLinkDel - Delete Link 
 func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (ImplResponse, error) {
-	err := nc.LinkDelete(nc.LinkID(ifname))
-	return DeleteErrorResponse(err, nil)
+	// TODO - update ConfigLinkDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigLinkDel_Impl(ctx, ifname)
 }
 
-// ConfigLinkGet - Retrieve link layer interface information
+// ConfigLinkGet - Get Link 
 func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (ImplResponse, error) {
-	nclink, err := nc.LinkGet(nc.LinkID(ifname))
-	if err != nil {
-		return GetErrorResponse(err, nil)
-	}
+	// TODO - update ConfigLinkGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	return GetErrorResponse(err, ncLinkParse(nclink))
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigLinkGet_Impl(ctx, ifname)
 }
 
-// ConfigLinksGet - Get all link layer interfaces
+// ConfigLinksGet - Get All Links 
 func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, error) {
-	links, err := linksGet()
+	// TODO - update ConfigLinksGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	return GetErrorResponse(err, links)
+	//TODO: Uncomment the next line to return response Response(200, []Link{}) or use other options such as http.Ok ...
+	//return Response(200, []Link{}), nil
+
+	return s.ConfigLinksGet_Impl(ctx)
 }
 
-// ConfigRouteCreate - Configures a route
+// ConfigRouteCreate - Create New Route 
 func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) (ImplResponse, error) {
-	ncroute, err := ncRouteFormat(route)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	routeid, err := nc.RouteCreate(ncroute)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	return PostErrorResponse(err, routeid)
+	// TODO - update ConfigRouteCreate with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, string{}) or use other options such as http.Ok ...
+	//return Response(201, string{}), nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return s.ConfigRouteCreate_Impl(ctx, route)
 }
 
-// ConfigRouteDel - Brings down and delete an L3 IP route
+// ConfigRouteDel - Delete Route 
 func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) (ImplResponse, error) {
-	err := nc.RouteDelete(nc.RouteID(routeid))
-	return DeleteErrorResponse(err, nil)
+	// TODO - update ConfigRouteDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigRouteDel_Impl(ctx, routeid)
 }
 
-// ConfigRouteGet - Get a L3 route details
+// ConfigRouteGet - Get Route 
 func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) (ImplResponse, error) {
-	ncroute, err := nc.RouteGet(nc.RouteID(routeid))
-	if err != nil {
-		return GetErrorResponse(err, nil)
-	}
-	return GetErrorResponse(err, ncRouteParse(ncroute))
+	// TODO - update ConfigRouteGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigRouteGet_Impl(ctx, routeid)
 }
 
-// ConfigRoutesGet - Get all routing table routes
+// ConfigRoutesGet - Get All Routes 
 func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, error) {
-	routes, err := routesGet()
-	return GetErrorResponse(err, routes)
+	// TODO - update ConfigRoutesGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, []Route{}) or use other options such as http.Ok ...
+	//return Response(200, []Route{}), nil
+
+	return s.ConfigRoutesGet_Impl(ctx)
 }
 
-// ConfigUnmanagedCreate - Create Unmanaged
+// ConfigUnmanagedCreate - Create Unmanaged 
 func (s *NetworkApiService) ConfigUnmanagedCreate(ctx context.Context, unmanaged Unmanaged) (ImplResponse, error) {
-	ncunmanaged, err := ncUnmanagedFormat(unmanaged)
-	if err != nil {
-		return PostErrorResponse(err, nil)
-	}
-	err = nc.UnmanagedCreate(ncunmanaged)
-	return PostErrorResponse(err, nil)
+	// TODO - update ConfigUnmanagedCreate with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(201, {}) or use other options such as http.Ok ...
+	//return Response(201, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(409, {}) or use other options such as http.Ok ...
+	//return Response(409, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(400, {}) or use other options such as http.Ok ...
+	//return Response(400, nil),nil
+
+	return s.ConfigUnmanagedCreate_Impl(ctx, unmanaged)
 }
 
-// ConfigUnmanagedDel - Delete Unmanaged
+// ConfigUnmanagedDel - Delete Unmanaged 
 func (s *NetworkApiService) ConfigUnmanagedDel(ctx context.Context, id string) (ImplResponse, error) {
-	err := nc.UnmanagedDelete(nc.UnmanagedID(id))
-	return DeleteErrorResponse(err, nil)
+	// TODO - update ConfigUnmanagedDel with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
+
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigUnmanagedDel_Impl(ctx, id)
 }
 
-// ConfigUnmanagedGet - Get Unmanaged
+// ConfigUnmanagedGet - Get Unmanaged 
 func (s *NetworkApiService) ConfigUnmanagedGet(ctx context.Context, id string) (ImplResponse, error) {
-	ncunmanaged, err := nc.UnmanagedGet(nc.UnmanagedID(id))
-	if err != nil {
-		return GetErrorResponse(err, nil)
-	}
+	// TODO - update ConfigUnmanagedGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	return GetErrorResponse(err, ncUnmanagedParse(ncunmanaged))
+	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
+	//return Response(200, nil),nil
+
+	//TODO: Uncomment the next line to return response Response(404, {}) or use other options such as http.Ok ...
+	//return Response(404, nil),nil
+
+	return s.ConfigUnmanagedGet_Impl(ctx, id)
 }
 
-// ConfigUnmanagedListGet - Get All Unmanaged
+// ConfigUnmanagedListGet - Get All Unmanaged 
 func (s *NetworkApiService) ConfigUnmanagedListGet(ctx context.Context) (ImplResponse, error) {
-	links, err := unmanagedListGet()
+	// TODO - update ConfigUnmanagedListGet with the required logic for this service method.
+	// Add api_network_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
 
-	return GetErrorResponse(err, links)
+	//TODO: Uncomment the next line to return response Response(200, []Unmanaged{}) or use other options such as http.Ok ...
+	//return Response(200, []Unmanaged{}), nil
+
+	return s.ConfigUnmanagedListGet_Impl(ctx)
 }
+
