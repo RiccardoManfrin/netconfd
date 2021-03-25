@@ -20,13 +20,6 @@ import (
 	"gitlab.lan.athonet.com/core/netconfd/nc"
 )
 
-// SystemApiService is a service that implents the logic for the SystemApiServicer
-// This service should implement the business logic for every endpoint for the SystemApi API.
-// Include any external packages or services that will be required by this service.
-type SystemApiService struct {
-	Conf Config
-}
-
 func readLiveConfig(s *SystemApiService) error {
 	network, err := nc.Get()
 	if err != nil {

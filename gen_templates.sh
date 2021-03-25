@@ -12,7 +12,7 @@
 #    -o /local/templates/go-server/
 
 if [ -f ./server/.openapi-generator/FILES ]; then
-    for f in $(cat ./server/.openapi-generator/FILES); do rm server/$f; done
+    for f in $(cat ./server/.openapi-generator/FILES); do rm -rf server/$f; done
 fi
 docker run \
     -e GO_POST_PROCESS_FILE="/usr/local/bin/gofmt -w" \
@@ -34,7 +34,6 @@ docker run \
 
 cp server/go-client/model_*.go server/go/
 cp server/go-client/utils.go server/go/
-cp -r templates/static/* server/go/
 rm server/go-client -rf
 rm server/main.go
 rm server/go.mod
