@@ -35,6 +35,6 @@ func (s *{{classname}}Service) {{nickname}}(ctx context.Context{{#allParams}}, {
 
 {{/dataType}}
 {{/responses}}
-	return {{nickname}}_Impl(ctx{{#allParams}}, {{paramName}}{{/allParams}})
+	return s.{{nickname}}_Impl(ctx{{#allParams}}, {{paramName}}{{/allParams}})
 }{{/operation}}{{/operations}}
 

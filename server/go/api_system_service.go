@@ -34,7 +34,7 @@ func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) 
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return ConfigGet_Impl(ctx)
+	return s.ConfigGet_Impl(ctx)
 }
 
 // ConfigPatch - Patch existing configuration with new one 
@@ -48,7 +48,7 @@ func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (Impl
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return ConfigPatch_Impl(ctx, config)
+	return s.ConfigPatch_Impl(ctx, config)
 }
 
 // ConfigSet - Replace existing configuration with new one 
@@ -62,7 +62,7 @@ func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplRe
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return ConfigSet_Impl(ctx, config)
+	return s.ConfigSet_Impl(ctx, config)
 }
 
 // PersistConfig - Persist live configuration
@@ -73,7 +73,7 @@ func (s *SystemApiService) PersistConfig(ctx context.Context) (ImplResponse, err
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return PersistConfig_Impl(ctx)
+	return s.PersistConfig_Impl(ctx)
 }
 
 // ResetConfig - Reload persisted configuration back
@@ -84,6 +84,6 @@ func (s *SystemApiService) ResetConfig(ctx context.Context) (ImplResponse, error
 	//TODO: Uncomment the next line to return response Response(200, {}) or use other options such as http.Ok ...
 	//return Response(200, nil),nil
 
-	return ResetConfig_Impl(ctx)
+	return s.ResetConfig_Impl(ctx)
 }
 
