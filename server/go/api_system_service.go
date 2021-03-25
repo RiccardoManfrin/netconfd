@@ -12,6 +12,7 @@ package openapi
 
 import (
 	"context"
+
 )
 
 // NewSystemApiService creates a default api service
@@ -19,7 +20,7 @@ func NewSystemApiService() SystemApiServicer {
 	return &SystemApiService{}
 }
 
-// ConfigGet - Get current live configuration
+// ConfigGet - Get current live configuration 
 func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) {
 	// TODO - update ConfigGet with the required logic for this service method.
 	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -30,7 +31,7 @@ func (s *SystemApiService) ConfigGet(ctx context.Context) (ImplResponse, error) 
 	return s.ConfigGet_Impl(ctx)
 }
 
-// ConfigPatch - Patch existing configuration with new one
+// ConfigPatch - Patch existing configuration with new one 
 func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (ImplResponse, error) {
 	// TODO - update ConfigPatch with the required logic for this service method.
 	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -44,7 +45,7 @@ func (s *SystemApiService) ConfigPatch(ctx context.Context, config Config) (Impl
 	return s.ConfigPatch_Impl(ctx, config)
 }
 
-// ConfigSet - Replace existing configuration with new one
+// ConfigSet - Replace existing configuration with new one 
 func (s *SystemApiService) ConfigSet(ctx context.Context, config Config) (ImplResponse, error) {
 	// TODO - update ConfigSet with the required logic for this service method.
 	// Add api_system_service.go to the .openapi-generator-ignore to avoid overwriting this service implementation when updating open api generation.
@@ -79,3 +80,4 @@ func (s *SystemApiService) ResetConfig(ctx context.Context) (ImplResponse, error
 
 	return s.ResetConfig_Impl(ctx)
 }
+
