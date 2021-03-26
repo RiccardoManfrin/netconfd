@@ -1,7 +1,7 @@
 openapi: 3.0.0
 info:
   description: Network Configurator service
-  version: 0.2.0
+  version: 0.3.0
   title: netConfD API
   contact:
     email: support@athonet.com
