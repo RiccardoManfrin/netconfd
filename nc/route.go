@@ -88,8 +88,7 @@ func RouteIDGet(route Route) RouteID {
 	md.Write([]byte(route.Gateway.String()))
 	md.Write([]byte(route.Dev))
 	md.Write([]byte(route.Dst.String()))
-	data := md.Sum(nil)
-	return RouteID(fmt.Sprintf("%x", md5.Sum(data)))
+	return RouteID(fmt.Sprintf("%x", md.Sum(nil)))
 }
 
 //RoutesGet returns the array of routes
