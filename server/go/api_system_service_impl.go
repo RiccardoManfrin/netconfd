@@ -70,9 +70,12 @@ func restorableConfigPatch(network nc.Network) error {
 	//time.Sleep(1 * time.Second)
 	err = nc.Patch(network)
 	if err != nil {
-		logger.Log.Warning("Logical error patching the config: restoring to pre-existing config")
+		logger.Log.Warning("Functional/Logical error patching the config")
 		if !*norollbackonfailure {
+			logger.Log.Info("Restoring pre-existing config")
 			nc.Put(existing)
+		} else {
+			logger.Log.Info("Skipping pre-existing config restoration due to `--norollbackonfailure` option")
 		}
 		return err
 	}
@@ -88,10 +91,13 @@ func restorableConfigSet(network nc.Network) error {
 	err = nc.Put(network)
 	if err != nil {
 		logger.Log.Warning(fmt.Sprintf("Error: %v", err.Error()))
-		logger.Log.Warning("Logical error setting the config: restoring to pre-existing config")
+		logger.Log.Warning("Functional/Logical error setting the config")
 		debug.PrintStack()
 		if !*norollbackonfailure {
+			logger.Log.Info("Restoring pre-existing config")
 			nc.Put(existing)
+		} else {
+			logger.Log.Info("Skipping pre-existing config restoration due to `--norollbackonfailure` option")
 		}
 		return err
 	}
