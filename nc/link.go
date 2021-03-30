@@ -398,12 +398,12 @@ func LinksConfigure(links []Link) error {
 		}
 		l, _ := netlink.LinkByName(string(link.Ifname))
 		if l != nil {
-			logger.Log.Debug("Setting link %v down", link.Ifname)
+			logger.Log.Debug(fmt.Sprintf(fmt.Sprintf("Setting link %v down", link.Ifname)))
 			LinkSetDown(link.Ifname)
 			removable, why := isLinkRemovable(l)
 			if !removable {
 				//Just set addresses
-				logger.Log.Debug("Setting link %v addresses", link.Ifname)
+				logger.Log.Debug(fmt.Sprintf("Setting link %v addresses", link.Ifname))
 				if err := LinkSetAddresses(link); err != nil {
 					return err
 				}
@@ -411,13 +411,13 @@ func LinksConfigure(links []Link) error {
 				logger.Log.Debug(why)
 				continue
 			}
-			logger.Log.Debug("Deleting link %v", link.Ifname)
+			logger.Log.Debug(fmt.Sprintf("Deleting link %v", link.Ifname))
 			if err := LinkDelete(link.Ifname); err != nil {
 				logger.Log.Warning("Link Delete Error:", err)
 			}
 		}
 		/* You cannot enslave a link if it is UP */
-		logger.Log.Debug("Deleting link %v", link.Ifname)
+		logger.Log.Debug(fmt.Sprintf("Deleting link %v", link.Ifname))
 		//Adresses are assigned in here
 		if err := LinkCreateDown(link); err != nil {
 			return err
@@ -430,7 +430,7 @@ func LinksConfigure(links []Link) error {
 			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v slave active/backup configuration", link.Ifname))
 			continue
 		}
-		logger.Log.Debug("Setting slave active/backup properties for link %v", link.Ifname)
+		logger.Log.Debug(fmt.Sprintf("Setting slave active/backup properties for link %v", link.Ifname))
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
 			if err != nil {
@@ -457,7 +457,7 @@ func LinksConfigure(links []Link) error {
 			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v master/slave cross properties configuration", link.Ifname))
 			continue
 		}
-		logger.Log.Debug("Setting master/slave cross properties for link %v", link.Ifname)
+		logger.Log.Debug(fmt.Sprintf("Setting master/slave cross properties for link %v", link.Ifname))
 		if link.Master != "" {
 			l, err := LinkGet(link.Master)
 			if err != nil {
@@ -490,7 +490,7 @@ func LinksConfigure(links []Link) error {
 			continue
 		}
 		if link.Flags.HaveFlag(LinkFlag(net.FlagUp.String())) {
-			logger.Log.Debug("Setting link %v up", link.Ifname)
+			logger.Log.Debug(fmt.Sprintf("Setting link %v up", link.Ifname))
 			if err := LinkSetUp(link.Ifname); err != nil {
 				logger.Log.Warning("Link Set Up Error:", err)
 			}

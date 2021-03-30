@@ -317,8 +317,8 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 			AllSlavesActive: li.InfoData.GetAllSlavesActive(),
 			Protocol:        li.InfoData.GetProtocol(),
 			Id:              li.InfoData.GetId(),
-			Local:           *li.InfoData.Local,
-			Remote:          *li.InfoData.Remote,
+			Local:           net.ParseIP(li.InfoData.GetLocal()),
+			Remote:          net.ParseIP(li.InfoData.GetRemote()),
 		}
 
 	}
