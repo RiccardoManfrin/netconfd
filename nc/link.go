@@ -535,10 +535,13 @@ func LinkCreateDown(link Link) error {
 	isFlagUp := link.Flags.HaveFlag(LinkFlag(net.FlagUp.String()))
 	link.Flags = link.Flags.ClearFlag(LinkFlag(net.FlagUp.String()))
 	err := LinkCreate(link)
+	if err != nil {
+		return err
+	}
 	if isFlagUp {
 		link.Flags = link.Flags.SetFlag(LinkFlag(net.FlagUp.String()))
 	}
-	return err
+	return nil
 }
 
 //LinkSetAddresses assignes all addresses of a link (erase and recreate them)
