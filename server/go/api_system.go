@@ -23,12 +23,12 @@ type SystemApiController struct {
 
 // NewSystemApiController creates a default api controller
 func NewSystemApiController(s SystemApiServicer) Router {
-	return &SystemApiController{ service: s }
+	return &SystemApiController{service: s}
 }
 
 // Routes returns all of the api route for the SystemApiController
 func (c *SystemApiController) Routes() Routes {
-	return Routes{ 
+	return Routes{
 		{
 			"ConfigGet",
 			strings.ToUpper("Get"),
@@ -62,8 +62,8 @@ func (c *SystemApiController) Routes() Routes {
 	}
 }
 
-// ConfigGet - Get current live configuration 
-func (c *SystemApiController) ConfigGet(w http.ResponseWriter, r *http.Request) { 
+// ConfigGet - Get current live configuration
+func (c *SystemApiController) ConfigGet(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ConfigGet(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -72,17 +72,18 @@ func (c *SystemApiController) ConfigGet(w http.ResponseWriter, r *http.Request) 
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigPatch - Patch existing configuration with new one 
-func (c *SystemApiController) ConfigPatch(w http.ResponseWriter, r *http.Request) { 
+// ConfigPatch - Patch existing configuration with new one
+func (c *SystemApiController) ConfigPatch(w http.ResponseWriter, r *http.Request) {
 	config := &Config{}
 	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
-		w.WriteHeader(500)
+		status := 400
+		EncodeJSONResponse(err, &status, w)
 		return
 	}
-	
+
 	result, err := c.service.ConfigPatch(r.Context(), *config)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -91,17 +92,17 @@ func (c *SystemApiController) ConfigPatch(w http.ResponseWriter, r *http.Request
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
-// ConfigSet - Replace existing configuration with new one 
-func (c *SystemApiController) ConfigSet(w http.ResponseWriter, r *http.Request) { 
+// ConfigSet - Replace existing configuration with new one
+func (c *SystemApiController) ConfigSet(w http.ResponseWriter, r *http.Request) {
 	config := &Config{}
 	if err := json.NewDecoder(r.Body).Decode(&config); err != nil {
 		w.WriteHeader(500)
 		return
 	}
-	
+
 	result, err := c.service.ConfigSet(r.Context(), *config)
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -110,11 +111,11 @@ func (c *SystemApiController) ConfigSet(w http.ResponseWriter, r *http.Request) 
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
 // PersistConfig - Persist live configuration
-func (c *SystemApiController) PersistConfig(w http.ResponseWriter, r *http.Request) { 
+func (c *SystemApiController) PersistConfig(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.PersistConfig(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -123,11 +124,11 @@ func (c *SystemApiController) PersistConfig(w http.ResponseWriter, r *http.Reque
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
 
 // ResetConfig - Reload persisted configuration back
-func (c *SystemApiController) ResetConfig(w http.ResponseWriter, r *http.Request) { 
+func (c *SystemApiController) ResetConfig(w http.ResponseWriter, r *http.Request) {
 	result, err := c.service.ResetConfig(r.Context())
 	//If an error occured, encode the error with the status code
 	if err != nil {
@@ -136,5 +137,5 @@ func (c *SystemApiController) ResetConfig(w http.ResponseWriter, r *http.Request
 	}
 	//If no error, encode the body and the result code
 	EncodeJSONResponse(result.Body, &result.Code, w)
-	
+
 }
