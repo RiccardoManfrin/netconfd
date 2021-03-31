@@ -30,14 +30,14 @@ type Link struct {
 	// Promiscuous mode flag
 	Promiscuity *int32 `json:"promiscuity,omitempty"`
 	// In case the interface is part of a bond or bridge, specifies the bond/bridge interface it belongs to.
-	Master   *string       `json:"master,omitempty"`
-	Linkinfo *LinkLinkinfo `json:"linkinfo,omitempty"`
-	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down   * `unknown` - Interface state is not known (driver does not implement the API) 
+	Master   *string                `json:"master,omitempty"`
+	Linkinfo *DiscriminatedLinkInfo `json:"linkinfo,omitempty"`
+	// Readonly state of the interface.  Provides information on the state being for example UP of an interface.  It is ignored when applying the config  Possible values:    * `up` - Interface is up   * `down` - Interface is down   * `unknown` - Interface state is not known (driver does not implement the API)
 	Operstate *string `json:"operstate,omitempty"`
-	Linkmode *string `json:"linkmode,omitempty"`
-	Group *string `json:"group,omitempty"`
-	LinkType string `json:"link_type"`
-	// Address on which the link IP layer is based.  This is usually a MAC address, but for some tunnelling protocols virtual link interface types (e.g. GRE tunnels) it can also be an IP address of the tunnel.  
+	Linkmode  *string `json:"linkmode,omitempty"`
+	Group     *string `json:"group,omitempty"`
+	LinkType  string  `json:"link_type"`
+	// Address on which the link IP layer is based.  This is usually a MAC address, but for some tunnelling protocols virtual link interface types (e.g. GRE tunnels) it can also be an IP address of the tunnel.
 	Address *string `json:"address,omitempty"`
 	// IP addresses assigned to the link interface
 	AddrInfo *[]LinkAddrInfo `json:"addr_info,omitempty"`
@@ -284,7 +284,7 @@ func (o *Link) GetLinkinfo() LinkLinkinfo {
 		var ret LinkLinkinfo
 		return ret
 	}
-	return *o.Linkinfo
+	return o.Linkinfo.LinkLinkinfo
 }
 
 // GetLinkinfoOk returns a tuple with the Linkinfo field value if set, nil otherwise
@@ -293,7 +293,7 @@ func (o *Link) GetLinkinfoOk() (*LinkLinkinfo, bool) {
 	if o == nil || o.Linkinfo == nil {
 		return nil, false
 	}
-	return o.Linkinfo, true
+	return &o.Linkinfo.LinkLinkinfo, true
 }
 
 // HasLinkinfo returns a boolean if a field has been set.
@@ -307,7 +307,7 @@ func (o *Link) HasLinkinfo() bool {
 
 // SetLinkinfo gets a reference to the given LinkLinkinfo and assigns it to the Linkinfo field.
 func (o *Link) SetLinkinfo(v LinkLinkinfo) {
-	o.Linkinfo = &v
+	o.Linkinfo.LinkLinkinfo = v
 }
 
 // GetOperstate returns the Operstate field value if set, zero value otherwise.

@@ -185,7 +185,7 @@ func ncLinkParse(nclink nc.Link) Link {
 		link.AddrInfo = &lai
 	}
 
-	lli := LinkLinkinfo{}
+	lli := DiscriminatedLinkInfo{}
 	if nclink.Linkinfo.InfoKind != "" {
 		lli.InfoKind = &nclink.Linkinfo.InfoKind
 		link.Linkinfo = &lli
