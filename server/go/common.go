@@ -190,12 +190,6 @@ func ncLinkParse(nclink nc.Link) Link {
 		lli.InfoKind = &nclink.Linkinfo.InfoKind
 		link.Linkinfo = &lli
 	}
-	isd := LinkLinkinfoInfoSlaveData{}
-	lli.InfoSlaveData = &isd
-	if nclink.Master != "" {
-		master := string(nclink.Master)
-		link.Master = &master
-	}
 
 	switch nclink.Linkinfo.InfoKind {
 	case "vlan":
@@ -255,7 +249,12 @@ func ncLinkParse(nclink nc.Link) Link {
 			logger.Log.Warning("Unknown Link Kind : %v", nclink.Linkinfo.InfoKind)
 		}
 	}
+
 	if nclink.Master != "" {
+		master := string(nclink.Master)
+		link.Master = &master
+		isd := LinkLinkinfoInfoSlaveData{}
+		lli.InfoSlaveData = &isd
 		icisd := &nclink.Linkinfo.InfoSlaveData
 		link.SetMaster(string(nclink.Master))
 		isd.SetState(icisd.State)
