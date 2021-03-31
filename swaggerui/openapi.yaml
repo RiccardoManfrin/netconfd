@@ -1600,13 +1600,6 @@ components:
       - $ref: '#/components/schemas/linkinfo'
       - $ref: '#/components/schemas/linkinfo_gre_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
-    linkinfo_full:
-      allOf:
-      - $ref: '#/components/schemas/linkinfo'
-      - $ref: '#/components/schemas/linkinfo_bond_details'
-      - $ref: '#/components/schemas/linkinfo_vlan_details'
-      - $ref: '#/components/schemas/linkinfo_gre_details'
-      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_default:
       allOf:
       - $ref: '#/components/schemas/linkinfo'
