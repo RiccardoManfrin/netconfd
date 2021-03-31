@@ -194,47 +194,47 @@ func ncLinkParse(nclink nc.Link) Link {
 	switch nclink.Linkinfo.InfoKind {
 	case "vlan":
 		{
-			id := LinkLinkinfoInfoData{}
-			id.Protocol = &nclink.Linkinfo.InfoData.Protocol
-			id.Id = &nclink.Linkinfo.InfoData.Id
-			lli.InfoData = &id
+			did := DiscriminatedInfoData{}
+			did.SetProtocol(nclink.Linkinfo.InfoData.Protocol)
+			did.SetId(nclink.Linkinfo.InfoData.Id)
+			lli.InfoData = &did
 			parentLink := string(nclink.Link)
 			link.Link = &parentLink
 		}
 	case "gre":
 		{
-			id := LinkLinkinfoInfoData{}
-			lli.InfoData = &id
-			lli.InfoData.SetLocal(nclink.Linkinfo.InfoData.Local.String())
-			lli.InfoData.SetRemote(nclink.Linkinfo.InfoData.Remote.String())
+			did := DiscriminatedInfoData{}
+			did.SetLocal(nclink.Linkinfo.InfoData.Local.String())
+			did.SetRemote(nclink.Linkinfo.InfoData.Remote.String())
+			lli.InfoData = &did
 		}
 	case "bond":
 		{
-			id := LinkLinkinfoInfoData{}
-			id.Mode = &nclink.Linkinfo.InfoData.Mode
-			id.Miimon = &nclink.Linkinfo.InfoData.Miimon
-			id.Downdelay = &nclink.Linkinfo.InfoData.Downdelay
-			id.Updelay = &nclink.Linkinfo.InfoData.Updelay
-			id.PeerNotifyDelay = &nclink.Linkinfo.InfoData.PeerNotifyDelay
-			id.UseCarrier = &nclink.Linkinfo.InfoData.UseCarrier
-			id.ArpInterval = &nclink.Linkinfo.InfoData.ArpInterval
-			id.ArpValidate = &nclink.Linkinfo.InfoData.ArpValidate
-			id.LpInterval = &nclink.Linkinfo.InfoData.LpInterval
-			id.ArpAllTargets = &nclink.Linkinfo.InfoData.ArpAllTargets
-			id.PacketsPerSlave = &nclink.Linkinfo.InfoData.PacketsPerSlave
-			id.FailOverMac = &nclink.Linkinfo.InfoData.FailOverMac
-			id.XmitHashPolicy = &nclink.Linkinfo.InfoData.XmitHashPolicy
-			id.ResendIgmp = &nclink.Linkinfo.InfoData.ResendIgmp
-			id.MinLinks = &nclink.Linkinfo.InfoData.MinLinks
-			id.ArpInterval = &nclink.Linkinfo.InfoData.ArpInterval
-			id.PrimaryReselect = &nclink.Linkinfo.InfoData.PrimaryReselect
-			id.TlbDynamicLb = &nclink.Linkinfo.InfoData.TlbDynamicLb
-			id.AdSelect = &nclink.Linkinfo.InfoData.AdSelect
-			id.AdLacpRate = &nclink.Linkinfo.InfoData.AdLacpRate
-			id.Mode = &nclink.Linkinfo.InfoData.Mode
-			id.AllSlavesActive = &nclink.Linkinfo.InfoData.AllSlavesActive
-			id.UseCarrier = &nclink.Linkinfo.InfoData.UseCarrier
-			lli.InfoData = &id
+			did := DiscriminatedInfoData{}
+			did.SetMode(nclink.Linkinfo.InfoData.Mode)
+			did.SetMiimon(nclink.Linkinfo.InfoData.Miimon)
+			did.SetDowndelay(nclink.Linkinfo.InfoData.Downdelay)
+			did.SetUpdelay(nclink.Linkinfo.InfoData.Updelay)
+			did.SetPeerNotifyDelay(nclink.Linkinfo.InfoData.PeerNotifyDelay)
+			did.SetUseCarrier(nclink.Linkinfo.InfoData.UseCarrier)
+			did.SetArpInterval(nclink.Linkinfo.InfoData.ArpInterval)
+			did.SetArpValidate(nclink.Linkinfo.InfoData.ArpValidate)
+			did.SetLpInterval(nclink.Linkinfo.InfoData.LpInterval)
+			did.SetArpAllTargets(nclink.Linkinfo.InfoData.ArpAllTargets)
+			did.SetPacketsPerSlave(nclink.Linkinfo.InfoData.PacketsPerSlave)
+			did.SetFailOverMac(nclink.Linkinfo.InfoData.FailOverMac)
+			did.SetXmitHashPolicy(nclink.Linkinfo.InfoData.XmitHashPolicy)
+			did.SetResendIgmp(nclink.Linkinfo.InfoData.ResendIgmp)
+			did.SetMinLinks(nclink.Linkinfo.InfoData.MinLinks)
+			did.SetArpInterval(nclink.Linkinfo.InfoData.ArpInterval)
+			did.SetPrimaryReselect(nclink.Linkinfo.InfoData.PrimaryReselect)
+			did.SetTlbDynamicLb(nclink.Linkinfo.InfoData.TlbDynamicLb)
+			did.SetAdSelect(nclink.Linkinfo.InfoData.AdSelect)
+			did.SetAdLacpRate(nclink.Linkinfo.InfoData.AdLacpRate)
+			did.SetMode(nclink.Linkinfo.InfoData.Mode)
+			did.SetAllSlavesActive(nclink.Linkinfo.InfoData.AllSlavesActive)
+			did.SetUseCarrier(nclink.Linkinfo.InfoData.UseCarrier)
+			lli.InfoData = &did
 		}
 	case "device":
 	case "bridge":
