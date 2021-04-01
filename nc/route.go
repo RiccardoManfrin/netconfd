@@ -2,6 +2,7 @@ package nc
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"net"
 	"syscall"
@@ -39,7 +40,8 @@ type Route struct {
 
 //Print implements route print
 func (r *Route) Print() string {
-	return fmt.Sprintf("%v", r)
+	data, _ := json.Marshal(r)
+	return fmt.Sprintf("%v", string(data))
 }
 
 func routeParse(route netlink.Route) (Route, error) {
