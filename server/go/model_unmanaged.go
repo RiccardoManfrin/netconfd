@@ -3,7 +3,7 @@
  *
  * Network Configurator service
  *
- * API version: 0.2.0
+ * API version: 0.3.0
  * Contact: support@athonet.com
  */
 
