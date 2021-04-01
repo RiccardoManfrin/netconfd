@@ -61,6 +61,8 @@ func mapNetlinkError(err error, r Resource) error {
 				return NewENETUNREACHError(r)
 			} else if err.(syscall.Errno) == syscall.EEXIST {
 				return NewEEXISTError(r)
+			} else if err.(syscall.Errno) == syscall.ERANGE {
+				return NewERANGEError(r)
 			}
 		}
 		debug.PrintStack()
@@ -210,12 +212,20 @@ func NewENETUNREACHError(r Resource) error {
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ENETUNREACH error: network is not reachable for route %v", r.Print())}
 }
 
-//NewEEXISTError returns a network unreachable error
+//NewEEXISTError returns a conflict error
 func NewEEXISTError(r Resource) error {
 	if NetconfdDebugTrace {
 		debug.PrintStack()
 	}
-	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got EEXIST error: route exists %v", r.Print())}
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Got EEXIST error: route exists %v", r.Print())}
+}
+
+//NewERANGEError returns an out of range error
+func NewERANGEError(r Resource) error {
+	if NetconfdDebugTrace {
+		debug.PrintStack()
+	}
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ERANGE error: parameter value out of range for resource %+v", r.Print())}
 }
 
 //NewTooManyDNSServersError describes an error on the number of requested DNS servers
