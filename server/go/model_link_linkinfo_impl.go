@@ -137,8 +137,16 @@ func (v *LinkLinkinfo) Validate() error {
 				return err
 			}
 		}
+	case "bridge":
+		{
+			if v.InfoSlaveKind != nil {
+				return NewAttributeDoesntBelongToLinkKindSemanticError("info_slave_kind", infoKind)
+			}
+			if v.InfoSlaveData != nil {
+				return NewAttributeDoesntBelongToLinkKindSemanticError("info_slave_data", infoKind)
+			}
+		}
 	case "device",
-		"bridge",
 		"dummy",
 		"ppp",
 		"tun",
