@@ -1,6 +1,7 @@
 package nc
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net"
@@ -146,8 +147,9 @@ type Link struct {
 }
 
 //Print implements route print
-func (r *Link) Print() string {
-	return fmt.Sprintf("%v", r)
+func (l *Link) Print() string {
+	data, _ := json.Marshal(l)
+	return fmt.Sprintf("%v", string(data))
 }
 
 func linkParse(link netlink.Link) Link {
