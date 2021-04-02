@@ -822,7 +822,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 				if id.LpInterval != -1 {
 					nlbondlink.LpInterval = int(id.LpInterval)
 				}
-				if id.PacketsPerSlave != -1 {
+				if id.PacketsPerSlave > 0 {
 					nlbondlink.PacketsPerSlave = int(id.PacketsPerSlave)
 				}
 				if id.ResendIgmp != -1 {
@@ -849,7 +849,7 @@ func linkFormat(link Link) (netlink.Link, error) {
 				if id.AdLacpRate != "" {
 					nlbondlink.LacpRate = netlink.StringToBondLacpRate(id.AdLacpRate)
 				}
-				if id.ArpValidate != "" {
+				if id.ArpValidate != "" && id.ArpValidate != "none" {
 					nlbondlink.ArpValidate = netlink.StringToBondArpValidateMap[id.ArpValidate]
 				}
 				if id.ArpAllTargets != "" {

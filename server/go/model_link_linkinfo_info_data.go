@@ -376,7 +376,7 @@ func (o *LinkLinkinfoInfoData) SetUseCarrier(v int32) {
 
 // GetArpInterval returns the ArpInterval field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetArpInterval() int32 {
-	if o == nil || o.ArpInterval == nil {
+	if o == nil || o.ArpInterval == nil || *o.ArpInterval <= 0 {
 		var ret int32 = -1
 		return ret
 	}
@@ -386,7 +386,7 @@ func (o *LinkLinkinfoInfoData) GetArpInterval() int32 {
 // GetArpIntervalOk returns a tuple with the ArpInterval field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LinkLinkinfoInfoData) GetArpIntervalOk() (*int32, bool) {
-	if o == nil || o.ArpInterval == nil {
+	if o == nil || o.ArpInterval == nil || *o.ArpInterval <= 0 {
 		return nil, false
 	}
 	return o.ArpInterval, true
@@ -394,7 +394,7 @@ func (o *LinkLinkinfoInfoData) GetArpIntervalOk() (*int32, bool) {
 
 // HasArpInterval returns a boolean if a field has been set.
 func (o *LinkLinkinfoInfoData) HasArpInterval() bool {
-	if o != nil && o.ArpInterval != nil {
+	if o != nil && o.ArpInterval != nil && *o.ArpInterval > 0 {
 		return true
 	}
 
@@ -403,12 +403,15 @@ func (o *LinkLinkinfoInfoData) HasArpInterval() bool {
 
 // SetArpInterval gets a reference to the given int32 and assigns it to the ArpInterval field.
 func (o *LinkLinkinfoInfoData) SetArpInterval(v int32) {
-	o.ArpInterval = &v
+	if v > 0 {
+		o.ArpInterval = &v
+	}
+
 }
 
 // GetArpValidate returns the ArpValidate field value if set, zero value otherwise.
 func (o *LinkLinkinfoInfoData) GetArpValidate() string {
-	if o == nil || o.ArpValidate == nil {
+	if o == nil || o.ArpValidate == nil || *o.ArpValidate == "none" {
 		var ret string
 		return ret
 	}
@@ -418,7 +421,7 @@ func (o *LinkLinkinfoInfoData) GetArpValidate() string {
 // GetArpValidateOk returns a tuple with the ArpValidate field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LinkLinkinfoInfoData) GetArpValidateOk() (*string, bool) {
-	if o == nil || o.ArpValidate == nil {
+	if o == nil || o.ArpValidate == nil || *o.ArpValidate == "none" {
 		return nil, false
 	}
 	return o.ArpValidate, true
@@ -426,7 +429,7 @@ func (o *LinkLinkinfoInfoData) GetArpValidateOk() (*string, bool) {
 
 // HasArpValidate returns a boolean if a field has been set.
 func (o *LinkLinkinfoInfoData) HasArpValidate() bool {
-	if o != nil && o.ArpValidate != nil {
+	if o != nil && o.ArpValidate != nil && *o.ArpValidate != "none" {
 		return true
 	}
 
@@ -435,7 +438,9 @@ func (o *LinkLinkinfoInfoData) HasArpValidate() bool {
 
 // SetArpValidate gets a reference to the given string and assigns it to the ArpValidate field.
 func (o *LinkLinkinfoInfoData) SetArpValidate(v string) {
-	o.ArpValidate = &v
+	if v != "none" {
+		o.ArpValidate = &v
+	}
 }
 
 // GetArpAllTargets returns the ArpAllTargets field value if set, zero value otherwise.
@@ -696,7 +701,7 @@ func (o *LinkLinkinfoInfoData) SetLpInterval(v int32) {
 
 // GetPacketsPerSlave returns the PacketsPerSlave field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoData) GetPacketsPerSlave() int32 {
-	if o == nil || o.PacketsPerSlave == nil {
+	if o == nil || o.PacketsPerSlave == nil || *o.PacketsPerSlave <= 0 {
 		var ret int32 = -1
 		return ret
 	}
@@ -706,7 +711,7 @@ func (o *LinkLinkinfoInfoData) GetPacketsPerSlave() int32 {
 // GetPacketsPerSlaveOk returns a tuple with the PacketsPerSlave field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *LinkLinkinfoInfoData) GetPacketsPerSlaveOk() (*int32, bool) {
-	if o == nil || o.PacketsPerSlave == nil {
+	if o == nil || o.PacketsPerSlave == nil || *o.PacketsPerSlave <= 0 {
 		return nil, false
 	}
 	return o.PacketsPerSlave, true
@@ -714,7 +719,7 @@ func (o *LinkLinkinfoInfoData) GetPacketsPerSlaveOk() (*int32, bool) {
 
 // HasPacketsPerSlave returns a boolean if a field has been set.
 func (o *LinkLinkinfoInfoData) HasPacketsPerSlave() bool {
-	if o != nil && o.PacketsPerSlave != nil {
+	if o != nil && o.PacketsPerSlave != nil && *o.PacketsPerSlave > 0 {
 		return true
 	}
 
@@ -723,7 +728,9 @@ func (o *LinkLinkinfoInfoData) HasPacketsPerSlave() bool {
 
 // SetPacketsPerSlave gets a reference to the given int32 and assigns it to the PacketsPerSlave field.
 func (o *LinkLinkinfoInfoData) SetPacketsPerSlave(v int32) {
-	o.PacketsPerSlave = &v
+	if v > 0 {
+		o.PacketsPerSlave = &v
+	}
 }
 
 // GetAdLacpRate returns the AdLacpRate field value if set, zero value otherwise.
