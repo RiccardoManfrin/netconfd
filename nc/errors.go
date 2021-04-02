@@ -163,7 +163,7 @@ func NewEINVALError() error {
 	if NetconfdDebugTrace {
 		debug.PrintStack()
 	}
-	return &SemanticError{Code: SEMANTIC, Reason: "Syscall EINVAL error (check dmesg)"}
+	return &SemanticError{Code: SEMANTIC, Reason: "Got EINVAL error: (check dmesg)"}
 }
 
 //NewActiveSlaveIfaceNotFoundForActiveBackupBondError Returns an error if an active interface is not found for an Active-Backup type bond
