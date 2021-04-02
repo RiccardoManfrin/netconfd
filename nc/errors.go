@@ -63,6 +63,8 @@ func mapNetlinkError(err error, r Resource) error {
 				return NewEEXISTError(r)
 			} else if err.(syscall.Errno) == syscall.ERANGE {
 				return NewERANGEError(r)
+			} else if err.(syscall.Errno) == syscall.EACCES {
+				return NewEACCESError(r)
 			}
 		}
 		debug.PrintStack()
@@ -226,6 +228,14 @@ func NewERANGEError(r Resource) error {
 		debug.PrintStack()
 	}
 	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got ERANGE error: parameter value out of range for resource %+v", r.Print())}
+}
+
+//NewEACCESError returns an out of range error
+func NewEACCESError(r Resource) error {
+	if NetconfdDebugTrace {
+		debug.PrintStack()
+	}
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Got EACCES error: incompatible param in resource %+v (check dmsg)", r.Print())}
 }
 
 //NewTooManyDNSServersError describes an error on the number of requested DNS servers
