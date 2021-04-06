@@ -767,7 +767,15 @@ func Test19(t *testing.T) {
 				]
 			}
 		}`
-	rr := runRequest("PATCH", "/api/1/mgmt/config", cfg)
+
+	rr := runRequest("GET", "/api/1/network/dns", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	originalConfig := `{"network":{"dns":` + rr.Body.String() + `}}`
+
+	checkBody(t, rr, `[{"__id":"primary","nameserver":"8.8.8.8"},{"__id":"secondary","nameserver":"8.8.8.7"}]`)
+
+	rr = runRequest("PATCH", "/api/1/mgmt/config", cfg)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 	rr = runRequest("GET", "/api/1/network/dns", "")
@@ -803,5 +811,8 @@ func Test19(t *testing.T) {
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 
 	rr = runRequest("DELETE", "/api/1/network/dns/primary", "")
+	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
+
+	rr = runRequest("PATCH", "/api/1/mgmt/config", originalConfig)
 	checkResponse(t, rr, http.StatusOK, nc.RESERVED, "")
 }
