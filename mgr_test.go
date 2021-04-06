@@ -105,6 +105,7 @@ func newConfigGetReq() *http.Request {
 
 func NewTestManager() *Manager {
 	mgr := NewManager()
+	*oas.NoRollbackOnFailure = true
 	logger.LoggerInit("-")
 	logger.LoggerSetLevel("WRN")
 	return mgr

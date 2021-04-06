@@ -60,7 +60,7 @@ func (s *SystemApiService) ConfigSet_Impl(ctx context.Context, config Config) (I
 	return PutErrorResponse(restorableConfigSet(network), nil)
 }
 
-var norollbackonfailure = flag.Bool("norollbackonfailure", false, "Prevents rollback on failure (for debug purposes)")
+var NoRollbackOnFailure = flag.Bool("norollbackonfailure", false, "Prevents rollback on failure (for debug purposes)")
 
 func restorableConfigPatch(network nc.Network) error {
 	existing, err := nc.Get()
@@ -71,7 +71,7 @@ func restorableConfigPatch(network nc.Network) error {
 	err = nc.Patch(network)
 	if err != nil {
 		logger.Log.Warning("Functional/Logical error patching the config")
-		if !*norollbackonfailure {
+		if !*NoRollbackOnFailure {
 			logger.Log.Info("Restoring pre-existing config")
 			nc.Put(existing)
 		} else {
@@ -93,7 +93,7 @@ func restorableConfigSet(network nc.Network) error {
 		logger.Log.Warning(fmt.Sprintf("Error: %v", err.Error()))
 		logger.Log.Warning("Functional/Logical error setting the config")
 		debug.PrintStack()
-		if !*norollbackonfailure {
+		if !*NoRollbackOnFailure {
 			logger.Log.Info("Restoring pre-existing config")
 			nc.Put(existing)
 		} else {
