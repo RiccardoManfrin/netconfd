@@ -3,10 +3,10 @@ package main
 import (
 	"bytes"
 	"context"
+	"embed"
 	"encoding/json"
 	"fmt"
 	"io"
-	"io/ioutil"
 	"log"
 	"net"
 	"net/http"
@@ -23,11 +23,9 @@ import (
 	"github.com/getkin/kin-openapi/routers"
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/gorilla/mux"
-	"github.com/rakyll/statik/fs"
 	"gitlab.lan.athonet.com/core/netconfd/comm"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"gitlab.lan.athonet.com/core/netconfd/nc"
-	"gitlab.lan.athonet.com/core/netconfd/swaggerui"
 )
 
 //RouteHandler is the handler for a certain route OperationID
@@ -265,14 +263,15 @@ func checkIP(ipstr string) error {
 	return nil
 }
 
+//go:embed swaggerui/*
+var swaggeruiFS embed.FS
+
+//go:embed swaggerui/openapi.yaml
+var openAPIYAML []byte
+
 //NewManager creates new manager
 func NewManager() *Manager {
-	swaggeruiFS, _ := fs.NewFromZipData(swaggerui.Init())
-
-	openapiJSON, _ := swaggeruiFS.Open("/openapi.yaml")
-
-	data, _ := ioutil.ReadAll(openapiJSON)
-	openapi, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(data)
+	openapi, err := openapi3.NewSwaggerLoader().LoadSwaggerFromData(openAPIYAML)
 	if openapi == nil && err != nil {
 		panic(err)
 	}
@@ -302,8 +301,8 @@ func NewManager() *Manager {
 	sysApiService, _ := systemApiService.(*oas.SystemApiService)
 	m.Conf = &sysApiService.Conf
 	serveMux.Handle("/", m)
-	serveMux.Handle("/swaggerui/", http.StripPrefix("/swaggerui", http.FileServer(swaggeruiFS)))
 
+	serveMux.Handle("/swaggerui/", http.FileServer(http.FS(swaggeruiFS)))
 	nc.InitErrorsLogsTracing()
 	return m
 }
