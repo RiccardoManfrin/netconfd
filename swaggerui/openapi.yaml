@@ -8,15 +8,18 @@ info:
 servers:
   - url: /api/1
     description: devmode
-  - url: '{protocol}://{server}/{uuid}/api/1'
+  - url: 'http://{server}/{prefix}/api/1'
     description: production
     variables:
-      protocol:
-        enum:
-          - 'http'
-          - 'https'
-        default: 'https'
-        description: Protocol (http/https)
+      server:
+        default: ngcore
+        description: Server IP / Hostname
+      prefix:
+        default: ''
+        description: Service platform prefix
+  - url: 'https://{server}/{prefix}/api/1'
+    description: production
+    variables:
       server:
         default: ngcore
         description: Server IP / Hostname
