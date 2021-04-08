@@ -1,6 +1,5 @@
 /netconfd
 /vendor
-/swaggerui/statik.go
 
 /server/README.md
 /src.tar.gz

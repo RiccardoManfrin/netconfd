@@ -1,5 +1,4 @@
 GOFILES := $(shell find . -name "*.go" -type f ! -path "./vendor/*")
-STATIKTOOL = vendor/github.com/rakyll/statik/statik
 OPENAPI = server/
 
 ifeq ($(V),1)
@@ -25,6 +24,6 @@ deps: $(OPENAPI)
 	$(AT) go get -d -v
 
 clean:
-	$(AT) rm -rf netconfd netconfd.debug statik/ swaggerui/statik.go $(STATIKTOOL) $(OPENAPI)
+	$(AT) rm -rf netconfd netconfd.debug $(OPENAPI)
 
 .PHONY: clean debugbuild test deps
