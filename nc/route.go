@@ -7,7 +7,7 @@ import (
 	"net"
 	"syscall"
 
-	"github.com/riccardomanfrin/netlink"
+	"github.com/vishvananda/netlink"
 	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 

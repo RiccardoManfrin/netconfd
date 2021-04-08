@@ -8,11 +8,11 @@ else
 	AT=@
 endif
 
-netconfd: $(GOFILES) $(OPENAPI) swaggerui/statik.go deps
+netconfd: $(GOFILES) $(OPENAPI) deps swaggerui/openapi.yaml
 	$(AT) CGO_ENABLED=0 GOOS=linux go build -a -ldflags '-extldflags "-static"' -o $@
 	$(AT) strip $@
 
-netconfd.debug: $(GOFILES) swaggerui/statik.go deps
+netconfd.debug: $(GOFILES) deps swaggerui/openapi.yaml
 	$(AT) CGO_ENABLED=0 GOOS=linux go build -gcflags="all=-N -l" -a -ldflags '-extldflags "-static"' -o $@
 
 $(OPENAPI):
@@ -21,13 +21,7 @@ $(OPENAPI):
 test:
 	$(AT) go test -v
 
-swaggerui/statik.go: swaggerui/openapi.yaml $(STATIKTOOL)
-	$(AT) $(STATIKTOOL) -src=swaggerui -include=*.png,*.yaml,*.html,*.css,*.js,*.json -p=swaggerui
-	
-$(STATIKTOOL):
-	$(AT) cd vendor/github.com/rakyll/statik && go build
-
-deps: swaggerui/statik.go $(OPENAPI)
+deps: $(OPENAPI)
 	$(AT) go get -d -v
 
 clean:

@@ -1,6 +1,5 @@
 /netconfd
-/vendor/github.com/rakyll/statik/statik
-
+/vendor
 /swaggerui/statik.go
 
 /server/README.md
