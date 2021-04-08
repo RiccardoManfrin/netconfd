@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"io"
 	"io/ioutil"
+	"log"
 	"net"
 	"net/http"
 	"net/http/httptest"
@@ -19,6 +20,8 @@ import (
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
+	"github.com/getkin/kin-openapi/routers"
+	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/gorilla/mux"
 	"github.com/rakyll/statik/fs"
 	"gitlab.lan.athonet.com/core/netconfd/comm"
@@ -40,7 +43,7 @@ type Manager struct {
 	client         http.Client
 	m2MEndpointURL string
 	openapi        *openapi3.Swagger
-	router         *openapi3filter.Router
+	router         routers.Router
 	routeHandlers  *mux.Router
 }
 
@@ -212,7 +215,7 @@ func (m *Manager) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	ctx := context.Background()
 
 	// Find route
-	route, pathParams, _ := m.router.FindRoute(r.Method, r.URL)
+	route, pathParams, _ := m.router.FindRoute(r)
 
 	// Validate request
 	requestValidationInput := &openapi3filter.RequestValidationInput{
@@ -280,8 +283,10 @@ func NewManager() *Manager {
 	openapi3.DefineStringFormatCallback("cidr", nc.CIDRAddrValidate)
 	openapi3.DefineStringFormatCallback("ip", checkIP)
 
-	router := openapi3filter.NewRouter().WithSwagger(openapi)
-
+	router, err := gorillamux.NewRouter(openapi)
+	if err != nil {
+		log.Fatal(err)
+	}
 	serveMux := http.NewServeMux()
 
 	networkApiService := oas.NewNetworkApiService()
