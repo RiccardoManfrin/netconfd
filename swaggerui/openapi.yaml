@@ -1571,41 +1571,127 @@ components:
                 - gre
 
     linkinfo_device:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - device
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_dummy:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - dummy
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_bridge:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - bridge
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_bond:
       allOf:
-      - $ref: '#/components/schemas/linkinfo'
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - bond
       - $ref: '#/components/schemas/linkinfo_bond_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_vlan:
       allOf:
-      - $ref: '#/components/schemas/linkinfo'
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - vlan
       - $ref: '#/components/schemas/linkinfo_vlan_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_veth:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - veth
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_macvlan:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - macvlan
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_ipvlan:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - ipvlan
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_ppp:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - ppp
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_tun:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - tun
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_tap:
-      $ref: '#/components/schemas/linkinfo_default'
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - tap
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_gre:
       allOf:
-      - $ref: '#/components/schemas/linkinfo'
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - gre
       - $ref: '#/components/schemas/linkinfo_gre_details'
-      - $ref: '#/components/schemas/linkinfo_slave_only_details'
-    linkinfo_default:
-      allOf:
-      - $ref: '#/components/schemas/linkinfo'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_bond_details:
       description: |
