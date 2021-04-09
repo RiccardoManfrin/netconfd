@@ -4,19 +4,21 @@ info:
     email: support@athonet.com
   description: Network Configurator service
   title: netConfD API
-  version: 0.2.0
+  version: 0.3.0
 servers:
 - description: devmode
   url: /api/1
 - description: production
-  url: '{protocol}://{server}/{uuid}/api/1'
+  url: http://{server}/{prefix}/api/1
   variables:
-    protocol:
-      default: https
-      description: Protocol (http/https)
-      enum:
-      - http
-      - https
+    server:
+      default: ngcore
+      description: Server IP / Hostname
+    prefix:
+      description: Service platform prefix
+- description: production
+  url: https://{server}/{prefix}/api/1
+  variables:
     server:
       default: ngcore
       description: Server IP / Hostname
@@ -934,43 +936,7 @@ components:
           address: ""
           prefixlen: 24
           local: ""
-        linkinfo:
-          info_kind: device
-          info_slave_kind: bond
-          info_slave_data:
-            state: ACTIVE
-            mii_status: UP
-            perm_hwaddr: 08:00:27:76:4f:05
-            link_failure_count: 0
-            queue_id: 0
-          info_data:
-            updelay: 0
-            arp_validate: none
-            arp_all_targets: any
-            xmit_hash_policy: layer2
-            flags:
-            - REORDER_HDR
-            - REORDER_HDR
-            arp_interval: 0
-            tlb_dynamic_lb: 1
-            peer_notify_delay: 0
-            ad_select: stable
-            remote: ""
-            local: ""
-            mode: active-backup
-            all_slaves_active: 0
-            protocol: 802.1q
-            id: 100
-            use_carrier: 1
-            lp_interval: 1
-            packets_per_slave: 1
-            fail_over_mac: none
-            miimon: 100
-            resend_igmp: 1
-            min_links: 0
-            downdelay: 0
-            primary_reselect: always
-            ad_lacp_rate: slow
+        linkinfo: ""
         group: default
       properties:
         ifindex:
@@ -1011,7 +977,34 @@ components:
             the bond/bridge interface it belongs to.
           example: bond0
         linkinfo:
-          $ref: '#/components/schemas/link_linkinfo'
+          discriminator:
+            mapping:
+              device: '#/components/schemas/linkinfo_device'
+              dummy: '#/components/schemas/linkinfo_dummy'
+              bridge: '#/components/schemas/linkinfo_bridge'
+              bond: '#/components/schemas/linkinfo_bond'
+              vlan: '#/components/schemas/linkinfo_vlan'
+              veth: '#/components/schemas/linkinfo_veth'
+              macvlan: '#/components/schemas/linkinfo_macvlan'
+              ipvlan: '#/components/schemas/linkinfo_ipvlan'
+              ppp: '#/components/schemas/linkinfo_ppp'
+              tun: '#/components/schemas/linkinfo_tun'
+              tap: '#/components/schemas/linkinfo_tap'
+              gre: '#/components/schemas/linkinfo_gre'
+            propertyName: info_kind
+          oneOf:
+          - $ref: '#/components/schemas/linkinfo_device'
+          - $ref: '#/components/schemas/linkinfo_dummy'
+          - $ref: '#/components/schemas/linkinfo_bridge'
+          - $ref: '#/components/schemas/linkinfo_bond'
+          - $ref: '#/components/schemas/linkinfo_vlan'
+          - $ref: '#/components/schemas/linkinfo_veth'
+          - $ref: '#/components/schemas/linkinfo_macvlan'
+          - $ref: '#/components/schemas/linkinfo_ipvlan'
+          - $ref: '#/components/schemas/linkinfo_ppp'
+          - $ref: '#/components/schemas/linkinfo_tun'
+          - $ref: '#/components/schemas/linkinfo_tap'
+          - $ref: '#/components/schemas/linkinfo_gre'
         operstate:
           description: |
             Readonly state of the interface.
@@ -1062,6 +1055,116 @@ components:
       required:
       - ifname
       - link_type
+      - linkinfo
+      type: object
+    linkinfo:
+      properties:
+        info_kind:
+          description: "Type of link layer interface. Supported Types:\n  * `device`-\
+            \ Physical device\n  * `dummy` - Dummy link type interface for binding\
+            \ intenal services\n  * `bridge` - Link layer virtual switch type interface\n\
+            \  * `bond` - Bond type interface letting two interfaces be seen as one\n\
+            \  * `vlan` - Virtual LAN (TAG ID based) interface\n  * `veth` - Virtual\
+            \ ethernet (with virtual MAC and IP address)\n  * `macvlan` - Direct virtual\
+            \ eth interface connected to the physical interface, \n    with owned\
+            \ mac address\n  * `ipvlan` - Direct virtual eth interface connected to\
+            \ the physical interface.\n    Physical interface MAC address is reused.\
+            \ L2 type directly connects the lan to \n    the host phyisical device.\
+            \ L3 type adds a routing layer in between.\n  * `tun` - Link for to kernel-userspace\
+            \ packet forward\n  * `tap` - Link for kernnel-to-userspace packet evedropping\n\
+            \  * `ppp` - Point to point [readonly]\n  * `gre` - GRE Tunnelling device\n"
+          enum:
+          - device
+          - dummy
+          - bridge
+          - bond
+          - vlan
+          - veth
+          - macvlan
+          - ipvlan
+          - ppp
+          - tun
+          - tap
+          - gre
+          type: string
+      required:
+      - info_kind
+      type: object
+    linkinfo_device:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_dummy:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_bridge:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_bond:
+      allOf:
+      - $ref: '#/components/schemas/linkinfo'
+      - $ref: '#/components/schemas/linkinfo_bond_details'
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
+    linkinfo_vlan:
+      allOf:
+      - $ref: '#/components/schemas/linkinfo'
+      - $ref: '#/components/schemas/linkinfo_vlan_details'
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
+    linkinfo_veth:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_macvlan:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_ipvlan:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_ppp:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_tun:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_tap:
+      $ref: '#/components/schemas/linkinfo_default'
+    linkinfo_gre:
+      allOf:
+      - $ref: '#/components/schemas/linkinfo'
+      - $ref: '#/components/schemas/linkinfo_gre_details'
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
+    linkinfo_default:
+      allOf:
+      - $ref: '#/components/schemas/linkinfo'
+      - $ref: '#/components/schemas/linkinfo_slave_only_details'
+    linkinfo_bond_details:
+      description: |
+        Additional link info attributes
+      properties:
+        info_data:
+          $ref: '#/components/schemas/linkinfo_bond_details_info_data'
+      type: object
+    linkinfo_vlan_details:
+      description: |
+        Additional link info attributes
+      properties:
+        info_data:
+          $ref: '#/components/schemas/linkinfo_vlan_details_info_data'
+      type: object
+    linkinfo_gre_details:
+      description: |
+        Additional link info attributes
+      properties:
+        info_data:
+          $ref: '#/components/schemas/linkinfo_gre_details_info_data'
+      type: object
+    linkinfo_slave_only_details:
+      description: |
+        Additional link info attributes
+      properties:
+        info_slave_kind:
+          description: |
+            Info on the type of slave
+            Supported types:
+              * `bond`
+              * `bridge`
+          enum:
+          - bond
+          - bridge
+          example: bond
+          type: string
+        info_slave_data:
+          $ref: '#/components/schemas/linkinfo_slave_only_details_info_slave_data'
       type: object
     global_mgmt:
       description: Management address
@@ -1073,109 +1176,38 @@ components:
           default: 8666
           type: integer
       type: object
-    link_linkinfo_info_slave_data:
-      description: Info about slave state/config
+    link_addr_info:
       example:
-        state: ACTIVE
-        mii_status: UP
-        perm_hwaddr: 08:00:27:76:4f:05
-        link_failure_count: 0
-        queue_id: 0
-      properties:
-        state:
-          description: |
-            State of the link:
-              * `ACTIVE` - Link is actively used
-              * `BACKUP` - Link is used for failover
-          enum:
-          - ACTIVE
-          - BACKUP
-          example: ACTIVE
-          type: string
-        mii_status:
-          description: "MII Status:\n  * `UP` \n  * `DOWN`\n"
-          enum:
-          - UP
-          - DOWN
-          example: UP
-          type: string
-        link_failure_count:
-          description: |
-            Number of link failures
-          example: 0
-          type: integer
-        perm_hwaddr:
-          description: MAC L2 interface HW address
-          example: 08:00:27:76:4f:05
-          type: string
-        queue_id:
-          description: |
-            Queue Identifier
-          example: 0
-          type: integer
-      type: object
-    link_linkinfo_info_data:
-      description: Additional information on the link
-      example:
-        updelay: 0
-        arp_validate: none
-        arp_all_targets: any
-        xmit_hash_policy: layer2
-        flags:
-        - REORDER_HDR
-        - REORDER_HDR
-        arp_interval: 0
-        tlb_dynamic_lb: 1
-        peer_notify_delay: 0
-        ad_select: stable
-        remote: ""
+        broadcast: 10.1.2.255
+        address: ""
+        prefixlen: 24
         local: ""
-        mode: active-backup
-        all_slaves_active: 0
-        protocol: 802.1q
-        id: 100
-        use_carrier: 1
-        lp_interval: 1
-        packets_per_slave: 1
-        fail_over_mac: none
-        miimon: 100
-        resend_igmp: 1
-        min_links: 0
-        downdelay: 0
-        primary_reselect: always
-        ad_lacp_rate: slow
       properties:
-        protocol:
-          description: |
-            VLAN protocols.
-            Supported protocols:
-              * `802.1q` - 802.1Q protocol
-              * `802.1ad` - 802.1AD protocol
-          enum:
-          - 802.1q
-          - 802.1ad
-          example: 802.1q
-          type: string
-        id:
-          description: VLAN TAG ID
-          example: 100
+        local:
+          allOf:
+          - $ref: '#/components/schemas/ip'
+          description: IP address assigned to the link interface
+        prefixlen:
+          description: Network prefix (0-32 for IPv4, 0-128 for IPv6)
+          example: 24
+          maximum: 128
+          minimum: 0
           type: integer
-        flags:
-          items:
-            description: "Supported flags for virtual device:\n* `REORDER_HDR` - specifies\
-              \ whether ethernet headers are reordered or not (default is on). If\
-              \ reorder_hdr is on then VLAN header will be not inserted immediately\
-              \ but only before passing to the physical device (if this device does\
-              \ not support VLAN offloading), the similar on the RX direction - by\
-              \ default the packet will be untagged before being received by VLAN\
-              \ device. Reordering allows to accelerate tagging on egress and to hide\
-              \ VLAN header on ingress so the packet looks like regular Ethernet packet,\
-              \ at the same time it might be confusing for packet capture as the VLAN\
-              \ header does not exist within the packet. \n"
-            enum:
-            - REORDER_HDR
-            type: string
-          type: array
+        broadcast:
+          example: 10.1.2.255
+          type: string
+        address:
+          allOf:
+          - $ref: '#/components/schemas/ip'
+          description: The terminating remote peer for point-to-point kind virtual
+            devices
+      required:
+      - local
+      - prefixlen
+      type: object
+    linkinfo_bond_details_info_data:
+      description: Additional information on the link
+      properties:
         mode:
           description: |
             Bonding modes.
@@ -1502,6 +1534,48 @@ components:
             disables it. This option was added in bonding driver 3.7.1
           example: 1
           type: integer
+      type: object
+    linkinfo_vlan_details_info_data:
+      description: Additional information on the link
+      properties:
+        protocol:
+          default: 802.1q
+          description: |
+            VLAN protocols.
+            Supported protocols:
+              * `802.1q` - 802.1Q protocol
+              * `802.1ad` - 802.1AD protocol
+          enum:
+          - 802.1q
+          - 802.1ad
+          example: 802.1q
+          type: string
+        id:
+          description: VLAN TAG ID
+          example: 100
+          type: integer
+        flags:
+          items:
+            description: "Supported flags for virtual device:\n* `REORDER_HDR` - specifies\
+              \ whether ethernet headers are reordered or not (default is on). If\
+              \ reorder_hdr is on then VLAN header will be not inserted immediately\
+              \ but only before passing to the physical device (if this device does\
+              \ not support VLAN offloading), the similar on the RX direction - by\
+              \ default the packet will be untagged before being received by VLAN\
+              \ device. Reordering allows to accelerate tagging on egress and to hide\
+              \ VLAN header on ingress so the packet looks like regular Ethernet packet,\
+              \ at the same time it might be confusing for packet capture as the VLAN\
+              \ header does not exist within the packet. \n"
+            enum:
+            - REORDER_HDR
+            type: string
+          type: array
+      required:
+      - id
+      type: object
+    linkinfo_gre_details_info_data:
+      description: Additional information on the link
+      properties:
         local:
           allOf:
           - $ref: '#/components/schemas/ip'
@@ -1511,119 +1585,40 @@ components:
           - $ref: '#/components/schemas/ip'
           description: Remote IP Address endpoint of a GRE tunnel
       type: object
-    link_linkinfo:
-      description: |
-        Additional link info attributes
-      example:
-        info_kind: device
-        info_slave_kind: bond
-        info_slave_data:
-          state: ACTIVE
-          mii_status: UP
-          perm_hwaddr: 08:00:27:76:4f:05
-          link_failure_count: 0
-          queue_id: 0
-        info_data:
-          updelay: 0
-          arp_validate: none
-          arp_all_targets: any
-          xmit_hash_policy: layer2
-          flags:
-          - REORDER_HDR
-          - REORDER_HDR
-          arp_interval: 0
-          tlb_dynamic_lb: 1
-          peer_notify_delay: 0
-          ad_select: stable
-          remote: ""
-          local: ""
-          mode: active-backup
-          all_slaves_active: 0
-          protocol: 802.1q
-          id: 100
-          use_carrier: 1
-          lp_interval: 1
-          packets_per_slave: 1
-          fail_over_mac: none
-          miimon: 100
-          resend_igmp: 1
-          min_links: 0
-          downdelay: 0
-          primary_reselect: always
-          ad_lacp_rate: slow
+    linkinfo_slave_only_details_info_slave_data:
+      description: Info about slave state/config
       properties:
-        info_slave_kind:
+        state:
           description: |
-            Info on the type of slave
-            Supported types:
-              * `bond`
-              * `bridge`
+            State of the link:
+              * `ACTIVE` - Link is actively used
+              * `BACKUP` - Link is used for failover
           enum:
-          - bond
-          - bridge
-          example: bond
+          - ACTIVE
+          - BACKUP
+          example: ACTIVE
           type: string
-        info_slave_data:
-          $ref: '#/components/schemas/link_linkinfo_info_slave_data'
-        info_kind:
-          description: "Type of link layer interface. Supported Types:\n  * `device`-\
-            \ Physical device\n  * `dummy` - Dummy link type interface for binding\
-            \ intenal services\n  * `bridge` - Link layer virtual switch type interface\n\
-            \  * `bond` - Bond type interface letting two interfaces be seen as one\n\
-            \  * `vlan` - Virtual LAN (TAG ID based) interface\n  * `veth` - Virtual\
-            \ ethernet (with virtual MAC and IP address)\n  * `macvlan` - Direct virtual\
-            \ eth interface connected to the physical interface, \n    with owned\
-            \ mac address\n  * `ipvlan` - Direct virtual eth interface connected to\
-            \ the physical interface.\n    Physical interface MAC address is reused.\
-            \ L2 type directly connects the lan to \n    the host phyisical device.\
-            \ L3 type adds a routing layer in between.\n  * `tun` - Link for to kernel-userspace\
-            \ packet forward\n  * `tap` - Link for kernnel-to-userspace packet evedropping\n\
-            \  * `ppp` - Point to point [readonly]\n  * `gre` - GRE Tunnelling device\n"
+        mii_status:
+          description: "MII Status:\n  * `UP` \n  * `DOWN`\n"
           enum:
-          - device
-          - dummy
-          - bridge
-          - bond
-          - vlan
-          - veth
-          - macvlan
-          - ipvlan
-          - ppp
-          - tun
-          - tap
-          - gre
+          - UP
+          - DOWN
+          example: UP
           type: string
-        info_data:
-          $ref: '#/components/schemas/link_linkinfo_info_data'
-      type: object
-    link_addr_info:
-      example:
-        broadcast: 10.1.2.255
-        address: ""
-        prefixlen: 24
-        local: ""
-      properties:
-        local:
-          allOf:
-          - $ref: '#/components/schemas/ip'
-          description: IP address assigned to the link interface
-        prefixlen:
-          description: Network prefix (0-32 for IPv4, 0-128 for IPv6)
-          example: 24
-          maximum: 128
-          minimum: 0
+        link_failure_count:
+          description: |
+            Number of link failures
+          example: 0
           type: integer
-        broadcast:
-          example: 10.1.2.255
+        perm_hwaddr:
+          description: MAC L2 interface HW address
+          example: 08:00:27:76:4f:05
           type: string
-        address:
-          allOf:
-          - $ref: '#/components/schemas/ip'
-          description: The terminating remote peer for point-to-point kind virtual
-            devices
-      required:
-      - local
-      - prefixlen
+        queue_id:
+          description: |
+            Queue Identifier
+          example: 0
+          type: integer
       type: object
   securitySchemes:
     bearerAuth:
