@@ -1531,45 +1531,6 @@ components:
         #- address
         #- broadcast
         #- addr_info
-    linkinfo:
-      type: object
-      required:
-        - info_kind
-      properties:
-        info_kind:
-              type: string
-              description: >
-                Type of link layer interface.
-                Supported Types:
-                  * `device`- Physical device
-                  * `dummy` - Dummy link type interface for binding intenal services
-                  * `bridge` - Link layer virtual switch type interface
-                  * `bond` - Bond type interface letting two interfaces be seen as one
-                  * `vlan` - Virtual LAN (TAG ID based) interface
-                  * `veth` - Virtual ethernet (with virtual MAC and IP address)
-                  * `macvlan` - Direct virtual eth interface connected to the physical interface, 
-                    with owned mac address
-                  * `ipvlan` - Direct virtual eth interface connected to the physical interface.
-                    Physical interface MAC address is reused. L2 type directly connects the lan to 
-                    the host phyisical device. L3 type adds a routing layer in between.
-                  * `tun` - Link for to kernel-userspace packet forward
-                  * `tap` - Link for kernnel-to-userspace packet evedropping
-                  * `ppp` - Point to point [readonly]
-                  * `gre` - GRE Tunnelling device
-              enum:
-                - device
-                - dummy
-                - bridge
-                - bond
-                - vlan
-                - veth
-                - macvlan
-                - ipvlan
-                - ppp
-                - tun
-                - tap
-                - gre
-
     linkinfo_device:
       allOf:
       - type: object
@@ -1579,6 +1540,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - device
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_dummy:
       allOf:
@@ -1589,6 +1552,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - dummy
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_bridge:
       allOf:
@@ -1599,6 +1564,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - bridge
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_bond:
       allOf:
@@ -1609,6 +1576,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - bond
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_bond_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_vlan:
@@ -1620,6 +1589,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - vlan
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_vlan_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_veth:
@@ -1631,6 +1602,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - veth
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_macvlan:
       allOf:
@@ -1641,6 +1614,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - macvlan
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_ipvlan:
       allOf:
@@ -1651,6 +1626,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - ipvlan
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_ppp:
       allOf:
@@ -1661,6 +1638,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - ppp
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_tun:
       allOf:
@@ -1671,6 +1650,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - tun
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_tap:
       allOf:
@@ -1681,6 +1662,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - tap
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_gre:
       allOf:
@@ -1691,6 +1674,8 @@ components:
             description: info_kind attribute specifying the device kind
             enum:
               - gre
+        required:
+          - info_kind
       - $ref: '#/components/schemas/linkinfo_gre_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
     linkinfo_bond_details:
