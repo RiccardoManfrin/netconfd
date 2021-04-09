@@ -12,7 +12,7 @@ func NewAttributeDoesntBelongToLinkKindSemanticError(attribKey string, infoKind 
 	if nc.NetconfdDebugTrace {
 		debug.PrintStack()
 	}
-	return &nc.SemanticError{Code: nc.SEMANTIC, Reason: fmt.Sprintf("Attribute %s doesn't belong to Link Kind %s", attribKey, infoKind)}
+	return &nc.SemanticError{Code: nc.SEMANTIC, Reason: fmt.Sprintf("Attribute %s doesn't belong to Link of kind %s", attribKey, infoKind)}
 }
 
 //NewMissingRequiredAttributeForLinkKindSemanticError returns an error for a missing attribute
@@ -20,5 +20,5 @@ func NewMissingRequiredAttributeForLinkKindSemanticError(attribKey string, infoK
 	if nc.NetconfdDebugTrace {
 		debug.PrintStack()
 	}
-	return &nc.SemanticError{Code: nc.SEMANTIC, Reason: fmt.Sprintf("Missing required attribute %s for Link Kind %s", attribKey, infoKind)}
+	return &nc.SemanticError{Code: nc.SEMANTIC, Reason: fmt.Sprintf("Missing required attribute %s for Link of kind %s", attribKey, infoKind)}
 }
