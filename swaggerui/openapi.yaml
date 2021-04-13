@@ -1757,24 +1757,10 @@ components:
           $ref: '#/components/schemas/info_data_bond_primary_reselect'
         fail_over_mac:
           $ref: '#/components/schemas/info_data_bond_fail_over_mac'
-        xmit_hash_policy:
-          $ref: '#/components/schemas/info_data_bond_xmit_hash_policy'
         resend_igmp:
           $ref: '#/components/schemas/info_data_bond_resend_igmp'
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
-        min_links:
-          $ref: '#/components/schemas/info_data_bond_min_links'
-        lp_interval:
-          $ref: '#/components/schemas/info_data_bond_lp_interval'
-        packets_per_slave:
-          $ref: '#/components/schemas/info_data_bond_packets_per_slave'
-        ad_lacp_rate:
-          $ref: '#/components/schemas/info_data_bond_ad_lacp_rate'
-        ad_select:
-          $ref: '#/components/schemas/info_data_bond_ad_select'
-        tlb_dynamic_lb:
-          $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
 
     info_data_balance_xor:
@@ -1798,28 +1784,10 @@ components:
           $ref: '#/components/schemas/info_data_bond_arp_validate'
         arp_all_targets:
           $ref: '#/components/schemas/info_data_bond_arp_all_targets'
-        primary_reselect:
-          $ref: '#/components/schemas/info_data_bond_primary_reselect'
-        fail_over_mac:
-          $ref: '#/components/schemas/info_data_bond_fail_over_mac'
         xmit_hash_policy:
           $ref: '#/components/schemas/info_data_bond_xmit_hash_policy'
-        resend_igmp:
-          $ref: '#/components/schemas/info_data_bond_resend_igmp'
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
-        min_links:
-          $ref: '#/components/schemas/info_data_bond_min_links'
-        lp_interval:
-          $ref: '#/components/schemas/info_data_bond_lp_interval'
-        packets_per_slave:
-          $ref: '#/components/schemas/info_data_bond_packets_per_slave'
-        ad_lacp_rate:
-          $ref: '#/components/schemas/info_data_bond_ad_lacp_rate'
-        ad_select:
-          $ref: '#/components/schemas/info_data_bond_ad_select'
-        tlb_dynamic_lb:
-          $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
 
     info_data_broadcast:
@@ -1843,28 +1811,8 @@ components:
           $ref: '#/components/schemas/info_data_bond_arp_validate'
         arp_all_targets:
           $ref: '#/components/schemas/info_data_bond_arp_all_targets'
-        primary_reselect:
-          $ref: '#/components/schemas/info_data_bond_primary_reselect'
-        fail_over_mac:
-          $ref: '#/components/schemas/info_data_bond_fail_over_mac'
-        xmit_hash_policy:
-          $ref: '#/components/schemas/info_data_bond_xmit_hash_policy'
-        resend_igmp:
-          $ref: '#/components/schemas/info_data_bond_resend_igmp'
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
-        min_links:
-          $ref: '#/components/schemas/info_data_bond_min_links'
-        lp_interval:
-          $ref: '#/components/schemas/info_data_bond_lp_interval'
-        packets_per_slave:
-          $ref: '#/components/schemas/info_data_bond_packets_per_slave'
-        ad_lacp_rate:
-          $ref: '#/components/schemas/info_data_bond_ad_lacp_rate'
-        ad_select:
-          $ref: '#/components/schemas/info_data_bond_ad_select'
-        tlb_dynamic_lb:
-          $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
 
     info_data_802_3ad:
@@ -1888,28 +1836,16 @@ components:
           $ref: '#/components/schemas/info_data_bond_arp_validate'
         arp_all_targets:
           $ref: '#/components/schemas/info_data_bond_arp_all_targets'
-        primary_reselect:
-          $ref: '#/components/schemas/info_data_bond_primary_reselect'
-        fail_over_mac:
-          $ref: '#/components/schemas/info_data_bond_fail_over_mac'
         xmit_hash_policy:
           $ref: '#/components/schemas/info_data_bond_xmit_hash_policy'
-        resend_igmp:
-          $ref: '#/components/schemas/info_data_bond_resend_igmp'
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
         min_links:
           $ref: '#/components/schemas/info_data_bond_min_links'
-        lp_interval:
-          $ref: '#/components/schemas/info_data_bond_lp_interval'
-        packets_per_slave:
-          $ref: '#/components/schemas/info_data_bond_packets_per_slave'
         ad_lacp_rate:
           $ref: '#/components/schemas/info_data_bond_ad_lacp_rate'
         ad_select:
           $ref: '#/components/schemas/info_data_bond_ad_select'
-        tlb_dynamic_lb:
-          $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
 
     info_data_balance_tlb:
@@ -1933,26 +1869,12 @@ components:
           $ref: '#/components/schemas/info_data_bond_arp_validate'
         arp_all_targets:
           $ref: '#/components/schemas/info_data_bond_arp_all_targets'
-        primary_reselect:
-          $ref: '#/components/schemas/info_data_bond_primary_reselect'
-        fail_over_mac:
-          $ref: '#/components/schemas/info_data_bond_fail_over_mac'
-        xmit_hash_policy:
-          $ref: '#/components/schemas/info_data_bond_xmit_hash_policy'
         resend_igmp:
           $ref: '#/components/schemas/info_data_bond_resend_igmp'
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
-        min_links:
-          $ref: '#/components/schemas/info_data_bond_min_links'
         lp_interval:
           $ref: '#/components/schemas/info_data_bond_lp_interval'
-        packets_per_slave:
-          $ref: '#/components/schemas/info_data_bond_packets_per_slave'
-        ad_lacp_rate:
-          $ref: '#/components/schemas/info_data_bond_ad_lacp_rate'
-        ad_select:
-          $ref: '#/components/schemas/info_data_bond_ad_select'
         tlb_dynamic_lb:
           $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
@@ -1978,28 +1900,14 @@ components:
           $ref: '#/components/schemas/info_data_bond_arp_validate'
         arp_all_targets:
           $ref: '#/components/schemas/info_data_bond_arp_all_targets'
-        primary_reselect:
-          $ref: '#/components/schemas/info_data_bond_primary_reselect'
-        fail_over_mac:
-          $ref: '#/components/schemas/info_data_bond_fail_over_mac'
         xmit_hash_policy:
           $ref: '#/components/schemas/info_data_bond_xmit_hash_policy'
         resend_igmp:
           $ref: '#/components/schemas/info_data_bond_resend_igmp'
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
-        min_links:
-          $ref: '#/components/schemas/info_data_bond_min_links'
         lp_interval:
           $ref: '#/components/schemas/info_data_bond_lp_interval'
-        packets_per_slave:
-          $ref: '#/components/schemas/info_data_bond_packets_per_slave'
-        ad_lacp_rate:
-          $ref: '#/components/schemas/info_data_bond_ad_lacp_rate'
-        ad_select:
-          $ref: '#/components/schemas/info_data_bond_ad_select'
-        tlb_dynamic_lb:
-          $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
 
     info_data_bond_mode:
