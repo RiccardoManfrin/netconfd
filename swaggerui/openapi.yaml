@@ -1702,12 +1702,12 @@ components:
               "802.3ad": '#/components/schemas/info_data_802_3ad'
               "balance-tlb": '#/components/schemas/info_data_balance_tlb'
               "balance-alb": '#/components/schemas/info_data_balance_alb'
-          
+    
     info_data_balance_rr:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_balance-rr'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1736,7 +1736,7 @@ components:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_active-backup'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1767,7 +1767,7 @@ components:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_balance-xor'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1794,7 +1794,7 @@ components:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_broadcast'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1819,7 +1819,7 @@ components:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_802.3ad'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1852,7 +1852,7 @@ components:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_balance-tlb'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1883,7 +1883,7 @@ components:
       type: object
       properties:
         mode:
-          $ref: '#/components/schemas/info_data_bond_mode'
+          $ref: '#/components/schemas/info_data_bond_mode_balance-alb'
         miimon:
           $ref: '#/components/schemas/info_data_bond_miimon'
         updelay:
@@ -1910,28 +1910,69 @@ components:
           $ref: '#/components/schemas/info_data_bond_lp_interval'
       additionalProperties: false
 
-    info_data_bond_mode:
+    info_data_bond_mode_balance-rr:
       type: string
       description: >
         Bonding modes.
         
         Supported Modes:
           * `balance-rr` - Round-robin: Transmit network packets in sequential order from the first available network interface (NIC) slave through the last. This mode provides load balancing and fault tolerance.
-          * `active-backup` - Active-backup: Only one NIC slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The single logical bonded interface's MAC address is externally visible on only one NIC (port) to avoid distortion in the network switch. This mode provides fault tolerance.
-          * `balance-xor` - XOR: Transmit network packets based on a hash of the packet's source and destination. The default algorithm only considers MAC addresses (layer2). Newer versions allow selection of additional policies based on IP addresses (layer2+3) and TCP/UDP port numbers (layer3+4). This selects the same NIC slave for each destination MAC address, IP address, or IP address and port combination, respectively. This mode provides load balancing and fault tolerance.
-          * `broadcast` - Broadcast: Transmit network packets on all slave network interfaces. This mode provides fault tolerance.
-          * `802.3ad` - IEEE 802.3ad Dynamic link aggregation: Creates aggregation groups that share the same speed and duplex settings. Utilizes all slave network interfaces in the active aggregator group according to the 802.3ad specification. This mode is similar to the XOR mode above and supports the same balancing policies. The link is set up dynamically between two LACP-supporting peers.
-          * `balance-tlb` - Adaptive transmit load balancing: Linux bonding driver mode that does not require any special network-switch support. The outgoing network packet traffic is distributed according to the current load (computed relative to the speed) on each network interface slave. Incoming traffic is received by one currently designated slave network interface. If this receiving slave fails, another slave takes over the MAC address of the failed receiving slave.
-          * `balance-alb` - Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special network switch support. The receive load balancing is achieved by ARP negotiation. The bonding driver intercepts the ARP Replies sent by the local system on their way out and overwrites the source hardware address with the unique hardware address of one of the NIC slaves in the single logical bonded interface such that different network-peers use different MAC addresses for their network packet traffic.
       enum:
         - balance-rr
+    info_data_bond_mode_active-backup:
+      type: string
+      description: >
+        Bonding modes.
+        
+        Supported Modes:
+          * `active-backup` - Active-backup: Only one NIC slave in the bond is active. A different slave becomes active if, and only if, the active slave fails. The single logical bonded interface's MAC address is externally visible on only one NIC (port) to avoid distortion in the network switch. This mode provides fault tolerance.
+      enum:
         - active-backup
+    info_data_bond_mode_balance-xor:
+      type: string
+      description: >
+        Bonding modes.
+        
+        Supported Modes:
+          * `balance-xor` - XOR: Transmit network packets based on a hash of the packet's source and destination. The default algorithm only considers MAC addresses (layer2). Newer versions allow selection of additional policies based on IP addresses (layer2+3) and TCP/UDP port numbers (layer3+4). This selects the same NIC slave for each destination MAC address, IP address, or IP address and port combination, respectively. This mode provides load balancing and fault tolerance.
+      enum:
         - balance-xor
+    info_data_bond_mode_broadcast:
+      type: string
+      description: >
+        Bonding modes.
+        
+        Supported Modes:
+          * `broadcast` - Broadcast: Transmit network packets on all slave network interfaces. This mode provides fault tolerance.
+      enum:
         - broadcast
+    info_data_bond_mode_802.3ad:
+      type: string
+      description: >
+        Bonding modes.
+        
+        Supported Modes:
+          * `802.3ad` - IEEE 802.3ad Dynamic link aggregation: Creates aggregation groups that share the same speed and duplex settings. Utilizes all slave network interfaces in the active aggregator group according to the 802.3ad specification. This mode is similar to the XOR mode above and supports the same balancing policies. The link is set up dynamically between two LACP-supporting peers.
+      enum:
         - 802.3ad
+    info_data_bond_mode_balance-tlb:
+      type: string
+      description: >
+        Bonding modes.
+        
+        Supported Modes:
+          * `balance-tlb` - Adaptive transmit load balancing: Linux bonding driver mode that does not require any special network-switch support. The outgoing network packet traffic is distributed according to the current load (computed relative to the speed) on each network interface slave. Incoming traffic is received by one currently designated slave network interface. If this receiving slave fails, another slave takes over the MAC address of the failed receiving slave.
+      enum:
         - balance-tlb
+    info_data_bond_mode_balance-alb:
+      type: string
+      description: >
+        Bonding modes.
+        
+        Supported Modes:
+          * `balance-alb` - Adaptive load balancing: includes balance-tlb plus receive load balancing (rlb) for IPV4 traffic, and does not require any special network switch support. The receive load balancing is achieved by ARP negotiation. The bonding driver intercepts the ARP Replies sent by the local system on their way out and overwrites the source hardware address with the unique hardware address of one of the NIC slaves in the single logical bonded interface such that different network-peers use different MAC addresses for their network packet traffic.
+      enum:
         - balance-alb
-      example: "active-backup"
     
     info_data_bond_miimon:
       description: |
