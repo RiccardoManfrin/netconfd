@@ -1731,6 +1731,8 @@ components:
         packets_per_slave:
           $ref: '#/components/schemas/info_data_bond_packets_per_slave'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_active_backup:
       type: object
@@ -1762,6 +1764,8 @@ components:
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_balance_xor:
       type: object
@@ -1789,6 +1793,8 @@ components:
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_broadcast:
       type: object
@@ -1814,6 +1820,8 @@ components:
         all_slaves_active:
           $ref: '#/components/schemas/info_data_bond_all_slaves_active'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_802_3ad:
       type: object
@@ -1847,6 +1855,8 @@ components:
         ad_select:
           $ref: '#/components/schemas/info_data_bond_ad_select'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_balance_tlb:
       type: object
@@ -1878,6 +1888,8 @@ components:
         tlb_dynamic_lb:
           $ref: '#/components/schemas/info_data_bond_tlb_dynamic_lb'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_balance_alb:
       type: object
@@ -1909,6 +1921,8 @@ components:
         lp_interval:
           $ref: '#/components/schemas/info_data_bond_lp_interval'
       additionalProperties: false
+      required:
+        - mode
 
     info_data_bond_mode_balance-rr:
       type: string
