@@ -1113,7 +1113,7 @@ components:
       example: b0804ec967f48520697662a204f5fe72
       description: | 
 
-        MD5 hash based on route relevant context (dst, gw, dev)
+        MD5 hash based on route relevant context (dst, gw, dev, table)
 
         Ignored in creation (readonly), it is only used to identify a route to get or delete
     ruleid:
@@ -1280,6 +1280,22 @@ components:
     vrf:
       type: object
       description: Virtual Routing and Forwarding object
+    routing_table_id:
+      type: integer
+      minimum: 1
+      maximum: 4294967295
+      description: >
+        VLAN routing table ID. Typical values for table IDs 
+        mapping can be found in `/etc/iproute2/rt_tables`:
+
+            255	local
+            254	main
+            253	default
+            0	unspec
+        
+        Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+      example: 10
+      default: 100
     route:
       type: object
       description: IP L3 Ruote entry
@@ -1327,6 +1343,22 @@ components:
             Route flags
           items:
             $ref: '#/components/schemas/route_flags'
+        table:
+          type: integer
+          minimum: 1
+          maximum: 4294967295
+          description: >
+            Route table ID. Typical values for table IDs 
+            mapping can be found in `/etc/iproute2/rt_tables`:
+
+                255	local
+                254	main
+                253	default
+                0	unspec
+            
+            Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+          example: 254
+          default: 254
       required:
         - dst
     link_flag:
@@ -1404,6 +1436,7 @@ components:
           - $ref: '#/components/schemas/linkinfo_tun'
           - $ref: '#/components/schemas/linkinfo_tap'
           - $ref: '#/components/schemas/linkinfo_gre'
+          - $ref: '#/components/schemas/linkinfo_vrf'
           discriminator:
             propertyName: info_kind
             mapping:
@@ -1419,6 +1452,7 @@ components:
               tun: '#/components/schemas/linkinfo_tun'
               tap: '#/components/schemas/linkinfo_tap'
               gre: '#/components/schemas/linkinfo_gre'
+              vrf: '#/components/schemas/linkinfo_vrf'
         #qdisc:
         #  type: string
         operstate:
@@ -1678,6 +1712,18 @@ components:
           - info_kind
       - $ref: '#/components/schemas/linkinfo_gre_details'
       - $ref: '#/components/schemas/linkinfo_slave_only_details'
+    linkinfo_vrf:
+      allOf:
+      - type: object
+        properties:
+          info_kind:
+            type: string
+            description: info_kind attribute specifying the device kind
+            enum:
+              - vrf
+        required:
+          - info_kind
+      - $ref: '#/components/schemas/linkinfo_vrf_details'
     linkinfo_bond_details:
       description: |
         Additional link info attributes
@@ -2407,7 +2453,19 @@ components:
         disables it. This option was added in bonding driver 3.7.1
 
 
-
+    linkinfo_vrf_details:
+      description: |
+        Additional link info attributes
+      type: object
+      properties:
+        info_data:
+          type: object
+          description: Additional information on the link
+          properties:
+            table:
+              $ref: '#/components/schemas/routing_table_id'
+          required:
+            - table
     linkinfo_vlan_details:
       description: |
         Additional link info attributes
@@ -2475,10 +2533,12 @@ components:
             Supported types:
               * `bond`
               * `bridge`
+              * `vrf`
           example: "bond"
           enum:
             - bond
             - bridge
+            - vrf
         info_slave_data:
           type: object
           description: Info about slave state/config
@@ -2516,6 +2576,9 @@ components:
               description: |
                 Queue Identifier
               example: 0
+            table:
+              $ref: '#/components/schemas/routing_table_id'
+              
     
   securitySchemes:
     bearerAuth:            # arbitrary name for the security scheme
