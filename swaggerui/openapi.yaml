@@ -1285,7 +1285,7 @@ components:
       minimum: 1
       maximum: 4294967295
       description: >
-        VLAN routing table ID. Typical values for table IDs 
+        Routing Table ID. Typical values for table IDs 
         mapping can be found in `/etc/iproute2/rt_tables`:
 
             255	local
