@@ -409,8 +409,42 @@ func LinksDelete() error {
 //This function tries to wipe out every type of conflicting in place configuration such as
 //existing links whose ifname LinkID collides with the ones being created.
 func LinksConfigure(links []Link) error {
-	//Recreate all links
+
+	//Recreate all master virtual devices first
 	for _, link := range links {
+		if link.Linkinfo.InfoKind != "bond" &&
+			link.Linkinfo.InfoKind != "bridge" &&
+			link.Linkinfo.InfoKind != "vrf" {
+			continue
+		}
+		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
+			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v configuration", link.Ifname))
+			continue
+		}
+		l, _ := netlink.LinkByName(string(link.Ifname))
+		if l != nil {
+			logger.Log.Debug(fmt.Sprintf(fmt.Sprintf("Setting link %v down", link.Ifname)))
+			LinkSetDown(link.Ifname)
+			logger.Log.Debug(fmt.Sprintf("Deleting link %v", link.Ifname))
+			if err := LinkDelete(link.Ifname); err != nil {
+				logger.Log.Warning("Link Delete Error:", err)
+			}
+		}
+		/* You cannot enslave a link if it is UP */
+		logger.Log.Debug(fmt.Sprintf("Deleting link %v", link.Ifname))
+		//Adresses are assigned in here
+		if err := LinkCreateDown(link); err != nil {
+			return err
+		}
+	}
+
+	//Recreate all other links
+	for _, link := range links {
+		if link.Linkinfo.InfoKind == "bond" ||
+			link.Linkinfo.InfoKind == "bridge" ||
+			link.Linkinfo.InfoKind == "vrf" {
+			continue
+		}
 		if isUnmanaged(UnmanagedID(link.Ifname), LINKTYPE) {
 			logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v configuration", link.Ifname))
 			continue
