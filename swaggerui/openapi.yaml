@@ -2577,7 +2577,9 @@ components:
                 Queue Identifier
               example: 0
             table:
-              $ref: '#/components/schemas/routing_table_id'
+              allOf:
+              - $ref: '#/components/schemas/routing_table_id'
+              readOnly: true
               
     
   securitySchemes:
