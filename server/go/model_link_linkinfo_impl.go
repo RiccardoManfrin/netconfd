@@ -31,6 +31,13 @@ func huntGreInfoDataParams(v *LinkLinkinfo) error {
 	return nil
 }
 
+func huntVrfInfoDataParams(v *LinkLinkinfo) error {
+	if _, ok := v.InfoData.GetTableOk(); ok {
+		return NewAttributeDoesntBelongToLinkKindSemanticError("table", v.GetInfoKind())
+	}
+	return nil
+}
+
 func huntBondInfoDataParams(v *LinkLinkinfo) error {
 	if _, ok := v.InfoData.GetModeOk(); ok {
 		return NewAttributeDoesntBelongToLinkKindSemanticError("mode", v.GetInfoKind())
@@ -112,6 +119,9 @@ func (v *LinkLinkinfo) Validate() error {
 			if err := huntGreInfoDataParams(v); err != nil {
 				return err
 			}
+			if err := huntVrfInfoDataParams(v); err != nil {
+				return err
+			}
 		}
 	case "gre":
 		{
@@ -124,6 +134,9 @@ func (v *LinkLinkinfo) Validate() error {
 			if err := huntBondInfoDataParams(v); err != nil {
 				return err
 			}
+			if err := huntVrfInfoDataParams(v); err != nil {
+				return err
+			}
 		}
 	case "vlan":
 		{
@@ -134,6 +147,24 @@ func (v *LinkLinkinfo) Validate() error {
 				return err
 			}
 			if err := huntGreInfoDataParams(v); err != nil {
+				return err
+			}
+			if err := huntVrfInfoDataParams(v); err != nil {
+				return err
+			}
+		}
+	case "vrf":
+		{
+			if v.InfoData == nil {
+				return NewMissingRequiredAttributeForLinkKindSemanticError("info_data", infoKind)
+			}
+			if err := huntBondInfoDataParams(v); err != nil {
+				return err
+			}
+			if err := huntGreInfoDataParams(v); err != nil {
+				return err
+			}
+			if err := huntVlanInfoDataParams(v); err != nil {
 				return err
 			}
 		}
@@ -151,6 +182,7 @@ func (v *LinkLinkinfo) Validate() error {
 		"ppp",
 		"tun",
 		"tap":
+
 		{
 			if v.InfoData != nil {
 				return NewAttributeDoesntBelongToLinkKindSemanticError("info_data", infoKind)

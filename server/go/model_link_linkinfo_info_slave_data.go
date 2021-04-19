@@ -17,16 +17,18 @@ import (
 
 // LinkLinkinfoInfoSlaveData Info about slave state/config
 type LinkLinkinfoInfoSlaveData struct {
-	// State of the link:   * `ACTIVE` - Link is actively used   * `BACKUP` - Link is used for failover 
+	// State of the link:   * `ACTIVE` - Link is actively used   * `BACKUP` - Link is used for failover
 	State *string `json:"state,omitempty"`
-	// MII Status:   * `UP`    * `DOWN` 
+	// MII Status:   * `UP`    * `DOWN`
 	MiiStatus *string `json:"mii_status,omitempty"`
-	// Number of link failures 
+	// Number of link failures
 	LinkFailureCount *int32 `json:"link_failure_count,omitempty"`
 	// MAC L2 interface HW address
 	PermHwaddr *string `json:"perm_hwaddr,omitempty"`
-	// Queue Identifier 
+	// Queue Identifier
 	QueueId *int32 `json:"queue_id,omitempty"`
+	// Routing Table ID. Typical values for table IDs  mapping can be found in `/etc/iproute2/rt_tables`:      255 local     254 main     253 default     0 unspec  Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+	Table *uint32 `json:"table,omitempty"`
 }
 
 // NewLinkLinkinfoInfoSlaveData instantiates a new LinkLinkinfoInfoSlaveData object
@@ -113,7 +115,7 @@ func (o *LinkLinkinfoInfoSlaveData) SetMiiStatus(v string) {
 // GetLinkFailureCount returns the LinkFailureCount field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoSlaveData) GetLinkFailureCount() int32 {
 	if o == nil || o.LinkFailureCount == nil {
-		var ret int32 = -1 
+		var ret int32 = -1
 		return ret
 	}
 	return *o.LinkFailureCount
@@ -177,7 +179,7 @@ func (o *LinkLinkinfoInfoSlaveData) SetPermHwaddr(v string) {
 // GetQueueId returns the QueueId field value if set, -1 otherwise.
 func (o *LinkLinkinfoInfoSlaveData) GetQueueId() int32 {
 	if o == nil || o.QueueId == nil {
-		var ret int32 = -1 
+		var ret int32 = -1
 		return ret
 	}
 	return *o.QueueId
@@ -206,6 +208,38 @@ func (o *LinkLinkinfoInfoSlaveData) SetQueueId(v int32) {
 	o.QueueId = &v
 }
 
+// GetTable returns the Table field value if set, 0 otherwise.
+func (o *LinkLinkinfoInfoSlaveData) GetTable() uint32 {
+	if o == nil || o.Table == nil {
+		var ret uint32 = 0
+		return ret
+	}
+	return *o.Table
+}
+
+// GetTableOk returns a tuple with the Table field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoSlaveData) GetTableOk() (*uint32, bool) {
+	if o == nil || o.Table == nil {
+		return nil, false
+	}
+	return o.Table, true
+}
+
+// HasTable returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoSlaveData) HasTable() bool {
+	if o != nil && o.Table != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTable gets a reference to the given uint32 and assigns it to the Table field.
+func (o *LinkLinkinfoInfoSlaveData) SetTable(v uint32) {
+	o.Table = &v
+}
+
 func (o LinkLinkinfoInfoSlaveData) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.State != nil {
@@ -222,6 +256,9 @@ func (o LinkLinkinfoInfoSlaveData) MarshalJSON() ([]byte, error) {
 	}
 	if o.QueueId != nil {
 		toSerialize["queue_id"] = o.QueueId
+	}
+	if o.Table != nil {
+		toSerialize["table"] = o.Table
 	}
 	return json.Marshal(toSerialize)
 }
@@ -261,5 +298,3 @@ func (v *NullableLinkLinkinfoInfoSlaveData) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

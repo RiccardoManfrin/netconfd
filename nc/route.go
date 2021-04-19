@@ -36,6 +36,8 @@ type Route struct {
 	Prefsrc  net.IP `json:"prefsrc,omitempty"`
 	// Route flags
 	Flags *[]string `json:"flags,omitempty"`
+	// Route table ID. Typical values for table IDs  mapping can be found in `/etc/iproute2/rt_tables`:      255 local     254 main     253 default     0 unspec  Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+	Table *uint32 `json:"table,omitempty"`
 }
 
 //Print implements route print

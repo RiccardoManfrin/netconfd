@@ -34,6 +34,8 @@ type LinkLinkinfoInfoSlaveData struct {
 	PermHwaddr string `json:"perm_hwaddr,omitempty"`
 	// Queue Identifier
 	QueueId uint16 `json:"queue_id,omitempty"`
+	// Routing Table ID of master VRF. Typical values for table IDs  mapping can be found in `/etc/iproute2/rt_tables`:      255 local     254 main     253 default     0 unspec  Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+	Table *uint32 `json:"table,omitempty"`
 }
 
 // LinkLinkinfoInfoData Additional information on the link
@@ -88,6 +90,8 @@ type LinkLinkinfoInfoData struct {
 	Local net.IP `json:"local,omitempty"`
 	// Remote IP Address endpoint of a GRE tunnel
 	Remote net.IP `json:"remote,omitempty"`
+	// Routing Table ID. Typical values for table IDs  mapping can be found in `/etc/iproute2/rt_tables`:      255 local     254 main     253 default     0 unspec  Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+	Table *uint32 `json:"table,omitempty"`
 }
 
 //LinkLinkinfo definition
@@ -227,6 +231,14 @@ func linkParse(link netlink.Link) Link {
 			id.Protocol = vlan.VlanProtocol.String()
 			id.Id = int32(vlan.VlanId)
 		}
+	case "vrf":
+		{
+			ncvrf, ok := link.(*netlink.Vrf)
+			if !ok {
+				logger.Log.Warning("Unmatched vrf info kind vs link typecast")
+			}
+			nclink.Linkinfo.InfoData.Table = &ncvrf.Table
+		}
 	case "tuntap":
 		{
 			nctuntap, ok := link.(*netlink.Tuntap)
@@ -266,6 +278,12 @@ func linkParse(link netlink.Link) Link {
 					ids.QueueId = bondslave.QueueId
 					ids.LinkFailureCount = bondslave.LinkFailureCount
 				}
+			case *netlink.VrfSlave:
+				{
+					vrflave := la.Slave.(*netlink.VrfSlave)
+					ids := &nclink.Linkinfo.InfoSlaveData
+					ids.Table = &vrflave.Table
+				}
 			default:
 				{
 					logger.Log.Warning("Unsupported type of slave/master type interface")
@@ -297,14 +315,13 @@ func LinksGet() ([]Link, error) {
 func findActiveBackupBondActiveSlave(links []Link, bondIfname LinkID) (*Link, error) {
 	var foundLink *Link = nil
 	var secondFoundLink *Link = nil
-	for _, link := range links {
+	for i, link := range links {
 		if link.Master == bondIfname && link.Linkinfo.InfoSlaveData.State == netlink.BondStateActive.String() {
 			if foundLink == nil {
-				foundLink = &link
+				foundLink = &links[i]
 			} else {
 				secondFoundLink = &link
 			}
-
 		}
 	}
 	if foundLink == nil {
@@ -448,6 +465,10 @@ func LinksConfigure(links []Link) error {
 					if err = LinkSetMaster(activeSlave.Ifname, link.Master); err != nil {
 						logger.Log.Warning("Link Set Master Error:", err)
 					}
+				}
+			} else {
+				if err = LinkSetMaster(link.Ifname, link.Master); err != nil {
+					logger.Log.Warning("Link Set Master Error:", err)
 				}
 			}
 		}
@@ -753,6 +774,54 @@ func linkFlagsParse(flags net.Flags) []LinkFlag {
 
 }
 
+func linkSlaveFormat(nllink netlink.Link, link *Link) error {
+	if link.Master != "" {
+		la := nllink.Attrs()
+		if link.Linkinfo.InfoSlaveKind == "" {
+			master, err := LinkGet(link.Master)
+			if err != nil {
+				return err
+			}
+			link.Linkinfo.InfoSlaveKind = master.Linkinfo.InfoKind
+		}
+
+		switch link.Linkinfo.InfoSlaveKind {
+		case "vrf":
+			{
+				// Leave commented for now: we use the specific API, since this datastructure is only
+				// Used for readOnly (we just need the Master to enslave to VRFs)
+				//la.Slave = &netlink.VrfSlave{
+				//	Table: *link.Linkinfo.InfoSlaveData.Table,
+				//}
+			}
+		case "bond":
+			{
+				bslave := &netlink.BondSlave{}
+				la.Slave = bslave
+				switch link.Linkinfo.InfoSlaveData.State {
+				case netlink.BondStateActive.String():
+					{
+						bslave.State = netlink.BondStateActive
+					}
+				case netlink.BondStateBackup.String():
+					{
+						bslave.State = netlink.BondStateBackup
+					}
+				default:
+				}
+			}
+		case "bridge":
+			{
+			}
+		default:
+			{
+				//return NewUnsupportedSlaveKindError(link.Linkinfo.InfoSlaveKind)
+			}
+		}
+	}
+	return nil
+}
+
 func linkFlagsFormat(link Link) (net.Flags, error) {
 	var flags net.Flags
 	for _, f := range link.Flags {
@@ -917,6 +986,14 @@ func linkFormat(link Link) (netlink.Link, error) {
 					Mode:      netlink.StringToTuntapModeMap[kind],
 				}
 			}
+		case "vrf":
+			{
+				id := &link.Linkinfo.InfoData
+				nllink = &netlink.Vrf{
+					LinkAttrs: attrs,
+					Table:     *id.Table,
+				}
+			}
 		case "gre":
 			{
 				id := &link.Linkinfo.InfoData
@@ -940,6 +1017,11 @@ func linkFormat(link Link) (netlink.Link, error) {
 		nllink = &netlink.Device{
 			LinkAttrs: attrs,
 		}
+	}
+
+	err = linkSlaveFormat(nllink, &link)
+	if err != nil {
+		return nil, err
 	}
 	netFlags, err := linkFlagsFormat(link)
 	if err != nil {

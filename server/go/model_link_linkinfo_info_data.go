@@ -67,6 +67,8 @@ type LinkLinkinfoInfoData struct {
 	Local *net.IP `json:"local,omitempty"`
 	// Remote IP Address endpoint of a GRE tunnel
 	Remote *net.IP `json:"remote,omitempty"`
+	// Routing Table ID. Typical values for table IDs  mapping can be found in `/etc/iproute2/rt_tables`:      255 local     254 main     253 default     0 unspec  Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
+	Table *uint32 `json:"table,omitempty"`
 }
 
 // NewLinkLinkinfoInfoData instantiates a new LinkLinkinfoInfoData object
@@ -244,6 +246,38 @@ func (o *LinkLinkinfoInfoData) HasMiimon() bool {
 // SetMiimon gets a reference to the given int32 and assigns it to the Miimon field.
 func (o *LinkLinkinfoInfoData) SetMiimon(v int32) {
 	o.Miimon = &v
+}
+
+// GetTable returns the Table field value if set, -1 otherwise.
+func (o *LinkLinkinfoInfoData) GetTable() uint32 {
+	if o == nil || o.Table == nil {
+		var ret uint32 = 254
+		return ret
+	}
+	return *o.Table
+}
+
+// GetTableOk returns a tuple with the Table field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *LinkLinkinfoInfoData) GetTableOk() (*uint32, bool) {
+	if o == nil || o.Table == nil {
+		return nil, false
+	}
+	return o.Table, true
+}
+
+// HasTable returns a boolean if a field has been set.
+func (o *LinkLinkinfoInfoData) HasTable() bool {
+	if o != nil && o.Table != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTable gets a reference to the given uint32 and assigns it to the Table field.
+func (o *LinkLinkinfoInfoData) SetTable(v uint32) {
+	o.Table = &v
 }
 
 // GetUpdelay returns the Updelay field value if set, -1 otherwise.
@@ -899,86 +933,6 @@ func (o *LinkLinkinfoInfoData) SetRemote(v string) {
 	if ip != nil {
 		o.Remote = &ip
 	}
-}
-
-func (o LinkLinkinfoInfoData) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if o.Protocol != nil {
-		toSerialize["protocol"] = o.Protocol
-	}
-	if o.Id != nil {
-		toSerialize["id"] = o.Id
-	}
-	if o.Flags != nil {
-		toSerialize["flags"] = o.Flags
-	}
-	if o.Mode != nil {
-		toSerialize["mode"] = o.Mode
-	}
-	if o.Miimon != nil {
-		toSerialize["miimon"] = o.Miimon
-	}
-	if o.Updelay != nil {
-		toSerialize["updelay"] = o.Updelay
-	}
-	if o.Downdelay != nil {
-		toSerialize["downdelay"] = o.Downdelay
-	}
-	if o.PeerNotifyDelay != nil {
-		toSerialize["peer_notify_delay"] = o.PeerNotifyDelay
-	}
-	if o.UseCarrier != nil {
-		toSerialize["use_carrier"] = o.UseCarrier
-	}
-	if o.ArpInterval != nil {
-		toSerialize["arp_interval"] = o.ArpInterval
-	}
-	if o.ArpValidate != nil {
-		toSerialize["arp_validate"] = o.ArpValidate
-	}
-	if o.ArpAllTargets != nil {
-		toSerialize["arp_all_targets"] = o.ArpAllTargets
-	}
-	if o.PrimaryReselect != nil {
-		toSerialize["primary_reselect"] = o.PrimaryReselect
-	}
-	if o.FailOverMac != nil {
-		toSerialize["fail_over_mac"] = o.FailOverMac
-	}
-	if o.XmitHashPolicy != nil {
-		toSerialize["xmit_hash_policy"] = o.XmitHashPolicy
-	}
-	if o.ResendIgmp != nil {
-		toSerialize["resend_igmp"] = o.ResendIgmp
-	}
-	if o.AllSlavesActive != nil {
-		toSerialize["all_slaves_active"] = o.AllSlavesActive
-	}
-	if o.MinLinks != nil {
-		toSerialize["min_links"] = o.MinLinks
-	}
-	if o.LpInterval != nil {
-		toSerialize["lp_interval"] = o.LpInterval
-	}
-	if o.PacketsPerSlave != nil {
-		toSerialize["packets_per_slave"] = o.PacketsPerSlave
-	}
-	if o.AdLacpRate != nil {
-		toSerialize["ad_lacp_rate"] = o.AdLacpRate
-	}
-	if o.AdSelect != nil {
-		toSerialize["ad_select"] = o.AdSelect
-	}
-	if o.TlbDynamicLb != nil {
-		toSerialize["tlb_dynamic_lb"] = o.TlbDynamicLb
-	}
-	if o.Local != nil {
-		toSerialize["local"] = o.Local
-	}
-	if o.Remote != nil {
-		toSerialize["remote"] = o.Remote
-	}
-	return json.Marshal(toSerialize)
 }
 
 type NullableLinkLinkinfoInfoData struct {

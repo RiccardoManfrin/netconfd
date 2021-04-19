@@ -126,6 +126,14 @@ func NewUnknownLinkKindError(linkKind string) error {
 	return &SemanticError{Code: SEMANTIC, Reason: "LinkKind " + string(linkKind) + " not known"}
 }
 
+//NewUnsupportedSlaveKindError returns a SemanticError error un unsupported kind of device enslavement
+func NewUnsupportedSlaveKindError(infoSlaveKind string) error {
+	if NetconfdDebugTrace {
+		debug.PrintStack()
+	}
+	return &SemanticError{Code: SEMANTIC, Reason: fmt.Sprintf("Unsupported/Unknown Slave kind %v", infoSlaveKind)}
+}
+
 //NewBadAddressError returns a bad address error on link layer interfaces
 func NewBadAddressError(c CIDRAddr) error {
 	if NetconfdDebugTrace {

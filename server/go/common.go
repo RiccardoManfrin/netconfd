@@ -242,7 +242,11 @@ func ncLinkParse(nclink nc.Link) Link {
 	case "ppp":
 	case "tun":
 	case "tap":
+	case "vrf":
 		{
+			did := DiscriminatedInfoData{}
+			did.SetTable(*nclink.Linkinfo.InfoData.Table)
+			lli.InfoData = &did
 		}
 	default:
 		{
@@ -252,15 +256,27 @@ func ncLinkParse(nclink nc.Link) Link {
 
 	if nclink.Master != "" {
 		master := string(nclink.Master)
-		link.Master = &master
-		isd := LinkLinkinfoInfoSlaveData{}
-		lli.InfoSlaveData = &isd
-		icisd := &nclink.Linkinfo.InfoSlaveData
-		link.SetMaster(string(nclink.Master))
-		isd.SetState(icisd.State)
-		isd.SetLinkFailureCount(int32(icisd.LinkFailureCount))
-		isd.SetMiiStatus(icisd.MiiStatus)
-		isd.SetPermHwaddr(icisd.PermHwaddr)
+		if nclink.Linkinfo.InfoSlaveKind != "" {
+			isd := LinkLinkinfoInfoSlaveData{}
+			lli.InfoSlaveData = &isd
+			icisd := &nclink.Linkinfo.InfoSlaveData
+			lli.SetInfoSlaveKind(nclink.Linkinfo.InfoSlaveKind)
+			switch nclink.Linkinfo.InfoSlaveKind {
+			case "bond":
+				{
+					isd.SetState(icisd.State)
+					isd.SetLinkFailureCount(int32(icisd.LinkFailureCount))
+					isd.SetMiiStatus(icisd.MiiStatus)
+					isd.SetPermHwaddr(icisd.PermHwaddr)
+				}
+			case "vrf":
+				{
+					isd.SetTable(*icisd.Table)
+				}
+			}
+		}
+		link.SetMaster(master)
+
 	}
 
 	return link
@@ -318,6 +334,7 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 			Id:              li.InfoData.GetId(),
 			Local:           net.ParseIP(li.InfoData.GetLocal()),
 			Remote:          net.ParseIP(li.InfoData.GetRemote()),
+			Table:           li.InfoData.Table,
 		}
 
 	}
@@ -325,8 +342,14 @@ func ncLinkFormat(link Link) (nc.Link, error) {
 		nclink.Linkinfo.InfoKind = *li.InfoKind
 	}
 
+	if li.InfoSlaveKind != nil {
+		nclink.Linkinfo.InfoSlaveKind = *li.InfoSlaveKind
+	}
+
 	if li.InfoSlaveData != nil {
-		nclink.Linkinfo.InfoSlaveData.State = li.InfoSlaveData.GetState()
+		isd := &nclink.Linkinfo.InfoSlaveData
+		isd.State = li.InfoSlaveData.GetState()
+		isd.Table = li.InfoSlaveData.Table
 	}
 	if link.AddrInfo != nil {
 		nclink.AddrInfo = make([]nc.LinkAddrInfo, len(*link.AddrInfo))
