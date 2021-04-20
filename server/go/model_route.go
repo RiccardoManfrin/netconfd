@@ -215,6 +215,38 @@ func (o *Route) SetProtocol(v string) {
 	o.Protocol = &v
 }
 
+// GetTable returns the Table field value if set, 254 (main) otherwise.
+func (o *Route) GetTable() uint32 {
+	if o == nil || o.Table == nil {
+		var ret uint32 = 254
+		return ret
+	}
+	return *o.Table
+}
+
+// GetTableOk returns a tuple with the Table field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Route) GetTableOk() (*uint32, bool) {
+	if o == nil || o.Table == nil {
+		return nil, false
+	}
+	return o.Table, true
+}
+
+// HasTable returns a boolean if a field has been set.
+func (o *Route) HasTable() bool {
+	if o != nil && o.Table != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTable gets a reference to the given uint32 and assigns it to the Table field.
+func (o *Route) SetTable(v uint32) {
+	o.Table = &v
+}
+
 // GetMetric returns the Metric field value if set, -1 otherwise.
 func (o *Route) GetMetric() int32 {
 	if o == nil || o.Metric == nil {
@@ -375,6 +407,9 @@ func (o Route) MarshalJSON() ([]byte, error) {
 	}
 	if o.Flags != nil {
 		toSerialize["flags"] = o.Flags
+	}
+	if o.Table != nil {
+		toSerialize["table"] = o.Table
 	}
 	return json.Marshal(toSerialize)
 }

@@ -99,6 +99,9 @@ func ncRouteFormat(route Route) (nc.Route, error) {
 	if route.Metric != nil {
 		ncroute.Metric = *route.Metric
 	}
+	if route.Table != nil {
+		ncroute.Table = *route.Table
+	}
 	return ncroute, nil
 }
 
@@ -122,6 +125,7 @@ func ncRouteParse(ncroute nc.Route) Route {
 	route.SetProtocol(ncroute.Protocol)
 	route.SetMetric(ncroute.Metric)
 	route.SetScope(Scope(ncroute.Scope))
+	route.SetTable(ncroute.Table)
 	return route
 }
 

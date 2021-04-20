@@ -37,7 +37,7 @@ type Route struct {
 	// Route flags
 	Flags *[]string `json:"flags,omitempty"`
 	// Route table ID. Typical values for table IDs  mapping can be found in `/etc/iproute2/rt_tables`:      255 local     254 main     253 default     0 unspec  Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
-	Table *uint32 `json:"table,omitempty"`
+	Table uint32 `json:"table,omitempty"`
 }
 
 //Print implements route print
@@ -65,6 +65,7 @@ func routeParse(route netlink.Route) (Route, error) {
 	ncroute.Metric = int32(route.Priority)
 	ncroute.Scope = Scope(route.Scope.String())
 	ncroute.ID = RouteIDGet(ncroute)
+	ncroute.Table = uint32(route.Table)
 	return ncroute, nil
 }
 
@@ -74,6 +75,7 @@ func routeFormat(route Route) (netlink.Route, error) {
 	nlroute.Dst = &dst
 	nlroute.Gw = route.Gateway
 	nlroute.Priority = int(route.Metric)
+	nlroute.Table = int(route.Table)
 	if route.Dev.IsValid() {
 		l, err := LinkGet(route.Dev)
 		if err != nil {
@@ -97,7 +99,7 @@ func RouteIDGet(route Route) RouteID {
 
 //RoutesGet returns the array of routes
 func RoutesGet() ([]Route, error) {
-	routes, err := netlink.RouteList(nil, netlink.FAMILY_ALL)
+	routes, err := netlink.RouteListFiltered(netlink.FAMILY_ALL, nil, 0)
 	if err != nil {
 		return nil, mapNetlinkError(err, nil)
 	}
