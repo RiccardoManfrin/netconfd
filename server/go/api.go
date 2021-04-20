@@ -44,6 +44,7 @@ type NetworkApiRouter interface {
 	ConfigUnmanagedGet(http.ResponseWriter, *http.Request)
 	ConfigUnmanagedListGet(http.ResponseWriter, *http.Request)
 }
+
 // SystemApiRouter defines the required methods for binding the api requests to a responses for the SystemApi
 // The SystemApiRouter implementation should parse necessary information from the http request,
 // pass the data to a SystemApiServicer to perform the required actions, then write the service results to the http response.
@@ -75,7 +76,7 @@ type NetworkApiServicer interface {
 	ConfigRouteCreate(context.Context, Route) (ImplResponse, error)
 	ConfigRouteDel(context.Context, string) (ImplResponse, error)
 	ConfigRouteGet(context.Context, string) (ImplResponse, error)
-	ConfigRoutesGet(context.Context) (ImplResponse, error)
+	ConfigRoutesGet(context.Context, *uint32) (ImplResponse, error)
 	ConfigRuleCreate(context.Context, Rule) (ImplResponse, error)
 	ConfigRuleDel(context.Context, string) (ImplResponse, error)
 	ConfigRuleGet(context.Context, string) (ImplResponse, error)

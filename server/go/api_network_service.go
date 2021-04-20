@@ -95,8 +95,8 @@ func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) 
 }
 
 // ConfigRoutesGet - Get All Routes
-func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, error) {
-	return s.ConfigRoutesGet_Impl(ctx)
+func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context, table *uint32) (ImplResponse, error) {
+	return s.ConfigRoutesGet_Impl(ctx, table)
 }
 
 // ConfigRuleCreate - Configures an IP rule

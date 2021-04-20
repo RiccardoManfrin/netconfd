@@ -181,7 +181,7 @@ func (s *NetworkApiService) ConfigRouteGet_Impl(ctx context.Context, routeid str
 }
 
 // ConfigRoutesGet - Get all routing table routes
-func (s *NetworkApiService) ConfigRoutesGet_Impl(ctx context.Context) (ImplResponse, error) {
+func (s *NetworkApiService) ConfigRoutesGet_Impl(ctx context.Context, table *uint32) (ImplResponse, error) {
 	routes, err := routesGet()
 	return GetErrorResponse(err, routes)
 }

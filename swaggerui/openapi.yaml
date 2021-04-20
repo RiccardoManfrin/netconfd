@@ -268,6 +268,11 @@ paths:
         Get All Routes
       description: |
         Returns the array of the existing routing tables routes ids
+      parameters:
+        - in: query
+          name: table
+          schema:
+            $ref: '#/components/schemas/routing_table_id'
       responses:
         '200':
           description: Sucessful retrieval
@@ -1379,7 +1384,7 @@ components:
         
         Reference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)
       example: 10
-      default: 100
+      default: 254
     route:
       type: object
       description: IP L3 Ruote entry

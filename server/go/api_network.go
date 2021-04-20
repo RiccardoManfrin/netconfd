@@ -12,7 +12,9 @@ package openapi
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 
 	"github.com/gorilla/mux"
@@ -415,7 +417,20 @@ func (c *NetworkApiController) ConfigRouteGet(w http.ResponseWriter, r *http.Req
 
 // ConfigRoutesGet - Get All Routes
 func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Request) {
-	result, err := c.service.ConfigRoutesGet(r.Context())
+	q := r.URL.Query()
+	var table *uint32 = nil
+	table_str, ok := q["table"]
+	if ok {
+		table_num64, err := strconv.ParseUint(table_str[0], 10, 32)
+		table_num32 := uint32(table_num64)
+		if err != nil {
+			code := 400
+			EncodeJSONResponse(fmt.Errorf("Invalid route table ID"), &code, w)
+			return
+		}
+		table = &table_num32
+	}
+	result, err := c.service.ConfigRoutesGet(r.Context(), table)
 	//If an error occured, encode the error with the status code
 	if err != nil {
 		EncodeJSONResponse(err, &result.Code, w)
