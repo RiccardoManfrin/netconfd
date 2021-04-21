@@ -2,6 +2,9 @@ module gitlab.lan.athonet.com/core/netconfd
 
 go 1.16
 
+replace github.com/getkin/kin-openapi => github.com/riccardomanfrin/kin-openapi master
+replace github.com/vishvananda/netlink => github.com/riccardomanfrin/netlink master
+
 require (
 	github.com/getkin/kin-openapi v0.53.0
 	github.com/gorilla/mux v1.8.0
