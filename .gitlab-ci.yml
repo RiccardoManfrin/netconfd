@@ -17,7 +17,7 @@ build:
   - git submodule update
   - git archive --format=tar.gz --output src.tar.gz HEAD
   script:
-  - docker build --pull --iidfile=image_id.txt --ssh default
+  - docker build --no-cache --pull --iidfile=image_id.txt --ssh default
     --build-arg CI_PROJECT_PATH=$CI_PROJECT_PATH
     --build-arg CI_PROJECT_NAME=$CI_PROJECT_NAME
     -f Dockerfile 
