@@ -186,6 +186,40 @@ func (s *NetworkApiService) ConfigRoutesGet_Impl(ctx context.Context) (ImplRespo
 	return GetErrorResponse(err, routes)
 }
 
+// ConfigRuleCreate - Configures a rule
+func (s *NetworkApiService) ConfigRuleCreate_Impl(ctx context.Context, rule Rule) (ImplResponse, error) {
+	ncrule, err := ncRuleFormat(rule)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	ruleid, err := nc.RuleCreate(ncrule)
+	if err != nil {
+		return PostErrorResponse(err, nil)
+	}
+	return PostErrorResponse(err, ruleid)
+}
+
+// ConfigRuleDel - Brings down and delete an L3 IP rule
+func (s *NetworkApiService) ConfigRuleDel_Impl(ctx context.Context, ruleid string) (ImplResponse, error) {
+	err := nc.RuleDelete(nc.RuleID(ruleid))
+	return DeleteErrorResponse(err, nil)
+}
+
+// ConfigRuleGet - Get a L3 rule details
+func (s *NetworkApiService) ConfigRuleGet_Impl(ctx context.Context, ruleid string) (ImplResponse, error) {
+	ncrule, err := nc.RuleGet(nc.RuleID(ruleid))
+	if err != nil {
+		return GetErrorResponse(err, nil)
+	}
+	return GetErrorResponse(err, ncRuleParse(ncrule))
+}
+
+// ConfigRulesGet - Get all routing table rules
+func (s *NetworkApiService) ConfigRulesGet_Impl(ctx context.Context) (ImplResponse, error) {
+	rules, err := rulesGet()
+	return GetErrorResponse(err, rules)
+}
+
 // ConfigUnmanagedCreate - Create Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedCreate_Impl(ctx context.Context, unmanaged Unmanaged) (ImplResponse, error) {
 	ncunmanaged, err := ncUnmanagedFormat(unmanaged)

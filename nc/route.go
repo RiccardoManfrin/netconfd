@@ -113,7 +113,7 @@ func RoutesGet() ([]Route, error) {
 	return ncroutes, nil
 }
 
-//RouteGet Returns the list of existing link layer devices on the machine
+//RouteGet Returns a route if it exists
 func RouteGet(_routeID RouteID) (Route, error) {
 	routes, err := RoutesGet()
 	if err != nil {

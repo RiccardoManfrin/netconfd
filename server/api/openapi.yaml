@@ -626,6 +626,110 @@ paths:
       - support
       - admin
       - monitor
+  /network/rules:
+    get:
+      description: |
+        Get all ip rules list
+      operationId: ConfigRulesGet
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ruleid'
+                type: array
+          description: Sucessful retrieval
+      summary: |
+        Get all ip rules list
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+      - monitor
+    post:
+      description: |
+        Configures a L3 IP rule on the main routing table
+      operationId: ConfigRuleCreate
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rule'
+        description: Rule Config
+        required: true
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                items:
+                  $ref: '#/components/schemas/ruleid'
+                type: array
+          description: Successful creation
+        "409":
+          description: Resource already exists, or request is incompatible with current
+            network state
+        "400":
+          description: Resource config is semantically or syntactically incorrect
+      summary: |
+        Configures an IP rule
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+  /network/rules/{ruleid}:
+    delete:
+      description: |
+        Removes an IP Rule
+      operationId: ConfigRuleDel
+      parameters:
+      - explode: false
+        in: path
+        name: ruleid
+        required: true
+        schema:
+          $ref: '#/components/schemas/ruleid'
+        style: simple
+      responses:
+        "200":
+          description: Successful delete
+        "404":
+          description: Not found
+      summary: |
+        Removes an IP Rule
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+    get:
+      description: |
+        Get an IP rule details
+      operationId: ConfigRuleGet
+      parameters:
+      - explode: false
+        in: path
+        name: ruleid
+        required: true
+        schema:
+          $ref: '#/components/schemas/ruleid'
+        style: simple
+      responses:
+        "200":
+          description: Successful get
+        "404":
+          description: Not found
+      summary: |
+        Get an IP rule details
+      tags:
+      - Network
+      x-authorization:
+      - support
+      - admin
+      - monitor
 components:
   schemas:
     global:
@@ -672,9 +776,14 @@ components:
       readOnly: true
       type: string
     ruleid:
-      description: Incremental rule identifier
-      example: 42
-      type: integer
+      description: |2
+
+        MD5 hash based on rule relevant context (dst, gw, dev, table)
+
+        Ignored in creation (readonly), it is only used to identify a rule to get or delete
+      example: b0804ec967f48520697662a204f5fe72
+      readOnly: true
+      type: string
     netnsid:
       description: Network namespace identifier
       example: yanetnamespace
@@ -806,7 +915,57 @@ components:
           type: string
       type: object
     rule:
-      description: IP Rule type
+      description: IP Rule
+      properties:
+        priority:
+          type: integer
+        not:
+          example: false
+          type: boolean
+        src:
+          example: 10.23.40.1
+          type: string
+        srclen:
+          example: 24
+          type: integer
+        dst:
+          example: 10.24.31.4
+          type: string
+        dstlen:
+          example: 26
+          type: integer
+        tos:
+          example: 0x08
+          type: string
+        iif:
+          example: eth0
+          type: string
+        oif:
+          example: wlan0
+          type: string
+        ipproto:
+          example: udp
+          type: string
+        sport:
+          example: 2300
+          type: integer
+        dport:
+          example: 2331
+          type: integer
+        table:
+          example: "10"
+          type: string
+        suppress_prefixlen:
+          example: 24
+          type: integer
+        suppress_ifgroup:
+          example: "23"
+          type: string
+        masquerade:
+          type: string
+        protocol:
+          example: unspec
+          type: string
       type: object
     netns:
       description: Network Namespace
@@ -828,9 +987,9 @@ components:
       type: object
     routing_table_id:
       default: 100
-      description: "VLAN routing table ID. Typical values for table IDs  mapping can\
-        \ be found in `/etc/iproute2/rt_tables`:\n\n    255\tlocal\n    254\tmain\n\
-        \    253\tdefault\n    0\tunspec\n\nReference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)\n"
+      description: "Routing Table ID. Typical values for table IDs  mapping can be\
+        \ found in `/etc/iproute2/rt_tables`:\n\n    255\tlocal\n    254\tmain\n \
+        \   253\tdefault\n    0\tunspec\n\nReference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)\n"
       example: 10
       maximum: 4294967295
       minimum: 1
@@ -2367,8 +2526,8 @@ components:
       properties:
         table:
           default: 100
-          description: "VLAN routing table ID. Typical values for table IDs  mapping\
-            \ can be found in `/etc/iproute2/rt_tables`:\n\n    255\tlocal\n    254\t\
+          description: "Routing Table ID. Typical values for table IDs  mapping can\
+            \ be found in `/etc/iproute2/rt_tables`:\n\n    255\tlocal\n    254\t\
             main\n    253\tdefault\n    0\tunspec\n\nReference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)\n"
           example: 10
           maximum: 4294967295
@@ -2462,14 +2621,9 @@ components:
           example: 0
           type: integer
         table:
-          default: 100
-          description: "VLAN routing table ID. Typical values for table IDs  mapping\
-            \ can be found in `/etc/iproute2/rt_tables`:\n\n    255\tlocal\n    254\t\
-            main\n    253\tdefault\n    0\tunspec\n\nReference: [IP Route manpage](https://man7.org/linux/man-pages/man8/ip-route.8.html)\n"
-          example: 10
-          maximum: 4294967295
-          minimum: 1
-          type: integer
+          allOf:
+          - $ref: '#/components/schemas/routing_table_id'
+          readOnly: true
       type: object
   securitySchemes:
     bearerAuth:

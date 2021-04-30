@@ -128,6 +128,30 @@ func (c *NetworkApiController) Routes() Routes {
 			c.ConfigRoutesGet,
 		},
 		{
+			"ConfigRuleCreate",
+			strings.ToUpper("Post"),
+			"/api/1/network/rules",
+			c.ConfigRuleCreate,
+		},
+		{
+			"ConfigRuleDel",
+			strings.ToUpper("Delete"),
+			"/api/1/network/rules/{ruleid}",
+			c.ConfigRuleDel,
+		},
+		{
+			"ConfigRuleGet",
+			strings.ToUpper("Get"),
+			"/api/1/network/rules/{ruleid}",
+			c.ConfigRuleGet,
+		},
+		{
+			"ConfigRulesGet",
+			strings.ToUpper("Get"),
+			"/api/1/network/rules",
+			c.ConfigRulesGet,
+		},
+		{
 			"ConfigUnmanagedCreate",
 			strings.ToUpper("Post"),
 			"/api/1/network/unmanaged",
@@ -402,8 +426,70 @@ func (c *NetworkApiController) ConfigRoutesGet(w http.ResponseWriter, r *http.Re
 
 }
 
-// ConfigUnmanagedCreate - Create Unmanaged
-func (c *NetworkApiController) ConfigUnmanagedCreate(w http.ResponseWriter, r *http.Request) {
+// ConfigRuleCreate - Configures an IP rule 
+func (c *NetworkApiController) ConfigRuleCreate(w http.ResponseWriter, r *http.Request) { 
+	rule := &Rule{}
+	if err := json.NewDecoder(r.Body).Decode(&rule); err != nil {
+		w.WriteHeader(500)
+		return
+	}
+	
+	result, err := c.service.ConfigRuleCreate(r.Context(), *rule)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRuleDel - Removes an IP Rule 
+func (c *NetworkApiController) ConfigRuleDel(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ruleid := params["ruleid"]
+	result, err := c.service.ConfigRuleDel(r.Context(), ruleid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRuleGet - Get an IP rule details 
+func (c *NetworkApiController) ConfigRuleGet(w http.ResponseWriter, r *http.Request) { 
+	params := mux.Vars(r)
+	ruleid := params["ruleid"]
+	result, err := c.service.ConfigRuleGet(r.Context(), ruleid)
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigRulesGet - Get all ip rules list 
+func (c *NetworkApiController) ConfigRulesGet(w http.ResponseWriter, r *http.Request) { 
+	result, err := c.service.ConfigRulesGet(r.Context())
+	//If an error occured, encode the error with the status code
+	if err != nil {
+		EncodeJSONResponse(err, &result.Code, w)
+		return
+	}
+	//If no error, encode the body and the result code
+	EncodeJSONResponse(result.Body, &result.Code, w)
+	
+}
+
+// ConfigUnmanagedCreate - Create Unmanaged 
+func (c *NetworkApiController) ConfigUnmanagedCreate(w http.ResponseWriter, r *http.Request) { 
 	unmanaged := &Unmanaged{}
 	if err := json.NewDecoder(r.Body).Decode(&unmanaged); err != nil {
 		w.WriteHeader(500)

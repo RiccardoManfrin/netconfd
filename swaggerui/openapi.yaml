@@ -649,109 +649,109 @@ paths:
         "404":
           description: Not found
 
-#  /rules:
-#    get:
-#      x-authorization:
-#        - support
-#        - admin
-#        - monitor
-#      tags:
-#        - Network
-#      operationId: ConfigRulesGet
-#      summary: |
-#        Get all ip rules list
-#      description: |
-#        Get all ip rules list
-#      responses:
-#        '200':
-#          description: Sucessful retrieval
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: '#/components/schemas/ruleid'
-#    post:
-#      x-authorization:
-#        - support
-#        - admin
-#      tags:
-#        - Network
-#      operationId: ConfigRuleCreate
-#      summary: |
-#        Configures an IP rule
-#      description: |
-#        Configures a L3 IP rule on the main routing table
-#      requestBody:
-#        description: Rule Config
-#        required: true
-#        content:
-#          application/json:
-#            schema:
-#              $ref: '#/components/schemas/rule'
-#      responses:
-#        '201':
-#          description: Successful creation
-#          content:
-#            application/json:
-#              schema:
-#                type: array
-#                items:
-#                  $ref: '#/components/schemas/ruleid'
-#        '409':
-#          description: 
-#            Resource already exists, or request is incompatible with
-#            current network state
-#        "400":
-#          description:
-#            Resource config is semantically or syntactically incorrect
-#          
-#  /network/rules/{ruleid}:
-#    get:
-#      x-authorization:
-#        - support
-#        - admin
-#        - monitor
-#      tags:
-#        - Network
-#      operationId: ConfigRuleGet
-#      summary: |
-#        Get an IP rule details
-#      description: |
-#        Get an IP rule details
-#      parameters:
-#      - in: path
-#        name: ruleid
-#        required: true
-#        schema:
-#          $ref: '#/components/schemas/ruleid'
-#      responses:
-#        '200':
-#          description: Successful get
-#        "404":
-#          description: Not found
-#    delete:
-#      x-authorization:
-#        - support
-#        - admin
-#      tags:
-#        - Network
-#      operationId: ConfigRuleDel
-#      summary: |
-#        Removes an IP Rule
-#      description: |
-#        Removes an IP Rule
-#      parameters:
-#      - in: path
-#        name: ruleid
-#        required: true
-#        schema:
-#          $ref: '#/components/schemas/ruleid'
-#      responses:
-#        '200':
-#          description: Successful delete
-#        "404":
-#          description: Not found
+  /network/rules:
+    get:
+      x-authorization:
+        - support
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigRulesGet
+      summary: |
+        Get all ip rules list
+      description: |
+        Get all ip rules list
+      responses:
+        '200':
+          description: Sucessful retrieval
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ruleid'
+    post:
+      x-authorization:
+        - support
+        - admin
+      tags:
+        - Network
+      operationId: ConfigRuleCreate
+      summary: |
+        Configures an IP rule
+      description: |
+        Configures a L3 IP rule on the main routing table
+      requestBody:
+        description: Rule Config
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/rule'
+      responses:
+        '201':
+          description: Successful creation
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ruleid'
+        '409':
+          description: 
+            Resource already exists, or request is incompatible with
+            current network state
+        "400":
+          description:
+            Resource config is semantically or syntactically incorrect
+          
+  /network/rules/{ruleid}:
+    get:
+      x-authorization:
+        - support
+        - admin
+        - monitor
+      tags:
+        - Network
+      operationId: ConfigRuleGet
+      summary: |
+        Get an IP rule details
+      description: |
+        Get an IP rule details
+      parameters:
+      - in: path
+        name: ruleid
+        required: true
+        schema:
+          $ref: '#/components/schemas/ruleid'
+      responses:
+        '200':
+          description: Successful get
+        "404":
+          description: Not found
+    delete:
+      x-authorization:
+        - support
+        - admin
+      tags:
+        - Network
+      operationId: ConfigRuleDel
+      summary: |
+        Removes an IP Rule
+      description: |
+        Removes an IP Rule
+      parameters:
+      - in: path
+        name: ruleid
+        required: true
+        schema:
+          $ref: '#/components/schemas/ruleid'
+      responses:
+        '200':
+          description: Successful delete
+        "404":
+          description: Not found
 #  /network/netns:
 #    get:
 #      x-authorization:
@@ -1117,9 +1117,14 @@ components:
 
         Ignored in creation (readonly), it is only used to identify a route to get or delete
     ruleid:
-      type: integer
-      example: 42
-      description: Incremental rule identifier
+      type: string
+      readOnly: true
+      example: b0804ec967f48520697662a204f5fe72
+      description: | 
+
+        MD5 hash based on rule relevant context (dst, gw, dev, table)
+
+        Ignored in creation (readonly), it is only used to identify a rule to get or delete
     netnsid:
       type: string
       example: yanetnamespace
@@ -1263,7 +1268,60 @@ components:
           example: "tunvpn0"
     rule:
       type: object
-      description: IP Rule type
+      description: IP Rule
+      properties:
+        priority:
+          type: integer
+          example: 32790,
+        not:
+          type: boolean
+          example: null,
+        src:
+          type: string
+          example: "10.23.40.1"
+        srclen:
+          type: integer
+          example: 24
+        dst:
+          type: string
+          example: "10.24.31.4"
+        dstlen:
+          type: integer
+          example: 26
+        tos:
+          type: string
+          example: "0x08"
+        iif:
+          type: string
+          example: "eth0"
+        oif:
+          type: string
+          example: "wlan0"
+        ipproto:
+          type: string
+          example: "udp"
+        sport:
+          type: integer
+          example: 2300
+        dport:
+          type: integer
+          example: 2331
+        table:
+          type: string
+          example: "10"
+        suppress_prefixlen:
+          type: integer
+          example: 24
+        suppress_ifgroup:
+          type: string
+          example: "23"
+        masquerade:
+          type: string
+          example: null
+        protocol:
+          type: string
+          example: "unspec"
+
     netns:
       type: object
       description: Network Namespace

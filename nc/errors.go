@@ -25,6 +25,8 @@ const (
 	UNKNOWN_TYPE
 	//UNEXPECTED_CORNER_CASE error type describes an error that was not meant to appear
 	UNEXPECTED_CORNER_CASE
+	//UNSUPPORTED error type describes an error where a part of the implementation is missing
+	UNSUPPORTED
 	//RESERVED can be used for outer error enum cohexistence
 	RESERVED = 1000
 )
@@ -476,9 +478,9 @@ func NewUnmanagedResourceNotFoundError(id UnmanagedID) error {
 
 //UnexpetecdCornerCaseError is fundamentally an implementation error catch exception
 //It makes explitic to developer that he did not think of a case that instead happened
-type UnexpetecdCornerCaseError GenericError
+type UnexpectedCornerCaseError GenericError
 
-func (e *UnexpetecdCornerCaseError) Error() string {
+func (e *UnexpectedCornerCaseError) Error() string {
 	strerr, _ := json.Marshal(*e)
 	return string(strerr)
 }
@@ -488,5 +490,21 @@ func NewUnexpectedCornerCaseError(reason string) error {
 	if NetconfdDebugTrace {
 		debug.PrintStack()
 	}
-	return &UnexpetecdCornerCaseError{Code: UNEXPECTED_CORNER_CASE, Reason: reason}
+	return &UnexpectedCornerCaseError{Code: UNEXPECTED_CORNER_CASE, Reason: reason}
+}
+
+//Unsupported describes an error about a part of implementation which is missing
+type UnsupportedError GenericError
+
+func (e *UnsupportedError) Error() string {
+	strerr, _ := json.Marshal(*e)
+	return string(strerr)
+}
+
+//NewUnsupportedError returns a Conflict error on link layer interfaces
+func NewUnsupportedError(reason string) error {
+	if NetconfdDebugTrace {
+		debug.PrintStack()
+	}
+	return &UnsupportedError{Code: UNSUPPORTED, Reason: reason}
 }

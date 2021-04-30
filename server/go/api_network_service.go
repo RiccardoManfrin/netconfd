@@ -12,7 +12,6 @@ package openapi
 
 import (
 	"context"
-
 )
 
 // NewNetworkApiService creates a default api service
@@ -20,103 +19,122 @@ func NewNetworkApiService() NetworkApiServicer {
 	return &NetworkApiService{}
 }
 
-// ConfigDHCPCreate - Create DHCP 
+// ConfigDHCPCreate - Create DHCP
 func (s *NetworkApiService) ConfigDHCPCreate(ctx context.Context, dhcp Dhcp) (ImplResponse, error) {
 	return s.ConfigDHCPCreate_Impl(ctx, dhcp)
 }
 
-// ConfigDHCPDel - Delete DHCP 
+// ConfigDHCPDel - Delete DHCP
 func (s *NetworkApiService) ConfigDHCPDel(ctx context.Context, ifname string) (ImplResponse, error) {
 	return s.ConfigDHCPDel_Impl(ctx, ifname)
 }
 
-// ConfigDHCPGet - Get DHCP 
+// ConfigDHCPGet - Get DHCP
 func (s *NetworkApiService) ConfigDHCPGet(ctx context.Context, ifname string) (ImplResponse, error) {
 	return s.ConfigDHCPGet_Impl(ctx, ifname)
 }
 
-// ConfigDHCPsGet - Get All DHCP 
+// ConfigDHCPsGet - Get All DHCP
 func (s *NetworkApiService) ConfigDHCPsGet(ctx context.Context) (ImplResponse, error) {
 	return s.ConfigDHCPsGet_Impl(ctx)
 }
 
-// ConfigDNSCreate - Create DNS 
+// ConfigDNSCreate - Create DNS
 func (s *NetworkApiService) ConfigDNSCreate(ctx context.Context, dns Dns) (ImplResponse, error) {
 	return s.ConfigDNSCreate_Impl(ctx, dns)
 }
 
-// ConfigDNSDel - Delete DNS 
+// ConfigDNSDel - Delete DNS
 func (s *NetworkApiService) ConfigDNSDel(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	return s.ConfigDNSDel_Impl(ctx, dnsid)
 }
 
-// ConfigDNSGet - Get DNS 
+// ConfigDNSGet - Get DNS
 func (s *NetworkApiService) ConfigDNSGet(ctx context.Context, dnsid Dnsid) (ImplResponse, error) {
 	return s.ConfigDNSGet_Impl(ctx, dnsid)
 }
 
-// ConfigDNSsGet - Get All DNS config 
+// ConfigDNSsGet - Get All DNS config
 func (s *NetworkApiService) ConfigDNSsGet(ctx context.Context) (ImplResponse, error) {
 	return s.ConfigDNSsGet_Impl(ctx)
 }
 
-// ConfigLinkCreate - Create New Link 
+// ConfigLinkCreate - Create New Link
 func (s *NetworkApiService) ConfigLinkCreate(ctx context.Context, link Link) (ImplResponse, error) {
 	return s.ConfigLinkCreate_Impl(ctx, link)
 }
 
-// ConfigLinkDel - Delete Link 
+// ConfigLinkDel - Delete Link
 func (s *NetworkApiService) ConfigLinkDel(ctx context.Context, ifname string) (ImplResponse, error) {
 	return s.ConfigLinkDel_Impl(ctx, ifname)
 }
 
-// ConfigLinkGet - Get Link 
+// ConfigLinkGet - Get Link
 func (s *NetworkApiService) ConfigLinkGet(ctx context.Context, ifname string) (ImplResponse, error) {
 	return s.ConfigLinkGet_Impl(ctx, ifname)
 }
 
-// ConfigLinksGet - Get All Links 
+// ConfigLinksGet - Get All Links
 func (s *NetworkApiService) ConfigLinksGet(ctx context.Context) (ImplResponse, error) {
 	return s.ConfigLinksGet_Impl(ctx)
 }
 
-// ConfigRouteCreate - Create New Route 
+// ConfigRouteCreate - Create New Route
 func (s *NetworkApiService) ConfigRouteCreate(ctx context.Context, route Route) (ImplResponse, error) {
 	return s.ConfigRouteCreate_Impl(ctx, route)
 }
 
-// ConfigRouteDel - Delete Route 
+// ConfigRouteDel - Delete Route
 func (s *NetworkApiService) ConfigRouteDel(ctx context.Context, routeid string) (ImplResponse, error) {
 	return s.ConfigRouteDel_Impl(ctx, routeid)
 }
 
-// ConfigRouteGet - Get Route 
+// ConfigRouteGet - Get Route
 func (s *NetworkApiService) ConfigRouteGet(ctx context.Context, routeid string) (ImplResponse, error) {
 	return s.ConfigRouteGet_Impl(ctx, routeid)
 }
 
-// ConfigRoutesGet - Get All Routes 
+// ConfigRoutesGet - Get All Routes
 func (s *NetworkApiService) ConfigRoutesGet(ctx context.Context) (ImplResponse, error) {
 	return s.ConfigRoutesGet_Impl(ctx)
 }
 
-// ConfigUnmanagedCreate - Create Unmanaged 
+// ConfigRuleCreate - Configures an IP rule
+func (s *NetworkApiService) ConfigRuleCreate(ctx context.Context, rule Rule) (ImplResponse, error) {
+	return s.ConfigRuleCreate_Impl(ctx, rule)
+}
+
+// ConfigRuleDel - Removes an IP Rule 
+func (s *NetworkApiService) ConfigRuleDel(ctx context.Context, ruleid string) (ImplResponse, error) {
+	return s.ConfigRuleDel_Impl(ctx, ruleid)
+}
+
+// ConfigRuleGet - Get an IP rule details 
+func (s *NetworkApiService) ConfigRuleGet(ctx context.Context, ruleid string) (ImplResponse, error) {
+	return s.ConfigRuleGet_Impl(ctx, ruleid)
+}
+
+// ConfigRulesGet - Get all ip rules list
+func (s *NetworkApiService) ConfigRulesGet(ctx context.Context) (ImplResponse, error) {
+	return s.ConfigRulesGet_Impl(ctx)
+}
+
+// ConfigUnmanagedCreate - Create Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedCreate(ctx context.Context, unmanaged Unmanaged) (ImplResponse, error) {
 	return s.ConfigUnmanagedCreate_Impl(ctx, unmanaged)
 }
 
-// ConfigUnmanagedDel - Delete Unmanaged 
+// ConfigUnmanagedDel - Delete Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedDel(ctx context.Context, id string) (ImplResponse, error) {
 	return s.ConfigUnmanagedDel_Impl(ctx, id)
 }
 
-// ConfigUnmanagedGet - Get Unmanaged 
+// ConfigUnmanagedGet - Get Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedGet(ctx context.Context, id string) (ImplResponse, error) {
 	return s.ConfigUnmanagedGet_Impl(ctx, id)
 }
 
-// ConfigUnmanagedListGet - Get All Unmanaged 
+// ConfigUnmanagedListGet - Get All Unmanaged
 func (s *NetworkApiService) ConfigUnmanagedListGet(ctx context.Context) (ImplResponse, error) {
 	return s.ConfigUnmanagedListGet_Impl(ctx)
 }
-

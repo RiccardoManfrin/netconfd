@@ -105,6 +105,30 @@ func ncRouteFormat(route Route) (nc.Route, error) {
 	return ncroute, nil
 }
 
+func ncRuleFormat(rule Rule) (nc.Rule, error) {
+	//TODO
+	ncrule := nc.Rule{}
+	return ncrule, nil
+}
+
+func ncRuleParse(ncrule nc.Rule) Rule {
+	//TODO
+	r := Rule{}
+	return r
+}
+
+func rulesGet() ([]Rule, error) {
+	var routes []Rule
+	ncroutes, err := nc.RulesGet()
+	if err == nil {
+		routes = make([]Rule, len(ncroutes))
+		for i, r := range ncroutes {
+			routes[i] = ncRuleParse(r)
+		}
+	}
+	return routes, err
+}
+
 func ncRouteParse(ncroute nc.Route) Route {
 	var route Route
 	id := string(ncroute.ID)
