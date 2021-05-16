@@ -27,6 +27,8 @@ type Network struct {
 	Dns *[]Dns `json:"dns,omitempty"`
 	// List of unmanaged Network resorces
 	Unmanaged *[]Unmanaged `json:"unmanaged,omitempty"`
+	//IP Rules
+	Rules *[]Rule
 }
 
 // NewNetwork instantiates a new Network object
@@ -261,5 +263,3 @@ func (v *NullableNetwork) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

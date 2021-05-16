@@ -22,6 +22,13 @@ func NewCIDRAddr(addr string) CIDRAddr {
 	return a
 }
 
+func CIDRAddrLoad(ip string, len int) (CIDRAddr, error) {
+	a := CIDRAddr{}
+	a.ParseIP(ip)
+	err := a.SetPrefixLen(len)
+	return a, err
+}
+
 //IsValid returns true if address is set and valid
 func (a *CIDRAddr) IsValid() bool {
 	return a.ip != nil && len(a.ip) > 0

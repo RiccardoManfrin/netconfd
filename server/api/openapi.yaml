@@ -637,7 +637,7 @@ paths:
             application/json:
               schema:
                 items:
-                  $ref: '#/components/schemas/ruleid'
+                  $ref: '#/components/schemas/rule'
                 type: array
           description: Sucessful retrieval
       summary: |
@@ -766,6 +766,11 @@ components:
       - secondary
       example: primary
       type: string
+    port:
+      example: 42
+      maximum: 65535
+      minimum: 0
+      type: integer
     routeid:
       description: |2
 
@@ -916,10 +921,42 @@ components:
       type: object
     rule:
       description: IP Rule
+      example:
+        srclen: 24
+        dst: 10.24.31.4
+        iif: eth0
+        oif: wlan0
+        ipproto: udp
+        dport: 42
+        suppress_ifgroup: 23
+        not: false
+        protocol: unspec
+        goto: 5
+        masquerade: masquerade
+        tos: 42
+        sport_start: 42
+        table: 10
+        flow: 2
+        dstlen: 26
+        mask: 1
+        src: 10.23.40.1
+        dport_start: 42
+        dport_end: 42
+        priority: 32790
+        suppress_prefixlen: 24
+        tunid: 5
+        family: 0
+        sport: 42
+        sport_end: 42
+        mark: 6
       properties:
         priority:
+          example: 32790
+          type: integer
+        family:
           type: integer
         not:
+          default: false
           example: false
           type: boolean
         src:
@@ -935,8 +972,10 @@ components:
           example: 26
           type: integer
         tos:
-          example: 0x08
-          type: string
+          example: 42
+          maximum: 255
+          minimum: 0
+          type: integer
         iif:
           example: eth0
           type: string
@@ -947,25 +986,59 @@ components:
           example: udp
           type: string
         sport:
-          example: 2300
+          example: 42
+          maximum: 65535
+          minimum: 0
           type: integer
         dport:
-          example: 2331
+          example: 42
+          maximum: 65535
+          minimum: 0
+          type: integer
+        sport_start:
+          example: 42
+          maximum: 65535
+          minimum: 0
+          type: integer
+        dport_start:
+          example: 42
+          maximum: 65535
+          minimum: 0
+          type: integer
+        sport_end:
+          example: 42
+          maximum: 65535
+          minimum: 0
+          type: integer
+        dport_end:
+          example: 42
+          maximum: 65535
+          minimum: 0
           type: integer
         table:
-          example: "10"
-          type: string
+          example: 10
+          type: integer
         suppress_prefixlen:
           example: 24
           type: integer
         suppress_ifgroup:
-          example: "23"
-          type: string
+          example: 23
+          type: integer
         masquerade:
           type: string
         protocol:
           example: unspec
           type: string
+        mark:
+          type: integer
+        mask:
+          type: integer
+        tunid:
+          type: integer
+        goto:
+          type: integer
+        flow:
+          type: integer
       type: object
     netns:
       description: Network Namespace

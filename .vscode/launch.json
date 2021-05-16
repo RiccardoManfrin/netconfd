@@ -13,7 +13,8 @@
             "program": "${workspaceFolder}",
             "env": {
                 "NETCONFD_HOST": "127.0.0.1",
-                "NETCONFD_PORT": 8666
+                "NETCONFD_PORT": 8666,
+                "APP_DEBUG_TRACE": true
             },
             "args": ["-config", "netconfd.json", "-log", "-", "--skipbootconfig", "--norollbackonfailure"],
             "showLog": true

@@ -670,7 +670,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/ruleid'
+                  $ref: '#/components/schemas/rule'
     post:
       x-authorization:
         - support
@@ -1107,6 +1107,11 @@ components:
       example: primary
       description: | 
         ID of the DNS servers, defining their priority
+    port:
+      type: integer
+      minimum: 0
+      maximum: 65535
+      example: 42
     routeid:
       type: string
       readOnly: true
@@ -1272,10 +1277,13 @@ components:
       properties:
         priority:
           type: integer
-          example: 32790,
+          example: 32790
+        family:
+          type: integer
         not:
           type: boolean
-          example: null,
+          example: false
+          default: false
         src:
           type: string
           example: "10.23.40.1"
@@ -1289,8 +1297,10 @@ components:
           type: integer
           example: 26
         tos:
-          type: string
-          example: "0x08"
+          type: integer
+          minimum: 0
+          maximum: 255
+          example: 42
         iif:
           type: string
           example: "eth0"
@@ -1301,26 +1311,42 @@ components:
           type: string
           example: "udp"
         sport:
-          type: integer
-          example: 2300
+          $ref: '#/components/schemas/port'
         dport:
-          type: integer
-          example: 2331
+          $ref: '#/components/schemas/port'
+        sport_start:
+          $ref: '#/components/schemas/port'
+        dport_start:
+          $ref: '#/components/schemas/port'
+        sport_end:
+          $ref: '#/components/schemas/port'
+        dport_end:
+          $ref: '#/components/schemas/port'
         table:
-          type: string
-          example: "10"
+          type: integer
+          example: 10
         suppress_prefixlen:
           type: integer
           example: 24
         suppress_ifgroup:
-          type: string
-          example: "23"
+          type: integer
+          example: 23
         masquerade:
           type: string
           example: null
         protocol:
           type: string
           example: "unspec"
+        mark:
+          type: integer
+        mask:
+          type: integer
+        tunid:
+          type: integer
+        goto:
+          type: integer
+        flow:
+          type: integer
 
     netns:
       type: object

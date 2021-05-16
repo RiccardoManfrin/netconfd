@@ -17,23 +17,33 @@ import (
 
 // Rule IP Rule
 type Rule struct {
-	Priority *int32 `json:"priority,omitempty"`
-	Not *bool `json:"not,omitempty"`
-	Src *string `json:"src,omitempty"`
-	Srclen *int32 `json:"srclen,omitempty"`
-	Dst *string `json:"dst,omitempty"`
-	Dstlen *int32 `json:"dstlen,omitempty"`
-	Tos *string `json:"tos,omitempty"`
-	Iif *string `json:"iif,omitempty"`
-	Oif *string `json:"oif,omitempty"`
-	Ipproto *string `json:"ipproto,omitempty"`
-	Sport *int32 `json:"sport,omitempty"`
-	Dport *int32 `json:"dport,omitempty"`
-	Table *string `json:"table,omitempty"`
-	SuppressPrefixlen *int32 `json:"suppress_prefixlen,omitempty"`
-	SuppressIfgroup *string `json:"suppress_ifgroup,omitempty"`
-	Masquerade *string `json:"masquerade,omitempty"`
-	Protocol *string `json:"protocol,omitempty"`
+	Priority          *int    `json:"priority,omitempty"`
+	Family            *int    `json:"family,omitempty"`
+	Not               *bool   `json:"not,omitempty"`
+	Src               *string `json:"src,omitempty"`
+	Srclen            *int    `json:"srclen,omitempty"`
+	Dst               *string `json:"dst,omitempty"`
+	Dstlen            *int    `json:"dstlen,omitempty"`
+	Tos               *int    `json:"tos,omitempty"`
+	Iif               *string `json:"iif,omitempty"`
+	Oif               *string `json:"oif,omitempty"`
+	Ipproto           *string `json:"ipproto,omitempty"`
+	Sport             *int    `json:"sport,omitempty"`
+	Dport             *int    `json:"dport,omitempty"`
+	SportStart        *int    `json:"sport_start,omitempty"`
+	DportStart        *int    `json:"dport_start,omitempty"`
+	SportEnd          *int    `json:"sport_end,omitempty"`
+	DportEnd          *int    `json:"dport_end,omitempty"`
+	Table             *int    `json:"table,omitempty"`
+	SuppressPrefixlen *int    `json:"suppress_prefixlen,omitempty"`
+	SuppressIfgroup   *int    `json:"suppress_ifgroup,omitempty"`
+	Masquerade        *string `json:"masquerade,omitempty"`
+	Protocol          *string `json:"protocol,omitempty"`
+	Mark              *int    `json:"mark,omitempty"`
+	Mask              *int    `json:"mask,omitempty"`
+	Tunid             *uint   `json:"tunid,omitempty"`
+	Goto              *int    `json:"goto,omitempty"`
+	Flow              *int    `json:"flow,omitempty"`
 }
 
 // NewRule instantiates a new Rule object
@@ -42,6 +52,8 @@ type Rule struct {
 // will change when the set of required properties is changed
 func NewRule() *Rule {
 	this := Rule{}
+	var not bool = false
+	this.Not = &not
 	return &this
 }
 
@@ -50,13 +62,15 @@ func NewRule() *Rule {
 // but it doesn't guarantee that properties required by API are set
 func NewRuleWithDefaults() *Rule {
 	this := Rule{}
+	var not bool = false
+	this.Not = &not
 	return &this
 }
 
 // GetPriority returns the Priority field value if set, -1 otherwise.
-func (o *Rule) GetPriority() int32 {
+func (o *Rule) GetPriority() int {
 	if o == nil || o.Priority == nil {
-		var ret int32 = -1 
+		var ret int = -1
 		return ret
 	}
 	return *o.Priority
@@ -64,7 +78,7 @@ func (o *Rule) GetPriority() int32 {
 
 // GetPriorityOk returns a tuple with the Priority field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetPriorityOk() (*int32, bool) {
+func (o *Rule) GetPriorityOk() (*int, bool) {
 	if o == nil || o.Priority == nil {
 		return nil, false
 	}
@@ -80,9 +94,41 @@ func (o *Rule) HasPriority() bool {
 	return false
 }
 
-// SetPriority gets a reference to the given int32 and assigns it to the Priority field.
-func (o *Rule) SetPriority(v int32) {
+// SetPriority gets a reference to the given int and assigns it to the Priority field.
+func (o *Rule) SetPriority(v int) {
 	o.Priority = &v
+}
+
+// GetFamily returns the Family field value if set, -1 otherwise.
+func (o *Rule) GetFamily() int {
+	if o == nil || o.Family == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.Family
+}
+
+// GetFamilyOk returns a tuple with the Family field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetFamilyOk() (*int, bool) {
+	if o == nil || o.Family == nil {
+		return nil, false
+	}
+	return o.Family, true
+}
+
+// HasFamily returns a boolean if a field has been set.
+func (o *Rule) HasFamily() bool {
+	if o != nil && o.Family != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFamily gets a reference to the given int and assigns it to the Family field.
+func (o *Rule) SetFamily(v int) {
+	o.Family = &v
 }
 
 // GetNot returns the Not field value if set, zero value otherwise.
@@ -150,9 +196,9 @@ func (o *Rule) SetSrc(v string) {
 }
 
 // GetSrclen returns the Srclen field value if set, -1 otherwise.
-func (o *Rule) GetSrclen() int32 {
+func (o *Rule) GetSrclen() int {
 	if o == nil || o.Srclen == nil {
-		var ret int32 = -1 
+		var ret int = -1
 		return ret
 	}
 	return *o.Srclen
@@ -160,7 +206,7 @@ func (o *Rule) GetSrclen() int32 {
 
 // GetSrclenOk returns a tuple with the Srclen field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetSrclenOk() (*int32, bool) {
+func (o *Rule) GetSrclenOk() (*int, bool) {
 	if o == nil || o.Srclen == nil {
 		return nil, false
 	}
@@ -176,8 +222,8 @@ func (o *Rule) HasSrclen() bool {
 	return false
 }
 
-// SetSrclen gets a reference to the given int32 and assigns it to the Srclen field.
-func (o *Rule) SetSrclen(v int32) {
+// SetSrclen gets a reference to the given int and assigns it to the Srclen field.
+func (o *Rule) SetSrclen(v int) {
 	o.Srclen = &v
 }
 
@@ -214,9 +260,9 @@ func (o *Rule) SetDst(v string) {
 }
 
 // GetDstlen returns the Dstlen field value if set, -1 otherwise.
-func (o *Rule) GetDstlen() int32 {
+func (o *Rule) GetDstlen() int {
 	if o == nil || o.Dstlen == nil {
-		var ret int32 = -1 
+		var ret int = -1
 		return ret
 	}
 	return *o.Dstlen
@@ -224,7 +270,7 @@ func (o *Rule) GetDstlen() int32 {
 
 // GetDstlenOk returns a tuple with the Dstlen field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetDstlenOk() (*int32, bool) {
+func (o *Rule) GetDstlenOk() (*int, bool) {
 	if o == nil || o.Dstlen == nil {
 		return nil, false
 	}
@@ -240,15 +286,15 @@ func (o *Rule) HasDstlen() bool {
 	return false
 }
 
-// SetDstlen gets a reference to the given int32 and assigns it to the Dstlen field.
-func (o *Rule) SetDstlen(v int32) {
+// SetDstlen gets a reference to the given int and assigns it to the Dstlen field.
+func (o *Rule) SetDstlen(v int) {
 	o.Dstlen = &v
 }
 
-// GetTos returns the Tos field value if set, zero value otherwise.
-func (o *Rule) GetTos() string {
+// GetTos returns the Tos field value if set, -1 otherwise.
+func (o *Rule) GetTos() int {
 	if o == nil || o.Tos == nil {
-		var ret string
+		var ret int = -1
 		return ret
 	}
 	return *o.Tos
@@ -256,7 +302,7 @@ func (o *Rule) GetTos() string {
 
 // GetTosOk returns a tuple with the Tos field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetTosOk() (*string, bool) {
+func (o *Rule) GetTosOk() (*int, bool) {
 	if o == nil || o.Tos == nil {
 		return nil, false
 	}
@@ -272,8 +318,8 @@ func (o *Rule) HasTos() bool {
 	return false
 }
 
-// SetTos gets a reference to the given string and assigns it to the Tos field.
-func (o *Rule) SetTos(v string) {
+// SetTos gets a reference to the given int and assigns it to the Tos field.
+func (o *Rule) SetTos(v int) {
 	o.Tos = &v
 }
 
@@ -374,9 +420,9 @@ func (o *Rule) SetIpproto(v string) {
 }
 
 // GetSport returns the Sport field value if set, -1 otherwise.
-func (o *Rule) GetSport() int32 {
+func (o *Rule) GetSport() int {
 	if o == nil || o.Sport == nil {
-		var ret int32 = -1 
+		var ret int = -1
 		return ret
 	}
 	return *o.Sport
@@ -384,7 +430,7 @@ func (o *Rule) GetSport() int32 {
 
 // GetSportOk returns a tuple with the Sport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetSportOk() (*int32, bool) {
+func (o *Rule) GetSportOk() (*int, bool) {
 	if o == nil || o.Sport == nil {
 		return nil, false
 	}
@@ -400,15 +446,15 @@ func (o *Rule) HasSport() bool {
 	return false
 }
 
-// SetSport gets a reference to the given int32 and assigns it to the Sport field.
-func (o *Rule) SetSport(v int32) {
+// SetSport gets a reference to the given int and assigns it to the Sport field.
+func (o *Rule) SetSport(v int) {
 	o.Sport = &v
 }
 
 // GetDport returns the Dport field value if set, -1 otherwise.
-func (o *Rule) GetDport() int32 {
+func (o *Rule) GetDport() int {
 	if o == nil || o.Dport == nil {
-		var ret int32 = -1 
+		var ret int = -1
 		return ret
 	}
 	return *o.Dport
@@ -416,7 +462,7 @@ func (o *Rule) GetDport() int32 {
 
 // GetDportOk returns a tuple with the Dport field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetDportOk() (*int32, bool) {
+func (o *Rule) GetDportOk() (*int, bool) {
 	if o == nil || o.Dport == nil {
 		return nil, false
 	}
@@ -432,15 +478,143 @@ func (o *Rule) HasDport() bool {
 	return false
 }
 
-// SetDport gets a reference to the given int32 and assigns it to the Dport field.
-func (o *Rule) SetDport(v int32) {
+// SetDport gets a reference to the given int and assigns it to the Dport field.
+func (o *Rule) SetDport(v int) {
 	o.Dport = &v
 }
 
-// GetTable returns the Table field value if set, zero value otherwise.
-func (o *Rule) GetTable() string {
+// GetSportStart returns the SportStart field value if set, -1 otherwise.
+func (o *Rule) GetSportStart() int {
+	if o == nil || o.SportStart == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.SportStart
+}
+
+// GetSportStartOk returns a tuple with the SportStart field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetSportStartOk() (*int, bool) {
+	if o == nil || o.SportStart == nil {
+		return nil, false
+	}
+	return o.SportStart, true
+}
+
+// HasSportStart returns a boolean if a field has been set.
+func (o *Rule) HasSportStart() bool {
+	if o != nil && o.SportStart != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSportStart gets a reference to the given int and assigns it to the SportStart field.
+func (o *Rule) SetSportStart(v int) {
+	o.SportStart = &v
+}
+
+// GetDportStart returns the DportStart field value if set, -1 otherwise.
+func (o *Rule) GetDportStart() int {
+	if o == nil || o.DportStart == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.DportStart
+}
+
+// GetDportStartOk returns a tuple with the DportStart field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetDportStartOk() (*int, bool) {
+	if o == nil || o.DportStart == nil {
+		return nil, false
+	}
+	return o.DportStart, true
+}
+
+// HasDportStart returns a boolean if a field has been set.
+func (o *Rule) HasDportStart() bool {
+	if o != nil && o.DportStart != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDportStart gets a reference to the given int and assigns it to the DportStart field.
+func (o *Rule) SetDportStart(v int) {
+	o.DportStart = &v
+}
+
+// GetSportEnd returns the SportEnd field value if set, -1 otherwise.
+func (o *Rule) GetSportEnd() int {
+	if o == nil || o.SportEnd == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.SportEnd
+}
+
+// GetSportEndOk returns a tuple with the SportEnd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetSportEndOk() (*int, bool) {
+	if o == nil || o.SportEnd == nil {
+		return nil, false
+	}
+	return o.SportEnd, true
+}
+
+// HasSportEnd returns a boolean if a field has been set.
+func (o *Rule) HasSportEnd() bool {
+	if o != nil && o.SportEnd != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetSportEnd gets a reference to the given int and assigns it to the SportEnd field.
+func (o *Rule) SetSportEnd(v int) {
+	o.SportEnd = &v
+}
+
+// GetDportEnd returns the DportEnd field value if set, -1 otherwise.
+func (o *Rule) GetDportEnd() int {
+	if o == nil || o.DportEnd == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.DportEnd
+}
+
+// GetDportEndOk returns a tuple with the DportEnd field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetDportEndOk() (*int, bool) {
+	if o == nil || o.DportEnd == nil {
+		return nil, false
+	}
+	return o.DportEnd, true
+}
+
+// HasDportEnd returns a boolean if a field has been set.
+func (o *Rule) HasDportEnd() bool {
+	if o != nil && o.DportEnd != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetDportEnd gets a reference to the given int and assigns it to the DportEnd field.
+func (o *Rule) SetDportEnd(v int) {
+	o.DportEnd = &v
+}
+
+// GetTable returns the Table field value if set, -1 otherwise.
+func (o *Rule) GetTable() int {
 	if o == nil || o.Table == nil {
-		var ret string
+		var ret int = -1
 		return ret
 	}
 	return *o.Table
@@ -448,7 +622,7 @@ func (o *Rule) GetTable() string {
 
 // GetTableOk returns a tuple with the Table field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetTableOk() (*string, bool) {
+func (o *Rule) GetTableOk() (*int, bool) {
 	if o == nil || o.Table == nil {
 		return nil, false
 	}
@@ -464,15 +638,15 @@ func (o *Rule) HasTable() bool {
 	return false
 }
 
-// SetTable gets a reference to the given string and assigns it to the Table field.
-func (o *Rule) SetTable(v string) {
+// SetTable gets a reference to the given int and assigns it to the Table field.
+func (o *Rule) SetTable(v int) {
 	o.Table = &v
 }
 
 // GetSuppressPrefixlen returns the SuppressPrefixlen field value if set, -1 otherwise.
-func (o *Rule) GetSuppressPrefixlen() int32 {
+func (o *Rule) GetSuppressPrefixlen() int {
 	if o == nil || o.SuppressPrefixlen == nil {
-		var ret int32 = -1 
+		var ret int = -1
 		return ret
 	}
 	return *o.SuppressPrefixlen
@@ -480,7 +654,7 @@ func (o *Rule) GetSuppressPrefixlen() int32 {
 
 // GetSuppressPrefixlenOk returns a tuple with the SuppressPrefixlen field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetSuppressPrefixlenOk() (*int32, bool) {
+func (o *Rule) GetSuppressPrefixlenOk() (*int, bool) {
 	if o == nil || o.SuppressPrefixlen == nil {
 		return nil, false
 	}
@@ -496,15 +670,15 @@ func (o *Rule) HasSuppressPrefixlen() bool {
 	return false
 }
 
-// SetSuppressPrefixlen gets a reference to the given int32 and assigns it to the SuppressPrefixlen field.
-func (o *Rule) SetSuppressPrefixlen(v int32) {
+// SetSuppressPrefixlen gets a reference to the given int and assigns it to the SuppressPrefixlen field.
+func (o *Rule) SetSuppressPrefixlen(v int) {
 	o.SuppressPrefixlen = &v
 }
 
-// GetSuppressIfgroup returns the SuppressIfgroup field value if set, zero value otherwise.
-func (o *Rule) GetSuppressIfgroup() string {
+// GetSuppressIfgroup returns the SuppressIfgroup field value if set, -1 otherwise.
+func (o *Rule) GetSuppressIfgroup() int {
 	if o == nil || o.SuppressIfgroup == nil {
-		var ret string
+		var ret int = -1
 		return ret
 	}
 	return *o.SuppressIfgroup
@@ -512,7 +686,7 @@ func (o *Rule) GetSuppressIfgroup() string {
 
 // GetSuppressIfgroupOk returns a tuple with the SuppressIfgroup field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *Rule) GetSuppressIfgroupOk() (*string, bool) {
+func (o *Rule) GetSuppressIfgroupOk() (*int, bool) {
 	if o == nil || o.SuppressIfgroup == nil {
 		return nil, false
 	}
@@ -528,8 +702,8 @@ func (o *Rule) HasSuppressIfgroup() bool {
 	return false
 }
 
-// SetSuppressIfgroup gets a reference to the given string and assigns it to the SuppressIfgroup field.
-func (o *Rule) SetSuppressIfgroup(v string) {
+// SetSuppressIfgroup gets a reference to the given int and assigns it to the SuppressIfgroup field.
+func (o *Rule) SetSuppressIfgroup(v int) {
 	o.SuppressIfgroup = &v
 }
 
@@ -597,10 +771,173 @@ func (o *Rule) SetProtocol(v string) {
 	o.Protocol = &v
 }
 
+// GetMark returns the Mark field value if set, -1 otherwise.
+func (o *Rule) GetMark() int {
+	if o == nil || o.Mark == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.Mark
+}
+
+// GetMarkOk returns a tuple with the Mark field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetMarkOk() (*int, bool) {
+	if o == nil || o.Mark == nil {
+		return nil, false
+	}
+	return o.Mark, true
+}
+
+// HasMark returns a boolean if a field has been set.
+func (o *Rule) HasMark() bool {
+	if o != nil && o.Mark != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMark gets a reference to the given int and assigns it to the Mark field.
+func (o *Rule) SetMark(v int) {
+	o.Mark = &v
+}
+
+// GetMask returns the Mask field value if set, -1 otherwise.
+func (o *Rule) GetMask() int {
+	if o == nil || o.Mask == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.Mask
+}
+
+// GetMaskOk returns a tuple with the Mask field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetMaskOk() (*int, bool) {
+	if o == nil || o.Mask == nil {
+		return nil, false
+	}
+	return o.Mask, true
+}
+
+// HasMask returns a boolean if a field has been set.
+func (o *Rule) HasMask() bool {
+	if o != nil && o.Mask != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetMask gets a reference to the given int and assigns it to the Mask field.
+func (o *Rule) SetMask(v int) {
+	o.Mask = &v
+}
+
+// GetTunid returns the Tunid field value if set, -1 otherwise.
+func (o *Rule) GetTunid() uint {
+	if o == nil || o.Tunid == nil {
+		var ret uint = 0
+		return ret
+	}
+	return *o.Tunid
+}
+
+// GetTunidOk returns a tuple with the Tunid field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetTunidOk() (*uint, bool) {
+	if o == nil || o.Tunid == nil {
+		return nil, false
+	}
+	return o.Tunid, true
+}
+
+// HasTunid returns a boolean if a field has been set.
+func (o *Rule) HasTunid() bool {
+	if o != nil && o.Tunid != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetTunid gets a reference to the given int and assigns it to the Tunid field.
+func (o *Rule) SetTunid(v uint) {
+	o.Tunid = &v
+}
+
+// GetGoto returns the Goto field value if set, -1 otherwise.
+func (o *Rule) GetGoto() int {
+	if o == nil || o.Goto == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.Goto
+}
+
+// GetGotoOk returns a tuple with the Goto field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetGotoOk() (*int, bool) {
+	if o == nil || o.Goto == nil {
+		return nil, false
+	}
+	return o.Goto, true
+}
+
+// HasGoto returns a boolean if a field has been set.
+func (o *Rule) HasGoto() bool {
+	if o != nil && o.Goto != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetGoto gets a reference to the given int and assigns it to the Goto field.
+func (o *Rule) SetGoto(v int) {
+	o.Goto = &v
+}
+
+// GetFlow returns the Flow field value if set, -1 otherwise.
+func (o *Rule) GetFlow() int {
+	if o == nil || o.Flow == nil {
+		var ret int = -1
+		return ret
+	}
+	return *o.Flow
+}
+
+// GetFlowOk returns a tuple with the Flow field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Rule) GetFlowOk() (*int, bool) {
+	if o == nil || o.Flow == nil {
+		return nil, false
+	}
+	return o.Flow, true
+}
+
+// HasFlow returns a boolean if a field has been set.
+func (o *Rule) HasFlow() bool {
+	if o != nil && o.Flow != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetFlow gets a reference to the given int and assigns it to the Flow field.
+func (o *Rule) SetFlow(v int) {
+	o.Flow = &v
+}
+
 func (o Rule) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if o.Priority != nil {
 		toSerialize["priority"] = o.Priority
+	}
+	if o.Family != nil {
+		toSerialize["family"] = o.Family
 	}
 	if o.Not != nil {
 		toSerialize["not"] = o.Not
@@ -635,6 +972,18 @@ func (o Rule) MarshalJSON() ([]byte, error) {
 	if o.Dport != nil {
 		toSerialize["dport"] = o.Dport
 	}
+	if o.SportStart != nil {
+		toSerialize["sport_start"] = o.SportStart
+	}
+	if o.DportStart != nil {
+		toSerialize["dport_start"] = o.DportStart
+	}
+	if o.SportEnd != nil {
+		toSerialize["sport_end"] = o.SportEnd
+	}
+	if o.DportEnd != nil {
+		toSerialize["dport_end"] = o.DportEnd
+	}
 	if o.Table != nil {
 		toSerialize["table"] = o.Table
 	}
@@ -649,6 +998,21 @@ func (o Rule) MarshalJSON() ([]byte, error) {
 	}
 	if o.Protocol != nil {
 		toSerialize["protocol"] = o.Protocol
+	}
+	if o.Mark != nil {
+		toSerialize["mark"] = o.Mark
+	}
+	if o.Mask != nil {
+		toSerialize["mask"] = o.Mask
+	}
+	if o.Tunid != nil {
+		toSerialize["tunid"] = o.Tunid
+	}
+	if o.Goto != nil {
+		toSerialize["goto"] = o.Goto
+	}
+	if o.Flow != nil {
+		toSerialize["flow"] = o.Flow
 	}
 	return json.Marshal(toSerialize)
 }
@@ -688,5 +1052,3 @@ func (v *NullableRule) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
-
-

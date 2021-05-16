@@ -12,6 +12,8 @@ type Network struct {
 	Dnss []Dns
 	//Unmanaged context
 	Unmanaged []Unmanaged
+	// IP Rules
+	Rules []Rule
 }
 
 //Patch network config

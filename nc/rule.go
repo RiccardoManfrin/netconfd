@@ -14,6 +14,30 @@ type PortRange struct {
 	End   uint16
 }
 
+func (p PortRange) IsSingle() bool {
+	return p.Start == p.End
+}
+
+func (p *PortRange) String() string {
+	return fmt.Sprintf("%v-%v", p.Start, p.End)
+}
+
+func ParsePortRange(prange string) (error, PortRange) {
+	var pl, pr uint16
+	found, err := fmt.Sscanf(prange, "%v-%v", pl, pr)
+	if found != 2 {
+		return fmt.Errorf("Invalid port range %v", prange), PortRange{}
+	}
+	if err != nil {
+		return err, PortRange{}
+	}
+	if pl < pr {
+		return nil, PortRange{Start: pl, End: pr}
+	} else {
+		return nil, PortRange{Start: pr, End: pl}
+	}
+}
+
 // Rule represents a netlink rule.
 type Rule struct {
 	Priority          int
@@ -76,10 +100,40 @@ func RulesGet() ([]Rule, error) {
 			return ncrules, err
 		}
 	}
-	return ncrules, NewUnsupportedError("TODO")
+	return ncrules, nil
 }
 
 func ruleParse(rule netlink.Rule) (Rule, error) {
-	r := Rule{}
-	return r, NewUnsupportedError("TODO")
+	r := Rule{
+		Priority:          rule.Priority,
+		Family:            rule.Family,
+		Table:             rule.Table,
+		Mark:              rule.Mark,
+		Mask:              rule.Mask,
+		Tos:               rule.Tos,
+		TunID:             rule.TunID,
+		Goto:              rule.Goto,
+		Src:               rule.Src,
+		Dst:               rule.Dst,
+		Flow:              rule.Flow,
+		IifName:           rule.IifName,
+		OifName:           rule.OifName,
+		SuppressIfgroup:   rule.SuppressIfgroup,
+		SuppressPrefixlen: rule.SuppressPrefixlen,
+		Invert:            rule.Invert,
+	}
+	if rule.Dport != nil {
+		r.Dport = &PortRange{
+			Start: rule.Dport.Start,
+			End:   rule.Dport.End,
+		}
+	}
+	if rule.Sport != nil {
+		r.Sport = &PortRange{
+			Start: rule.Sport.Start,
+			End:   rule.Sport.End,
+		}
+	}
+
+	return r, nil
 }

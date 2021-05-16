@@ -107,26 +107,144 @@ func ncRouteFormat(route Route) (nc.Route, error) {
 
 func ncRuleFormat(rule Rule) (nc.Rule, error) {
 	//TODO
-	ncrule := nc.Rule{}
+	ncrule := nc.Rule{
+		Priority: rule.GetPriority(),
+		Family:   rule.GetFamily(),
+		Table:    rule.GetTable(),
+		Mark:     rule.GetMark(),
+		Mask:     rule.GetMask(),
+
+		TunID: rule.GetTunid(),
+		Goto:  rule.GetGoto(),
+
+		Flow:              rule.GetFlow(),
+		IifName:           rule.GetIif(),
+		OifName:           rule.GetOif(),
+		SuppressIfgroup:   rule.GetSuppressIfgroup(),
+		SuppressPrefixlen: rule.GetSuppressPrefixlen(),
+		Invert:            rule.GetNot(),
+	}
+
+	if dport, ok := rule.GetDportOk(); ok {
+		ncrule.Dport = &nc.PortRange{
+			Start: uint16(*dport),
+			End:   uint16(*dport),
+		}
+	} else {
+		if dportstart, ok := rule.GetDportStartOk(); ok {
+			if dportend, ok := rule.GetDportEndOk(); ok {
+				ncrule.Dport = &nc.PortRange{
+					Start: uint16(*dportstart),
+					End:   uint16(*dportend),
+				}
+			}
+		}
+	}
+	if sport, ok := rule.GetSportOk(); ok {
+		ncrule.Sport = &nc.PortRange{
+			Start: uint16(*sport),
+			End:   uint16(*sport),
+		}
+	} else {
+		if sportstart, ok := rule.GetSportStartOk(); ok {
+			if sportend, ok := rule.GetSportEndOk(); ok {
+				ncrule.Sport = &nc.PortRange{
+					Start: uint16(*sportstart),
+					End:   uint16(*sportend),
+				}
+			}
+		}
+	}
+	if src, ok := rule.GetSrcOk(); ok {
+		snet, err := nc.CIDRAddrLoad(*src, rule.GetSrclen())
+		if err != nil {
+			return ncrule, err
+		}
+		ipnet := snet.ToIPNet()
+		ncrule.Src = &ipnet
+	}
+	if dst, ok := rule.GetDstOk(); ok {
+		dnet, err := nc.CIDRAddrLoad(*dst, rule.GetDstlen())
+		if err != nil {
+			return ncrule, err
+		}
+		ipnet := dnet.ToIPNet()
+		ncrule.Dst = &ipnet
+	}
+	if tos, ok := rule.GetTosOk(); ok {
+		ncrule.Tos = uint(*tos)
+	}
+
 	return ncrule, nil
 }
 
 func ncRuleParse(ncrule nc.Rule) Rule {
 	//TODO
-	r := Rule{}
+
+	r := Rule{
+		Priority:          &ncrule.Priority,
+		Family:            &ncrule.Family,
+		Table:             &ncrule.Table,
+		Mark:              &ncrule.Mark,
+		Mask:              &ncrule.Mask,
+		Tunid:             &ncrule.TunID,
+		Goto:              &ncrule.Goto,
+		Flow:              &ncrule.Flow,
+		Iif:               &ncrule.IifName,
+		Oif:               &ncrule.OifName,
+		SuppressIfgroup:   &ncrule.SuppressIfgroup,
+		SuppressPrefixlen: &ncrule.SuppressPrefixlen,
+		Not:               &ncrule.Invert,
+	}
+	if ncrule.Tos != 0 {
+		tos := int(ncrule.Tos)
+		r.Tos = &tos
+	}
+	if ncrule.Src != nil {
+		s := ncrule.Src.String()
+		r.Src = &s
+	}
+	if ncrule.Dst != nil {
+		d := ncrule.Dst.String()
+		r.Dst = &d
+	}
+
+	if ncrule.Dport != nil {
+		if ncrule.Dport.IsSingle() {
+			p := int(ncrule.Dport.End)
+			r.Dport = &p
+		} else {
+			s := int(ncrule.Dport.Start)
+			e := int(ncrule.Dport.End)
+			r.DportStart = &s
+			r.DportEnd = &e
+		}
+	}
+	if ncrule.Sport != nil {
+		if ncrule.Sport.IsSingle() {
+			p := int(ncrule.Sport.End)
+			r.Sport = &p
+		} else {
+			s := int(ncrule.Sport.Start)
+			e := int(ncrule.Sport.End)
+			r.SportStart = &s
+			r.SportEnd = &e
+		}
+	}
+
 	return r
 }
 
 func rulesGet() ([]Rule, error) {
-	var routes []Rule
-	ncroutes, err := nc.RulesGet()
+	var rules []Rule
+	ncrules, err := nc.RulesGet()
 	if err == nil {
-		routes = make([]Rule, len(ncroutes))
-		for i, r := range ncroutes {
-			routes[i] = ncRuleParse(r)
+		rules = make([]Rule, len(ncrules))
+		for i, r := range ncrules {
+			rules[i] = ncRuleParse(r)
 		}
 	}
-	return routes, err
+	return rules, err
 }
 
 func ncRouteParse(ncroute nc.Route) Route {
@@ -445,6 +563,7 @@ func ncNetParse(net nc.Network) Network {
 	routes := make([]Route, len(net.Routes))
 	dhcps := make([]Dhcp, len(net.Dhcp))
 	dnss := make([]Dns, len(net.Dnss))
+	rules := make([]Rule, len(net.Rules))
 	unmanaged := make([]Unmanaged, len(net.Unmanaged))
 	for i, l := range net.Links {
 		links[i] = ncLinkParse(l)
@@ -458,8 +577,11 @@ func ncNetParse(net nc.Network) Network {
 	for i, s := range net.Dnss {
 		dnss[i] = ncDnsParse(s)
 	}
-	for i, s := range net.Unmanaged {
-		unmanaged[i] = ncUnmanagedParse(s)
+	for i, u := range net.Unmanaged {
+		unmanaged[i] = ncUnmanagedParse(u)
+	}
+	for i, r := range net.Rules {
+		rules[i] = ncRuleParse(r)
 	}
 	return Network{
 		Links:     &links,
@@ -467,5 +589,6 @@ func ncNetParse(net nc.Network) Network {
 		Dhcp:      &dhcps,
 		Dns:       &dnss,
 		Unmanaged: &unmanaged,
+		Rules:     &rules,
 	}
 }
