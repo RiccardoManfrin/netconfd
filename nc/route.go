@@ -10,8 +10,8 @@ import (
 	"net"
 	"syscall"
 
+	"github.com/riccardomanfrin/netconfd/logger"
 	"github.com/vishvananda/netlink"
-	"gitlab.lan.athonet.com/core/netconfd/logger"
 )
 
 // ModelDefault This is equivalent to 0.0.0.0/0 or ::/0

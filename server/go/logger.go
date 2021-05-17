@@ -11,12 +11,12 @@
 package openapi
 
 import (
+	"bytes"
+	"io/ioutil"
 	"net/http"
 	"time"
-	"io/ioutil"
-	"bytes"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/logger"
 )
 
 //Logger wrapper for logging before inner HTTP serving

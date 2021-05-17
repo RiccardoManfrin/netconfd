@@ -12,8 +12,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/riccardomanfrin/netconfd/logger"
 	"github.com/vishvananda/netlink"
-	"gitlab.lan.athonet.com/core/netconfd/logger"
 	"golang.org/x/sys/unix"
 )
 

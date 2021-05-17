@@ -9,7 +9,7 @@ import (
 	"os/exec"
 	"regexp"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/logger"
 )
 
 type DnsID string

@@ -13,8 +13,8 @@ package openapi
 import (
 	"net/http"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 //Response return a ImplResponse struct filled

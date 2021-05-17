@@ -3,8 +3,8 @@ package openapi
 import (
 	"net"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 func dnssGet() ([]Dns, error) {

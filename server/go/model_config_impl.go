@@ -19,7 +19,7 @@ import (
 	"os"
 	"strconv"
 
-	logger "gitlab.lan.athonet.com/core/netconfd/logger"
+	logger "github.com/riccardomanfrin/netconfd/logger"
 )
 
 func (c *Config) Persist() error {

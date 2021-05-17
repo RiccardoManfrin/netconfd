@@ -9,7 +9,7 @@ import (
 	"os"
 	"os/exec"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/logger"
 )
 
 const prefixInstallPAth string = "/opt/netconfd/"

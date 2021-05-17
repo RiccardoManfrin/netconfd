@@ -16,8 +16,8 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 // SystemApiService is a service that implents the logic for the SystemApiServicer

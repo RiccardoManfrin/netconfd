@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"gitlab.lan.athonet.com/core/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/logger"
 )
 
 var configfile = flag.String("config", "netconfd.json", "Path to netconfd configuration file")

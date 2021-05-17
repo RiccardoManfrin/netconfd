@@ -16,16 +16,16 @@ import (
 	"strings"
 	"time"
 
-	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
+	oas "github.com/riccardomanfrin/netconfd/server/go"
 
 	"github.com/getkin/kin-openapi/openapi3"
 	"github.com/getkin/kin-openapi/openapi3filter"
 	"github.com/getkin/kin-openapi/routers"
 	"github.com/getkin/kin-openapi/routers/gorillamux"
 	"github.com/gorilla/mux"
-	"gitlab.lan.athonet.com/core/netconfd/comm"
-	"gitlab.lan.athonet.com/core/netconfd/logger"
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/comm"
+	"github.com/riccardomanfrin/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 //RouteHandler is the handler for a certain route OperationID

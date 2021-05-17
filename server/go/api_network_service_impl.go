@@ -13,7 +13,7 @@ package openapi
 import (
 	"context"
 
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 // NetworkApiService is a service that implents the logic for the NetworkApiServicer

@@ -9,10 +9,10 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"gitlab.lan.athonet.com/core/netconfd/comm"
-	"gitlab.lan.athonet.com/core/netconfd/logger"
-	"gitlab.lan.athonet.com/core/netconfd/nc"
-	oas "gitlab.lan.athonet.com/core/netconfd/server/go"
+	"github.com/riccardomanfrin/netconfd/comm"
+	"github.com/riccardomanfrin/netconfd/logger"
+	"github.com/riccardomanfrin/netconfd/nc"
+	oas "github.com/riccardomanfrin/netconfd/server/go"
 )
 
 func parseSampleConfig(t *testing.T, sampleConfig string) oas.Config {

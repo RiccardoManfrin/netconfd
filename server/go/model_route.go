@@ -15,7 +15,7 @@ import (
 	"encoding/json"
 	"net"
 
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 // Route IP L3 Ruote entry

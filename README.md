@@ -14,8 +14,6 @@ Build locally with `make`
 
 # Code coverage
 
-![coverage](https://gitlab.com/gitlab-org/gitlab/badges/master/coverage.svg?job=coverage)
-
 # R1 ToDo list
 
 ## Move code into nc
@@ -26,8 +24,6 @@ Build locally with `make`
 ## Use DBUS not scripts [1d - risk]
 
 Library: https://github.com/godbus/dbus/
-
-Our code: https://gitlab.lan.athonet.com:8443/core/ncm/blob/master/n1dbus/n1dbus.go
 
 Autogen constants command
 

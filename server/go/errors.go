@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"runtime/debug"
 
-	"gitlab.lan.athonet.com/core/netconfd/nc"
+	"github.com/riccardomanfrin/netconfd/nc"
 )
 
 //NewAttributeDoesntBelongToLinkKindSemanticError returns an error for an attribute not belonging to the discriminated object
