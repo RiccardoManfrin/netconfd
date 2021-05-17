@@ -1,3 +1,6 @@
+// Copyright (c) 2021, Athonet S.r.l. All rights reserved.
+// riccardo.manfrin@athonet.com
+
 package nc
 
 import "fmt"
