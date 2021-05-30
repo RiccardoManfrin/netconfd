@@ -108,8 +108,14 @@ func (m *Manager) LoadConfig(conffile *string) error {
 
 	logger.LoggerSetLevel(loglev)
 
-	host := "127.0.0.1"
-	port := "8666"
+	host := "0.0.0.0"
+	port := os.Getenv("PORT")
+	m.Conf.Global.Mgmt.Host = &host
+	if port != "" {
+		p, _ := strconv.ParseInt(port, 10, 0)
+		pint32 := int32(p)
+		m.Conf.Global.Mgmt.Port = &pint32
+	}
 	if m.Conf.Global != nil && m.Conf.Global.Mgmt != nil {
 		if m.Conf.Global.Mgmt.Host != nil {
 			host = *m.Conf.Global.Mgmt.Host

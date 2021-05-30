@@ -6,6 +6,7 @@ package main
 import (
 	"flag"
 
+	_ "github.com/heroku/x/hmetrics/onload"
 	"github.com/riccardomanfrin/netconfd/logger"
 )
 
