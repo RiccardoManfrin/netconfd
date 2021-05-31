@@ -5,7 +5,6 @@ RUN mkdir -p -m 0600 ~/.ssh
 RUN echo "StrictHostKeyChecking no" >> ~/.ssh/config
 RUN apk update && \
     apk add --no-cache git make openssh pkgconfig gcc
-RUN update-ca-certificates
 ENV GOPATH /go/
 ENV SRCPATH $GOPATH/src/github.com/$CI_PROJECT_PATH
 ADD src.tar.gz $SRCPATH
