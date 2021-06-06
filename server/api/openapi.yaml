@@ -936,7 +936,7 @@ components:
         protocol: unspec
         goto: 5
         masquerade: masquerade
-        tos: 42
+        tos: 8
         sport_start: 42
         table: 10
         flow: 2
@@ -975,7 +975,7 @@ components:
           example: 26
           type: integer
         tos:
-          example: 42
+          example: 8
           maximum: 255
           minimum: 0
           type: integer

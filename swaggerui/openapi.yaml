@@ -1304,7 +1304,7 @@ components:
           type: integer
           minimum: 0
           maximum: 255
-          example: 42
+          example: 8
         iif:
           type: string
           example: "eth0"
