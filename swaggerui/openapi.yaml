@@ -1327,6 +1327,7 @@ components:
         dport_end:
           $ref: '#/components/schemas/port'
         table:
+          description: On match, consult table specified by table ID
           type: integer
           example: 10
         suppress_prefixlen:
@@ -1336,6 +1337,7 @@ components:
           type: integer
           example: 23
         masquerade:
+          description: On match, NAT masquerade the source IP
           type: string
           default: ""
         protocol:
@@ -1348,6 +1350,7 @@ components:
         tunid:
           type: integer
         goto:
+          description: On match, the rule action is to jump to another existing rule specified by its priority value
           type: integer
         flow:
           type: integer
