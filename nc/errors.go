@@ -355,12 +355,20 @@ func NewUnmanagedLinkCannotBeModifiedError(ifname LinkID) error {
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged interface %v", string(ifname))}
 }
 
-//NewUnmanagedLinkRouteCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
+//NewUnmanagedLinkRouteCannotBeModifiedError returns an error for unmanaged links routes which are requested to be configured
 func NewUnmanagedLinkRouteCannotBeModifiedError(r Route) error {
 	if NetconfdDebugTrace {
 		debug.PrintStack()
 	}
 	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged link %v route %v", r.Dev, r.Print())}
+}
+
+//NewUnmanagedLinkRuleCannotBeModifiedError returns an error for unmanaged links rules which are requested to be configured
+func NewUnmanagedLinkRuleCannotBeModifiedError(r Rule) error {
+	if NetconfdDebugTrace {
+		debug.PrintStack()
+	}
+	return &ConflictError{Code: CONFLICT, Reason: fmt.Sprintf("Cannot modify unmanaged link %v/%v rule %v", r.IifName, r.OifName, r.Print())}
 }
 
 //NewUnmanagedLinkDHCPCannotBeModifiedError returns an error for unmanaged links which are requested to be configured
@@ -429,6 +437,14 @@ func NewRouteExistsConflictError(routeID RouteID) error {
 		debug.PrintStack()
 	}
 	return &ConflictError{Code: CONFLICT, Reason: "Route " + string(routeID) + " exists"}
+}
+
+//NewruleExistsConflictError returns a Conflict error on link layer interfaces
+func NewRuleExistsConflictError(ruleID RuleID) error {
+	if NetconfdDebugTrace {
+		debug.PrintStack()
+	}
+	return &ConflictError{Code: CONFLICT, Reason: "Rule " + string(ruleID) + " exists"}
 }
 
 //NotFoundError is a logical error on the content of the operation requested to be performed

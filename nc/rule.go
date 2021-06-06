@@ -5,9 +5,12 @@ package nc
 
 import (
 	"crypto/md5"
+	"encoding/json"
 	"fmt"
 	"net"
+	"syscall"
 
+	"github.com/riccardomanfrin/netconfd/logger"
 	"github.com/vishvananda/netlink"
 )
 
@@ -43,6 +46,7 @@ func ParsePortRange(prange string) (error, PortRange) {
 
 // Rule represents a netlink rule.
 type Rule struct {
+	ID                RuleID
 	Priority          int
 	Family            int
 	Table             int
@@ -63,13 +67,77 @@ type Rule struct {
 	Sport             *PortRange
 }
 
+//Print implements rule print
+func (r *Rule) Print() string {
+	data, _ := json.Marshal(r)
+	return fmt.Sprintf("%v", string(data))
+}
+
+func ruleFormat(rule Rule) (netlink.Rule, error) {
+	nlrule := netlink.Rule{}
+	nlrule.Priority = rule.Priority
+	nlrule.Family = rule.Family
+	nlrule.Table = rule.Table
+	nlrule.Mark = rule.Mark
+	nlrule.Mask = rule.Mask
+	nlrule.Tos = rule.Tos
+	nlrule.TunID = rule.TunID
+	nlrule.Goto = rule.Goto
+	nlrule.Src = rule.Src
+	nlrule.Dst = rule.Dst
+	nlrule.Flow = rule.Flow
+	nlrule.IifName = rule.IifName
+	nlrule.OifName = rule.OifName
+	nlrule.SuppressIfgroup = rule.SuppressIfgroup
+	nlrule.SuppressPrefixlen = rule.SuppressPrefixlen
+	nlrule.Invert = rule.Invert
+	nlrule.Dport = &netlink.RulePortRange{
+		Start: rule.Dport.Start,
+		End:   rule.Dport.End,
+	}
+	nlrule.Sport = &netlink.RulePortRange{
+		Start: rule.Sport.Start,
+		End:   rule.Sport.End,
+	}
+	return nlrule, nil
+}
+
 //RuleID identifies a rule via MD5 of its content
 type RuleID string
 
 //RuleCreate create and add a new rule
 func RuleCreate(rule Rule) (RuleID, error) {
-	id := RuleID("IMPLEMENT")
-	return id, NewUnsupportedError("TODO")
+	ruleid := RuleIDGet(rule)
+	if isUnmanaged(UnmanagedID(rule.IifName), LINKTYPE) {
+		logger.Log.Info(fmt.Sprintf("Skipping Unmanaged Link %v rule configuration", rule.IifName))
+		return ruleid, NewUnmanagedLinkRuleCannotBeModifiedError(rule)
+	}
+	rule.ID = ruleid
+	rules, err := RulesGet()
+	if err != nil {
+		return ruleid, err
+	}
+	for _, r := range rules {
+		if r.ID == ruleid {
+			return ruleid, NewRuleExistsConflictError(ruleid)
+		}
+	}
+
+	nlrule, err := ruleFormat(rule)
+	if err != nil {
+		return ruleid, err
+	}
+	logger.Log.Debug(fmt.Sprintf("Creating rule %v", rule))
+	err = netlink.RuleAdd(&nlrule)
+	if err != nil {
+		if err.(syscall.Errno) == syscall.EEXIST {
+			logger.Log.Warning(fmt.Sprintf("Skipping rule %v creation: rule exists", ruleid))
+		} else {
+			return ruleid, mapNetlinkError(err, &rule)
+		}
+	}
+
+	return ruleid, nil
 }
 
 func RuleIDGet(r Rule) RuleID {
