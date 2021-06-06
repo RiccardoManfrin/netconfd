@@ -142,8 +142,12 @@ func RuleCreate(rule Rule) (RuleID, error) {
 
 func RuleIDGet(r Rule) RuleID {
 	md := md5.New()
-	md.Write([]byte(r.IifName))
-	md.Write([]byte(r.OifName))
+	serialized, err := json.Marshal(r)
+	if err != nil {
+		logger.Fatal(err)
+		return RuleID("")
+	}
+	md.Write(serialized)
 	return RuleID(fmt.Sprintf("%x", md.Sum(nil)))
 }
 

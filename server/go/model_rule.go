@@ -54,6 +54,8 @@ func NewRule() *Rule {
 	this := Rule{}
 	var not bool = false
 	this.Not = &not
+	var masquerade string = ""
+	this.Masquerade = &masquerade
 	return &this
 }
 
@@ -64,6 +66,8 @@ func NewRuleWithDefaults() *Rule {
 	this := Rule{}
 	var not bool = false
 	this.Not = &not
+	var masquerade string = ""
+	this.Masquerade = &masquerade
 	return &this
 }
 

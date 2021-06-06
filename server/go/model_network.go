@@ -25,10 +25,10 @@ type Network struct {
 	Dhcp *[]Dhcp `json:"dhcp,omitempty"`
 	// List of nameservers and related priorities (lower value indicates higher priority). DNS configuration is ignored if any of the interfaces is set in DHCP.
 	Dns *[]Dns `json:"dns,omitempty"`
+	// List of IP Rules
+	Rules *[]Rule `json:"rules,omitempty"`
 	// List of unmanaged Network resorces
 	Unmanaged *[]Unmanaged `json:"unmanaged,omitempty"`
-	//IP Rules
-	Rules *[]Rule
 }
 
 // NewNetwork instantiates a new Network object
@@ -176,6 +176,38 @@ func (o *Network) SetDns(v []Dns) {
 	o.Dns = &v
 }
 
+// GetRules returns the Rules field value if set, zero value otherwise.
+func (o *Network) GetRules() []Rule {
+	if o == nil || o.Rules == nil {
+		var ret []Rule
+		return ret
+	}
+	return *o.Rules
+}
+
+// GetRulesOk returns a tuple with the Rules field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *Network) GetRulesOk() (*[]Rule, bool) {
+	if o == nil || o.Rules == nil {
+		return nil, false
+	}
+	return o.Rules, true
+}
+
+// HasRules returns a boolean if a field has been set.
+func (o *Network) HasRules() bool {
+	if o != nil && o.Rules != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetRules gets a reference to the given []Rule and assigns it to the Rules field.
+func (o *Network) SetRules(v []Rule) {
+	o.Rules = &v
+}
+
 // GetUnmanaged returns the Unmanaged field value if set, zero value otherwise.
 func (o *Network) GetUnmanaged() []Unmanaged {
 	if o == nil || o.Unmanaged == nil {
@@ -222,6 +254,9 @@ func (o Network) MarshalJSON() ([]byte, error) {
 	if o.Dns != nil {
 		toSerialize["dns"] = o.Dns
 	}
+	if o.Rules != nil {
+		toSerialize["rules"] = o.Rules
+	}
 	if o.Unmanaged != nil {
 		toSerialize["unmanaged"] = o.Unmanaged
 	}
@@ -263,3 +298,5 @@ func (v *NullableNetwork) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

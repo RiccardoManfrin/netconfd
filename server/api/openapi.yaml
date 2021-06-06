@@ -664,9 +664,7 @@ paths:
           content:
             application/json:
               schema:
-                items:
-                  $ref: '#/components/schemas/ruleid'
-                type: array
+                $ref: '#/components/schemas/ruleid'
           description: Successful creation
         "409":
           description: Resource already exists, or request is incompatible with current
@@ -877,6 +875,11 @@ components:
           minItems: 0
           type: array
           uniqueItems: true
+        rules:
+          description: List of IP Rules
+          items:
+            $ref: '#/components/schemas/rule'
+          type: array
         unmanaged:
           description: List of unmanaged Network resorces
           items:
@@ -1025,6 +1028,7 @@ components:
           example: 23
           type: integer
         masquerade:
+          default: ""
           type: string
         protocol:
           example: unspec

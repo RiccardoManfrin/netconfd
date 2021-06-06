@@ -695,9 +695,7 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/ruleid'
+                $ref: '#/components/schemas/ruleid'
         '409':
           description: 
             Resource already exists, or request is incompatible with
@@ -1233,6 +1231,12 @@ components:
           minItems: 0
           maxItems: 2
           uniqueItems: true
+        rules:
+          type: array
+          description:
+            List of IP Rules
+          items:
+            $ref: "#/components/schemas/rule"
         unmanaged:
           type: array
           description:
