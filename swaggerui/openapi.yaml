@@ -1333,7 +1333,7 @@ components:
           example: 23
         masquerade:
           type: string
-          example: null
+          default: ""
         protocol:
           type: string
           example: "unspec"
